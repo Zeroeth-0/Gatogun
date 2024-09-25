@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://cwod13co6stfe"]
+
+[node name="Emitter" type="Marker2D"]

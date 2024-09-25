@@ -1,3 +1,15 @@
-[gd_scene format=3 uid="uid://bu4plpf86f1x1"]
+[gd_scene load_steps=4 format=3 uid="uid://bu4plpf86f1x1"]
+
+[ext_resource type="PackedScene" uid="uid://dha3ds2h57s2b" path="res://scenes/bullets/bullet.tscn" id="1_xpsw6"]
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/emitter.tscn" id="3_8gymy"]
+[ext_resource type="Script" path="res://source/weapons/emitter.gd" id="4_mvtvv"]
 
 [node name="World" type="Node2D"]
+
+[node name="Emitter" parent="." instance=ExtResource("3_8gymy")]
+position = Vector2(315, 117)
+script = ExtResource("4_mvtvv")
+bulletScene = ExtResource("1_xpsw6")
+speed = 200
+burstCount = 5
+bulletInterval = 0.15
