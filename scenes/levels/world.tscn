@@ -1,15 +1,25 @@
-[gd_scene load_steps=4 format=3 uid="uid://bu4plpf86f1x1"]
+[gd_scene load_steps=5 format=3 uid="uid://bu4plpf86f1x1"]
 
 [ext_resource type="PackedScene" uid="uid://dha3ds2h57s2b" path="res://scenes/bullets/bullet.tscn" id="1_xpsw6"]
 [ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/emitter.tscn" id="3_8gymy"]
 [ext_resource type="Script" path="res://source/weapons/emitter.gd" id="4_mvtvv"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_djeyt"]
+
 [node name="World" type="Node2D"]
 
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(324, 324)
+shape = SubResource("RectangleShape2D_djeyt")
+
 [node name="Emitter" parent="." instance=ExtResource("3_8gymy")]
-position = Vector2(315, 117)
+position = Vector2(324, 324)
 script = ExtResource("4_mvtvv")
 bulletScene = ExtResource("1_xpsw6")
 speed = 200
-burstCount = 5
-bulletInterval = 0.15
+arms = 16
+burstCount = 2
+bulletInterval = 0.6
+distanceCenter = 3
+spreadAngle = 360.0
+spreadOffset = 600
