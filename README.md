@@ -1,4 +1,9 @@
-cd Desktop\Desarrollo de Videojuegos\Proyectos\Gatodius
-git add .
-git commit -m "Descripción de cambios"
-git push origin master
+*PUSH*<br/>
+cd /root<br/>
+git add .<br/>
+git commit -m "Descripción de cambios"<br/>
+git push origin master<br/>
+<br/>
+*PULL*<br/>
+cd /root/<br/>
+git pull origin master<br/>
