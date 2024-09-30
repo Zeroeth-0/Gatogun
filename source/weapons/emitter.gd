@@ -46,10 +46,10 @@ var direction: Vector2 = Vector2(0, 1) # Dirección central del patrón
 
 @export_group("ROTATION")
 @export var burstRotation: bool = false
-@export_range(0, 360, 15) var rotationAngle: int
-@export_range(0, 20, 5) var rotationSpeed: int
-@export var pingPong: bool = false
-@export var centerStart: bool = false
+@export_range(0, 360, 15) var rotationAngle: int # Implementado
+@export_range(-150, 150, 10) var rotationSpeed: int # Implementado
+@export var pingPong: bool = false # Implementado
+@export var centerStart: bool = false # Implementado
 
 # ------------------------------------------------Burst---------------------------------------------------
 
@@ -63,6 +63,8 @@ var direction: Vector2 = Vector2(0, 1) # Dirección central del patrón
 @export_group("SPREAD")
 @export_range(0, 360, 15) var spreadAngle: float = 45.0 # Implementado
 @export_range(0, 600, 100) var spreadOffset: int # Implementado
+enum SpeedVar { BULLET, ARM }
+@export var speedVar: SpeedVar = SpeedVar.BULLET
 @export_range(0.9, 1.1, 0.02) var speedVariation: float = 1 # Implementado
 @export var useSymmetry: bool = false # Implementado
 
@@ -77,23 +79,43 @@ var direction: Vector2 = Vector2(0, 1) # Dirección central del patrón
 @export var keepSpeed: bool = false # Implementado
 
 var rng = RandomNumberGenerator.new()
+var rotation_direction = 1
 
 func _ready():
 	direction = DIRECTION_MAP.get(directionEnum)
 	shoot()
 
 func _process(delta):
-	pass
+	# Aplicar la rotación si burstRotation está activado
+	rotation_degrees += rotationSpeed * delta * rotation_direction
+	handle_rotation()
+
+func handle_rotation():
+	var adj_angle = rotationAngle
+	var null_angle = 0
+	
+	if centerStart:
+		adj_angle = rotationAngle / 2
+		null_angle = null_angle - rotationAngle / 2
+	
+	if pingPong:
+		if rotation_degrees >= adj_angle: rotation_direction = -1
+		if rotation_degrees <= null_angle: rotation_direction = 1
+	else:
+		if rotation_degrees >= rotationAngle and rotationAngle < 360 : rotation_direction = 0
 
 func shoot():
 	while true:
 		await get_tree().create_timer(warmUp).timeout
+		var new_spd = speed
+		
 		for i in burstCount:
-			fire()
+			if speedVar == SpeedVar.BULLET: new_spd *= speedVariation
+			fire(new_spd)
 			await get_tree().create_timer(bulletInterval).timeout
 
-func fire() -> void:
-	var shoot_spd = speed
+func fire(new_spd) -> void:
+	var shoot_spd = new_spd
 	var eachSpreadOffset = spreadOffset / float(arms)
 	var eachArmAngle
 	
@@ -107,15 +129,15 @@ func fire() -> void:
 	
 	# Repeater: Repetir el burst en función de `repeatCount` y `repeatAngle`
 	for r in range(repeatCount):
-		if keepSpeed: shoot_spd = speed
+		if keepSpeed: shoot_spd = new_spd
 		
 		# Ángulo para este burst repetido
 		var repeat_rotation = repeatAngle / float(repeatCount) * r
 		
 		# Disparamos el patrón original y aplicamos la variación de velocidad
 		for i in range(arms):
-			shoot_spd *= speedVariation
-			var shoot_dir = direction.rotated(deg_to_rad(repeat_rotation)) # Aplicamos la rotación al burst
+			if speedVar == SpeedVar.ARM: shoot_spd *= speedVariation
+			var shoot_dir = direction.rotated(rotation + deg_to_rad(repeat_rotation)) # Aplicamos la rotación al burst
 			var shoot_pos = global_position
 		
 			# Lógica para balas paralelas o con dispersión
