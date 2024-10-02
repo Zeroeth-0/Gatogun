@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3 uid="uid://dnm46gsra70ug"]
+
+[ext_resource type="Script" path="res://source/player/catplayer.gd" id="1_7pfs0"]
+[ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_86ini"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_klkvo"]
+
+[node name="CatPlayer" type="CharacterBody2D"]
+position = Vector2(326, 537)
+script = ExtResource("1_7pfs0")
+speed = 200
+screenMargin = 50
+
+[node name="Icon" type="Sprite2D" parent="."]
+modulate = Color(0, 1, 0, 1)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2_86ini")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(0.5, 0.5)
+shape = SubResource("RectangleShape2D_klkvo")
+debug_color = Color(0, 1, 0, 0.419608)
+
+[node name="Hurtbox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+scale = Vector2(0.5, 0.5)
+shape = SubResource("RectangleShape2D_klkvo")
+debug_color = Color(0, 1, 0, 0.419608)
+
+[connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]

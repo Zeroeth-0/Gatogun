@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://bu4plpf86f1x1"]
+[gd_scene load_steps=5 format=3 uid="uid://bu4plpf86f1x1"]
 
-[ext_resource type="PackedScene" path="res://scenes/bullets/bullet.tscn" id="1_xpsw6"]
-[ext_resource type="PackedScene" path="res://scenes/weapons/emitter.tscn" id="3_8gymy"]
+[ext_resource type="PackedScene" uid="uid://dha3ds2h57s2b" path="res://scenes/bullets/bullet.tscn" id="1_xpsw6"]
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/emitter.tscn" id="3_8gymy"]
 [ext_resource type="Script" path="res://source/weapons/emitter.gd" id="4_mvtvv"]
+[ext_resource type="PackedScene" uid="uid://dnm46gsra70ug" path="res://scenes/player/cat_player.tscn" id="4_nvx4x"]
 
 [node name="World" type="Node2D"]
 
@@ -10,4 +11,15 @@
 position = Vector2(324, 324)
 script = ExtResource("4_mvtvv")
 bulletScene = ExtResource("1_xpsw6")
-speed = 200.0
+burstRotation = true
+rotationAngle = 360
+rotationSpeed = 60
+pingPong = true
+arms = 8
+burstCount = 3
+spreadAngle = 360.0
+speedVar = 1
+speedVariation = 0.9
+useSymmetry = true
+
+[node name="CatPlayer" parent="." instance=ExtResource("4_nvx4x")]
