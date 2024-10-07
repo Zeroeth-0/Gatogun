@@ -7,22 +7,19 @@ extends Marker2D
 @export_range(-300, 300, 50) var speed: float = 200 # Implementado
 
 @export_group("DIRECTION")
-enum Type { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM, ANGLE }
+enum Type { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM }
 @export var type: Type = Type.NONE
 @export_range(0, 360, 15) var deviationAngle: int
-@export_range(0, 10, 1) var strength: int
 @export_range(0, 5, 0.5) var dirStartTime: float
-@export_range(0, 5, 0.5) var dirDuration: float
+@export_range(0, 5, 0.5) var dirDuration: float = 5
 
 @export_group("FIRST CHANGE SPEED")
 @export_range(-300, 300, 50) var fstNewSpeed: int
 @export_range(0, 5, 0.5) var fstStartTime: float
-@export_range(0, 5, 0.5) var fstDuration: float
 
 @export_group("SECOND CHANGE SPEED")
 @export_range(-300, 300, 50) var sndNewSpeed: int
 @export_range(0, 5, 0.5) var sndStartTime: float
-@export_range(0, 5, 0.5) var sndDuration: float
 
 # ------------------------------------------------Weapon--------------------------------------------------
 
@@ -47,7 +44,7 @@ var direction: Vector2 = Vector2(0, 1)
 
 @export_group("ROTATION")
 @export var burstRotation: bool = false # Implementado
-@export_range(0, 360, 15) var rotationAngle: int = 0 # Implementado
+@export_range(0, 180, 45) var rotationAngle: int = 0 # Implementado
 @export_range(-150, 150, 10) var rotationSpeed: int = 0 # Implementado
 @export var pingPong: bool = false # Implementado
 @export var centerStart: bool = true # Implementado
@@ -194,4 +191,6 @@ func shoot_bullet(shoot_dir: Vector2, shoot_pos: Vector2, shoot_spd: float):
 	var bullet = bulletScene.instantiate() as Node2D
 	bullet.position = shoot_pos + shoot_dir * distanceCenter
 	bullet.set_properties(shoot_dir, shoot_spd)
+	bullet.modify_direction(type, deviationAngle, dirStartTime, dirDuration)
+	bullet.modify_speed(fstNewSpeed, fstStartTime, sndNewSpeed, sndStartTime)
 	get_parent().add_child(bullet)

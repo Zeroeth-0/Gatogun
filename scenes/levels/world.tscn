@@ -11,8 +11,10 @@
 position = Vector2(324, 324)
 script = ExtResource("4_mvtvv")
 bulletScene = ExtResource("1_xpsw6")
+type = 2
 aimAtPlayer = true
 arms = 3
 burstCount = 3
 
 [node name="CatPlayer" parent="." groups=["Player"] instance=ExtResource("4_nvx4x")]
+speed = 300
