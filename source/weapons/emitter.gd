@@ -82,6 +82,7 @@ enum SpeedVar { BULLET, ARM }
 var rng = RandomNumberGenerator.new()
 var rotation_direction = 1
 var stop_rotation = false
+var player_pos: Vector2 = Vector2()
 
 func _ready():
 	direction = DIRECTION_MAP.get(directionEnum)
@@ -97,8 +98,8 @@ func handle_rotation():
 	var null_angle = 0
 	
 	if centerStart:
-		adj_angle = rotationAngle / 2
-		null_angle = null_angle - rotationAngle / 2
+		adj_angle = rotationAngle / 2.0
+		null_angle = null_angle - rotationAngle / 2.0
 	
 	if pingPong:
 		if rotation_degrees >= adj_angle:
@@ -114,6 +115,8 @@ func shoot():
 		await get_tree().create_timer(warmUp).timeout
 		var new_spd = speed
 		if !burstRotation: stop_rotation = true
+		
+		if aimAtPlayer: player_pos = GETPLAYER.get_player()
 		
 		for i in burstCount:
 			if speedVar == SpeedVar.BULLET: new_spd *= speedVariation
@@ -150,9 +153,13 @@ func fire(new_spd) -> void:
 			var shoot_dir = direction.rotated(rotation + deg_to_rad(repeat_rotation))
 			var shoot_pos = global_position
 			
+			# Si aimAtPlayer está activado, ajustamos la dirección hacia el jugador
+			if aimAtPlayer:
+				shoot_dir = (player_pos - shoot_pos).normalized()
+			
 			if parallel:
 				# Aplicamos steepness para disparo paralelo
-				var offset = ((i - arms / 2) * eachSpreadOffset) + rng.randf_range(-randomOffset, randomOffset)
+				var offset = ((i - arms / 2.0) * eachSpreadOffset) + rng.randf_range(-randomOffset, randomOffset)
 				
 				# Ajustamos la posición con steepness
 				var steepness_factor = abs(i - (arms - 1) / 2.0) * steepness

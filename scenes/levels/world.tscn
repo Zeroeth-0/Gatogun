@@ -11,15 +11,8 @@
 position = Vector2(324, 324)
 script = ExtResource("4_mvtvv")
 bulletScene = ExtResource("1_xpsw6")
-burstRotation = true
-rotationAngle = 360
-rotationSpeed = 60
-pingPong = true
-arms = 8
+aimAtPlayer = true
+arms = 3
 burstCount = 3
-spreadAngle = 360.0
-speedVar = 1
-speedVariation = 0.9
-useSymmetry = true
 
-[node name="CatPlayer" parent="." instance=ExtResource("4_nvx4x")]
+[node name="CatPlayer" parent="." groups=["Player"] instance=ExtResource("4_nvx4x")]
