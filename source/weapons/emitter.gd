@@ -9,8 +9,8 @@ extends Marker2D
 @export_group("DIRECTION")
 enum Type { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM }
 @export var type: Type = Type.NONE
-@export_range(0, 1, 0.1) var gravIntensity: float = 0
-@export_range(0, 360, 45) var deviationAngle: int = 45
+@export_range(0, 1, 0.1) var gravIntensity: int = 0
+@export_range(0, 180, 45) var deviationAngle: int = 45
 @export_range(0, 5, 0.5) var dirStartTime: float
 @export_range(0, 5, 0.5) var dirDuration: float = 5
 
@@ -61,7 +61,7 @@ var direction: Vector2 = Vector2(0, 1)
 
 @export_group("SPREAD")
 @export_range(0, 360, 15) var spreadAngle: float = 45.0 # Implementado
-@export_range(0, 600, 0) var spreadOffset: int = 100 # Implementado
+@export_range(0, 600, 100) var spreadOffset: int = 100 # Implementado
 enum SpeedVar { BULLET, ARM }
 @export var speedVar: SpeedVar = SpeedVar.BULLET # Implementado
 @export_range(0.9, 1.1, 0.02) var speedVariation: float = 1 # Implementado
@@ -135,8 +135,7 @@ func fire(new_spd) -> void:
 		eachArmAngle = spreadAngle / float(arms - 1)
 	
 	var offsetCorrection = 0.0
-	if arms % 2 == 0:
-		offsetCorrection = eachSpreadOffset / 2
+	if arms % 2 != 0: offsetCorrection = eachSpreadOffset / 2
 	
 	for r in range(repeatCount):
 		if keepSpeed:
@@ -191,7 +190,7 @@ func fire(new_spd) -> void:
 func shoot_bullet(shoot_dir: Vector2, shoot_pos: Vector2, shoot_spd: float):
 	var bullet = bulletScene.instantiate() as Node2D
 	bullet.position = shoot_pos + shoot_dir * distanceCenter
-	bullet.set_properties(shoot_dir.normalized(), shoot_spd)
+	bullet.set_properties(shoot_dir, shoot_spd)
 	bullet.modify_direction(type, gravIntensity, deviationAngle, dirStartTime, dirDuration)
 	bullet.modify_speed(fstNewSpeed, fstStartTime, sndNewSpeed, sndStartTime)
 	get_parent().add_child(bullet)
