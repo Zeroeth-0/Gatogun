@@ -8,13 +8,10 @@
 [node name="World" type="Node2D"]
 
 [node name="Emitter" parent="." instance=ExtResource("3_8gymy")]
-position = Vector2(324, 324)
+position = Vector2(317, 317)
 script = ExtResource("4_mvtvv")
 bulletScene = ExtResource("1_xpsw6")
-type = 2
-aimAtPlayer = true
-arms = 3
-burstCount = 3
+spreadAngle = 360.0
 
 [node name="CatPlayer" parent="." groups=["Player"] instance=ExtResource("4_nvx4x")]
 speed = 300

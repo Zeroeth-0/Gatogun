@@ -1,94 +1,91 @@
 extends Area2D
 
+# Properties
 @export var speed: float = 200.0
 @export var direction: Vector2 = Vector2.DOWN
-@export var rotationSpeed: float = 360
+@export var rotationSpeed: float = 360.0
 @export var sprite: Sprite2D
 
+# Direction
 enum Type { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM }
 var type: Type = Type.NONE
+var gravIntensity: float = 0
 var deviationAngle: int = 0
-var dirStartTime: float = 0
+var dirStartTime: float = 0.0
 var dirDuration: float = 1.0
 
+# Speed
 var fstNewSpeed: int = 200
-var fstStartTime: float = 0
-
+var fstStartTime: float = 0.0
 var sndNewSpeed: int = 200
-var sndStartTime: float = 0
+var sndStartTime: float = 0.0
 
-# Tiempo acumulado para las modificaciones de dirección y velocidad
-var elapsed_time: float = 0.0
-var velocity
+var elapsedTime: float = 0.0
+var velocity: Vector2
 var grav: bool = false
+var acceleration: Vector2 = Vector2.ZERO  # Vector de aceleración
 
-func _ready():
+func _ready() -> void:
 	velocity = direction * speed
 	sndStartTime += fstStartTime
 
-# Asigna propiedades de dirección y velocidad a la bala
+# Set direction and speed for the bullet
 func set_properties(newDirection: Vector2, newSpeed: float) -> void:
 	direction = newDirection
 	speed = newSpeed
 
-func modify_direction(newType, newDeviationAngle, newDirStartTime, newDirDuration):
+func modify_direction(newType: Type, newGravIntensity: float, newDeviationAngle: int,
+						newDirStartTime: float, newDirDuration: float) -> void:
 	type = newType
+	gravIntensity = newGravIntensity
 	deviationAngle = newDeviationAngle
 	dirStartTime = newDirStartTime
 	dirDuration = newDirDuration
 
-func modify_speed(newFstNewSpeed, newFstStartTime, newSndNewSpeed, newSndStartTime):
+func modify_speed(newFstNewSpeed: int, newFstStartTime: float, newSndNewSpeed: int, 
+					newSndStartTime: float) -> void:
 	fstNewSpeed = newFstNewSpeed
 	fstStartTime = newFstStartTime
 	sndNewSpeed = newSndNewSpeed
 	sndStartTime = newSndStartTime
 
 func _physics_process(delta: float) -> void:
-	elapsed_time += delta
-	if !grav: velocity = direction * speed
+	elapsedTime += delta
 	
-	# Modificar dirección según el tipo especificado
+	if !grav: velocity = direction * speed
+	else: apply_gravity(delta)
+	
 	update_direction(delta)
-
-	# Aplicar cambios de velocidad
 	update_speed()
-
-	# Movimiento de la bala
+	
+	# Bullet movement
+	if grav: velocity += acceleration * delta
 	position += velocity * delta
 	sprite.rotation_degrees -= rotationSpeed * delta
 
-# Cambia la dirección de la bala según el tipo configurado
-func update_direction(delta: float) -> void:
-	if elapsed_time >= dirStartTime and elapsed_time <= dirStartTime + dirDuration:
-		match type:
-			# AIM: Apunta directamente al jugador desde el inicio
-			Type.AIM:
-				var player_pos = GETPLAYER.get_player()
-				direction = (player_pos - global_position).normalized()
+func apply_gravity(delta: float) -> void:
+	acceleration.y = gravity * gravIntensity
 
-			# GRAVITY: Aplica una fuerza de gravedad en el eje Y, como si fuera un rigidbody
+# Adjust bullet's direction based on its type
+func update_direction(delta: float) -> void:
+	if elapsedTime >= dirStartTime and elapsedTime <= dirStartTime + dirDuration:
+		match type:
+			Type.AIM:
+				var playerPos = GETPLAYER.get_player()
+				direction = (playerPos - global_position).normalized()
 			Type.GRAVITY:
 				grav = true
-				dirDuration = 5
-				velocity.y += gravity / 5 * delta
-
-			# LEFT: Gira suavemente hacia la izquierda sin afectar la velocidad
 			Type.LEFT:
 				direction = direction.rotated(deg_to_rad(deviationAngle) * delta)
-
-			# RIGHT: Gira suavemente hacia la derecha sin afectar la velocidad
 			Type.RIGHT:
 				direction = direction.rotated(deg_to_rad(-deviationAngle) * delta)
-
-			# RANDOM: Gira suavemente en una dirección aleatoria dentro del rango
 			Type.RANDOM:
-				var random_angle = randf_range(-deviationAngle, deviationAngle)
-				direction = direction.rotated(deg_to_rad(random_angle) * delta)
+				var randomAngle = randf_range(-deviationAngle, deviationAngle)
+				direction = direction.rotated(deg_to_rad(randomAngle) * delta)
 
-# Cambia la velocidad de la bala según los cambios de velocidad configurados
+# Change bullet speed according to the configured intervals
 func update_speed() -> void:
-	if elapsed_time >= fstStartTime and elapsed_time <= sndStartTime:
+	if elapsedTime >= fstStartTime and elapsedTime <= sndStartTime:
 		speed = fstNewSpeed
-
-	if elapsed_time >= sndStartTime:
+	elif elapsedTime >= sndStartTime:
 		speed = sndNewSpeed

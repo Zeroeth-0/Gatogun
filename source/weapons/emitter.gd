@@ -1,37 +1,37 @@
 extends Marker2D
 
-# ------------------------------------------------Bullet--------------------------------------------------
-
+# ------------------------------------------------ Bullet ------------------------------------------------
 @export_category("BULLET")
 @export var bulletScene: PackedScene
-@export_range(-300, 300, 50) var speed: float = 200 # Implementado
+@export_range(-300, 300, 50) var speed: float = 200
 
 @export_group("DIRECTION")
 enum Type { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM }
 @export var type: Type = Type.NONE
-@export_range(0, 360, 15) var deviationAngle: int
+@export_range(0, 1, 0.1) var gravIntensity: float = 0
+@export_range(0, 360, 45) var deviationAngle: int = 45
 @export_range(0, 5, 0.5) var dirStartTime: float
 @export_range(0, 5, 0.5) var dirDuration: float = 5
 
 @export_group("FIRST CHANGE SPEED")
-@export_range(-300, 300, 50) var fstNewSpeed: int
+@export_range(-300, 300, 50) var fstNewSpeed: int = 200
 @export_range(0, 5, 0.5) var fstStartTime: float
 
 @export_group("SECOND CHANGE SPEED")
-@export_range(-300, 300, 50) var sndNewSpeed: int
+@export_range(-300, 300, 50) var sndNewSpeed: int = 200
 @export_range(0, 5, 0.5) var sndStartTime: float
 
-# ------------------------------------------------Weapon--------------------------------------------------
-
+# ------------------------------------------------ Weapon ------------------------------------------------
 @export_category("WEAPON")
 @export_group("DIRECTION")
 enum Direction { NORTH, WEST, SOUTH, EAST, NWEST, NEAST, SWEST, SEAST }
-@export var directionEnum: Direction = Direction.SOUTH # Implementado
+@export var directionEnum: Direction = Direction.SOUTH
+
 var DIRECTION_MAP = {
-	Direction.NORTH: Vector2(0, -1).normalized(),
-	Direction.SOUTH: Vector2(0, 1).normalized(),
-	Direction.WEST: Vector2(-1, 0).normalized(),
-	Direction.EAST: Vector2(1, 0).normalized(),
+	Direction.NORTH: Vector2(0, -1),
+	Direction.SOUTH: Vector2(0, 1),
+	Direction.WEST: Vector2(-1, 0),
+	Direction.EAST: Vector2(1, 0),
 	Direction.NWEST: Vector2(-1, -1).normalized(),
 	Direction.NEAST: Vector2(1, -1).normalized(),
 	Direction.SWEST: Vector2(-1, 1).normalized(),
@@ -39,158 +39,128 @@ var DIRECTION_MAP = {
 }
 var direction: Vector2 = Vector2(0, 1)
 @export var aimAtPlayer: bool = false
-@export var parallel: bool = false # Implementado
-@export_range(-50, 50, 5) var steepness: int = 0 # Implementado
+@export var parallel: bool = false
+@export_range(-50, 50, 5) var steepness: int = 0
 
 @export_group("ROTATION")
-@export var burstRotation: bool = false # Implementado
-@export_range(0, 180, 45) var rotationAngle: int = 0 # Implementado
-@export_range(-150, 150, 10) var rotationSpeed: int = 0 # Implementado
-@export var pingPong: bool = false # Implementado
-@export var centerStart: bool = true # Implementado
+@export var burstRotation: bool = false
+@export_range(0, 180, 45) var rotationAngle: int = 0
+@export_range(-150, 150, 10) var rotationSpeed: int = 0
+@export var pingPong: bool = false
+@export var centerStart: bool = true
 
-# ------------------------------------------------Burst---------------------------------------------------
-
+# ------------------------------------------------ Burst ------------------------------------------------
 @export_category("BURST")
-@export_range(1, 16, 1) var arms: int = 1 # Implementado
-@export_range(1, 10, 1) var burstCount: int = 1 # Implementado
-@export_range(0, 1, 0.05) var bulletInterval: float = 0.1 # Implementado
-@export_range(0, 5, 0.5) var warmUp: float = 1.0 # Implementado
-@export_range(0, 450, 50) var distanceCenter: int = 0 # Implementado
+@export_range(1, 16, 1) var arms: int = 1
+@export_range(1, 10, 1) var burstCount: int = 1
+@export_range(0, 1, 0.05) var bulletInterval: float = 0.1
+@export_range(0, 5, 0.5) var warmUp: float = 1.0
+@export_range(0, 450, 50) var distanceCenter: int = 0
 
 @export_group("SPREAD")
-@export_range(0, 360, 15) var spreadAngle: float = 45.0 # Implementado
-@export_range(0, 600, 0) var spreadOffset: int = 100 # Implementado
+@export_range(0, 360, 15) var spreadAngle: float = 45.0
+@export_range(0, 600, 100) var spreadOffset: int = 100
 enum SpeedVar { BULLET, ARM }
-@export var speedVar: SpeedVar = SpeedVar.BULLET # Implementado
-@export_range(0.9, 1.1, 0.02) var speedVariation: float = 1 # Implementado
-@export var useSymmetry: bool = false # Implementado
+@export var speedVar: SpeedVar = SpeedVar.BULLET
+@export_range(0.9, 1.1, 0.02) var speedVariation: float = 1
+@export var useSymmetry: bool = false
 
 @export_group("PROBABILITY")
-@export_range(0, 100, 10) var randomAngle: int = 0 # Implementado
-@export_range(0, 100, 10) var randomOffset: int = 0 # Implementado
-@export_range(0, 0.9, 0.1) var randomSpeed: float = 0 # Implementado
+@export_range(0, 100, 10) var randomAngle: int = 0
+@export_range(0, 100, 10) var randomOffset: int = 0
+@export_range(0, 0.9, 0.1) var randomSpeed: float = 0
 
 @export_group("REPEATER")
-@export_range(1, 8, 1) var repeatCount: int = 1 # Implementado
-@export_range(0, 360, 45) var repeatAngle: int = 360 # Implementado
-@export var keepSpeed: bool = false # Implementado
+@export_range(1, 8, 1) var repeatCount: int = 1
+@export_range(0, 360, 45) var repeatAngle: int = 360
+@export var keepSpeed: bool = false
 
+# Random number generator
 var rng = RandomNumberGenerator.new()
-var rotation_direction = 1
-var stop_rotation = false
-var player_pos: Vector2 = Vector2()
+var rotationDirection = 1
+var stopRotation = false
+var playerPos: Vector2 = Vector2()
 
-func _ready():
+func _ready() -> void:
 	direction = DIRECTION_MAP.get(directionEnum)
 	shoot()
 
-func _physics_process(delta):
-	if not stop_rotation:
-		rotation_degrees += rotationSpeed * delta * rotation_direction
+func _physics_process(delta: float) -> void:
+	if not stopRotation: rotation_degrees += rotationSpeed * delta * rotationDirection
 	handle_rotation()
 
-func handle_rotation():
-	var adj_angle = rotationAngle
-	var null_angle = 0
-	
-	if centerStart:
-		adj_angle = rotationAngle / 2.0
-		null_angle = null_angle - rotationAngle / 2.0
+func handle_rotation() -> void:
+	var adjAngle = rotationAngle / 2.0 if centerStart else rotationAngle
+	var nullAngle = -rotationAngle / 2.0 if centerStart else 0
 	
 	if pingPong:
-		if rotation_degrees >= adj_angle:
-			rotation_direction = -1
-		elif rotation_degrees <= null_angle:
-			rotation_direction = 1
-	else: 
-		if rotation_degrees >= rotationAngle and rotationAngle < 360:
-			rotation_direction = 0
+		if rotation_degrees >= adjAngle: rotationDirection = -1
+		elif rotation_degrees <= nullAngle: rotationDirection = 1
+	elif rotation_degrees >= rotationAngle and rotationAngle < 360: rotationDirection = 0
 
-func shoot():
+# Start shooting bullets
+func shoot() -> void:
 	while true:
 		await get_tree().create_timer(warmUp).timeout
-		var new_spd = speed
-		if !burstRotation: stop_rotation = true
+		var newSpeed = speed
+		if not burstRotation: stopRotation = true
 		
-		if aimAtPlayer: player_pos = GETPLAYER.get_player()
+		if aimAtPlayer: playerPos = GETPLAYER.get_player()
 		
 		for i in burstCount:
-			if speedVar == SpeedVar.BULLET: new_spd *= speedVariation
-				
-			fire(new_spd)
+			if speedVar == SpeedVar.BULLET: newSpeed *= speedVariation
+			fire(newSpeed)
 			await get_tree().create_timer(bulletInterval).timeout
 		
-		if !burstRotation: stop_rotation = false
+		if not burstRotation: stopRotation = false
 
-func fire(new_spd) -> void:
-	var shoot_spd = new_spd
+# Fire bullets
+func fire(newSpeed: float) -> void:
 	var eachSpreadOffset = spreadOffset / float(arms)
-	var eachArmAngle
-	
-	if spreadAngle == 360:
-		eachArmAngle = spreadAngle / float(arms)
-	else:
-		eachArmAngle = spreadAngle / float(arms - 1)
-	
-	var offsetCorrection = 0.0
-	if arms % 2 == 0:
-		offsetCorrection = eachSpreadOffset / 2
+	var eachArmAngle = spreadAngle / float(arms) if spreadAngle == 360  else spreadAngle / float(arms - 1)
+	var offsetCorrection = eachSpreadOffset / 2 if arms % 2 == 0  else 0.0
 	
 	for r in range(repeatCount):
-		if keepSpeed:
-			shoot_spd = new_spd
-		
-		var repeat_rotation = repeatAngle / float(repeatCount) * r
+		var repeatRotation = repeatAngle / float(repeatCount) * r
 		
 		for i in range(arms):
-			if speedVar == SpeedVar.ARM:
-				shoot_spd *= speedVariation
+			if speedVar == SpeedVar.ARM: newSpeed *= speedVariation
 			
-			var shoot_dir = direction.rotated(rotation + deg_to_rad(repeat_rotation))
-			var shoot_pos = global_position
+			var shootDir = direction.rotated(rotation + deg_to_rad(repeatRotation))
+			var shootPos = global_position
 			
-			# Si aimAtPlayer está activado, ajustamos la dirección hacia el jugador
-			if aimAtPlayer:
-				shoot_dir = (player_pos - shoot_pos).normalized()
+			if aimAtPlayer: shootDir = (playerPos - shootPos).normalized()
 			
-			if parallel:
-				# Aplicamos steepness para disparo paralelo
-				var offset = ((i - arms / 2.0) * eachSpreadOffset) + rng.randf_range(-randomOffset, randomOffset)
-				
-				# Ajustamos la posición con steepness
-				var steepness_factor = abs(i - (arms - 1) / 2.0) * steepness
-				shoot_pos += shoot_dir * steepness_factor  # Posiciona las balas con la forma de pico
-				
-				# Ajustamos también la dirección para que siga el ángulo visual correcto
-				var steepness_dir_adjustment = steepness_factor * 0.01
-				shoot_dir = shoot_dir.rotated(deg_to_rad(steepness_dir_adjustment))
-				
-				# Actualizamos posición paralela con offset corregido
-				shoot_pos += shoot_dir.orthogonal() * (offset + offsetCorrection)
+			if parallel: handle_parallel_shooting(i, eachSpreadOffset, shootDir, shootPos, offsetCorrection)
 			else:
-				# Comportamiento normal sin steepness
-				var angle_offset = eachArmAngle * i - spreadAngle / 2 + rng.randf_range(-randomAngle, randomAngle)
-				if arms != 1: 
-					shoot_dir = shoot_dir.rotated(deg_to_rad(angle_offset))
-				if spreadAngle == 360:
-					shoot_dir *= -1
+				var angleOffset = eachArmAngle * i - spreadAngle / 2 + rng.randf_range(-randomAngle, randomAngle)
+				if arms != 1: shootDir = shootDir.rotated(deg_to_rad(angleOffset))
+				if spreadAngle == 360: shootDir *= -1
 			
-			# Velocidad final ajustada
-			var curr_spd = shoot_spd * rng.randf_range(1 - randomSpeed, 1 + randomSpeed)
+			var finalSpeed = newSpeed * rng.randf_range(1 - randomSpeed, 1 + randomSpeed)
 			
-			# Lógica de simetría (opcional)
-			match useSymmetry:
-				false:
-					shoot_bullet(shoot_dir, shoot_pos, curr_spd)
-				true:
-					shoot_bullet(shoot_dir.rotated(deg_to_rad(45)), shoot_pos, curr_spd)
-					shoot_bullet(shoot_dir.rotated(deg_to_rad(45)) * Vector2(-1, 1), shoot_pos, curr_spd)
+			if useSymmetry: shoot_symmetric_bullets(shootDir, shootPos, finalSpeed)
+			else: shoot_bullet(shootDir, shootPos, finalSpeed)
 
-func shoot_bullet(shoot_dir: Vector2, shoot_pos: Vector2, shoot_spd: float):
+# Handle parallel shooting
+func handle_parallel_shooting(i: int, eachSpreadOffset: float, shootDir: Vector2, shootPos: Vector2, offsetCorrection: float) -> void:
+	var offset = ((i - arms / 2.0) * eachSpreadOffset) + rng.randf_range(-randomOffset, randomOffset)
+	var steepnessFactor = abs(i - (arms - 1) / 2.0) * steepness
+	shootPos += shootDir * steepnessFactor
+	var steepnessDirAdjustment = steepnessFactor * 0.01
+	shootDir = shootDir.rotated(deg_to_rad(steepnessDirAdjustment))
+	shootPos += shootDir.orthogonal() * (offset + offsetCorrection)
+
+# Shoot symmetric bullets
+func shoot_symmetric_bullets(shootDir: Vector2, shootPos: Vector2, speed: float) -> void:
+	shoot_bullet(shootDir.rotated(deg_to_rad(45)), shootPos, speed)
+	shoot_bullet(shootDir.rotated(deg_to_rad(45)) * Vector2(-1, 1), shootPos, speed)
+
+# Shoot a single bullet
+func shoot_bullet(shootDir: Vector2, shootPos: Vector2, speed: float) -> void:
 	var bullet = bulletScene.instantiate() as Node2D
-	bullet.position = shoot_pos + shoot_dir * distanceCenter
-	bullet.set_properties(shoot_dir, shoot_spd)
-	bullet.modify_direction(type, deviationAngle, dirStartTime, dirDuration)
+	bullet.position = shootPos + shootDir * distanceCenter
+	bullet.set_properties(shootDir.normalized(), speed)
+	bullet.modify_direction(type, gravIntensity, deviationAngle, dirStartTime, dirDuration)
 	bullet.modify_speed(fstNewSpeed, fstStartTime, sndNewSpeed, sndStartTime)
 	get_parent().add_child(bullet)
