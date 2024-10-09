@@ -4,22 +4,21 @@ extends Marker2D
 
 @export_category("BULLET")
 @export var bulletScene: PackedScene
-@export_range(-300, 300, 50) var speed: float = 200 # Implementado
+@export_range(-300, 300, 50) var speed: int = 200 # Implementado
 
 @export_group("DIRECTION")
 enum Type { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM }
 @export var type: Type = Type.NONE
 @export_range(0, 1, 0.1) var gravIntensity: int = 0
 @export_range(0, 180, 45) var deviationAngle: int = 45
-@export_range(0, 5, 0.5) var dirStartTime: float
-@export_range(0, 5, 0.5) var dirDuration: float = 5
+@export_range(0, 5, 0.1) var dirStartTime: float
+@export_range(0, 5, 0.1) var dirDuration: float = 5
 
-@export_group("FIRST CHANGE SPEED")
-@export_range(-300, 300, 50) var fstNewSpeed: int = 200
+@export_group("CHANGE SPEED")
+@export var modifySpeed: bool = false
+@export_range(-300, 300, 50) var fstNewSpeed: int = 0
 @export_range(0, 5, 0.5) var fstStartTime: float
-
-@export_group("SECOND CHANGE SPEED")
-@export_range(-300, 300, 50) var sndNewSpeed: int = 200
+@export_range(-300, 300, 50) var sndNewSpeed: int = 0
 @export_range(0, 5, 0.5) var sndStartTime: float
 
 # ------------------------------------------------Weapon--------------------------------------------------
@@ -45,8 +44,8 @@ var direction: Vector2 = Vector2(0, 1)
 
 @export_group("ROTATION")
 @export var burstRotation: bool = false # Implementado
-@export_range(0, 180, 45) var rotationAngle: int = 0 # Implementado
-@export_range(-150, 150, 10) var rotationSpeed: int = 0 # Implementado
+@export_range(-360, 360, 45) var rotationAngle: int = 0 # Implementado
+@export_range(0, 150, 10) var rotationSpeed: int = 0 # Implementado
 @export var pingPong: bool = false # Implementado
 @export var centerStart: bool = true # Implementado
 
@@ -99,14 +98,16 @@ func handle_rotation():
 		adj_angle = rotationAngle / 2.0
 		null_angle = null_angle - rotationAngle / 2.0
 	
-	if pingPong:
-		if rotation_degrees >= adj_angle:
-			rotation_direction = -1
-		elif rotation_degrees <= null_angle:
-			rotation_direction = 1
-	else: 
-		if rotation_degrees >= rotationAngle and rotationAngle < 360:
-			rotation_direction = 0
+	if rotationAngle >= 0:
+		if pingPong:
+			if rotation_degrees >= adj_angle: rotation_direction = -1
+			elif rotation_degrees <= null_angle: rotation_direction = 1
+		elif rotation_degrees >= rotationAngle and rotationAngle < 360: rotation_direction = 0
+	else:
+		if pingPong:
+			if rotation_degrees <= adj_angle: rotation_direction = 1
+			elif rotation_degrees >= null_angle: rotation_direction = -1
+		elif rotation_degrees <= rotationAngle and rotationAngle < 360: rotation_direction = 0
 
 func shoot():
 	while true:
@@ -178,7 +179,6 @@ func fire(new_spd) -> void:
 			
 			# Velocidad final ajustada
 			var curr_spd = shoot_spd * rng.randf_range(1 - randomSpeed, 1 + randomSpeed)
-			
 			# Lógica de simetría (opcional)
 			match useSymmetry:
 				false:
@@ -192,5 +192,5 @@ func shoot_bullet(shoot_dir: Vector2, shoot_pos: Vector2, shoot_spd: float):
 	bullet.position = shoot_pos + shoot_dir * distanceCenter
 	bullet.set_properties(shoot_dir, shoot_spd)
 	bullet.modify_direction(type, gravIntensity, deviationAngle, dirStartTime, dirDuration)
-	bullet.modify_speed(fstNewSpeed, fstStartTime, sndNewSpeed, sndStartTime)
+	if modifySpeed: bullet.modify_speed(fstNewSpeed, fstStartTime, sndNewSpeed, sndStartTime)
 	get_parent().add_child(bullet)

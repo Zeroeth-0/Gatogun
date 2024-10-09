@@ -1,10 +1,10 @@
 extends Area2D
 
 # Properties
-@export var speed: float = 200.0
-@export var direction: Vector2 = Vector2.DOWN
-@export var rotationSpeed: float = 360.0
-@export var sprite: Sprite2D
+var speed: int
+var direction: Vector2
+var rotationSpeed: int = 360
+var sprite: Sprite2D
 
 # Direction
 enum Type { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM }
@@ -15,9 +15,10 @@ var dirStartTime: float = 0.0
 var dirDuration: float = 1.0
 
 # Speed
-var fstNewSpeed: int = 200
+var modifySpeed: bool = false
+var fstNewSpeed: int = speed
 var fstStartTime: float = 0.0
-var sndNewSpeed: int = 200
+var sndNewSpeed: int = speed
 var sndStartTime: float = 0.0
 
 var elapsedTime: float = 0.0
@@ -44,6 +45,7 @@ func modify_direction(newType: Type, newGravIntensity: float, newDeviationAngle:
 
 func modify_speed(newFstNewSpeed: int, newFstStartTime: float, newSndNewSpeed: int, 
 					newSndStartTime: float) -> void:
+	modifySpeed = true
 	fstNewSpeed = newFstNewSpeed
 	fstStartTime = newFstStartTime
 	sndNewSpeed = newSndNewSpeed
@@ -56,7 +58,7 @@ func _physics_process(delta: float) -> void:
 	else: apply_gravity(delta)
 	
 	update_direction(delta)
-	update_speed()
+	if modifySpeed: update_speed()
 	
 	# Bullet movement
 	if grav: velocity += acceleration * delta
