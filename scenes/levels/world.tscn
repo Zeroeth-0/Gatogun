@@ -11,6 +11,7 @@
 position = Vector2(317, 317)
 script = ExtResource("4_mvtvv")
 bulletScene = ExtResource("1_xpsw6")
+rank = 6.0
 
 [node name="CatPlayer" parent="." groups=["Player"] instance=ExtResource("4_nvx4x")]
 position = Vector2(317, 537)

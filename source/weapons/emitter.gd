@@ -9,7 +9,7 @@ extends Marker2D
 @export_group("DIRECTION")
 enum Type { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM }
 @export var type: Type = Type.NONE
-@export_range(0, 1, 0.1) var gravIntensity: int = 0
+@export_range(0, 1, 0.1) var gravIntensity: float = 0.5
 @export_range(0, 180, 45) var deviationAngle: int = 45
 @export_range(0, 5, 0.1) var dirStartTime: float
 @export_range(0, 5, 0.1) var dirDuration: float = 5
@@ -24,6 +24,7 @@ enum Type { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM }
 # ------------------------------------------------Weapon--------------------------------------------------
 
 @export_category("WEAPON")
+@export_range(0, 8, 1) var rank: float = 1.0
 @export_group("DIRECTION")
 enum Direction { NORTH, WEST, SOUTH, EAST, NWEST, NEAST, SWEST, SEAST }
 @export var directionEnum: Direction = Direction.SOUTH # Implementado
@@ -83,12 +84,18 @@ var player_pos: Vector2 = Vector2()
 
 func _ready():
 	direction = DIRECTION_MAP.get(directionEnum)
+	rank_adj()
 	shoot()
 
 func _physics_process(delta):
 	if not stop_rotation:
 		rotation_degrees += rotationSpeed * delta * rotation_direction
 	handle_rotation()
+
+func rank_adj():
+	var manVal: float = rank / 4.0
+	if arms > 1: arms += manVal * manVal
+	burstCount += manVal * manVal
 
 func handle_rotation():
 	var adj_angle = rotationAngle
@@ -180,12 +187,10 @@ func fire(new_spd) -> void:
 			# Velocidad final ajustada
 			var curr_spd = shoot_spd * rng.randf_range(1 - randomSpeed, 1 + randomSpeed)
 			# Lógica de simetría (opcional)
-			match useSymmetry:
-				false:
-					shoot_bullet(shoot_dir, shoot_pos, curr_spd)
-				true:
-					shoot_bullet(shoot_dir.rotated(deg_to_rad(45)), shoot_pos, curr_spd)
-					shoot_bullet(shoot_dir.rotated(deg_to_rad(45)) * Vector2(-1, 1), shoot_pos, curr_spd)
+			if !useSymmetry: shoot_bullet(shoot_dir, shoot_pos, curr_spd)
+			else:
+				shoot_bullet(shoot_dir.rotated(deg_to_rad(45)), shoot_pos, curr_spd)
+				shoot_bullet(shoot_dir.rotated(deg_to_rad(45)) * Vector2(-1, 1), shoot_pos, curr_spd)
 
 func shoot_bullet(shoot_dir: Vector2, shoot_pos: Vector2, shoot_spd: float):
 	var bullet = bulletScene.instantiate() as Node2D
