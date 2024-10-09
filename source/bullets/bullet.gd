@@ -31,7 +31,7 @@ func _ready() -> void:
 	sndStartTime += fstStartTime
 
 # Set direction and speed for the bullet
-func set_properties(newDirection: Vector2, newSpeed: float) -> void:
+func set_properties(newDirection: Vector2, newSpeed: int) -> void:
 	direction = newDirection
 	speed = newSpeed
 
@@ -55,7 +55,7 @@ func _physics_process(delta: float) -> void:
 	elapsedTime += delta
 	
 	if !grav: velocity = direction * speed
-	else: apply_gravity(delta)
+	else: apply_gravity()
 	
 	update_direction(delta)
 	if modifySpeed: update_speed()
@@ -65,7 +65,7 @@ func _physics_process(delta: float) -> void:
 	position += velocity * delta
 	sprite.rotation_degrees -= rotationSpeed * delta
 
-func apply_gravity(delta: float) -> void:
+func apply_gravity() -> void:
 	acceleration.y = gravity * gravIntensity
 
 # Adjust bullet's direction based on its type

@@ -93,9 +93,9 @@ func _physics_process(delta):
 	handle_rotation()
 
 func rank_adj():
-	var manVal: float = rank / 4.0
-	if arms > 1: arms += manVal * manVal
-	burstCount += manVal * manVal
+	var manuVal: float = rank / 4.0
+	if arms > 1: arms += manuVal * manuVal
+	if burstCount <= 2: burstCount += manuVal * manuVal
 
 func handle_rotation():
 	var adj_angle = rotationAngle
