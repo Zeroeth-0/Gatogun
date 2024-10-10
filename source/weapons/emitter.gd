@@ -4,7 +4,7 @@ extends Marker2D
 
 @export_category("BULLET")
 @export var bulletScene: PackedScene
-@export_range(-300, 300, 50) var speed: int = 200 # Implementado
+@export_range(-200, 200, 50) var baseSpeed: float = 200.0 # Implementado
 
 @export_group("DIRECTION")
 enum Type { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM }
@@ -24,7 +24,7 @@ enum Type { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM }
 # ------------------------------------------------Weapon--------------------------------------------------
 
 @export_category("WEAPON")
-@export_range(0, 8, 1) var rank: float = 1.0
+@export_range(0, 6, 1) var rank: float = 1.0
 @export_group("DIRECTION")
 enum Direction { NORTH, WEST, SOUTH, EAST, NWEST, NEAST, SWEST, SEAST }
 @export var directionEnum: Direction = Direction.SOUTH # Implementado
@@ -81,6 +81,7 @@ var rng = RandomNumberGenerator.new()
 var rotation_direction = 1
 var stop_rotation = false
 var player_pos: Vector2 = Vector2()
+var speed: float = baseSpeed
 
 func _ready():
 	direction = DIRECTION_MAP.get(directionEnum)
@@ -93,9 +94,24 @@ func _physics_process(delta):
 	handle_rotation()
 
 func rank_adj():
-	var manuVal: float = rank / 4.0
-	if arms > 1: arms += manuVal * manuVal
-	if burstCount <= 2: burstCount += manuVal * manuVal
+	if rank == 4: rank = 4.5
+	var manuScale: float = rank / 6.0
+	manuScale *= manuScale
+
+	speed = lerp(speed, speed + speed / 2, manuScale)
+	
+	if arms > 4: arms = lerp(arms, arms + arms / 2, manuScale)
+	
+	if burstCount > 1: burstCount = lerp(burstCount, burstCount + burstCount / 2, manuScale)
+	else: burstCount = lerp(burstCount, burstCount * 3, manuScale)
+	
+	rotationSpeed = lerp(rotationSpeed, rotationSpeed + rotationSpeed / 2, manuScale)
+	
+	if rank == 0:
+		speed *= 0.75
+		if arms > 1: arms *= 0.75
+		if burstCount > 1: burstCount *= 0.75
+		rotationSpeed*= 0.75
 
 func handle_rotation():
 	var adj_angle = rotationAngle

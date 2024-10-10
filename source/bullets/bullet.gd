@@ -4,7 +4,7 @@ extends Area2D
 var speed: int
 var direction: Vector2
 var rotationSpeed: int = 360
-var sprite: Sprite2D
+@export var sprite: Sprite2D
 
 # Direction
 enum Type { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM }
