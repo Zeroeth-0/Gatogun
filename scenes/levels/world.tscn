@@ -9,9 +9,8 @@
 [node name="Emitter" parent="." instance=ExtResource("3_8gymy")]
 position = Vector2(317, 317)
 bulletScene = ExtResource("1_xpsw6")
-rank = 6.0
-aimAtPlayer = true
-arms = 3
+parallel = true
+arms = 2
 
 [node name="CatPlayer" parent="." groups=["Player"] instance=ExtResource("4_nvx4x")]
 position = Vector2(317, 537)

@@ -159,7 +159,7 @@ func fire(new_spd) -> void:
 		eachArmAngle = spreadAngle / float(arms - 1)
 	
 	var offsetCorrection = 0.0
-	if arms % 2 != 0: offsetCorrection = eachSpreadOffset / 2
+	offsetCorrection = eachSpreadOffset / 2
 	
 	for r in range(repeatCount):
 		if keepSpeed:
