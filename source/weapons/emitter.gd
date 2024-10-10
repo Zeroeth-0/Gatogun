@@ -100,7 +100,7 @@ func rank_adj():
 
 	speed = lerp(speed, speed + speed / 2, manuScale)
 	
-	if arms > 4: arms = lerp(arms, arms + arms / 2, manuScale)
+	if arms > 1: arms = lerp(arms, arms + arms / 2, manuScale)
 	
 	if burstCount > 1: burstCount = lerp(burstCount, burstCount + burstCount / 2, manuScale)
 	else: burstCount = lerp(burstCount, burstCount * 3, manuScale)
