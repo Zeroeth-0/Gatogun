@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://45jy2ekapnll"]
+
+[ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="1_ff2ik"]
+[ext_resource type="Script" path="res://source/enemies/enemy.gd" id="1_nfbc7"]
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/emitter.tscn" id="3_3fkqk"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jtchi"]
+
+[node name="Enemy" type="CharacterBody2D"]
+script = ExtResource("1_nfbc7")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 0, 1, 1)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_ff2ik")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_jtchi")
+disabled = true
+debug_color = Color(1, 0, 0, 0.419608)
+
+[node name="Emitter" parent="." instance=ExtResource("3_3fkqk")]
+type = 1
+dirDuration = 0.1
+aimAtPlayer = true
+parallel = true
+arms = 3

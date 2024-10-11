@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 INPUT="*res://utils/InputManager.gd"
 GETPLAYER="*res://utils/GetPlayer.gd"
+SCROLL="*res://utils/ScrollManager.gd"
 
 [display]
 
@@ -28,6 +29,10 @@ window/stretch/mode="canvas_items"
 [dotnet]
 
 project/assembly_name="Gatodius"
+
+[editor]
+
+movie_writer/movie_file="C:/Users/Amós/Desktop/GameDev/Proyectos/Movies/Gatodius_mov.avi"
 
 [input]
 

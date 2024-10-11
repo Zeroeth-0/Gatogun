@@ -3,7 +3,7 @@ extends Marker2D
 # ------------------------------------------------Bullet--------------------------------------------------
 
 @export_category("BULLET")
-@export var bulletScene: PackedScene
+@export var bulletScene: PackedScene = preload("res://scenes/bullets/bullet.tscn")
 @export_range(-200, 200, 50) var baseSpeed: float = 200.0 # Implementado
 
 @export_group("DIRECTION")
@@ -98,7 +98,7 @@ func rank_adj():
 	var manuScale: float = rank / 6.0
 	manuScale *= manuScale
 
-	speed = lerp(speed, speed + speed / 2, manuScale)
+	if speedVariation == 1: speed = lerp(speed, speed + speed / 2, manuScale)
 	
 	if arms > 1: arms = lerp(arms, arms + arms / 2, manuScale)
 	
@@ -214,4 +214,4 @@ func shoot_bullet(shoot_dir: Vector2, shoot_pos: Vector2, shoot_spd: float):
 	bullet.set_properties(shoot_dir, shoot_spd)
 	bullet.modify_direction(type, gravIntensity, deviationAngle, dirStartTime, dirDuration)
 	if modifySpeed: bullet.modify_speed(fstNewSpeed, fstStartTime, sndNewSpeed, sndStartTime)
-	get_parent().add_child(bullet)
+	get_tree().current_scene.add_child(bullet)
