@@ -28,6 +28,7 @@ var direction: Vector2 = Vector2(0, 1)
 enum Handedness { LEFT, RIGHT }
 @export var handedness = Handedness.RIGHT
 @export_range(0, 90, 15) var deviationAngle: int = 90
+@export var scrollFollow: bool = true
 
 @export_category("CHILDHOOD")
 @export var childHood : MoveType = MoveType.STRAIGHT
@@ -65,7 +66,8 @@ func _ready():
 # Manejo del tiempo y cambios de fase
 func _process(delta):
 	stageTimer += delta
-	velocity = SCROLL.get_scroll() + extraVel
+	if scrollFollow: velocity = SCROLL.get_scroll() / 2 + extraVel
+	else: velocity = extraVel
 	
 	match currentStage:
 		"childhood":
@@ -111,7 +113,7 @@ func enter_next_stage(nextStage):
 # Behaviors
 
 func move_straight():
-	velocity = direction * speed
+	extraVel = direction * speed
 	move_and_slide()
 
 func move_sinusoidal(delta):
@@ -121,7 +123,7 @@ func move_sinusoidal(delta):
 	var perpendicular_dir = Vector2(-direction.y, direction.x)  # Perpendicular a la dirección actual
 	
 	# Ajusta la velocidad y dirección
-	velocity = (direction * speed) + (perpendicular_dir * offset)
+	extraVel = (direction * speed) + (perpendicular_dir * offset)
 	move_and_slide()
 
 func move_oscillate(delta):
@@ -131,23 +133,23 @@ func move_oscillate(delta):
 	var perpendicular_dir = Vector2(-direction.y, direction.x)  # Perpendicular a la dirección actual
 	
 	# Ajusta la velocidad y dirección
-	velocity = (direction * speed) + (perpendicular_dir * offset)
+	extraVel = (direction * speed) + (perpendicular_dir * offset)
 	move_and_slide()
 
 func move_breath(delta):
-	var frequency = 1.0 + rng.randf_range(-0.2, 0.2)  # Variar la frecuencia ligeramente
-	var horizontal_amplitude = 10.0 + rng.randf_range(-2.0, 2.0)  # Variar la amplitud horizontal
-	var vertical_amplitude = 6.0 + rng.randf_range(-1.0, 1.0)  # Variar la amplitud vertical
+	var frequency = 2
+	var horizontal_amplitude = 15.0
+	var vertical_amplitude = 7.0
 
 	# Movimiento en forma de ocho con alternancia suave
 	var horizontal_offset = cos(frequency * stageTimer) * horizontal_amplitude * rand_side
 	var vertical_offset = sin(frequency * stageTimer * 1.5) * vertical_amplitude
 
 	# Crear una dirección temporal combinando ambas
-	var temp_direction = Vector2(horizontal_offset, vertical_offset) * intensity / 5
+	var temp_direction = Vector2(horizontal_offset, vertical_offset) * intensity / 3
 
 	# Aplicar la velocidad suavizada con aleatoriedad
-	velocity = temp_direction
+	extraVel = temp_direction
 	move_and_slide()
 
 func move_block(delta):
@@ -183,25 +185,28 @@ func move_circular(dur, delta):
 	move_and_slide()
 
 func move_towards_player():
+	scrollFollow = false
 	var playerPos = GETPLAYER.get_player()
 	direction = (playerPos - global_position).normalized()
-	velocity = direction * speed
+	extraVel = direction * speed
 	move_and_slide()
 
 func move_leave():
-	velocity = -direction * speed
+	scrollFollow = false
+	extraVel = -direction * speed
 	move_and_slide()
 
 func move_leave_side(delta):
+	scrollFollow = false
 	var newDir = Vector2 (0, 0)
 	match directionEnum:
 		Direction.NORTH: newDir = Vector2(-hSide, 1)
 		Direction.SOUTH: newDir = Vector2(-hSide, -1)
 		Direction.WEST: newDir = Vector2(1, -hSide)
 		Direction.EAST: newDir = Vector2(-1, -hSide)
-	velocity = newDir * speed
+	extraVel = newDir * speed
 	move_and_slide()
 
 func move_still():
-	extraVel = Vector2.ZERO
+	extraVel = SCROLL.get_scroll() / 2
 	move_and_slide()

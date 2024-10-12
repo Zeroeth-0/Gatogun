@@ -1,6 +1,7 @@
 extends Node
 
-@export var scroll: int = 50
+@export var scroll: int = 75
+
 enum Direction { NORTH, WEST, SOUTH, EAST }
 @export var directionEnum: Direction = Direction.SOUTH # Implementado
 var DIRECTION_MAP = {

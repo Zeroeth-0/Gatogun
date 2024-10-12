@@ -11,8 +11,10 @@ position = Vector2(317, 537)
 [node name="Enemy" parent="." instance=ExtResource("4_kt6bt")]
 position = Vector2(306, -78)
 intensity = 10
-childDur = 3.0
+childDur = 2.0
+childSpeed = 75
 adultHood = 3
-adultDur = 3.0
+adultDur = 10.0
+adultSpeed = 75
 oldAge = 7
-oldSpeed = 150
+oldSpeed = 125
