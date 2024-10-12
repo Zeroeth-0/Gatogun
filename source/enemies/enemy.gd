@@ -66,7 +66,7 @@ func _ready():
 # Manejo del tiempo y cambios de fase
 func _process(delta):
 	stageTimer += delta
-	if scrollFollow: velocity = SCROLL.get_scroll() / 2 + extraVel
+	if scrollFollow: velocity = SCROLL.get_scroll() + extraVel
 	else: velocity = extraVel
 	
 	match currentStage:
@@ -93,7 +93,7 @@ func _process(delta):
 # Selección de comportamiento según el tipo de movimiento
 func apply_movement(moveType, dur, delta):
 	match moveType:
-		MoveType.STRAIGHT: move_straight()
+		MoveType.STRAIGHT: move_straight(delta)
 		MoveType.SINUSOIDAL: move_sinusoidal(delta)
 		MoveType.OSCILLATE: move_oscillate(delta)
 		MoveType.BREATH: move_breath(delta)
@@ -112,7 +112,7 @@ func enter_next_stage(nextStage):
 
 # Behaviors
 
-func move_straight():
+func move_straight(delta):
 	extraVel = direction * speed
 	move_and_slide()
 
@@ -146,7 +146,7 @@ func move_breath(delta):
 	var vertical_offset = sin(frequency * stageTimer * 1.5) * vertical_amplitude
 
 	# Crear una dirección temporal combinando ambas
-	var temp_direction = Vector2(horizontal_offset, vertical_offset) * intensity / 3
+	var temp_direction = Vector2(horizontal_offset, vertical_offset) * intensity
 
 	# Aplicar la velocidad suavizada con aleatoriedad
 	extraVel = temp_direction
@@ -157,12 +157,12 @@ func move_block(delta):
 	
 	# Crear una dirección temporal para no afectar la dirección original
 	var temp_direction = Vector2()
-	if directionEnum == Direction.NORTH or directionEnum == Direction.SOUTH and abs(position.x - player_pos.x) < 70:
+	if directionEnum == Direction.NORTH or directionEnum == Direction.SOUTH:
 		# Movimiento horizontal (igualar en el eje X)
 		var target_x = player_pos.x
 		temp_direction.x = (target_x - global_position.x) * intensity / 5 * delta
 		temp_direction.y = 0  # Mantener el movimiento solo en el eje X
-	elif directionEnum == Direction.EAST or directionEnum == Direction.WEST and abs(position.y - player_pos.y) < 70:
+	elif directionEnum == Direction.EAST or directionEnum == Direction.WEST:
 		# Movimiento vertical (igualar en el eje Y)
 		var target_y = player_pos.y
 		temp_direction.y = (target_y - global_position.y) * intensity / 5 * delta
@@ -208,5 +208,5 @@ func move_leave_side(delta):
 	move_and_slide()
 
 func move_still():
-	extraVel = SCROLL.get_scroll() / 2
+	extraVel = Vector2.ZERO
 	move_and_slide()
