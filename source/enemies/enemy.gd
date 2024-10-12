@@ -52,6 +52,8 @@ var speed = 200
 var extraVel: Vector2 = Vector2.ZERO
 var hSide
 var currDir
+var rng = RandomNumberGenerator.new()
+var rand_side = 1 if rng.randf() < 0.5 else -1
 
 # Configurar el movimiento inicial
 func _ready():
@@ -133,25 +135,18 @@ func move_oscillate(delta):
 	move_and_slide()
 
 func move_breath(delta):
-	var last_move_direction = 1  # Mantiene la última dirección para alternar
-	var frequency = 1.0  # Frecuencia del movimiento
-	var horizontal_amplitude = 10.0  # Reducir la amplitud horizontal
-	var vertical_amplitude = 6.0  # Reducir la amplitud vertical
+	var frequency = 1.0 + rng.randf_range(-0.2, 0.2)  # Variar la frecuencia ligeramente
+	var horizontal_amplitude = 10.0 + rng.randf_range(-2.0, 2.0)  # Variar la amplitud horizontal
+	var vertical_amplitude = 6.0 + rng.randf_range(-1.0, 1.0)  # Variar la amplitud vertical
 
 	# Movimiento en forma de ocho con alternancia suave
-	var horizontal_offset = cos(frequency * stageTimer) * horizontal_amplitude * last_move_direction
-	var vertical_offset = sin(frequency * stageTimer * 1.5) * vertical_amplitude  # Frecuencia ajustada para suavidad
+	var horizontal_offset = cos(frequency * stageTimer) * horizontal_amplitude * rand_side
+	var vertical_offset = sin(frequency * stageTimer * 1.5) * vertical_amplitude
 
 	# Crear una dirección temporal combinando ambas
-	var temp_direction = Vector2(horizontal_offset, vertical_offset) * intensity / 5  # Limitar el impacto de intensity
+	var temp_direction = Vector2(horizontal_offset, vertical_offset) * intensity / 5
 
-	# Alternar la dirección para suavidad continua
-	if cos(frequency * stageTimer) > 0:
-		last_move_direction = 1
-	else:
-		last_move_direction = -1
-
-	# Aplicar la velocidad suavizada
+	# Aplicar la velocidad suavizada con aleatoriedad
 	velocity = temp_direction
 	move_and_slide()
 
@@ -160,16 +155,15 @@ func move_block(delta):
 	
 	# Crear una dirección temporal para no afectar la dirección original
 	var temp_direction = Vector2()
-
-	if directionEnum == Direction.NORTH or directionEnum == Direction.SOUTH:
+	if directionEnum == Direction.NORTH or directionEnum == Direction.SOUTH and abs(position.x - player_pos.x) < 70:
 		# Movimiento horizontal (igualar en el eje X)
 		var target_x = player_pos.x
-		temp_direction.x = (target_x - global_position.x) * intensity * delta
+		temp_direction.x = (target_x - global_position.x) * intensity / 5 * delta
 		temp_direction.y = 0  # Mantener el movimiento solo en el eje X
-	elif directionEnum == Direction.EAST or directionEnum == Direction.WEST:
+	elif directionEnum == Direction.EAST or directionEnum == Direction.WEST and abs(position.y - player_pos.y) < 70:
 		# Movimiento vertical (igualar en el eje Y)
 		var target_y = player_pos.y
-		temp_direction.y = (target_y - global_position.y) * intensity * delta
+		temp_direction.y = (target_y - global_position.y) * intensity / 5 * delta
 		temp_direction.x = 0  # Mantener el movimiento solo en el eje Y
 	
 	# Usar la dirección temporal para el movimiento
