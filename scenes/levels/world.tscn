@@ -9,21 +9,4 @@
 position = Vector2(317, 537)
 
 [node name="Enemy" parent="." instance=ExtResource("4_kt6bt")]
-position = Vector2(317, -51)
-intensity = 10
-scrollFollow = false
-childDur = 2.0
-adultHood = 4
-adultDur = 5.0
-oldAge = 7
-oldSpeed = 200
-
-[node name="Enemy2" parent="." instance=ExtResource("4_kt6bt")]
-position = Vector2(317, -51)
-intensity = 10
-scrollFollow = false
-childDur = 2.0
-adultHood = 4
-adultDur = 5.0
-oldAge = 7
-oldSpeed = 200
+position = Vector2(129, -11)

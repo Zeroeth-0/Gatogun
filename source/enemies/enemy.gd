@@ -6,11 +6,13 @@ enum MoveType { STRAIGHT, # Implementado
 				OSCILLATE, # Implementado
 				BREATH, # Implementado
 				BLOCK, # Implementado
+				CENTER, # Implementado
 				CURVE, # Implementado
 				CIRCULAR, # Implementado
 				TOWARDS_PLAYER, # Implementado
 				LEAVE, # Implementado
 				LEAVE_SIDE, # Implementado
+				DIAGONAL,
 				STILL # Implementado
 }
 
@@ -98,11 +100,13 @@ func apply_movement(moveType, dur, delta):
 		MoveType.OSCILLATE: move_oscillate(delta)
 		MoveType.BREATH: move_breath(delta)
 		MoveType.BLOCK: move_block(delta)
+		MoveType.CENTER: move_center(delta)
 		MoveType.CURVE: move_curve(dur, delta)
 		MoveType.CIRCULAR: move_circular(dur, delta)
 		MoveType.TOWARDS_PLAYER: move_towards_player()
 		MoveType.LEAVE: move_leave()
 		MoveType.LEAVE_SIDE: move_leave_side(delta)
+		MoveType.DIAGONAL: move_diagonal()
 		MoveType.STILL: move_still()
 
 # Cambiar a la siguiente fase de comportamiento
@@ -160,12 +164,32 @@ func move_block(delta):
 	if directionEnum == Direction.NORTH or directionEnum == Direction.SOUTH:
 		# Movimiento horizontal (igualar en el eje X)
 		var target_x = player_pos.x
-		temp_direction.x = (target_x - global_position.x) * intensity / 5 * delta
+		temp_direction.x = (target_x - global_position.x) * intensity / 10 * delta
 		temp_direction.y = 0  # Mantener el movimiento solo en el eje X
 	elif directionEnum == Direction.EAST or directionEnum == Direction.WEST:
 		# Movimiento vertical (igualar en el eje Y)
 		var target_y = player_pos.y
-		temp_direction.y = (target_y - global_position.y) * intensity / 5 * delta
+		temp_direction.y = (target_y - global_position.y) * intensity / 10 * delta
+		temp_direction.x = 0  # Mantener el movimiento solo en el eje Y
+	
+	# Usar la dirección temporal para el movimiento
+	extraVel = temp_direction * speed
+	move_and_slide()
+
+func move_center(delta):
+	var center_pos = get_viewport().get_visible_rect().size / 2  # Obtén la posición del jugador
+	
+	# Crear una dirección temporal para no afectar la dirección original
+	var temp_direction = Vector2()
+	if directionEnum == Direction.NORTH or directionEnum == Direction.SOUTH:
+		# Movimiento horizontal (igualar en el eje X)
+		var target_x = center_pos.x
+		temp_direction.x = (target_x - global_position.x) * intensity / 10 * delta
+		temp_direction.y = 0  # Mantener el movimiento solo en el eje X
+	elif directionEnum == Direction.EAST or directionEnum == Direction.WEST:
+		# Movimiento vertical (igualar en el eje Y)
+		var target_y = center_pos.y
+		temp_direction.y = (target_y - global_position.y) * intensity / 10 * delta
 		temp_direction.x = 0  # Mantener el movimiento solo en el eje Y
 	
 	# Usar la dirección temporal para el movimiento
@@ -204,6 +228,16 @@ func move_leave_side(delta):
 		Direction.SOUTH: newDir = Vector2(-hSide, -1)
 		Direction.WEST: newDir = Vector2(1, -hSide)
 		Direction.EAST: newDir = Vector2(-1, -hSide)
+	extraVel = newDir * speed
+	move_and_slide()
+
+func move_diagonal():
+	var newDir = Vector2 (0, 0)
+	match directionEnum:
+		Direction.NORTH: newDir = Vector2(-hSide, -1)
+		Direction.SOUTH: newDir = Vector2(-hSide, 1)
+		Direction.WEST: newDir = Vector2(-1, -hSide)
+		Direction.EAST: newDir = Vector2(1, -hSide)
 	extraVel = newDir * speed
 	move_and_slide()
 
