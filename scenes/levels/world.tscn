@@ -1,12 +1,107 @@
-[gd_scene load_steps=3 format=3 uid="uid://bu4plpf86f1x1"]
+[gd_scene load_steps=4 format=3 uid="uid://bu4plpf86f1x1"]
 
+[ext_resource type="Script" path="res://source/levels/world.gd" id="1_btnht"]
 [ext_resource type="PackedScene" uid="uid://45jy2ekapnll" path="res://scenes/enemies/enemy.tscn" id="4_kt6bt"]
 [ext_resource type="PackedScene" uid="uid://dnm46gsra70ug" path="res://scenes/player/cat_player.tscn" id="4_nvx4x"]
 
 [node name="World" type="Node2D"]
+script = ExtResource("1_btnht")
+csv_file = "res://source/levels/test.txt"
+enemy_scenes = Array[PackedScene]([ExtResource("4_kt6bt")])
 
-[node name="CatPlayer" parent="." groups=["Player"] instance=ExtResource("4_nvx4x")]
-position = Vector2(317, 537)
+[node name="North Lane" type="Node2D" parent="."]
+position = Vector2(324, -100)
 
-[node name="Enemy" parent="." instance=ExtResource("4_kt6bt")]
-position = Vector2(129, -11)
+[node name="Zero" type="Marker2D" parent="North Lane"]
+position = Vector2(-276, 0)
+
+[node name="One" type="Marker2D" parent="North Lane"]
+position = Vector2(-184, 0)
+
+[node name="Two" type="Marker2D" parent="North Lane"]
+position = Vector2(-92, 0)
+
+[node name="Three" type="Marker2D" parent="North Lane"]
+
+[node name="Four" type="Marker2D" parent="North Lane"]
+position = Vector2(92, 0)
+
+[node name="Five" type="Marker2D" parent="North Lane"]
+position = Vector2(184, 0)
+
+[node name="Six" type="Marker2D" parent="North Lane"]
+position = Vector2(276, 0)
+
+[node name="West Lane" type="Node2D" parent="."]
+position = Vector2(-100, 324)
+rotation = 1.5708
+
+[node name="Zero" type="Marker2D" parent="West Lane"]
+position = Vector2(-276, 0)
+
+[node name="One" type="Marker2D" parent="West Lane"]
+position = Vector2(-184, 0)
+
+[node name="Two" type="Marker2D" parent="West Lane"]
+position = Vector2(-92, 0)
+
+[node name="Three" type="Marker2D" parent="West Lane"]
+
+[node name="Four" type="Marker2D" parent="West Lane"]
+position = Vector2(92, 0)
+
+[node name="Five" type="Marker2D" parent="West Lane"]
+position = Vector2(184, 0)
+
+[node name="Six" type="Marker2D" parent="West Lane"]
+position = Vector2(276, 0)
+
+[node name="East Lane" type="Node2D" parent="."]
+position = Vector2(748, 324)
+rotation = 1.5708
+
+[node name="Zero" type="Marker2D" parent="East Lane"]
+position = Vector2(-276, 0)
+
+[node name="One" type="Marker2D" parent="East Lane"]
+position = Vector2(-184, 0)
+
+[node name="Two" type="Marker2D" parent="East Lane"]
+position = Vector2(-92, 0)
+
+[node name="Three" type="Marker2D" parent="East Lane"]
+
+[node name="Four" type="Marker2D" parent="East Lane"]
+position = Vector2(92, 0)
+
+[node name="Five" type="Marker2D" parent="East Lane"]
+position = Vector2(184, 0)
+
+[node name="Six" type="Marker2D" parent="East Lane"]
+position = Vector2(276, 0)
+
+[node name="South Lane" type="Node2D" parent="."]
+position = Vector2(324, 748)
+
+[node name="Zero" type="Marker2D" parent="South Lane"]
+position = Vector2(-276, 0)
+
+[node name="One" type="Marker2D" parent="South Lane"]
+position = Vector2(-184, 0)
+
+[node name="Two" type="Marker2D" parent="South Lane"]
+position = Vector2(-92, 0)
+
+[node name="Three" type="Marker2D" parent="South Lane"]
+
+[node name="Four" type="Marker2D" parent="South Lane"]
+position = Vector2(92, 0)
+
+[node name="Five" type="Marker2D" parent="South Lane"]
+position = Vector2(184, 0)
+
+[node name="Six" type="Marker2D" parent="South Lane"]
+position = Vector2(276, 0)
+
+[node name="CatPlayer" parent="." instance=ExtResource("4_nvx4x")]
+position = Vector2(303, 505)

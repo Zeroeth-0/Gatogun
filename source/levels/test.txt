@@ -1,0 +1,7 @@
+enemy_type,lane_side,lane_number,handedness,direction,spawn_delay
+enemy,N,0,R,S,1.5
+enemy,E,3,L,W,2.0
+enemy,S,6,R,N,0.5
+enemy,W,2,L,E,1.0
+enemy,N,1,R,S,2.5
+enemy,E,4,R,W,0.75

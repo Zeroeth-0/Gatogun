@@ -5,7 +5,7 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_klkvo"]
 
-[node name="CatPlayer" type="CharacterBody2D"]
+[node name="CatPlayer" type="CharacterBody2D" groups=["Player"]]
 script = ExtResource("1_7pfs0")
 speed = 200
 screenMargin = 50

@@ -30,7 +30,7 @@ var direction: Vector2 = Vector2(0, 1)
 enum Handedness { LEFT, RIGHT }
 @export var handedness = Handedness.RIGHT
 @export_range(0, 90, 15) var deviationAngle: int = 90
-@export var scrollFollow: bool = true
+@export var scrollFollow: bool = false
 
 @export_category("CHILDHOOD")
 @export var childHood : MoveType = MoveType.STRAIGHT
@@ -228,7 +228,7 @@ func move_leave_side(delta):
 		Direction.SOUTH: newDir = Vector2(-hSide, -1)
 		Direction.WEST: newDir = Vector2(1, -hSide)
 		Direction.EAST: newDir = Vector2(-1, -hSide)
-	extraVel = newDir * speed
+	extraVel = newDir.normalized() * speed
 	move_and_slide()
 
 func move_diagonal():
@@ -238,7 +238,7 @@ func move_diagonal():
 		Direction.SOUTH: newDir = Vector2(-hSide, 1)
 		Direction.WEST: newDir = Vector2(-1, -hSide)
 		Direction.EAST: newDir = Vector2(1, -hSide)
-	extraVel = newDir * speed
+	extraVel = newDir.normalized() * speed
 	move_and_slide()
 
 func move_still():
