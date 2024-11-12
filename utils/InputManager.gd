@@ -16,8 +16,6 @@ var holdLimit: float = 0.1
 func _physics_process(delta):
 	d_pad()
 	action(delta)
-	print(fireHold)
-	print(fireX, fireY)
 
 # D-Pad Movement
 func d_pad():

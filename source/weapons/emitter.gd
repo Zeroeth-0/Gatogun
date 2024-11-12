@@ -4,7 +4,7 @@ extends Marker2D
 
 @export_category("BULLET")
 @export var bulletScene: PackedScene = preload("res://scenes/bullets/bullet.tscn")
-@export_range(-200, 200, 50) var baseSpeed: float = 200.0 # Implementado
+@export_range(-200, 200, 50) var baseSpeed: float = 200.0
 
 @export_group("DIRECTION")
 enum Type { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM }
@@ -81,9 +81,10 @@ var rng = RandomNumberGenerator.new()
 var rotation_direction = 1
 var stop_rotation = false
 var player_pos: Vector2 = Vector2()
-var speed: float = baseSpeed
+var speed: float
 
 func _ready():
+	speed = baseSpeed
 	direction = DIRECTION_MAP.get(directionEnum)
 	rank_adj()
 	shoot()
@@ -97,8 +98,8 @@ func rank_adj():
 	if rank == 4: rank = 4.5
 	var manuScale: float = rank / 6.0
 	manuScale *= manuScale
-
-	if speedVariation == 1: speed = lerp(speed, speed + speed / 2, manuScale)
+	
+	if rank > 1: speed = lerp(speed, speed + speed / 2, manuScale)
 	
 	if arms > 1: arms = lerp(arms, arms + arms / 2, manuScale)
 	
@@ -142,7 +143,6 @@ func shoot():
 		
 		for i in burstCount:
 			if speedVar == SpeedVar.BULLET: new_spd *= speedVariation
-				
 			fire(new_spd)
 			await get_tree().create_timer(bulletInterval).timeout
 		
