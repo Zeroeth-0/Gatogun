@@ -6,7 +6,6 @@
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_btnht")
-csv_file = "res://source/levels/test.txt"
 enemy_scenes = Array[PackedScene]([ExtResource("4_kt6bt")])
 
 [node name="North Lane" type="Node2D" parent="."]
@@ -105,3 +104,4 @@ position = Vector2(276, 0)
 
 [node name="CatPlayer" parent="." instance=ExtResource("4_nvx4x")]
 position = Vector2(303, 505)
+speed = 300
