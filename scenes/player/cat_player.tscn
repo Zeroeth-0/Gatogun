@@ -1,7 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://dnm46gsra70ug"]
+[gd_scene load_steps=6 format=3 uid="uid://dnm46gsra70ug"]
 
 [ext_resource type="Script" path="res://source/player/catplayer.gd" id="1_7pfs0"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_86ini"]
+[ext_resource type="Script" path="res://source/weapons/playerWeapon.gd" id="3_anjnu"]
+[ext_resource type="PackedScene" uid="uid://k3dc4e2ha3m1" path="res://scenes/bullets/player_bullet.tscn" id="4_183l6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_klkvo"]
 
@@ -27,5 +29,44 @@ debug_color = Color(0, 1, 0, 0.419608)
 scale = Vector2(0.4, 0.4)
 shape = SubResource("RectangleShape2D_klkvo")
 debug_color = Color(0, 1, 0, 0.419608)
+
+[node name="Player Weapon" type="Node2D" parent="."]
+position = Vector2(30, 20)
+script = ExtResource("3_anjnu")
+bullet_scene = ExtResource("4_183l6")
+
+[node name="Player Weapon2" type="Node2D" parent="."]
+position = Vector2(0, 20)
+script = ExtResource("3_anjnu")
+bullet_scene = ExtResource("4_183l6")
+
+[node name="Player Weapon7" type="Node2D" parent="."]
+position = Vector2(-30, 20)
+script = ExtResource("3_anjnu")
+bullet_scene = ExtResource("4_183l6")
+
+[node name="Player Weapon3" type="Node2D" parent="."]
+position = Vector2(50, 50)
+script = ExtResource("3_anjnu")
+bullet_scene = ExtResource("4_183l6")
+deviationAngle = 15.0
+
+[node name="Player Weapon4" type="Node2D" parent="."]
+position = Vector2(50, -50)
+script = ExtResource("3_anjnu")
+bullet_scene = ExtResource("4_183l6")
+deviationAngle = 15.0
+
+[node name="Player Weapon5" type="Node2D" parent="."]
+position = Vector2(-50, 50)
+script = ExtResource("3_anjnu")
+bullet_scene = ExtResource("4_183l6")
+deviationAngle = -15.0
+
+[node name="Player Weapon6" type="Node2D" parent="."]
+position = Vector2(-50, -50)
+script = ExtResource("3_anjnu")
+bullet_scene = ExtResource("4_183l6")
+deviationAngle = -15.0
 
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]

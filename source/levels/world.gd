@@ -67,7 +67,7 @@ func spawn_enemy(data: Array) -> void:
 			"W": enemy_instance.directionEnum = enemy_instance.Direction.WEST
 			"E": enemy_instance.directionEnum = enemy_instance.Direction.EAST
 		
-		add_child(enemy_instance)
+		get_tree().current_scene.add_child(enemy_instance)
 		
 		# Usar un timer con await para esperar el tiempo de spawn_delay
 		await wait_for_seconds(spawn_delay)
@@ -77,7 +77,7 @@ func wait_for_seconds(seconds: float) -> void:
 	var timer = Timer.new()
 	timer.wait_time = seconds
 	timer.one_shot = true
-	add_child(timer)
+	get_tree().current_scene.add_child(timer)
 	timer.start()
 	
 	# Esperar hasta que el temporizador termine

@@ -1,0 +1,36 @@
+extends Node2D
+
+@export var bullet_scene: PackedScene # Escena de la bala a instanciar
+@export var fire_rate: float = 0.1 # Tiempo entre ráfagas
+@export_range(-30, 30, 15) var deviationAngle: float = 0.0 # Desviación en grados (0, 30 o -30)
+
+var can_fire: bool = true # Controla si se puede disparar
+
+# Llamado cada cuadro
+func _process(delta: float):
+	# Disparar si hay una dirección válida y está permitido
+	if Vector2(INPUT.fireX, INPUT.fireY) != Vector2.ZERO and can_fire:
+		await fire_burst(INPUT.fireDir)
+
+# Dispara una ráfaga de 4 balas en la misma dirección
+func fire_burst(dir):
+	can_fire = false
+
+	# Dispara 4 balas seguidas en la misma dirección
+	for i in range(4):
+		fire_bullet(dir)
+		await get_tree().create_timer(0.05).timeout # Intervalo entre balas en la ráfaga
+
+	await get_tree().create_timer(fire_rate).timeout # Tiempo antes de permitir otra ráfaga
+	can_fire = true
+
+# Instancia y dispara una bala en la dirección actual
+func fire_bullet(direction):
+	var bullet_instance = bullet_scene.instantiate()
+	get_tree().current_scene.add_child(bullet_instance) # Agregar la bala a la escena
+
+	# Posicionar la bala en la posición del nodo actual
+	bullet_instance.position = global_position
+
+	# Establecer la dirección enumerada de la bala
+	bullet_instance.set_dir(direction, deviationAngle)

@@ -13,9 +13,12 @@ var fireHold: bool = false
 var holdTimer: float = 0.0
 var holdLimit: float = 0.1
 
+var fireDir: Vector2 = Vector2.UP
+
 func _physics_process(delta):
 	d_pad()
 	action(delta)
+	direction()
 
 # D-Pad Movement
 func d_pad():
@@ -33,3 +36,10 @@ func action(delta):
 	else:
 		holdTimer = 0.0
 		fireHold = false
+
+# Actualiza la dirección del disparo basada en la entrada del jugador
+func direction():
+	if fireX > 0: fireDir = Vector2(1, 0)
+	if fireX < 0: fireDir = Vector2(-1, 0)
+	if fireY > 0: fireDir = Vector2(0, 1)
+	if fireY < 0: fireDir = Vector2(0, -1)
