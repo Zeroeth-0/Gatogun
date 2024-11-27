@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://bw2g2t07ejkdq"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1erge"]
+
+[node name="DeadBounds" type="Area2D" groups=["Free"]]
+position = Vector2(324, 324)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["Free"]]
+position = Vector2(0, -450)
+scale = Vector2(40, 5)
+shape = SubResource("RectangleShape2D_1erge")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="." groups=["Free"]]
+position = Vector2(0, 450)
+scale = Vector2(40, 5)
+shape = SubResource("RectangleShape2D_1erge")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="." groups=["Free"]]
+position = Vector2(450, 0)
+scale = Vector2(5, 40)
+shape = SubResource("RectangleShape2D_1erge")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="." groups=["Free"]]
+position = Vector2(-450, 0)
+scale = Vector2(5, 40)
+shape = SubResource("RectangleShape2D_1erge")

@@ -26,4 +26,3 @@ func _on_hurtbox_area_entered(area: Area2D):
 	if area.is_in_group("Damage"):
 		# Comportamiento temporal: reiniciar la escena al tocar un Area2D del grupo "Damage"
 		get_tree().reload_current_scene()
-

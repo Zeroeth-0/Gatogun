@@ -5,7 +5,7 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ex51n"]
 
-[node name="Player Bullet" type="Area2D"]
+[node name="Player Bullet" type="Area2D" groups=["Player Bullet"]]
 script = ExtResource("1_08ob5")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -17,3 +17,5 @@ texture = ExtResource("2_5kdky")
 scale = Vector2(2.5, 2.5)
 shape = SubResource("RectangleShape2D_ex51n")
 debug_color = Color(1, 1, 0, 0.419608)
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

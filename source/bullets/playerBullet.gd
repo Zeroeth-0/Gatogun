@@ -8,10 +8,6 @@ var deviationAngle: float = 0.0 # Desviación en grados (0, 30 o -30)
 # Convertir la desviación a radianes
 var deviationRadians: float = 0.0
 
-# Llamado cuando el nodo entra en el árbol de la escena.
-func _ready():
-	pass
-
 # Llamado en cada cuadro. 'delta' es el tiempo transcurrido desde el cuadro anterior.
 func _process(delta: float):
 	
@@ -25,3 +21,7 @@ func set_dir(newDir, devAngle):
 	
 	# Rotar el nodo para que apunte en la dirección inicial
 	rotation = direction.angle()
+
+# Manejar la colisión con áreas
+func _on_area_entered(area):
+	if area.is_in_group("Free"): queue_free()

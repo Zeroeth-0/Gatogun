@@ -7,3 +7,25 @@
 script = ExtResource("1_y1vgw")
 
 [node name="PlayerEmmiter" parent="." instance=ExtResource("1_kgrkn")]
+
+[node name="PlayerEmmiter2" parent="." instance=ExtResource("1_kgrkn")]
+position = Vector2(-70, 70)
+deviationAngle = -15.0
+
+[node name="PlayerEmmiter3" parent="." instance=ExtResource("1_kgrkn")]
+position = Vector2(70, 70)
+deviationAngle = 15.0
+
+[node name="PlayerEmmiter4" parent="." instance=ExtResource("1_kgrkn")]
+position = Vector2(40, 20)
+
+[node name="PlayerEmmiter5" parent="." instance=ExtResource("1_kgrkn")]
+position = Vector2(-40, 20)
+
+[node name="PlayerEmmiter6" parent="." instance=ExtResource("1_kgrkn")]
+position = Vector2(-70, -70)
+deviationAngle = -15.0
+
+[node name="PlayerEmmiter7" parent="." instance=ExtResource("1_kgrkn")]
+position = Vector2(70, -70)
+deviationAngle = 15.0

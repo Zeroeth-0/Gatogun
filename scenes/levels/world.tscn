@@ -1,12 +1,15 @@
-[gd_scene load_steps=4 format=3 uid="uid://bu4plpf86f1x1"]
+[gd_scene load_steps=5 format=3 uid="uid://bu4plpf86f1x1"]
 
 [ext_resource type="Script" path="res://source/levels/world.gd" id="1_btnht"]
+[ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="3_0hlg8"]
 [ext_resource type="PackedScene" uid="uid://45jy2ekapnll" path="res://scenes/enemies/enemy.tscn" id="4_kt6bt"]
 [ext_resource type="PackedScene" uid="uid://dnm46gsra70ug" path="res://scenes/player/cat_player.tscn" id="4_nvx4x"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_btnht")
 enemy_scenes = Array[PackedScene]([ExtResource("4_kt6bt")])
+
+[node name="DeadBounds" parent="." instance=ExtResource("3_0hlg8")]
 
 [node name="North Lane" type="Node2D" parent="."]
 position = Vector2(324, -100)
