@@ -6,6 +6,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ynv2f"]
 
 [node name="Bullet" type="Area2D" node_paths=PackedStringArray("sprite") groups=["Damage"]]
+z_index = 3
 script = ExtResource("1_f30hx")
 sprite = NodePath("Sprite2D")
 
