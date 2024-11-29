@@ -1,25 +1,25 @@
 extends CharacterBody2D
 
 # Definir los tipos de movimiento
-enum MoveType { STRAIGHT, # Implementado
-				SINUSOIDAL, # Implementado
-				OSCILLATE, # Implementado
-				BREATH, # Implementado
-				BLOCK, # Implementado
-				CENTER, # Implementado
-				CURVE, # Implementado
-				CIRCULAR, # Implementado
-				TOWARDS_PLAYER, # Implementado
-				LEAVE, # Implementado
-				LEAVE_SIDE, # Implementado
+enum MoveType { STRAIGHT,
+				SINUSOIDAL,
+				OSCILLATE,
+				BREATH,
+				BLOCK,
+				CENTER,
+				CURVE,
+				CIRCULAR,
+				TOWARDS_PLAYER,
+				LEAVE,
+				LEAVE_SIDE,
 				DIAGONAL,
-				STILL # Implementado
+				STILL
 }
 
 # Parámetros generales
 @export var intensity = 1
 enum Direction { NORTH, WEST, SOUTH, EAST }
-@export var directionEnum: Direction = Direction.SOUTH # Implementado
+@export var directionEnum: Direction = Direction.SOUTH
 var DIRECTION_MAP = {
 	Direction.NORTH: Vector2(0, -1).normalized(),
 	Direction.SOUTH: Vector2(0, 1).normalized(),
@@ -31,6 +31,7 @@ enum Handedness { LEFT, RIGHT }
 @export var handedness = Handedness.RIGHT
 @export_range(0, 90, 15) var deviationAngle: int = 90
 @export var scrollFollow: bool = false
+@export var health: int
 
 @export_category("CHILDHOOD")
 @export var childHood : MoveType = MoveType.STRAIGHT
@@ -67,6 +68,7 @@ func _ready():
 
 # Manejo del tiempo y cambios de fase
 func _process(delta):
+	die()
 	stageTimer += delta
 	if scrollFollow: velocity = SCROLL.get_scroll() + extraVel
 	else: velocity = extraVel
@@ -113,6 +115,9 @@ func apply_movement(moveType, dur, delta):
 func enter_next_stage(nextStage):
 	currentStage = nextStage
 	stageTimer = 0.0
+
+func die():
+	if health <= 0: queue_free()
 
 # Behaviors
 
@@ -244,3 +249,6 @@ func move_diagonal():
 func move_still():
 	extraVel = Vector2.ZERO
 	move_and_slide()
+
+func _on_hurtbox_area_entered(area):
+	if area.is_in_group("Fire"): health -= area.damage

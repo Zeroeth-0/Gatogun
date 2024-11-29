@@ -96,17 +96,17 @@ func _physics_process(delta):
 
 func rank_adj():
 	if rank == 4: rank = 4.5
-	var manuScale: float = rank / 6.0
-	manuScale *= manuScale
+	var rankScale: float = rank / 6.0
+	rankScale *= rankScale
 	
-	if rank > 1: speed = lerp(speed, speed + speed / 2, manuScale)
+	if rank > 1: speed = lerp(speed, speed + speed / 2, rankScale)
 	
-	if arms > 1: arms = lerp(arms, arms + arms / 2, manuScale)
+	if arms > 1: arms = lerp(arms, arms + arms / 2, rankScale)
 	
-	if burstCount > 1: burstCount = lerp(burstCount, burstCount + burstCount / 2, manuScale)
-	else: burstCount = lerp(burstCount, burstCount * 3, manuScale)
+	if burstCount > 1: burstCount = lerp(burstCount, burstCount + burstCount / 2, rankScale)
+	else: burstCount = lerp(burstCount, burstCount * 3, rankScale)
 	
-	rotationSpeed = lerp(rotationSpeed, rotationSpeed + rotationSpeed / 2, manuScale)
+	rotationSpeed = lerp(rotationSpeed, rotationSpeed + rotationSpeed / 2, rankScale)
 	
 	if rank == 0:
 		speed *= 0.75

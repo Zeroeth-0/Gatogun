@@ -14,6 +14,7 @@ var buttonStates: Dictionary = {
 }
 enum Buttons { NONE, A, B, Y, X }
 var buttonActive: Buttons = Buttons.NONE
+var firing: bool = false
 var fireDir: Vector2 = Vector2.UP
 
 # Timer
@@ -65,3 +66,5 @@ func action_input(delta):
 	else:
 		holdTimer = 0.0
 		fireHold = false
+	
+	firing = buttonActive != Buttons.NONE

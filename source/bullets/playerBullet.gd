@@ -2,6 +2,7 @@ extends Area2D
 
 # Variables configurables
 @export var speed: float = 1000.0 # Velocidad en píxeles por segundo
+@export var damage: int = 1
 var direction: Vector2 = Vector2(0, 1)
 var deviationAngle: float = 0.0 # Desviación en grados (0, 30 o -30)
 

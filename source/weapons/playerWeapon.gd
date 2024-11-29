@@ -2,7 +2,7 @@ extends Node2D
 
 @export var bullet_scene: PackedScene # Escena de la bala a instanciar
 @export var fire_rate: float = 0.08 # Tiempo entre ráfagas
-@export_range(-30, 30, 15) var deviationAngle: float = 0.0 # Desviación en grados (0, 30 o -30)
+@export_range(-15, 15, 5) var deviationAngle: float = 0.0 # Desviación en grados (0, 30 o -30)
 
 var can_fire: bool = true # Controla si se puede disparar
 const MAX_BULLETS: int = 4 # Máximo de balas permitidas en el grupo
@@ -10,11 +10,11 @@ const MAX_BULLETS: int = 4 # Máximo de balas permitidas en el grupo
 # Llamado cada cuadro
 func _process(delta: float):
 	# Contar las balas activas en el grupo "Player Bullet"
-	var active_bullets = get_tree().get_nodes_in_group("Player Bullet").size()
+	var active_bullets = get_tree().get_nodes_in_group("Fire").size()
 	var maxBullets = MAX_BULLETS * get_parent().get_child_count()
 	
 	# Verificar si se puede disparar en función del número de balas activas
-	if INPUT.buttonActive != INPUT.Buttons.NONE and can_fire and active_bullets < maxBullets:
+	if INPUT.firing and can_fire and active_bullets < maxBullets and !INPUT.fireHold:
 		await fire_burst(INPUT.fireDir)
 
 # Dispara una ráfaga de 4 balas en la misma dirección

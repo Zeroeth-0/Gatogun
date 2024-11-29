@@ -5,7 +5,7 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ex51n"]
 
-[node name="Player Bullet" type="Area2D" groups=["Player Bullet"]]
+[node name="Player Bullet" type="Area2D" groups=["Fire"]]
 script = ExtResource("1_08ob5")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
