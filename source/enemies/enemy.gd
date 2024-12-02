@@ -32,6 +32,7 @@ enum Handedness { LEFT, RIGHT }
 @export_range(0, 90, 15) var deviationAngle: int = 90
 @export var scrollFollow: bool = false
 @export var health: int
+var canDie: bool = false
 
 @export_category("CHILDHOOD")
 @export var childHood : MoveType = MoveType.STRAIGHT
@@ -251,4 +252,7 @@ func move_still():
 	move_and_slide()
 
 func _on_hurtbox_area_entered(area):
-	if area.is_in_group("Fire"): health -= area.damage
+	if area.is_in_group("Fire") and canDie: health -= area.damage
+
+func _on_hitbox_area_entered(area):
+	if area.is_in_group("Play"): canDie = true

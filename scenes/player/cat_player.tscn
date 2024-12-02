@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://source/player/catplayer.gd" id="1_7pfs0"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_86ini"]
-[ext_resource type="PackedScene" uid="uid://d2jhyo40ctlfb" path="res://scenes/weapons/weapon.tscn" id="3_nfoow"]
+[ext_resource type="PackedScene" uid="uid://cjhkionj3a6h3" path="res://scenes/weapons/heavy_weapon.tscn" id="3_3wa3g"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_klkvo"]
 
@@ -30,6 +30,6 @@ scale = Vector2(0.4, 0.4)
 shape = SubResource("RectangleShape2D_klkvo")
 debug_color = Color(0, 1, 0, 0.419608)
 
-[node name="Weapon" parent="." instance=ExtResource("3_nfoow")]
+[node name="Weapon" parent="." instance=ExtResource("3_3wa3g")]
 
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]

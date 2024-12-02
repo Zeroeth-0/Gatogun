@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://cgts6rg8xrau"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1erge"]
+
+[node name="Playzone" type="Area2D" groups=["Play"]]
+position = Vector2(324, 324)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["Play"]]
+scale = Vector2(30, 30)
+shape = SubResource("RectangleShape2D_1erge")
+debug_color = Color(1, 0.498039, 0, 0.419608)

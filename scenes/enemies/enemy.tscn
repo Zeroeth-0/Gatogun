@@ -44,4 +44,6 @@ scale = Vector2(4, 4)
 shape = SubResource("RectangleShape2D_divk0")
 debug_color = Color(0, 1, 0, 0.419608)
 
+[connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]
+[connection signal="area_exited" from="Hitbox" to="." method="_on_hitbox_area_exited"]
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
