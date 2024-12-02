@@ -16,7 +16,7 @@ health = 20
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 0, 1, 1)
-scale = Vector2(0.5, 0.5)
+scale = Vector2(0.7, 0.7)
 texture = ExtResource("1_ff2ik")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -40,7 +40,7 @@ debug_color = Color(1, 0, 0, 0.419608)
 [node name="Hurtbox" type="Area2D" parent="." groups=["Free"]]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
-scale = Vector2(4, 4)
+scale = Vector2(5, 5)
 shape = SubResource("RectangleShape2D_divk0")
 debug_color = Color(0, 1, 0, 0.419608)
 

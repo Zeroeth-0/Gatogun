@@ -1,14 +1,14 @@
 extends CharacterBody2D
 
 @export_category("MOVEMENT")
-@export_range(150, 300, 50) var speed: int
+@export_range(150, 350, 50) var speed: int
 @export var screenMargin: int
 var direction: Vector2 = Vector2.UP
 
 func _physics_process(_delta):
 	movement()
 	screen_clamp(get_viewport().get_visible_rect().size)
-	speed = 150 if INPUT.fireHold else 300
+	speed = 200 if INPUT.fireHold else 350
 
 # Limita la posición del personaje a los márgenes de la pantalla
 func screen_clamp(screen_size):
