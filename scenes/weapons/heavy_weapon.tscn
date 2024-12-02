@@ -19,16 +19,16 @@ position = Vector2(30, 20)
 
 [node name="PlayerEmmiter4" parent="." instance=ExtResource("2_0mt0c")]
 position = Vector2(-50, -30)
-deviationAngle = -5.0
+deviationAngle = -10.0
 
 [node name="PlayerEmmiter5" parent="." instance=ExtResource("2_0mt0c")]
 position = Vector2(50, -30)
-deviationAngle = 5.0
+deviationAngle = 10.0
 
 [node name="PlayerEmmiter6" parent="." instance=ExtResource("2_0mt0c")]
 position = Vector2(-60, 60)
-deviationAngle = -10.0
+deviationAngle = -15.0
 
 [node name="PlayerEmmiter7" parent="." instance=ExtResource("2_0mt0c")]
 position = Vector2(60, 60)
-deviationAngle = 10.0
+deviationAngle = 15.0

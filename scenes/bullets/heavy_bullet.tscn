@@ -9,7 +9,6 @@
 z_index = 1
 script = ExtResource("1_1hj0i")
 speed = 1100.0
-damage = 2
 lifeTime = 0.4
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
