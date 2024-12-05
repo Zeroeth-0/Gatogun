@@ -19,7 +19,7 @@ var fireDir: Vector2 = Vector2.UP
 
 # Timer
 var holdTimer: float = 0.0
-var holdLimit: float = 0.1
+var holdLimit: float = 0.3
 
 # List of pressed buttons in order
 var buttonOrder: Array = []

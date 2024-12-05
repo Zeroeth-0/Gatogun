@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://b20svaskudtin"]
 
 [ext_resource type="Script" path="res://source/weapons/weaponManager.gd" id="1_wkrn4"]
-[ext_resource type="PackedScene" uid="uid://mijejse1m0kt" path="res://scenes/weapons/player_emmiter.tscn" id="2_8y3i1"]
+[ext_resource type="PackedScene" uid="uid://mijejse1m0kt" path="res://scenes/weapons/player/player_emmiter.tscn" id="2_8y3i1"]
 [ext_resource type="PackedScene" uid="uid://ci2youv5phpgf" path="res://scenes/bullets/focus_bullet.tscn" id="2_kljej"]
 
 [node name="Weapon" type="Node2D"]

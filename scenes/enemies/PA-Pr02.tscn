@@ -1,9 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://45jy2ekapnll"]
+[gd_scene load_steps=7 format=3 uid="uid://1jns7p21mhry"]
 
-[ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="1_ff2ik"]
-[ext_resource type="Script" path="res://source/enemies/enemy.gd" id="1_nfbc7"]
-[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/emitter.tscn" id="3_3fkqk"]
-[ext_resource type="PackedScene" uid="uid://dnm46gsra70ug" path="res://scenes/player/cat_player.tscn" id="4_qkhwy"]
+[ext_resource type="Script" path="res://source/enemies/enemy.gd" id="1_krfr6"]
+[ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_meryf"]
+[ext_resource type="PackedScene" uid="uid://dihqfx5o1gpyv" path="res://scenes/weapons/enemies/A-Pr01.tscn" id="3_4g5wi"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jtchi"]
 
@@ -12,25 +11,26 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_divk0"]
 
 [node name="Enemy" type="CharacterBody2D"]
-script = ExtResource("1_nfbc7")
-health = 20
+script = ExtResource("1_krfr6")
+health = 10
+childHood = 8
+childDur = 2.0
+childSpeed = 200
+adultHood = 8
+adultDur = 2.0
+adultSpeed = 200
+oldAge = 8
+oldSpeed = 200
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 0, 1, 1)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("1_ff2ik")
+texture = ExtResource("2_meryf")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_jtchi")
 disabled = true
 debug_color = Color(1, 0, 0, 0.419608)
-
-[node name="Emitter" parent="." instance=ExtResource("3_3fkqk")]
-type = 1
-dirDuration = 0.1
-aimAtPlayer = true
-parallel = true
-arms = 3
 
 [node name="Hitbox" type="Area2D" parent="." groups=["Damage"]]
 scale = Vector2(0.8, 0.8)
@@ -47,8 +47,7 @@ scale = Vector2(5, 5)
 shape = SubResource("RectangleShape2D_divk0")
 debug_color = Color(0, 1, 0, 0.419608)
 
-[node name="CatPlayer" parent="." instance=ExtResource("4_qkhwy")]
-position = Vector2(-117, 3)
+[node name="Emitter" parent="." instance=ExtResource("3_4g5wi")]
 
 [connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]
 [connection signal="area_exited" from="Hitbox" to="." method="_on_hitbox_area_exited"]

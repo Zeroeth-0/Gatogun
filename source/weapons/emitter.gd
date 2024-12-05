@@ -4,7 +4,7 @@ extends Marker2D
 
 @export_category("BULLET")
 @export var bulletScene: PackedScene = preload("res://scenes/bullets/bullet.tscn")
-@export_range(-200, 200, 50) var baseSpeed: float = 200.0
+@export_range(-250, 250, 50) var baseSpeed: float = 250.0
 
 @export_group("DIRECTION")
 enum Type { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM }

@@ -8,12 +8,7 @@
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_btnht")
-csv_file = "res://source/levels/test.txt"
 enemy_scenes = Array[PackedScene]([ExtResource("4_kt6bt")])
-
-[node name="DeadBounds" parent="." instance=ExtResource("3_0hlg8")]
-
-[node name="Playzone" parent="." instance=ExtResource("4_hkylk")]
 
 [node name="North Lane" type="Node2D" parent="."]
 position = Vector2(324, -100)
@@ -108,6 +103,10 @@ position = Vector2(174, 0)
 
 [node name="Six" type="Marker2D" parent="South Lane"]
 position = Vector2(261, 0)
+
+[node name="DeadBounds" parent="." instance=ExtResource("3_0hlg8")]
+
+[node name="Playzone" parent="." instance=ExtResource("4_hkylk")]
 
 [node name="CatPlayer" parent="." instance=ExtResource("4_nvx4x")]
 position = Vector2(324, 324)
