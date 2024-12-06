@@ -12,13 +12,12 @@
 
 [node name="Enemy" type="CharacterBody2D"]
 script = ExtResource("1_phoag")
-health = 10
-childDur = 2.0
-childSpeed = 150
+health = 5
+childDur = 1.5
+childSpeed = 200
 adultHood = 12
-adultDur = 2.0
 oldAge = 8
-oldSpeed = 200
+oldSpeed = 250
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 0, 1, 1)
@@ -30,7 +29,7 @@ shape = SubResource("RectangleShape2D_jtchi")
 disabled = true
 debug_color = Color(1, 0, 0, 0.419608)
 
-[node name="Hitbox" type="Area2D" parent="." groups=["Damage"]]
+[node name="Hitbox" type="Area2D" parent="."]
 scale = Vector2(0.8, 0.8)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]

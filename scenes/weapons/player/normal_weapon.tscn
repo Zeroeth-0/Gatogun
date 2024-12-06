@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://source/weapons/weaponManager.gd" id="1_wkrn4"]
 [ext_resource type="PackedScene" uid="uid://mijejse1m0kt" path="res://scenes/weapons/player/player_emmiter.tscn" id="2_8y3i1"]
-[ext_resource type="PackedScene" uid="uid://ci2youv5phpgf" path="res://scenes/bullets/focus_bullet.tscn" id="2_kljej"]
+[ext_resource type="PackedScene" uid="uid://ci2youv5phpgf" path="res://scenes/bullets/player/focus_bullet.tscn" id="2_kljej"]
 
 [node name="Weapon" type="Node2D"]
 script = ExtResource("1_wkrn4")

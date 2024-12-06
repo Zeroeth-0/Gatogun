@@ -23,7 +23,7 @@ shape = SubResource("RectangleShape2D_klkvo")
 disabled = true
 debug_color = Color(0, 1, 0, 0.419608)
 
-[node name="Hurtbox" type="Area2D" parent="."]
+[node name="Hurtbox" type="Area2D" parent="." groups=["Player"]]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 scale = Vector2(0.4, 0.4)
@@ -33,3 +33,4 @@ debug_color = Color(0, 1, 0, 0.419608)
 [node name="Weapon" parent="." instance=ExtResource("3_3wa3g")]
 
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
+[connection signal="area_exited" from="Hurtbox" to="." method="_on_hurtbox_area_exited"]

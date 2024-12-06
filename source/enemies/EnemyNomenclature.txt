@@ -1,0 +1,34 @@
+Enemies:
+[Category][Subtype][Role][ID]
+- Category:
+	* P = Popcorn
+	* M = Mid
+	* E = Elite
+- Subtype:
+	* T = Tank
+	* R = Turret
+	* A = Air
+- Role:
+	* Pr = Pressure
+	* Cl = Clutter
+	* Ad = Area Denial
+	* Dc = Direct Challenge
+- ID:
+	* [00-99]
+- Example: PT-Pr01
+
+Weapons:
+[Type][Role][ID]
+- Type:
+	* A = Aimed
+	* S = Static
+	* R = Randomized
+- Role:
+	* Pr = Pressure
+	* Cl = Clutter
+	* Ad = Area Denial
+	* Dc = Direct Challenge
+	* Fn = Funnel
+- ID:
+	* [00-99]
+- Example: A-Pr01

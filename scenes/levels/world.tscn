@@ -1,14 +1,17 @@
-[gd_scene load_steps=6 format=3 uid="uid://bu4plpf86f1x1"]
+[gd_scene load_steps=8 format=3 uid="uid://bu4plpf86f1x1"]
 
 [ext_resource type="Script" path="res://source/levels/world.gd" id="1_btnht"]
 [ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="3_0hlg8"]
 [ext_resource type="PackedScene" uid="uid://cgts6rg8xrau" path="res://scenes/levels/playzone.tscn" id="4_hkylk"]
-[ext_resource type="PackedScene" uid="uid://45jy2ekapnll" path="res://scenes/enemies/enemy.tscn" id="4_kt6bt"]
 [ext_resource type="PackedScene" uid="uid://dnm46gsra70ug" path="res://scenes/player/cat_player.tscn" id="4_nvx4x"]
+[ext_resource type="PackedScene" uid="uid://col2b2mp7eu6y" path="res://scenes/enemies/PT-Pr03.tscn" id="6_ay5fw"]
+[ext_resource type="PackedScene" uid="uid://b75rvmh44msfh" path="res://scenes/enemies/PA-Pr01.tscn" id="6_kdx7s"]
+[ext_resource type="PackedScene" uid="uid://1jns7p21mhry" path="res://scenes/enemies/PA-Pr02.tscn" id="7_ewcwf"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_btnht")
-enemy_scenes = Array[PackedScene]([ExtResource("4_kt6bt")])
+csv_file = "res://source/levels/test.txt"
+enemy_scenes = Array[PackedScene]([ExtResource("6_kdx7s"), ExtResource("7_ewcwf"), ExtResource("6_ay5fw")])
 
 [node name="North Lane" type="Node2D" parent="."]
 position = Vector2(324, -100)

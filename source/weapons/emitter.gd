@@ -24,7 +24,7 @@ enum Type { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM }
 # ------------------------------------------------Weapon--------------------------------------------------
 
 @export_category("WEAPON")
-@export_range(0, 6, 1) var rank: float = 1.0
+@export_range(0, 10, 1) var rank: float = 1.0
 @export_group("DIRECTION")
 enum Direction { NORTH, WEST, SOUTH, EAST, NWEST, NEAST, SWEST, SEAST }
 @export var directionEnum: Direction = Direction.SOUTH # Implementado
@@ -82,6 +82,7 @@ var rotation_direction = 1
 var stop_rotation = false
 var player_pos: Vector2 = Vector2()
 var speed: float
+var canShoot: bool = true
 
 func _ready():
 	speed = baseSpeed
@@ -90,6 +91,7 @@ func _ready():
 	shoot()
 
 func _physics_process(delta):
+	if "canShoot" in get_parent(): canShoot = get_parent().canShoot
 	if not stop_rotation:
 		rotation_degrees += rotationSpeed * delta * rotation_direction
 	handle_rotation()
@@ -143,7 +145,7 @@ func shoot():
 		
 		for i in burstCount:
 			if speedVar == SpeedVar.BULLET: new_spd *= speedVariation
-			fire(new_spd)
+			if canShoot: fire(new_spd)
 			await get_tree().create_timer(bulletInterval).timeout
 		
 		if !burstRotation: stop_rotation = false

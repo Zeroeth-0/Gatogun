@@ -23,5 +23,8 @@ func movement():
 
 # Detecta si el hurtbox entra en un Area2D
 func _on_hurtbox_area_entered(area):
-	if area.is_in_group("Damage"):
-		get_tree().reload_current_scene()
+	if area.is_in_group("Ground"): area.get_parent().canShoot = false
+	if area.is_in_group("Damage"): get_tree().reload_current_scene()
+
+func _on_hurtbox_area_exited(area):
+	if area.is_in_group("Ground"): area.get_parent().canShoot = true

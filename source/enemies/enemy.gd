@@ -31,8 +31,10 @@ enum Handedness { LEFT, RIGHT }
 @export var handedness = Handedness.RIGHT
 @export_range(0, 90, 15) var deviationAngle: int = 90
 @export var scrollFollow: bool = false
+@export var isGround: bool = false
 @export var health: int
 var canDie: bool = false
+var canShoot: bool = true
 
 @export_category("CHILDHOOD")
 @export var childHood : MoveType = MoveType.STRAIGHT
@@ -60,12 +62,16 @@ var currDir
 var rng = RandomNumberGenerator.new()
 var rand_side = 1 if rng.randf() < 0.5 else -1
 
+var cantShoot: bool = false
+
 # Configurar el movimiento inicial
 func _ready():
 	direction = DIRECTION_MAP.get(directionEnum)
 	stageTimer = 0.0
 	hSide = -1 if handedness == Handedness.RIGHT else 1
 	currDir = direction
+	if isGround: $Hurtbox.add_to_group("Ground")
+	else: $Hitbox.add_to_group("Damage")
 
 # Manejo del tiempo y cambios de fase
 func _process(delta):
@@ -240,10 +246,10 @@ func move_leave_side(delta):
 func move_diagonal():
 	var newDir = Vector2 (0, 0)
 	match directionEnum:
-		Direction.NORTH: newDir = Vector2(-hSide, -1)
-		Direction.SOUTH: newDir = Vector2(-hSide, 1)
-		Direction.WEST: newDir = Vector2(-1, -hSide)
-		Direction.EAST: newDir = Vector2(1, -hSide)
+		Direction.NORTH: newDir = Vector2(-hSide * 1.5, -1)
+		Direction.SOUTH: newDir = Vector2(-hSide * 1.5, 1)
+		Direction.WEST: newDir = Vector2(-1, -hSide * 1.5)
+		Direction.EAST: newDir = Vector2(1, -hSide * 1.5)
 	extraVel = newDir.normalized() * speed
 	move_and_slide()
 
@@ -256,3 +262,4 @@ func _on_hurtbox_area_entered(area):
 
 func _on_hitbox_area_entered(area):
 	if area.is_in_group("Play"): canDie = true
+

@@ -1,8 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://1jns7p21mhry"]
+[gd_scene load_steps=7 format=3 uid="uid://col2b2mp7eu6y"]
 
-[ext_resource type="Script" path="res://source/enemies/enemy.gd" id="1_krfr6"]
-[ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_meryf"]
-[ext_resource type="PackedScene" uid="uid://dihqfx5o1gpyv" path="res://scenes/weapons/enemies/A-Pr01.tscn" id="3_4g5wi"]
+[ext_resource type="Script" path="res://source/enemies/enemy.gd" id="1_e2hv8"]
+[ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_5u4k5"]
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/emitter.tscn" id="3_eevyu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jtchi"]
 
@@ -11,27 +11,31 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_divk0"]
 
 [node name="Enemy" type="CharacterBody2D" node_paths=PackedStringArray("Hitbox")]
-script = ExtResource("1_krfr6")
+script = ExtResource("1_e2hv8")
+directionEnum = 0
+handedness = 0
+isGround = true
 Hitbox = NodePath("Hitbox")
 health = 10
-childHood = 8
-childDur = 2.0
-childSpeed = 200
-adultHood = 8
-adultDur = 2.0
-adultSpeed = 200
-oldAge = 8
-oldSpeed = 200
+childHood = 11
+adultHood = 11
+oldAge = 11
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 0, 1, 1)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("2_meryf")
+texture = ExtResource("2_5u4k5")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_jtchi")
 disabled = true
 debug_color = Color(1, 0, 0, 0.419608)
+
+[node name="Emitter" parent="." instance=ExtResource("3_eevyu")]
+type = 1
+dirDuration = 0.1
+aimAtPlayer = true
+parallel = true
 
 [node name="Hitbox" type="Area2D" parent="."]
 scale = Vector2(0.8, 0.8)
@@ -48,8 +52,7 @@ scale = Vector2(5, 5)
 shape = SubResource("RectangleShape2D_divk0")
 debug_color = Color(0, 1, 0, 0.419608)
 
-[node name="Emitter" parent="." instance=ExtResource("3_4g5wi")]
-
 [connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]
 [connection signal="area_exited" from="Hitbox" to="." method="_on_hitbox_area_exited"]
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
+[connection signal="area_exited" from="Hurtbox" to="." method="_on_hurtbox_area_exited"]
