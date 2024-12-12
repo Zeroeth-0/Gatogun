@@ -1,18 +1,13 @@
-[gd_scene load_steps=9 format=3 uid="uid://bu4plpf86f1x1"]
+[gd_scene load_steps=5 format=3 uid="uid://bwaw2detgkuf2"]
 
-[ext_resource type="Script" path="res://source/levels/world.gd" id="1_btnht"]
-[ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="3_0hlg8"]
-[ext_resource type="PackedScene" uid="uid://cgts6rg8xrau" path="res://scenes/levels/playzone.tscn" id="4_hkylk"]
-[ext_resource type="PackedScene" uid="uid://dnm46gsra70ug" path="res://scenes/player/cat_player.tscn" id="4_nvx4x"]
-[ext_resource type="PackedScene" uid="uid://bwaw2detgkuf2" path="res://scenes/levels/ground.tscn" id="5_sf1u2"]
-[ext_resource type="PackedScene" uid="uid://col2b2mp7eu6y" path="res://scenes/enemies/PT-Pr03.tscn" id="6_ay5fw"]
-[ext_resource type="PackedScene" uid="uid://b75rvmh44msfh" path="res://scenes/enemies/PA-Pr01.tscn" id="6_kdx7s"]
-[ext_resource type="PackedScene" uid="uid://1jns7p21mhry" path="res://scenes/enemies/PA-Pr02.tscn" id="7_ewcwf"]
+[ext_resource type="Script" path="res://source/levels/world.gd" id="1_2i58f"]
+[ext_resource type="PackedScene" uid="uid://b75rvmh44msfh" path="res://scenes/enemies/PA-Pr01.tscn" id="2_fk8k3"]
+[ext_resource type="PackedScene" uid="uid://1jns7p21mhry" path="res://scenes/enemies/PA-Pr02.tscn" id="3_ipfk0"]
+[ext_resource type="PackedScene" uid="uid://col2b2mp7eu6y" path="res://scenes/enemies/PT-Pr03.tscn" id="4_qoqt7"]
 
-[node name="World" type="Node2D"]
-script = ExtResource("1_btnht")
-csv_file = "res://source/levels/test.txt"
-enemy_scenes = Array[PackedScene]([ExtResource("6_kdx7s"), ExtResource("7_ewcwf"), ExtResource("6_ay5fw")])
+[node name="Ground" type="Node2D"]
+script = ExtResource("1_2i58f")
+enemy_scenes = Array[PackedScene]([ExtResource("2_fk8k3"), ExtResource("3_ipfk0"), ExtResource("4_qoqt7")])
 
 [node name="North Lane" type="Node2D" parent="."]
 position = Vector2(324, -100)
@@ -107,15 +102,3 @@ position = Vector2(174, 0)
 
 [node name="Six" type="Marker2D" parent="South Lane"]
 position = Vector2(261, 0)
-
-[node name="Ground" parent="." instance=ExtResource("5_sf1u2")]
-csv_file = "res://source/levels/test_ground.txt"
-
-[node name="DeadBounds" parent="." instance=ExtResource("3_0hlg8")]
-
-[node name="Playzone" parent="." instance=ExtResource("4_hkylk")]
-
-[node name="CatPlayer" parent="." instance=ExtResource("4_nvx4x")]
-position = Vector2(324, 600)
-speed = 300
-screenMargin = 30

@@ -247,7 +247,7 @@ func move_diagonal():
 	var newDir = Vector2 (0, 0)
 	match directionEnum:
 		Direction.NORTH: newDir = Vector2(-hSide * 1.5, -1)
-		Direction.SOUTH: newDir = Vector2(-hSide * 1.5, 1)
+		Direction.SOUTH: newDir = Vector2(-hSide * 2, 1)
 		Direction.WEST: newDir = Vector2(-1, -hSide * 1.5)
 		Direction.EAST: newDir = Vector2(1, -hSide * 1.5)
 	extraVel = newDir.normalized() * speed

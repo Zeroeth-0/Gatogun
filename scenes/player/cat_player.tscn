@@ -18,15 +18,22 @@ scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_86ini")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-scale = Vector2(0.4, 0.4)
+scale = Vector2(0.3, 0.3)
 shape = SubResource("RectangleShape2D_klkvo")
 disabled = true
+debug_color = Color(0, 1, 0, 0.419608)
+
+[node name="Denialzone" type="Area2D" parent="." groups=["Player"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Denialzone"]
+scale = Vector2(4, 4)
+shape = SubResource("RectangleShape2D_klkvo")
 debug_color = Color(0, 1, 0, 0.419608)
 
 [node name="Hurtbox" type="Area2D" parent="." groups=["Player"]]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
-scale = Vector2(0.4, 0.4)
+scale = Vector2(0.3, 0.3)
 shape = SubResource("RectangleShape2D_klkvo")
 debug_color = Color(0, 1, 0, 0.419608)
 
