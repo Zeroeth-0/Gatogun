@@ -10,13 +10,13 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_divk0"]
 
-[node name="Enemy" type="CharacterBody2D" node_paths=PackedStringArray("Hitbox")]
+[node name="Enemy" type="CharacterBody2D"]
 script = ExtResource("1_nfbc7")
-Hitbox = NodePath("Hitbox")
 health = 20
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 0, 1, 1)
+z_index = 1
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("1_ff2ik")
 

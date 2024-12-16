@@ -9,11 +9,13 @@
 z_index = 1
 script = ExtResource("1_sm283")
 speed = 1100.0
+damage = 2
 lifeTime = 0.4
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 0, 1)
-scale = Vector2(0.3, 0.3)
+z_index = 1
+scale = Vector2(0.35, 0.35)
 texture = ExtResource("2_shaf3")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

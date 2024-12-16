@@ -1,13 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://bwaw2detgkuf2"]
+[gd_scene load_steps=2 format=3 uid="uid://4y26tmtqbxdx"]
 
 [ext_resource type="Script" path="res://source/levels/world.gd" id="1_2i58f"]
-[ext_resource type="PackedScene" uid="uid://b75rvmh44msfh" path="res://scenes/enemies/PA-Pr01.tscn" id="2_fk8k3"]
-[ext_resource type="PackedScene" uid="uid://1jns7p21mhry" path="res://scenes/enemies/PA-Pr02.tscn" id="3_ipfk0"]
-[ext_resource type="PackedScene" uid="uid://col2b2mp7eu6y" path="res://scenes/enemies/PT-Pr03.tscn" id="4_qoqt7"]
 
 [node name="Ground" type="Node2D"]
 script = ExtResource("1_2i58f")
-enemy_scenes = Array[PackedScene]([ExtResource("2_fk8k3"), ExtResource("3_ipfk0"), ExtResource("4_qoqt7")])
 
 [node name="North Lane" type="Node2D" parent="."]
 position = Vector2(324, -100)
