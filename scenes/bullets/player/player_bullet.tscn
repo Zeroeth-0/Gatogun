@@ -8,7 +8,7 @@
 [node name="Player Bullet" type="Area2D" groups=["Fire"]]
 z_index = 1
 script = ExtResource("1_08ob5")
-speed = 1300.0
+speed = 1700.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 0, 1)
