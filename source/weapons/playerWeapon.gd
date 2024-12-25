@@ -5,7 +5,7 @@ extends Node2D
 @export_range(-15, 15, 5) var deviationAngle: float = 0.0 # Desviación en grados (0, 30 o -30)
 
 var can_fire: bool = true # Controla si se puede disparar
-const MAX_BULLETS: int = 4 # Máximo de balas permitidas en el grupo
+const MAX_BULLETS: int = 3 # Máximo de balas permitidas en el grupo
 
 # Llamado cada cuadro
 func _process(delta: float):
@@ -23,7 +23,7 @@ func fire_burst(dir):
 	var newRate = fire_rate
 	
 	# Dispara 4 balas seguidas en la misma dirección
-	for i in range(4):
+	for i in range(MAX_BULLETS):
 		await get_tree().create_timer(0.05).timeout # Intervalo entre balas en la ráfaga
 		fire_bullet(dir, global_position)
 	

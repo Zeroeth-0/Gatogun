@@ -263,3 +263,6 @@ func _on_hurtbox_area_entered(area):
 func _on_hitbox_area_entered(area):
 	if area.is_in_group("Play"): canDie = true
 
+func _on_hitbox_area_exited(area):
+	if area.is_in_group("Free"): queue_free()
+

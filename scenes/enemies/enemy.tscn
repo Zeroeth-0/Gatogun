@@ -39,7 +39,7 @@ scale = Vector2(0.8, 0.8)
 shape = SubResource("RectangleShape2D_vwy2o")
 debug_color = Color(1, 0, 0, 0.419608)
 
-[node name="Hurtbox" type="Area2D" parent="." groups=["Free"]]
+[node name="Hurtbox" type="Area2D" parent="." groups=["Enemy"]]
 scale = Vector2(0.8, 0.8)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]

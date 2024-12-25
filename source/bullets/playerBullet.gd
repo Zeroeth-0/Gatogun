@@ -26,6 +26,8 @@ func set_dir(newDir, devAngle):
 	# Rotar el nodo para que apunte en la dirección inicial
 	rotation = direction.angle()
 
-# Manejar la colisión con áreas
 func _on_area_entered(area):
+	if area.is_in_group("Enemy"): queue_free()
+
+func _on_area_exited(area):
 	if area.is_in_group("Free"): queue_free()
