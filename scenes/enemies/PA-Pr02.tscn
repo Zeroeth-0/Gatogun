@@ -15,12 +15,12 @@ script = ExtResource("1_krfr6")
 health = 10
 childHood = 8
 childDur = 2.0
-childSpeed = 200
+childSpeed = 250
 adultHood = 8
 adultDur = 2.0
-adultSpeed = 200
+adultSpeed = 250
 oldAge = 8
-oldSpeed = 200
+oldSpeed = 250
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 0, 1, 1)
