@@ -90,7 +90,7 @@ func _ready():
 	rank_adj()
 	shoot()
 
-func _physics_process(delta):
+func _process(delta):
 	if "canShoot" in get_parent(): canShoot = get_parent().canShoot
 	if not stop_rotation:
 		rotation_degrees += rotationSpeed * delta * rotation_direction

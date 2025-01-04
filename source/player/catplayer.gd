@@ -5,7 +5,7 @@ extends CharacterBody2D
 @export var screenMargin: int
 var direction: Vector2 = Vector2.UP
 
-func _physics_process(_delta):
+func _process(_delta):
 	movement()
 	screen_clamp(get_viewport().get_visible_rect().size)
 	speed = 200 if INPUT.fireHold else 350

@@ -117,6 +117,4 @@ enemy_scenes = Array[PackedScene]([ExtResource("6_kdx7s"), ExtResource("7_ewcwf"
 [node name="Playzone" parent="." instance=ExtResource("4_hkylk")]
 
 [node name="CatPlayer" parent="." instance=ExtResource("4_nvx4x")]
-position = Vector2(324, 600)
-speed = 300
-screenMargin = 30
+position = Vector2(324, 599)

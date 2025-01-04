@@ -51,7 +51,7 @@ func modify_speed(newFstNewSpeed: int, newFstStartTime: float, newSndNewSpeed: i
 	sndNewSpeed = newSndNewSpeed
 	sndStartTime = newSndStartTime
 
-func _physics_process(delta: float) -> void:
+func _process(delta: float) -> void:
 	elapsedTime += delta
 	
 	if !grav: velocity = direction * speed

@@ -24,7 +24,7 @@ var holdLimit: float = 0.3
 # List of pressed buttons in order
 var buttonOrder: Array = []
 
-func _physics_process(delta):
+func _process(delta):
 	d_pad()
 	action_input(delta)
 
