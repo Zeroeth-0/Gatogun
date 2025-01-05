@@ -22,10 +22,6 @@ INPUT="*res://utils/InputManager.gd"
 GETPLAYER="*res://utils/GetPlayer.gd"
 SCROLL="*res://utils/ScrollManager.gd"
 
-[debug]
-
-settings/stdout/print_fps=true
-
 [display]
 
 window/size/viewport_width=648

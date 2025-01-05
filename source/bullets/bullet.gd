@@ -91,3 +91,6 @@ func update_speed() -> void:
 		speed = fstNewSpeed
 	elif elapsedTime >= sndStartTime:
 		speed = sndNewSpeed
+
+func _on_area_exited(area):
+	if area.is_in_group("Free"): queue_free()
