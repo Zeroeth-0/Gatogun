@@ -265,4 +265,3 @@ func _on_hitbox_area_entered(area):
 
 func _on_hitbox_area_exited(area):
 	if area.is_in_group("Free"): queue_free()
-

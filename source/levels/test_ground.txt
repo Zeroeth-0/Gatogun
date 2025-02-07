@@ -1,5 +1,5 @@
 enemy_type,lane_side,lane_number,lane_offset,handedness,direction,spawn_delay
-PT-Pr03,E,5,0,L,N,3
+PT-Pr03,E,5,0,L,N,2
 PT-Pr03,E,4,0,L,N,0
 PT-Pr03,E,3,0,L,N,0
 PT-Pr03,E,5,0,L,N,1
