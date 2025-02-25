@@ -18,6 +18,24 @@ enum MoveType { STRAIGHT,
 
 # Parámetros generales
 @export var intensity = 1
+@export_range(0, 90, 15) var deviationAngle: int = 90
+@export var scrollFollow: bool = false
+@export var isGround: bool = false
+@export var health: int
+var canDie: bool = false
+var canShoot: bool = true
+var extraPts: bool = true
+
+# Size
+enum Size { WEAK, ELITE }
+var SIZE_MAP = {
+	Size.WEAK: "Weak",
+	Size.ELITE: "Elite"
+}
+@export var sizeEnum: Size = Size.WEAK
+var size: String = "Weak"
+
+# Direction
 enum Direction { NORTH, WEST, SOUTH, EAST }
 @export var directionEnum: Direction = Direction.SOUTH
 var DIRECTION_MAP = {
@@ -27,14 +45,10 @@ var DIRECTION_MAP = {
 	Direction.EAST: Vector2(1, 0).normalized()
 }
 var direction: Vector2 = Vector2(0, 1)
+
+# Handedness
 enum Handedness { LEFT, RIGHT }
 @export var handedness = Handedness.RIGHT
-@export_range(0, 90, 15) var deviationAngle: int = 90
-@export var scrollFollow: bool = false
-@export var isGround: bool = false
-@export var health: int
-var canDie: bool = false
-var canShoot: bool = true
 
 @export_category("CHILDHOOD")
 @export var childHood : MoveType = MoveType.STRAIGHT
@@ -67,6 +81,7 @@ var cantShoot: bool = false
 # Configurar el movimiento inicial
 func _ready():
 	direction = DIRECTION_MAP.get(directionEnum)
+	size = SIZE_MAP.get(sizeEnum)
 	stageTimer = 0.0
 	hSide = -1 if handedness == Handedness.RIGHT else 1
 	currDir = direction
@@ -104,17 +119,17 @@ func _process(delta):
 # Selección de comportamiento según el tipo de movimiento
 func apply_movement(moveType, dur, delta):
 	match moveType:
-		MoveType.STRAIGHT: move_straight(delta)
-		MoveType.SINUSOIDAL: move_sinusoidal(delta)
-		MoveType.OSCILLATE: move_oscillate(delta)
-		MoveType.BREATH: move_breath(delta)
+		MoveType.STRAIGHT: move_straight()
+		MoveType.SINUSOIDAL: move_sinusoidal()
+		MoveType.OSCILLATE: move_oscillate()
+		MoveType.BREATH: move_breath()
 		MoveType.BLOCK: move_block(delta)
 		MoveType.CENTER: move_center(delta)
 		MoveType.CURVE: move_curve(dur, delta)
-		MoveType.CIRCULAR: move_circular(dur, delta)
+		MoveType.CIRCULAR: move_circular(delta)
 		MoveType.TOWARDS_PLAYER: move_towards_player()
 		MoveType.LEAVE: move_leave()
-		MoveType.LEAVE_SIDE: move_leave_side(delta)
+		MoveType.LEAVE_SIDE: move_leave_side()
 		MoveType.DIAGONAL: move_diagonal()
 		MoveType.STILL: move_still()
 
@@ -124,15 +139,17 @@ func enter_next_stage(nextStage):
 	stageTimer = 0.0
 
 func die():
-	if health <= 0: queue_free()
+	if health <= 0:
+		SCORE.get_dead_enemy(size, extraPts)
+		queue_free()
 
 # Behaviors
 
-func move_straight(delta):
+func move_straight():
 	extraVel = direction * speed
 	move_and_slide()
 
-func move_sinusoidal(delta):
+func move_sinusoidal():
 	var frequency = 2.0  # Frecuencia de la oscilación
 	var amplitude = 50.0  # Amplitud de la oscilación
 	var offset = sin(frequency * stageTimer + PI / 2) * amplitude * intensity * hSide  # Desfase con hSide
@@ -142,7 +159,7 @@ func move_sinusoidal(delta):
 	extraVel = (direction * speed) + (perpendicular_dir * offset)
 	move_and_slide()
 
-func move_oscillate(delta):
+func move_oscillate():
 	var frequency = 2.0  # Frecuencia de la oscilación
 	var amplitude = 50.0  # Amplitud de la oscilación
 	var offset = sign(sin(frequency * stageTimer + PI / 2)) * amplitude * intensity * hSide  # Picos en vez de curva
@@ -152,7 +169,7 @@ func move_oscillate(delta):
 	extraVel = (direction * speed) + (perpendicular_dir * offset)
 	move_and_slide()
 
-func move_breath(delta):
+func move_breath():
 	var frequency = 2
 	var horizontal_amplitude = 15.0
 	var vertical_amplitude = 7.0
@@ -215,7 +232,7 @@ func move_curve(dur, delta):
 	extraVel = direction * speed
 	move_and_slide()
 
-func move_circular(dur, delta):
+func move_circular(delta):
 	direction = direction.rotated(deg_to_rad(deviationAngle) * hSide * delta)
 	extraVel = direction * speed
 	move_and_slide()
@@ -232,7 +249,7 @@ func move_leave():
 	extraVel = -direction * speed
 	move_and_slide()
 
-func move_leave_side(delta):
+func move_leave_side():
 	scrollFollow = false
 	var newDir = Vector2 (0, 0)
 	match directionEnum:
@@ -258,10 +275,12 @@ func move_still():
 	move_and_slide()
 
 func _on_hurtbox_area_entered(area):
-	if area.is_in_group("Fire") and canDie: health -= area.damage
+	if area.is_in_group("Fire") and canDie:
+		health -= area.damage
 
 func _on_hitbox_area_entered(area):
 	if area.is_in_group("Play"): canDie = true
 
 func _on_hitbox_area_exited(area):
 	if area.is_in_group("Free"): queue_free()
+	if area.is_in_group("Play"): extraPts = true

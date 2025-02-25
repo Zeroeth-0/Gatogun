@@ -21,6 +21,7 @@ config/icon="res://icon.svg"
 INPUT="*res://utils/InputManager.gd"
 GETPLAYER="*res://utils/GetPlayer.gd"
 SCROLL="*res://utils/ScrollManager.gd"
+SCORE="*res://utils/ScoreManager.gd"
 
 [display]
 

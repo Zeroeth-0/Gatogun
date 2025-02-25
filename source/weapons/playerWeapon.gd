@@ -8,7 +8,7 @@ var can_fire: bool = true # Controla si se puede disparar
 const MAX_BULLETS: int = 3 # Máximo de balas permitidas en el grupo
 
 # Llamado cada cuadro
-func _process(delta: float):
+func _process(_delta):
 	# Contar las balas activas en el grupo "Player Bullet"
 	var active_bullets = get_tree().get_nodes_in_group("Fire").size()
 	var maxBullets = MAX_BULLETS * get_parent().get_child_count()

@@ -24,7 +24,7 @@ enum Type { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM }
 # ------------------------------------------------Weapon--------------------------------------------------
 
 @export_category("WEAPON")
-@export_range(0, 10, 1) var rank: float = 1.0
+@export_range(0, 6, 1) var rank: float = 1.0
 @export_group("DIRECTION")
 enum Direction { NORTH, WEST, SOUTH, EAST, NWEST, NEAST, SWEST, SEAST }
 @export var directionEnum: Direction = Direction.SOUTH # Implementado
@@ -145,7 +145,9 @@ func shoot():
 		
 		for i in burstCount:
 			if speedVar == SpeedVar.BULLET: new_spd *= speedVariation
-			if canShoot: fire(new_spd)
+			if canShoot:
+				get_parent().extraPts = false
+				fire(new_spd)
 			await get_tree().create_timer(bulletInterval).timeout
 		
 		if !burstRotation: stop_rotation = false

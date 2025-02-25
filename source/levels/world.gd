@@ -73,11 +73,11 @@ func spawn_enemy(data: Array) -> void:
 	get_tree().current_scene.add_child(enemy_instance)
 
 # Obtener el PackedScene basado en el nombre
-func get_enemy_scene_by_name(name: String) -> PackedScene:
+func get_enemy_scene_by_name(enemyName: String) -> PackedScene:
 	for scene in enemy_scenes:
 		# Obtener el nombre del archivo sin la extensión (.tscn)
 		var scene_name = scene.resource_path.get_file().get_basename()
 		# Compara con el nombre pasado como argumento
-		if scene_name == name:
+		if scene_name == enemyName:
 			return scene
 	return null

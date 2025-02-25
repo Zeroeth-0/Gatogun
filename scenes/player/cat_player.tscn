@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://source/player/catplayer.gd" id="1_7pfs0"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_86ini"]
-[ext_resource type="PackedScene" uid="uid://cjhkionj3a6h3" path="res://scenes/weapons/player/heavy_weapon.tscn" id="3_gdtnq"]
+[ext_resource type="PackedScene" uid="uid://b20svaskudtin" path="res://scenes/weapons/player/normal_weapon.tscn" id="3_p4n0o"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_klkvo"]
 
@@ -11,6 +11,13 @@ z_index = 2
 script = ExtResource("1_7pfs0")
 speed = 300
 screenMargin = 50
+
+[node name="Hurtbox" type="Area2D" parent="." groups=["Player"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+scale = Vector2(0.3, 0.3)
+shape = SubResource("RectangleShape2D_klkvo")
+debug_color = Color(0, 1, 0, 0.419608)
 
 [node name="Icon" type="Sprite2D" parent="."]
 modulate = Color(0, 1, 0, 1)
@@ -31,14 +38,7 @@ scale = Vector2(4, 4)
 shape = SubResource("RectangleShape2D_klkvo")
 debug_color = Color(0, 1, 0, 0.419608)
 
-[node name="Hurtbox" type="Area2D" parent="." groups=["Player"]]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
-scale = Vector2(0.3, 0.3)
-shape = SubResource("RectangleShape2D_klkvo")
-debug_color = Color(0, 1, 0, 0.419608)
-
-[node name="Weapon" parent="." instance=ExtResource("3_gdtnq")]
+[node name="Weapon" parent="." instance=ExtResource("3_p4n0o")]
 
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
 [connection signal="area_exited" from="Hurtbox" to="." method="_on_hurtbox_area_exited"]
