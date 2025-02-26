@@ -2,26 +2,27 @@ extends Node
 
 # Parámetros generales
 var GeneralGameScore: int = 0
-var weakPts: int = 15000
-var elitePts: int = 25000
+var combo: int = 0
+var comboTimer: float = 1.0
+@export_range(0, 6, 1) var Rank: float = 1.0
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
+var comboDrainTime: float = 0.0  # Acumulador para reducción de combo
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
-
-func get_dead_enemy(size, extraPts):
-	var pts: int = 0
-	match size:
-		"Weak": pts += weakPts
-		"Elite": pts += elitePts
+	comboTimer -= delta
+	if combo <= 0: combo = 0
 	
-	if extraPts: pts += pts / 2
-	add_score(pts)
+	if comboTimer <= 0 and combo > 0:
+		comboDrainTime += delta  # Acumula tiempo transcurrido
+	
+		while comboDrainTime >= 0.001:
+			combo -= 1
+			comboDrainTime -= 0.001  # Resta el tiempo usado para mantener precisión
 
-func add_score(scoreVal):
-	GeneralGameScore += scoreVal
-	print(GeneralGameScore)
+
+func increase_combo(val):
+	combo += val;
+	comboTimer = 1.0
+
+func add_score():
+	GeneralGameScore += combo

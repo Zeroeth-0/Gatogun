@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bu4plpf86f1x1"]
+[gd_scene load_steps=11 format=3 uid="uid://bi7uyv2plo07x"]
 
 [ext_resource type="Script" path="res://source/levels/world.gd" id="1_btnht"]
 [ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="3_0hlg8"]
@@ -8,6 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://col2b2mp7eu6y" path="res://scenes/enemies/PT-Pr03.tscn" id="6_ay5fw"]
 [ext_resource type="PackedScene" uid="uid://b75rvmh44msfh" path="res://scenes/enemies/PA-Pr01.tscn" id="6_kdx7s"]
 [ext_resource type="PackedScene" uid="uid://1jns7p21mhry" path="res://scenes/enemies/PA-Pr02.tscn" id="7_ewcwf"]
+[ext_resource type="PackedScene" uid="uid://chegi2am56x1" path="res://scenes/UI/combo_label.tscn" id="9_ckr2p"]
+[ext_resource type="PackedScene" uid="uid://jkopai8ptvrm" path="res://scenes/UI/score_label.tscn" id="10_s7d0j"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_btnht")
@@ -118,3 +120,9 @@ enemy_scenes = Array[PackedScene]([ExtResource("6_kdx7s"), ExtResource("7_ewcwf"
 
 [node name="CatPlayer" parent="." instance=ExtResource("4_nvx4x")]
 position = Vector2(324, 599)
+
+[node name="ComboLabel" parent="." instance=ExtResource("9_ckr2p")]
+z_index = 5
+
+[node name="ScoreLabel" parent="." instance=ExtResource("10_s7d0j")]
+z_index = 5

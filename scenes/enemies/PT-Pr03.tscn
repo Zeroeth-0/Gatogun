@@ -11,12 +11,13 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_divk0"]
 
 [node name="Enemy" type="CharacterBody2D"]
+z_index = 1
 script = ExtResource("1_e2hv8")
-directionEnum = 0
-handedness = 0
 scrollFollow = true
 isGround = true
 health = 10
+directionEnum = 0
+handedness = 0
 childHood = 11
 adultHood = 11
 oldAge = 11
@@ -55,3 +56,4 @@ debug_color = Color(0, 1, 0, 0.419608)
 [connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]
 [connection signal="area_exited" from="Hitbox" to="." method="_on_hitbox_area_exited"]
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
+[connection signal="area_exited" from="Hurtbox" to="." method="_on_hurtbox_area_exited"]

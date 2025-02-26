@@ -27,7 +27,9 @@ func set_dir(newDir, devAngle):
 	rotation = direction.angle()
 
 func _on_area_entered(area):
-	if area.is_in_group("Enemy"): queue_free()
+	if area.is_in_group("Enemy"):
+		SCORE.increase_combo(damage)
+		queue_free()
 
 func _on_area_exited(area):
 	if area.is_in_group("Free"): queue_free()

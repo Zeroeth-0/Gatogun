@@ -7,7 +7,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_klkvo"]
 
 [node name="CatPlayer" type="CharacterBody2D" groups=["Player"]]
-z_index = 2
+z_index = 3
 script = ExtResource("1_7pfs0")
 speed = 300
 screenMargin = 50
@@ -32,6 +32,7 @@ disabled = true
 debug_color = Color(0, 1, 0, 0.419608)
 
 [node name="Denialzone" type="Area2D" parent="." groups=["Player"]]
+scale = Vector2(1.3, 1.3)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Denialzone"]
 scale = Vector2(4, 4)

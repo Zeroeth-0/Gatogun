@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://jkopai8ptvrm"]
+
+[ext_resource type="Script" path="res://source/UI/label.gd" id="1_rwnj0"]
+
+[node name="ScoreLabel" type="RichTextLabel"]
+top_level = true
+offset_left = 237.0
+offset_top = 25.0
+offset_right = 410.0
+offset_bottom = 97.0
+script = ExtResource("1_rwnj0")

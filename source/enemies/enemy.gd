@@ -24,16 +24,7 @@ enum MoveType { STRAIGHT,
 @export var health: int
 var canDie: bool = false
 var canShoot: bool = true
-var extraPts: bool = true
-
-# Size
-enum Size { WEAK, ELITE }
-var SIZE_MAP = {
-	Size.WEAK: "Weak",
-	Size.ELITE: "Elite"
-}
-@export var sizeEnum: Size = Size.WEAK
-var size: String = "Weak"
+@export var medal: PackedScene = preload("res://scenes/items/medal.tscn")
 
 # Direction
 enum Direction { NORTH, WEST, SOUTH, EAST }
@@ -81,7 +72,6 @@ var cantShoot: bool = false
 # Configurar el movimiento inicial
 func _ready():
 	direction = DIRECTION_MAP.get(directionEnum)
-	size = SIZE_MAP.get(sizeEnum)
 	stageTimer = 0.0
 	hSide = -1 if handedness == Handedness.RIGHT else 1
 	currDir = direction
@@ -140,7 +130,10 @@ func enter_next_stage(nextStage):
 
 func die():
 	if health <= 0:
-		SCORE.get_dead_enemy(size, extraPts)
+		SCORE.add_score()
+		var item = medal.instantiate()
+		get_tree().current_scene.add_child(item)
+		item.position = global_position
 		queue_free()
 
 # Behaviors
@@ -275,12 +268,14 @@ func move_still():
 	move_and_slide()
 
 func _on_hurtbox_area_entered(area):
-	if area.is_in_group("Fire") and canDie:
-		health -= area.damage
+	if area.is_in_group("Fire") and canDie: health -= area.damage
+	if area.is_in_group("Player") and isGround: canShoot = false
+
+func _on_hurtbox_area_exited(area):
+	if area.is_in_group("Player") and isGround: canShoot = true
 
 func _on_hitbox_area_entered(area):
 	if area.is_in_group("Play"): canDie = true
 
 func _on_hitbox_area_exited(area):
 	if area.is_in_group("Free"): queue_free()
-	if area.is_in_group("Play"): extraPts = true

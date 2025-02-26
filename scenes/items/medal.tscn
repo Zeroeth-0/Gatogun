@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://cr88epenivqi"]
+
+[ext_resource type="Script" path="res://source/items/item.gd" id="1_8fdno"]
+[ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_ggbcn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ujur0"]
+
+[node name="Medal" type="Area2D"]
+z_index = 2
+script = ExtResource("1_8fdno")
+speed = 500
+
+[node name="Icon" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 0, 1)
+z_index = 2
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_ggbcn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_ujur0")
+debug_color = Color(1, 1, 0, 0.419608)
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
