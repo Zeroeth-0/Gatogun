@@ -130,10 +130,11 @@ func enter_next_stage(nextStage):
 
 func die():
 	if health <= 0:
-		SCORE.add_score()
+		SCORE.add_score(SCORE.combo)
 		var item = medal.instantiate()
 		get_tree().current_scene.add_child(item)
 		item.position = global_position
+		item.get_distance(global_position)
 		queue_free()
 
 # Behaviors

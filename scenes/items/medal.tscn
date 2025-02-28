@@ -1,23 +1,39 @@
-[gd_scene load_steps=4 format=3 uid="uid://cr88epenivqi"]
+[gd_scene load_steps=5 format=3 uid="uid://cr88epenivqi"]
 
 [ext_resource type="Script" path="res://source/items/item.gd" id="1_8fdno"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_ggbcn"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ujur0"]
 
-[node name="Medal" type="Area2D"]
+[sub_resource type="LabelSettings" id="LabelSettings_3pq1s"]
+font_size = 60
+
+[node name="Medal" type="Area2D" node_paths=PackedStringArray("label")]
 z_index = 2
 script = ExtResource("1_8fdno")
 speed = 500
+label = NodePath("Label")
 
 [node name="Icon" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 0, 1)
 z_index = 2
-scale = Vector2(0.5, 0.5)
+scale = Vector2(0.7, 0.7)
 texture = ExtResource("2_ggbcn")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_ujur0")
 debug_color = Color(1, 1, 0, 0.419608)
+
+[node name="Label" type="Label" parent="."]
+modulate = Color(1, 0, 0, 1)
+z_index = 2
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = 50.0
+text = "5"
+label_settings = SubResource("LabelSettings_3pq1s")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]

@@ -5,10 +5,25 @@ extends CharacterBody2D
 @export var screenMargin: int
 var direction: Vector2 = Vector2.UP
 
+@export_category("WEAPONS")
+@export var normalWeapon: Node2D
+@export var heavyWeapon: Node2D
+
+func _ready():
+	normalWeapon.set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
+	heavyWeapon.set_deferred("process_mode", Node.PROCESS_MODE_DISABLED)
+
 func _process(_delta):
 	movement()
 	screen_clamp(get_viewport().get_visible_rect().size)
 	speed = 200 if INPUT.fireHold else 350
+	
+	if SCORE.isFever:
+		normalWeapon.set_deferred("process_mode", Node.PROCESS_MODE_DISABLED)
+		heavyWeapon.set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
+	else:
+		normalWeapon.set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
+		heavyWeapon.set_deferred("process_mode", Node.PROCESS_MODE_DISABLED)
 
 # Limita la posición del personaje a los márgenes de la pantalla
 func screen_clamp(screen_size):

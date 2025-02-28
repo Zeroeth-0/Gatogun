@@ -4,8 +4,7 @@ extends Node2D
 @export var fire_rate: float = 0.01 # Tiempo entre ráfagas
 var rate = fire_rate
 
-# Variable que será true si todos los hijos pueden disparar
-var canFire = true
+var canFire: bool = true
 
 func _process(delta):
 	# Obtenemos todos los hijos del nodo

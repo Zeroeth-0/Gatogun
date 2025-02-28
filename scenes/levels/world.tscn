@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bi7uyv2plo07x"]
+[gd_scene load_steps=12 format=3 uid="uid://bi7uyv2plo07x"]
 
 [ext_resource type="Script" path="res://source/levels/world.gd" id="1_btnht"]
 [ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="3_0hlg8"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://1jns7p21mhry" path="res://scenes/enemies/PA-Pr02.tscn" id="7_ewcwf"]
 [ext_resource type="PackedScene" uid="uid://chegi2am56x1" path="res://scenes/UI/combo_label.tscn" id="9_ckr2p"]
 [ext_resource type="PackedScene" uid="uid://jkopai8ptvrm" path="res://scenes/UI/score_label.tscn" id="10_s7d0j"]
+[ext_resource type="PackedScene" uid="uid://bpbp12uqxmutq" path="res://scenes/UI/fever_label.tscn" id="11_c27j3"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_btnht")
@@ -126,3 +127,5 @@ z_index = 5
 
 [node name="ScoreLabel" parent="." instance=ExtResource("10_s7d0j")]
 z_index = 5
+
+[node name="FeverLabel" parent="." instance=ExtResource("11_c27j3")]
