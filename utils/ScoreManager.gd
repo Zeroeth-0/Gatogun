@@ -5,6 +5,7 @@ var GeneralGameScore: int = 0
 var combo: int = 0
 var fever: int = 0
 var isFever: bool = false
+var rank: int = 1
 var comboTimer: float = 1.0
 var feverTimer: float = 3.0
 @export_range(0, 6, 1) var Rank: float = 1.0
@@ -16,10 +17,14 @@ func _process(delta):
 	fever_counter(delta)
 	combo_counter(delta)
 	
-	if fever >= 100:
-		isFever = true
+	if fever >= 200:
 		fever = 100
-	if fever <= 0: isFever = false
+		if rank < 6: rank += 1
+	
+	if fever >= 100: isFever = true
+	if fever <= 0:
+		isFever = false
+		rank = 1
 
 func fever_counter(delta):
 	feverTimer -= delta
@@ -52,5 +57,5 @@ func increase_fever(val):
 	feverTimer = 3.0
 
 func add_score(score):
-	if isFever: score *= 10
+	if isFever: score *= 2**rank
 	GeneralGameScore += score

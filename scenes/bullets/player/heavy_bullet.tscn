@@ -7,6 +7,7 @@
 
 [node name="Player Bullet" type="Area2D" groups=["Fire"]]
 z_index = 2
+scale = Vector2(1.1, 1.1)
 script = ExtResource("1_hdvn3")
 speed = 1100.0
 damage = 2

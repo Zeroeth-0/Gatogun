@@ -12,3 +12,4 @@ pivot_offset = Vector2(275, 0)
 fill_mode = 6
 texture_progress = ExtResource("1_643o8")
 script = ExtResource("2_km53o")
+fever_color = Color(1, 0, 0, 1)

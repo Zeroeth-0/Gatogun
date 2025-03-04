@@ -24,7 +24,7 @@ enum Type { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM }
 # ------------------------------------------------Weapon--------------------------------------------------
 
 @export_category("WEAPON")
-var rank = SCORE.Rank
+var rank = SCORE.rank
 @export_group("DIRECTION")
 enum Direction { NORTH, WEST, SOUTH, EAST, NWEST, NEAST, SWEST, SEAST }
 @export var directionEnum: Direction = Direction.SOUTH # Implementado

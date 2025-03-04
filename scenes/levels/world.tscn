@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bi7uyv2plo07x"]
+[gd_scene load_steps=13 format=3 uid="uid://bi7uyv2plo07x"]
 
 [ext_resource type="Script" path="res://source/levels/world.gd" id="1_btnht"]
 [ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="3_0hlg8"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://chegi2am56x1" path="res://scenes/UI/combo_label.tscn" id="9_ckr2p"]
 [ext_resource type="PackedScene" uid="uid://jkopai8ptvrm" path="res://scenes/UI/score_label.tscn" id="10_s7d0j"]
 [ext_resource type="PackedScene" uid="uid://ber78ar7g5504" path="res://scenes/UI/fever_bar.tscn" id="11_yb1ae"]
+[ext_resource type="PackedScene" uid="uid://0mmb5byle7yk" path="res://scenes/UI/extend_bar.tscn" id="12_rh75x"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_btnht")
@@ -112,7 +113,6 @@ position = Vector2(174, 0)
 position = Vector2(261, 0)
 
 [node name="Ground" parent="." instance=ExtResource("5_sf1u2")]
-csv_file = "res://source/levels/test_ground.txt"
 enemy_scenes = Array[PackedScene]([ExtResource("6_kdx7s"), ExtResource("7_ewcwf"), ExtResource("6_ay5fw")])
 
 [node name="DeadBounds" parent="." instance=ExtResource("3_0hlg8")]
@@ -131,3 +131,10 @@ z_index = 5
 [node name="FeverBar" parent="." instance=ExtResource("11_yb1ae")]
 z_index = 5
 fever_color = Color(0.921569, 0, 0, 1)
+
+[node name="ExtendBar" parent="FeverBar" instance=ExtResource("12_rh75x")]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 548.0
+offset_bottom = 24.0

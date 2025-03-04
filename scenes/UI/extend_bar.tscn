@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://0mmb5byle7yk"]
+
+[ext_resource type="Texture2D" uid="uid://ce0fya5hhg2rw" path="res://progressbar.png" id="1_ju7lg"]
+[ext_resource type="Script" path="res://source/UI/feverBar.gd" id="2_iqj6p"]
+
+[node name="ExtendBar" type="TextureProgressBar"]
+offset_left = 50.0
+offset_top = 68.0
+offset_right = 600.0
+offset_bottom = 92.0
+scale = Vector2(0.998192, 0.982759)
+pivot_offset = Vector2(275, 0)
+fill_mode = 6
+texture_progress = ExtResource("1_ju7lg")
+script = ExtResource("2_iqj6p")
+mode_extend = true
