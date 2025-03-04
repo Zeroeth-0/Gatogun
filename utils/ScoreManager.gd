@@ -7,7 +7,7 @@ var fever: int = 0
 var isFever: bool = false
 var rank: int = 1
 var comboTimer: float = 1.0
-var feverTimer: float = 3.0
+var feverTimer: float = 1.0
 @export_range(0, 6, 1) var Rank: float = 1.0
 
 var comboDrainTime: float = 0.0  # Acumulador para reducción de combo
@@ -54,7 +54,7 @@ func increase_combo(val):
 
 func increase_fever(val):
 	fever += val
-	feverTimer = 3.0
+	feverTimer = 1.0
 
 func add_score(score):
 	if isFever: score *= 2**rank

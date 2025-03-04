@@ -125,11 +125,19 @@ position = Vector2(324, 599)
 [node name="ComboLabel" parent="." instance=ExtResource("9_ckr2p")]
 z_index = 5
 
+[node name="RankLabel" parent="." instance=ExtResource("9_ckr2p")]
+z_index = 5
+offset_left = 450.0
+offset_right = 623.0
+labelEnum = 2
+
 [node name="ScoreLabel" parent="." instance=ExtResource("10_s7d0j")]
 z_index = 5
 
 [node name="FeverBar" parent="." instance=ExtResource("11_yb1ae")]
 z_index = 5
+offset_top = 50.0
+offset_bottom = 74.0
 fever_color = Color(0.921569, 0, 0, 1)
 
 [node name="ExtendBar" parent="FeverBar" instance=ExtResource("12_rh75x")]
