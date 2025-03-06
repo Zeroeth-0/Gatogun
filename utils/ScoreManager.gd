@@ -21,22 +21,24 @@ func _process(delta):
 		fever = 100
 		if rank < 6: rank += 1
 	
-	if fever >= 100: isFever = true
+	if fever >= 100:
+		isFever = true
+		if rank >= 6: fever = 100
 	if fever <= 0:
 		isFever = false
 		rank = 1
 
 func fever_counter(delta):
 	feverTimer -= delta
-	if feverTimer <= 0 and !isFever: fever = 0
-	
-	if fever > 0 and isFever:
-		feverDrainTime += delta
-		var drainRate = 0.05
-		while feverDrainTime >= drainRate:
-			fever -= 1
-			feverDrainTime -= drainRate
-	elif fever <= 0: fever = 0
+	if feverTimer <= 0 and !isFever: fever_countdown(delta, 0.001)
+	if fever > 0 and isFever: fever_countdown(delta, 0.05)
+	if fever <= 0: fever = 0
+
+func fever_countdown(delta, drainRate):
+	feverDrainTime += delta
+	while feverDrainTime >= drainRate:
+		fever -= 1
+		feverDrainTime -= drainRate
 
 func combo_counter(delta):
 	comboTimer -= delta
