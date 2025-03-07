@@ -180,44 +180,36 @@ func move_breath():
 	move_and_slide()
 
 func move_block(delta):
-	var player_pos = GETPLAYER.get_player()  # Obtén la posición del jugador
+	var player_pos = GETPLAYER.get_player()
 	
-	# Crear una dirección temporal para no afectar la dirección original
-	var temp_direction = Vector2()
+	var follow_speed = 3.0  # Ajusta para suavidad (mayor = menos suave)
+	
 	if directionEnum == Direction.NORTH or directionEnum == Direction.SOUTH:
-		# Movimiento horizontal (igualar en el eje X)
-		var target_x = player_pos.x
-		temp_direction.x = (target_x - global_position.x) * intensity / 10 * delta
-		temp_direction.y = 0  # Mantener el movimiento solo en el eje X
+		# Suavizar movimiento en X hacia el jugador
+		global_position.x = lerp(global_position.x, player_pos.x, follow_speed * delta)
 	elif directionEnum == Direction.EAST or directionEnum == Direction.WEST:
-		# Movimiento vertical (igualar en el eje Y)
-		var target_y = player_pos.y
-		temp_direction.y = (target_y - global_position.y) * intensity / 10 * delta
-		temp_direction.x = 0  # Mantener el movimiento solo en el eje Y
-	
-	# Usar la dirección temporal para el movimiento
-	extraVel = temp_direction * speed
-	move_and_slide()
+		# Suavizar movimiento en Y hacia el jugador
+		global_position.y = lerp(global_position.y, player_pos.y, follow_speed * delta)
 
 func move_center(delta):
-	var center_pos = get_viewport().get_visible_rect().size / 2  # Obtén la posición del jugador
+	var center_pos = get_viewport().get_visible_rect().size / 2
+	var move_speed = 200  # Ajusta esto a la velocidad que quieras (pixeles por segundo)
 	
-	# Crear una dirección temporal para no afectar la dirección original
-	var temp_direction = Vector2()
 	if directionEnum == Direction.NORTH or directionEnum == Direction.SOUTH:
-		# Movimiento horizontal (igualar en el eje X)
-		var target_x = center_pos.x
-		temp_direction.x = (target_x - global_position.x) * intensity / 10 * delta
-		temp_direction.y = 0  # Mantener el movimiento solo en el eje X
-	elif directionEnum == Direction.EAST or directionEnum == Direction.WEST:
-		# Movimiento vertical (igualar en el eje Y)
-		var target_y = center_pos.y
-		temp_direction.y = (target_y - global_position.y) * intensity / 10 * delta
-		temp_direction.x = 0  # Mantener el movimiento solo en el eje Y
+		# Mover X hacia el centro
+		var diff_x = center_pos.x - global_position.x
+		global_position.x += sign(diff_x) * move_speed * delta
+		# Evitar pasarse del centro
+		if abs(diff_x) < move_speed * delta:
+			global_position.x = center_pos.x
 	
-	# Usar la dirección temporal para el movimiento
-	extraVel = temp_direction * speed
-	move_and_slide()
+	elif directionEnum == Direction.EAST or directionEnum == Direction.WEST:
+		# Mover Y hacia el centro
+		var diff_y = center_pos.y - global_position.y
+		global_position.y += sign(diff_y) * move_speed * delta
+		# Evitar pasarse del centro
+		if abs(diff_y) < move_speed * delta:
+			global_position.y = center_pos.y
 
 func move_curve(dur, delta):
 	var rotationSpeed = deg_to_rad(deviationAngle) / dur
