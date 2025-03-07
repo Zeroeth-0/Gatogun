@@ -1,0 +1,50 @@
+[gd_scene load_steps=7 format=3 uid="uid://bh5j5lxy0e3ox"]
+
+[ext_resource type="Script" path="res://source/enemies/enemy.gd" id="1_rj0f3"]
+[ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_jbx6c"]
+[ext_resource type="PackedScene" uid="uid://dtvoef4p2mcqg" path="res://scenes/weapons/enemies/A-Pr02.tscn" id="3_gne2i"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jtchi"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vwy2o"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_divk0"]
+
+[node name="Enemy" type="CharacterBody2D"]
+z_index = 1
+scale = Vector2(2, 2)
+script = ExtResource("1_rj0f3")
+health = 80
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 0, 1, 1)
+z_index = 1
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_jbx6c")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_jtchi")
+disabled = true
+debug_color = Color(1, 0, 0, 0.419608)
+
+[node name="Hitbox" type="Area2D" parent="."]
+scale = Vector2(0.8, 0.8)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("RectangleShape2D_vwy2o")
+debug_color = Color(1, 0, 0, 0.419608)
+
+[node name="Hurtbox" type="Area2D" parent="." groups=["Enemy"]]
+scale = Vector2(0.7, 0.7)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+scale = Vector2(5, 5)
+shape = SubResource("RectangleShape2D_divk0")
+debug_color = Color(0, 1, 0, 0.419608)
+
+[node name="Emitter" parent="." instance=ExtResource("3_gne2i")]
+
+[connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]
+[connection signal="area_exited" from="Hitbox" to="." method="_on_hitbox_area_exited"]
+[connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
+[connection signal="area_exited" from="Hurtbox" to="." method="_on_hurtbox_area_exited"]
