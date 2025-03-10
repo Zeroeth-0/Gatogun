@@ -181,15 +181,22 @@ func move_breath():
 
 func move_block(delta):
 	var player_pos = GETPLAYER.get_player()
+	var distance = global_position.distance_to(player_pos)
 	
-	var follow_speed = 3.0  # Ajusta para suavidad (mayor = menos suave)
+	# FACTORES DE AJUSTE
+	var min_speed = 1.0  # Velocidad mínima cuando está muy lejos
+	var max_speed = 3.0  # Velocidad máxima cuando está cerca
+	var distance_factor = 0.05  # Factor de influencia de la distancia
 	
+	# Calculamos la velocidad como inversa de la distancia, ajustada con los factores
+	var follow_speed = clamp(1.0 / (distance * distance_factor + 0.5), min_speed, max_speed)
+	
+	# Movimiento suavizado en la dirección permitida
 	if directionEnum == Direction.NORTH or directionEnum == Direction.SOUTH:
-		# Suavizar movimiento en X hacia el jugador
 		global_position.x = lerp(global_position.x, player_pos.x, follow_speed * delta)
 	elif directionEnum == Direction.EAST or directionEnum == Direction.WEST:
-		# Suavizar movimiento en Y hacia el jugador
 		global_position.y = lerp(global_position.y, player_pos.y, follow_speed * delta)
+
 
 func move_center(delta):
 	var center_pos = get_viewport().get_visible_rect().size / 2

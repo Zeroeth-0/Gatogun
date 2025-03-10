@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://cxlnulg54i4r6"]
+[gd_scene load_steps=8 format=3 uid="uid://cxlnulg54i4r6"]
 
 [ext_resource type="Script" path="res://source/enemies/enemy.gd" id="1_ywed8"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_g71v6"]
-[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/emitter.tscn" id="3_1htco"]
+[ext_resource type="PackedScene" uid="uid://ca65gvi7s2km7" path="res://scenes/weapons/enemies/A-Pr03.tscn" id="3_g81c8"]
+[ext_resource type="PackedScene" uid="uid://bwsyjxa4w3gra" path="res://scenes/weapons/enemies/A-Pr04.tscn" id="4_jvbmq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jtchi"]
 
@@ -15,12 +16,11 @@ z_index = 1
 scale = Vector2(3, 3)
 script = ExtResource("1_ywed8")
 health = 200
-childHood = 4
-childDur = 3.0
+childHood = 5
 adultHood = 4
 adultDur = 5.0
-adultSpeed = 50
 oldAge = 10
+oldSpeed = 300
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 0, 1, 1)
@@ -33,15 +33,8 @@ shape = SubResource("RectangleShape2D_jtchi")
 disabled = true
 debug_color = Color(1, 0, 0, 0.419608)
 
-[node name="Emitter" parent="." instance=ExtResource("3_1htco")]
-type = 1
-dirDuration = 0.1
-aimAtPlayer = true
-parallel = true
-arms = 3
-
 [node name="Hitbox" type="Area2D" parent="."]
-scale = Vector2(0.8, 0.8)
+scale = Vector2(2, 2)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 shape = SubResource("RectangleShape2D_vwy2o")
@@ -54,6 +47,14 @@ scale = Vector2(0.7, 0.7)
 scale = Vector2(5, 5)
 shape = SubResource("RectangleShape2D_divk0")
 debug_color = Color(0, 1, 0, 0.419608)
+
+[node name="Emitter" parent="." instance=ExtResource("3_g81c8")]
+
+[node name="Emitter2" parent="." instance=ExtResource("4_jvbmq")]
+position = Vector2(-25, 0)
+
+[node name="Emitter3" parent="." instance=ExtResource("4_jvbmq")]
+position = Vector2(25, 0)
 
 [connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]
 [connection signal="area_exited" from="Hitbox" to="." method="_on_hitbox_area_exited"]

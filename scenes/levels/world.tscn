@@ -17,7 +17,8 @@
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_btnht")
-enemy_scenes = Array[PackedScene]([ExtResource("6_kdx7s"), ExtResource("7_ewcwf"), ExtResource("6_ay5fw"), ExtResource("13_wto8c")])
+csv_file = "res://source/levels/test.txt"
+enemy_scenes = Array[PackedScene]([ExtResource("6_kdx7s"), ExtResource("7_ewcwf"), ExtResource("6_ay5fw"), ExtResource("13_wto8c"), ExtResource("14_m2u0j")])
 
 [node name="North Lane" type="Node2D" parent="."]
 position = Vector2(324, -100)
@@ -147,9 +148,3 @@ offset_left = 0.0
 offset_top = 0.0
 offset_right = 548.0
 offset_bottom = 24.0
-
-[node name="Enemy" parent="." instance=ExtResource("14_m2u0j")]
-position = Vector2(618, 201)
-health = 150
-childHood = 5
-oldSpeed = 200
