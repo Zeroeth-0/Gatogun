@@ -17,7 +17,6 @@ health = 5
 childDur = 2.0
 childSpeed = 200
 adultHood = 12
-adultDur = 0.5
 oldAge = 8
 oldSpeed = 250
 

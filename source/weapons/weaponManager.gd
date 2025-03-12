@@ -19,8 +19,6 @@ func _process(delta):
 			canFire = false
 			break
 	
-	if canFire: rotate_weapon()
-	
 	if INPUT.fireHold: await fire_burst(INPUT.fireDir)
 	
 
@@ -38,10 +36,3 @@ func fire_bullet(direction, pos):
 	
 	# Establecer la dirección enumerada de la bala
 	bullet_instance.set_dir(direction, 0)
-
-func rotate_weapon():
-	match INPUT.buttonActive:
-		INPUT.Buttons.A: rotation = deg_to_rad(90)
-		INPUT.Buttons.B: rotation = deg_to_rad(180)
-		INPUT.Buttons.Y: rotation = deg_to_rad(270)
-		INPUT.Buttons.X: rotation = deg_to_rad(0)

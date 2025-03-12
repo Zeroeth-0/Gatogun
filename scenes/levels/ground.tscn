@@ -6,7 +6,7 @@
 script = ExtResource("1_2i58f")
 
 [node name="North Lane" type="Node2D" parent="."]
-position = Vector2(324, -100)
+position = Vector2(340, -100)
 
 [node name="Zero" type="Marker2D" parent="North Lane"]
 position = Vector2(-261, 0)
@@ -29,7 +29,7 @@ position = Vector2(174, 0)
 position = Vector2(261, 0)
 
 [node name="West Lane" type="Node2D" parent="."]
-position = Vector2(-100, 324)
+position = Vector2(-100, 250)
 rotation = 1.5708
 
 [node name="Zero" type="Marker2D" parent="West Lane"]
@@ -53,7 +53,7 @@ position = Vector2(174, 0)
 position = Vector2(261, 0)
 
 [node name="East Lane" type="Node2D" parent="."]
-position = Vector2(748, 324)
+position = Vector2(780, 250)
 rotation = 1.5708
 
 [node name="Zero" type="Marker2D" parent="East Lane"]
@@ -77,7 +77,7 @@ position = Vector2(174, 0)
 position = Vector2(261, 0)
 
 [node name="South Lane" type="Node2D" parent="."]
-position = Vector2(324, 748)
+position = Vector2(340, 830)
 
 [node name="Zero" type="Marker2D" parent="South Lane"]
 position = Vector2(-261, 0)

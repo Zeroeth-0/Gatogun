@@ -10,7 +10,7 @@ z_index = 2
 scale = Vector2(1.1, 1.1)
 script = ExtResource("1_hdvn3")
 speed = 1100.0
-damage = 2
+damage = 4
 lifeTime = 0.4
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

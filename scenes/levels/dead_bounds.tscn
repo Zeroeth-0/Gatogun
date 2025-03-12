@@ -1,10 +1,11 @@
 [gd_scene load_steps=2 format=3 uid="uid://bw2g2t07ejkdq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1erge"]
+size = Vector2(20.95, 19.4667)
 
 [node name="DeadBounds" type="Area2D" groups=["Free"]]
-position = Vector2(324, 324)
+position = Vector2(340, 365)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["Free"]]
-scale = Vector2(40, 40)
+scale = Vector2(40, 45)
 shape = SubResource("RectangleShape2D_1erge")
