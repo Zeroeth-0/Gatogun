@@ -16,11 +16,11 @@ lifeTime = 0.4
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 0.627451, 0, 1)
 z_index = 1
-scale = Vector2(0.5, 0.5)
+scale = Vector2(0.6, 0.6)
 texture = ExtResource("2_iwlg2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-scale = Vector2(4.5, 4.5)
+scale = Vector2(4.6, 4.6)
 shape = SubResource("RectangleShape2D_ex51n")
 debug_color = Color(1, 1, 0, 0.419608)
 

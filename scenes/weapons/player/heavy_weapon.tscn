@@ -18,36 +18,36 @@ position = Vector2(-30, 20)
 position = Vector2(30, 20)
 
 [node name="PlayerEmmiter4" parent="." instance=ExtResource("2_0mt0c")]
-position = Vector2(-20, -30)
+position = Vector2(-30, -30)
 deviationAngle = -10.0
 
 [node name="PlayerEmmiter5" parent="." instance=ExtResource("2_0mt0c")]
-position = Vector2(-50, -30)
+position = Vector2(-60, -30)
 scale = Vector2(0.986175, 0.992665)
 deviationAngle = -10.0
 
 [node name="PlayerEmmiter6" parent="." instance=ExtResource("2_0mt0c")]
-position = Vector2(20, -30)
+position = Vector2(30, -30)
 deviationAngle = 10.0
 
 [node name="PlayerEmmiter7" parent="." instance=ExtResource("2_0mt0c")]
-position = Vector2(50, -30)
+position = Vector2(60, -30)
 scale = Vector2(0.982009, 1)
 deviationAngle = 10.0
 
 [node name="PlayerEmmiter8" parent="." instance=ExtResource("2_0mt0c")]
-position = Vector2(-30, 60)
+position = Vector2(-50, 60)
 deviationAngle = -15.0
 
 [node name="PlayerEmmiter9" parent="." instance=ExtResource("2_0mt0c")]
-position = Vector2(-60, 60)
+position = Vector2(-80, 60)
 deviationAngle = -15.0
 
 [node name="PlayerEmmiter10" parent="." instance=ExtResource("2_0mt0c")]
-position = Vector2(30, 60)
+position = Vector2(50, 60)
 deviationAngle = 15.0
 
 [node name="PlayerEmmiter11" parent="." instance=ExtResource("2_0mt0c")]
-position = Vector2(60, 60)
+position = Vector2(80, 60)
 scale = Vector2(1, 0.992424)
 deviationAngle = 15.0

@@ -16,6 +16,7 @@ normalWeapon = NodePath("Normal Weapon")
 heavyWeapon = NodePath("Heavy Weapon")
 
 [node name="Hurtbox" type="Area2D" parent="." groups=["Player"]]
+z_index = 5
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 scale = Vector2(0.3, 0.3)
