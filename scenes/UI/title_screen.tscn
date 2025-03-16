@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dra7yqg0s7urp"]
+[gd_scene load_steps=3 format=3 uid="uid://dra7yqg0s7urp"]
 
-[ext_resource type="Script" path="res://scenes/UI/title_screen.gd" id="1_tg2ys"]
+[ext_resource type="Script" path="res://source/UI/title_screen.gd" id="1_tg2ys"]
+[ext_resource type="PackedScene" uid="uid://2ljl16vuntk2" path="res://scenes/UI/character_select.tscn" id="2_iedop"]
 
 [node name="Title Screen" type="Control"]
 layout_mode = 3
@@ -10,6 +11,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_tg2ys")
+nextScene = ExtResource("2_iedop")
 
 [node name="Title" type="Label" parent="."]
 layout_mode = 0

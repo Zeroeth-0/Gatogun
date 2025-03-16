@@ -4,7 +4,8 @@ extends Area2D
 @export var speed: float = 1000.0 # Velocidad en píxeles por segundo
 @export var damage: int = 1
 @export var lifeTime: float = 10.0
-var direction: Vector2 = Vector2(0, 1)
+@export var isBomb: bool = false
+var direction: Vector2 = Vector2(0, -1)
 var deviationAngle: float = 0.0 # Desviación en grados (0, 30 o -30)
 
 # Convertir la desviación a radianes
@@ -27,7 +28,7 @@ func set_dir(newDir, devAngle):
 	rotation = direction.angle()
 
 func _on_area_entered(area):
-	if area.is_in_group("Enemy"):
+	if area.is_in_group("Enemy") and !isBomb:
 		SCORE.increase_combo(damage)
 		queue_free()
 

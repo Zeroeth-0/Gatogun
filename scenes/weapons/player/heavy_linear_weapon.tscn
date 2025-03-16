@@ -1,0 +1,45 @@
+[gd_scene load_steps=4 format=3 uid="uid://c1kw6fapw2mwv"]
+
+[ext_resource type="Script" path="res://source/weapons/weaponManager.gd" id="1_shp7y"]
+[ext_resource type="PackedScene" uid="uid://bkkquuwyecdv2" path="res://scenes/bullets/player/heavy_bullet.tscn" id="2_bfrvy"]
+[ext_resource type="PackedScene" uid="uid://mijejse1m0kt" path="res://scenes/weapons/player/player_emmiter.tscn" id="3_kp0wp"]
+
+[node name="Weapon" type="Node2D"]
+script = ExtResource("1_shp7y")
+bullet_scene = ExtResource("2_bfrvy")
+fire_rate = 0.03
+
+[node name="PlayerEmmiter" parent="." instance=ExtResource("3_kp0wp")]
+
+[node name="PlayerEmmiter2" parent="." instance=ExtResource("3_kp0wp")]
+position = Vector2(-30, 20)
+
+[node name="PlayerEmmiter3" parent="." instance=ExtResource("3_kp0wp")]
+position = Vector2(30, 20)
+
+[node name="PlayerEmmiter4" parent="." instance=ExtResource("3_kp0wp")]
+position = Vector2(-50, -30)
+
+[node name="PlayerEmmiter5" parent="." instance=ExtResource("3_kp0wp")]
+position = Vector2(-80, -30)
+scale = Vector2(0.986175, 0.992665)
+
+[node name="PlayerEmmiter6" parent="." instance=ExtResource("3_kp0wp")]
+position = Vector2(50, -30)
+
+[node name="PlayerEmmiter7" parent="." instance=ExtResource("3_kp0wp")]
+position = Vector2(80, -30)
+scale = Vector2(0.982009, 1)
+
+[node name="PlayerEmmiter8" parent="." instance=ExtResource("3_kp0wp")]
+position = Vector2(-70, 60)
+
+[node name="PlayerEmmiter9" parent="." instance=ExtResource("3_kp0wp")]
+position = Vector2(-100, 60)
+
+[node name="PlayerEmmiter10" parent="." instance=ExtResource("3_kp0wp")]
+position = Vector2(70, 60)
+
+[node name="PlayerEmmiter11" parent="." instance=ExtResource("3_kp0wp")]
+position = Vector2(100, 60)
+scale = Vector2(1, 0.992424)

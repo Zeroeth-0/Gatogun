@@ -25,6 +25,7 @@ enum MoveType { STRAIGHT,
 var canDie: bool = false
 var canShoot: bool = true
 @export var medal: PackedScene = preload("res://scenes/items/medal.tscn")
+var touchingBig: bool = false
 
 # Direction
 enum Direction { NORTH, WEST, SOUTH, EAST }
@@ -105,6 +106,9 @@ func _process(delta):
 		"old_age":
 			speed = oldSpeed
 			apply_movement(oldAge, adultDur, delta)
+	
+	if !INPUT.bigMode: touchingBig = false
+	if touchingBig: health -= delta
 
 # Selección de comportamiento según el tipo de movimiento
 func apply_movement(moveType, dur, delta):
@@ -269,10 +273,15 @@ func move_still():
 
 func _on_hurtbox_area_entered(area):
 	if area.is_in_group("Fire") and canDie: health -= area.damage
-	if area.is_in_group("Player") and isGround: canShoot = false
+	if area.is_in_group("Player"):
+		if isGround: canShoot = false
+		if INPUT.bigMode: touchingBig = true
+	if area.is_in_group("Bomb"): health -= area.damage
 
 func _on_hurtbox_area_exited(area):
-	if area.is_in_group("Player") and isGround: canShoot = true
+	if area.is_in_group("Player"):
+		if isGround: canShoot = true
+		touchingBig = false
 
 func _on_hitbox_area_entered(area):
 	if area.is_in_group("Play"): canDie = true

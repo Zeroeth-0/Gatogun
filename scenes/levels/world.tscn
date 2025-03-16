@@ -1,9 +1,8 @@
-[gd_scene load_steps=15 format=3 uid="uid://bi7uyv2plo07x"]
+[gd_scene load_steps=14 format=3 uid="uid://bi7uyv2plo07x"]
 
 [ext_resource type="Script" path="res://source/levels/world.gd" id="1_btnht"]
 [ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="3_0hlg8"]
 [ext_resource type="PackedScene" uid="uid://cgts6rg8xrau" path="res://scenes/levels/playzone.tscn" id="4_hkylk"]
-[ext_resource type="PackedScene" uid="uid://dnm46gsra70ug" path="res://scenes/player/cat_player.tscn" id="4_nvx4x"]
 [ext_resource type="PackedScene" uid="uid://4y26tmtqbxdx" path="res://scenes/levels/ground.tscn" id="5_sf1u2"]
 [ext_resource type="PackedScene" uid="uid://col2b2mp7eu6y" path="res://scenes/enemies/PT-Pr03.tscn" id="6_ay5fw"]
 [ext_resource type="PackedScene" uid="uid://b75rvmh44msfh" path="res://scenes/enemies/PA-Pr01.tscn" id="6_kdx7s"]
@@ -115,29 +114,27 @@ position = Vector2(174, 0)
 position = Vector2(261, 0)
 
 [node name="Ground" parent="." instance=ExtResource("5_sf1u2")]
+csv_file = null
 enemy_scenes = Array[PackedScene]([ExtResource("6_kdx7s"), ExtResource("7_ewcwf"), ExtResource("6_ay5fw")])
 
 [node name="DeadBounds" parent="." instance=ExtResource("3_0hlg8")]
 
 [node name="Playzone" parent="." instance=ExtResource("4_hkylk")]
 
-[node name="CatPlayer" parent="." instance=ExtResource("4_nvx4x")]
-position = Vector2(324, 599)
-
 [node name="ComboLabel" parent="." instance=ExtResource("9_ckr2p")]
-z_index = 5
+z_index = 10
 
 [node name="RankLabel" parent="." instance=ExtResource("9_ckr2p")]
-z_index = 5
+z_index = 10
 offset_left = 450.0
 offset_right = 623.0
 labelEnum = 2
 
 [node name="ScoreLabel" parent="." instance=ExtResource("10_s7d0j")]
-z_index = 5
+z_index = 10
 
 [node name="FeverBar" parent="." instance=ExtResource("11_yb1ae")]
-z_index = 5
+z_index = 10
 offset_left = 65.0
 offset_top = 50.0
 offset_right = 615.0

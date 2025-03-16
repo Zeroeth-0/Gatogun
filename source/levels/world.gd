@@ -17,6 +17,7 @@ var lanes = {
 func _ready():
 	load_markers()
 	load_csv_data(csv_file)
+	GAME.spawn()
 
 # Carga los Marker2D en las listas correspondientes por lado (N, S, E, W)
 func load_markers():
