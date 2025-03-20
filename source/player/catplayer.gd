@@ -10,7 +10,7 @@ var direction: Vector2 = Vector2.UP
 
 @export_category("WEAPONS")
 @export var normalWeapon: Node2D
-@export var heavyWeapon: Node2D
+@export var hyperWeapon: Node2D
 @export var hitbox: Node2D
 
 var playable: bool = false  # Controla si el jugador puede moverse
@@ -25,7 +25,7 @@ func _ready():
 	
 	# Desactivar el arma pesada al inicio
 	normalWeapon.set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
-	heavyWeapon.set_deferred("process_mode", Node.PROCESS_MODE_DISABLED)
+	hyperWeapon.set_deferred("process_mode", Node.PROCESS_MODE_DISABLED)
 
 func _process(_delta):
 	if playable:
@@ -33,17 +33,20 @@ func _process(_delta):
 		screen_clamp(get_viewport().get_visible_rect().size)
 		if GAME.selected_character == GAME.characters_scenes[0]: big_mode()
 		if GAME.selected_character == GAME.characters_scenes[1]: bombing()
-		speed = 200 if INPUT.fireHold else 350
+		
+		if !SCORE.isFever and !INPUT.fireHold: speed = 350
+		if SCORE.isFever: speed = 150
+		if !SCORE.isFever and INPUT.fireHold: speed = 200
 
 		if SCORE.isFever:
 			normalWeapon.set_deferred("process_mode", Node.PROCESS_MODE_DISABLED)
-			heavyWeapon.set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
+			hyperWeapon.set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
 		else:
 			normalWeapon.set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
-			heavyWeapon.set_deferred("process_mode", Node.PROCESS_MODE_DISABLED)
+			hyperWeapon.set_deferred("process_mode", Node.PROCESS_MODE_DISABLED)
 	else:
 		# Movimiento automático hasta `go_point`
-		shield(1.5)
+		shield(2.5)
 		move_to_go_point()
 
 # Mueve al personaje automáticamente hacia `go_point`
@@ -75,7 +78,7 @@ func big_mode():
 	else:
 		shield(1.5)
 		scale = Vector2(1, 1)
-		hitbox.scale = Vector2(1, 1)
+		hitbox.scale = Vector2(1.7, 1.7)
 		z_index = 3
 
 func bombing():
@@ -104,3 +107,6 @@ func _on_hurtbox_area_entered(area):
 
 func _on_hurtbox_area_exited(area):
 	if area.is_in_group("Ground"): area.get_parent().canShoot = true
+
+func _on_grazebox_area_entered(area):
+	if area.is_in_group("Enemy Bullet"): SCORE.increase_fever(2)

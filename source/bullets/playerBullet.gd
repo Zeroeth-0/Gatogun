@@ -7,6 +7,7 @@ extends Area2D
 @export var isBomb: bool = false
 var direction: Vector2 = Vector2(0, -1)
 var deviationAngle: float = 0.0 # Desviación en grados (0, 30 o -30)
+@export var hyper: bool = false
 
 # Convertir la desviación a radianes
 var deviationRadians: float = 0.0
@@ -18,6 +19,8 @@ func _process(delta: float):
 	
 	lifeTime -= delta
 	if lifeTime <= 0: queue_free()
+	
+	if hyper: global_position.x = GETPLAYER.get_player().x
 
 func set_dir(newDir, devAngle):
 	deviationAngle = devAngle
@@ -27,9 +30,15 @@ func set_dir(newDir, devAngle):
 	# Rotar el nodo para que apunte en la dirección inicial
 	rotation = direction.angle()
 
+func point_blank():
+	var distance = global_position.distance_to(GETPLAYER.get_player())
+	if distance < 200: return true
+
 func _on_area_entered(area):
 	if area.is_in_group("Enemy") and !isBomb:
+		if point_blank(): damage *= 2
 		SCORE.increase_combo(damage)
+		SCORE.increase_fever(damage)
 		queue_free()
 
 func _on_area_exited(area):

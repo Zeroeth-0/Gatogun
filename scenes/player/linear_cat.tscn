@@ -3,23 +3,23 @@
 [ext_resource type="Script" path="res://source/player/catplayer.gd" id="1_yk73g"]
 [ext_resource type="PackedScene" uid="uid://cayls45qnqvte" path="res://scenes/bullets/player/bomb.tscn" id="2_2l8o3"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_l3m3u"]
-[ext_resource type="PackedScene" uid="uid://cj582rnutbfa5" path="res://scenes/weapons/player/normal_linear_weapon.tscn" id="3_ons1e"]
-[ext_resource type="PackedScene" uid="uid://c1kw6fapw2mwv" path="res://scenes/weapons/player/heavy_linear_weapon.tscn" id="4_hwc81"]
+[ext_resource type="PackedScene" uid="uid://c1kw6fapw2mwv" path="res://scenes/weapons/player/linear_weapon.tscn" id="4_hwc81"]
+[ext_resource type="PackedScene" uid="uid://nesd4qi4sce2" path="res://scenes/weapons/player/hyper_weapon.tscn" id="5_6vgd8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_klkvo"]
 
-[node name="CatPlayer" type="CharacterBody2D" node_paths=PackedStringArray("sprite", "normalWeapon", "heavyWeapon", "hitbox") groups=["Player"]]
+[node name="CatPlayer" type="CharacterBody2D" node_paths=PackedStringArray("sprite", "normalWeapon", "hyperWeapon", "hitbox") groups=["Player"]]
 z_index = 3
 script = ExtResource("1_yk73g")
 sprite = NodePath("Icon")
 bomb = ExtResource("2_2l8o3")
 speed = 300
 screenMargin = 50
-normalWeapon = NodePath("Normal Weapon")
-heavyWeapon = NodePath("Heavy Weapon")
+normalWeapon = NodePath("Weapon")
+hyperWeapon = NodePath("Hyper")
 hitbox = NodePath("Denialzone")
 
-[node name="Hurtbox" type="Area2D" parent="." groups=["Player"]]
+[node name="Hurtbox" type="Area2D" parent="." groups=["Collect", "Player"]]
 z_index = 5
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
@@ -40,16 +40,16 @@ disabled = true
 debug_color = Color(0, 1, 0, 0.419608)
 
 [node name="Denialzone" type="Area2D" parent="." groups=["Player"]]
-scale = Vector2(1.3, 1.3)
+scale = Vector2(1.7, 1.7)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Denialzone"]
 scale = Vector2(4, 4)
 shape = SubResource("RectangleShape2D_klkvo")
 debug_color = Color(0, 1, 0, 0.419608)
 
-[node name="Normal Weapon" parent="." instance=ExtResource("3_ons1e")]
+[node name="Weapon" parent="." instance=ExtResource("4_hwc81")]
 
-[node name="Heavy Weapon" parent="." instance=ExtResource("4_hwc81")]
+[node name="Hyper" parent="." instance=ExtResource("5_6vgd8")]
 
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
 [connection signal="area_exited" from="Hurtbox" to="." method="_on_hurtbox_area_exited"]

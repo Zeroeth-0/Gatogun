@@ -2,7 +2,7 @@ extends Area2D
 
 enum ItemType {
 	MEDAL,
-	OPTION
+	OTHER
 }
 
 @export var itemEnum: ItemType = ItemType.MEDAL
@@ -40,7 +40,6 @@ func move_towards_player(delta):
 	position += direction * speed * delta
 
 func _on_area_entered(area):
-	if area.is_in_group("Player"):
+	if area.is_in_group("Collect"):
 		SCORE.add_score(SCORE.combo * medalVal)
-		SCORE.increase_fever(medalVal)
 		queue_free()

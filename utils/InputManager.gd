@@ -56,4 +56,4 @@ func action_input(delta):
 		buffTimer = 0.0
 	
 	firing = buffYes or Input.is_action_pressed("A")
-	
+	if firing and SCORE.isFever: fireHold = true

@@ -10,7 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://chegi2am56x1" path="res://scenes/UI/combo_label.tscn" id="9_ckr2p"]
 [ext_resource type="PackedScene" uid="uid://jkopai8ptvrm" path="res://scenes/UI/score_label.tscn" id="10_s7d0j"]
 [ext_resource type="PackedScene" uid="uid://ber78ar7g5504" path="res://scenes/UI/fever_bar.tscn" id="11_yb1ae"]
-[ext_resource type="PackedScene" uid="uid://0mmb5byle7yk" path="res://scenes/UI/extend_bar.tscn" id="12_rh75x"]
+[ext_resource type="Texture2D" uid="uid://d3f6lssibddb5" path="res://progress.png" id="13_wf7gd"]
 [ext_resource type="PackedScene" uid="uid://bh5j5lxy0e3ox" path="res://scenes/enemies/MA-Ad01.tscn" id="13_wto8c"]
 [ext_resource type="PackedScene" uid="uid://cxlnulg54i4r6" path="res://scenes/enemies/EA-Dc01.tscn" id="14_m2u0j"]
 
@@ -135,15 +135,11 @@ z_index = 10
 
 [node name="FeverBar" parent="." instance=ExtResource("11_yb1ae")]
 z_index = 10
-offset_left = 65.0
-offset_top = 50.0
-offset_right = 615.0
-offset_bottom = 74.0
+offset_left = -218.0
+offset_top = 166.0
+offset_right = 382.0
+offset_bottom = 766.0
+scale = Vector2(-0.1, -0.1)
+fill_mode = 4
+texture_progress = ExtResource("13_wf7gd")
 fever_color = Color(0.921569, 0, 0, 1)
-
-[node name="ExtendBar" parent="FeverBar" instance=ExtResource("12_rh75x")]
-layout_mode = 0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 548.0
-offset_bottom = 24.0

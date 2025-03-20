@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://nesd4qi4sce2"]
+
+[ext_resource type="Script" path="res://source/weapons/weaponManager.gd" id="1_8pw7b"]
+[ext_resource type="PackedScene" uid="uid://cnmy1mgnswmkb" path="res://scenes/bullets/player/hyper_bullet.tscn" id="2_c51x2"]
+
+[node name="Hyper" type="Node2D"]
+script = ExtResource("1_8pw7b")
+bullet_scene = ExtResource("2_c51x2")
+fire_rate = 0.03
+hyper = true

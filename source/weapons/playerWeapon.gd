@@ -5,7 +5,7 @@ extends Node2D
 @export_range(-20, 20, 5) var deviationAngle: float = 0.0 # Desviación en grados (0, 30 o -30)
 
 var can_fire: bool = true # Controla si se puede disparar
-const MAX_BULLETS: int = 3 # Máximo de balas permitidas en el grupo
+@export var MAX_BULLETS: int = 3 # Máximo de balas permitidas en el grupo
 
 # Llamado cada cuadro
 func _process(_delta):

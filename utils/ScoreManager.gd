@@ -8,6 +8,7 @@ var isFever: bool = false
 var rank: int = 1
 var comboTimer: float = 1.0
 var feverTimer: float = 1.0
+var feverSize: float = 5000
 
 var comboDrainTime: float = 0.0  # Acumulador para reducción de combo
 var feverDrainTime: float = 0.0
@@ -16,15 +17,10 @@ func _process(delta):
 	fever_counter(delta)
 	combo_counter(delta)
 	
-	if INPUT.bigMode and fever > 100: fever = 100
+	if INPUT.bigMode and fever > feverSize: fever = feverSize
 	
-	if fever >= 200:
-		fever = 100
-		if rank < 6: rank += 1
-	
-	if fever >= 100:
-		isFever = true
-		if rank >= 6: fever = 100
+	if fever >= feverSize:
+		if Input.is_action_just_pressed("B"): isFever = true
 	if fever <= 0:
 		isFever = false
 		rank = 1
@@ -32,14 +28,14 @@ func _process(delta):
 func fever_counter(delta):
 	feverTimer -= delta
 	if feverTimer <= 0 and !isFever: fever_countdown(delta, 0.001)
-	if fever > 0 and isFever: fever_countdown(delta, 0.05)
+	if fever > 0 and isFever: fever_countdown(delta, 0.007)
 	if fever <= 0: fever = 0
 
 func fever_countdown(delta, drainRate):
 	feverDrainTime += delta
 	while feverDrainTime >= drainRate:
-		if !INPUT.bigMode: fever -= 1
-		else: fever -= 2
+		if !INPUT.bigMode: fever -= 10
+		else: fever -= 20
 		feverDrainTime -= drainRate
 
 func combo_counter(delta):

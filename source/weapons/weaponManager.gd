@@ -3,23 +3,25 @@ extends Node2D
 @export var bullet_scene: PackedScene # Escena de la bala a instanciar
 @export var fire_rate: float = 0.01 # Tiempo entre ráfagas
 var rate = fire_rate
+@export var hyper: bool = false
 
 var canFire: bool = true
+var children
 
 func _process(delta):
 	# Obtenemos todos los hijos del nodo
-	var children = get_children()
 	canFire = true
 	rate -= delta
 	
 	# Iteramos sobre cada hijo
-	for child in children:
-		# Comprobamos si el hijo tiene la variable 'can_fire' y si es true
-		if not child.can_fire:
-			canFire = false
-			break
+	if children:
+		for child in children:
+			# Comprobamos si el hijo tiene la variable 'can_fire' y si es true
+			if not child.can_fire:
+				canFire = false
+				break
 	
-	if INPUT.fireHold: await fire_burst(INPUT.fireDir)
+	if INPUT.fireHold or hyper: await fire_burst(Vector2.UP)
 	
 
 func fire_burst(dir):
