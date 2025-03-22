@@ -9,21 +9,45 @@ var rank: int = 1
 var comboTimer: float = 1.0
 var feverTimer: float = 1.0
 var feverSize: float = 5000
+var canBomb: bool = false
+var bombCount: int = 0
 
 var comboDrainTime: float = 0.0  # Acumulador para reducción de combo
 var feverDrainTime: float = 0.0
+var comboLimit = 0.001
+var rankCounter = 0
+var rankLimit = 3000
+
+var comboLabel: RichTextLabel = null
+var rankLabel: RichTextLabel = null
 
 func _process(delta):
 	fever_counter(delta)
 	combo_counter(delta)
+	comboLabel = get_tree().get_first_node_in_group("Combo")
+	rankLabel = get_tree().get_first_node_in_group("Rank")
+
 	
-	if INPUT.bigMode and fever > feverSize: fever = feverSize
+	if bombCount >= 3: bombCount = 3
+	if fever >= 5000: fever = 5000
 	
 	if fever >= feverSize:
-		if Input.is_action_just_pressed("B"): isFever = true
+		if Input.is_action_just_pressed("B"):
+			isFever = true
+			comboLabel.label_out()
+			rankLabel.label_in()
+		canBomb = false
+	else:
+		var threshold = feverSize * (1 - pow(0.5, bombCount + 1))
+		canBomb = fever >= threshold
 	if fever <= 0:
 		isFever = false
-		rank = 1
+		if combo > 0: comboLabel.label_in()
+		if rankLabel: rankLabel.label_out()
+	
+	if rankCounter >= rankLimit:
+		rank += 1
+		rankCounter = 0
 
 func fever_counter(delta):
 	feverTimer -= delta
@@ -34,23 +58,34 @@ func fever_counter(delta):
 func fever_countdown(delta, drainRate):
 	feverDrainTime += delta
 	while feverDrainTime >= drainRate:
-		if !INPUT.bigMode: fever -= 10
-		else: fever -= 20
+		fever -= 10
 		feverDrainTime -= drainRate
 
 func combo_counter(delta):
 	comboTimer -= delta
-	if combo <= 0: combo = 0
+	var baseComboLimit = 0.001
+	var minComboLimit = 0.0001
+	if combo <= 0: 
+		combo = 0
 	
 	if comboTimer <= 0 and combo > 0:
+		comboLabel.label_out()
 		comboDrainTime += delta  # Acumula tiempo transcurrido
-		while comboDrainTime >= 0.001:
+		
+		# Reducimos comboLimit con el tiempo o el número de combos
+		comboLimit = max(baseComboLimit * pow(0.95, combo), minComboLimit)
+
+		while comboDrainTime >= comboLimit:
 			combo -= 1
-			comboDrainTime -= 0.001  # Resta el tiempo usado para mantener precisión
+			comboDrainTime -= comboLimit
 
 func increase_combo(val):
-	combo += val;
+	if combo <= 0: comboLabel.label_in()
+	
+	if isFever: rankCounter += val
+	else: combo += val;
 	comboTimer = 1.0
+	comboLimit = 0.001
 
 func increase_fever(val):
 	if !INPUT.bigMode: fever += val
@@ -61,7 +96,8 @@ func reset():
 	fever = 0
 	combo = 0
 	rank = 1
+	bombCount = 0
 
 func add_score(score):
-	if isFever: score *= 2**rank
+	if isFever: score *= rank
 	GeneralGameScore += score

@@ -21,12 +21,13 @@ func _process(delta):
 	if !bigMode: action_input(delta)
 	else: for bullet in get_tree().get_nodes_in_group("Fire"): bullet.queue_free()
 	
-	if Input.is_action_just_pressed("B") && SCORE.isFever:
+	if Input.is_action_just_pressed("B") && SCORE.canBomb:
 		buffYes = false
 		firing = false
 		fireHold = false
 		bigMode = true
-	if !SCORE.isFever: bigMode = false
+		SCORE.bombCount += 1
+	if SCORE.fever <= 0: bigMode = false
 
 # D-Pad Movement
 func d_pad():

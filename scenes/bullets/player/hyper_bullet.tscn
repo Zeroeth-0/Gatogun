@@ -10,7 +10,7 @@ z_index = 2
 scale = Vector2(0.6, 3)
 script = ExtResource("1_i2v12")
 speed = 1100.0
-damage = 6
+damage = 7
 lifeTime = 1.0
 hyper = true
 

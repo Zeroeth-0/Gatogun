@@ -25,6 +25,7 @@ enum MoveType { STRAIGHT,
 var canDie: bool = false
 var canShoot: bool = true
 @export var medal: PackedScene = preload("res://scenes/items/medal.tscn")
+@export var medalCount: int = 1
 var touchingBig: bool = false
 
 # Direction
@@ -108,7 +109,7 @@ func _process(delta):
 			apply_movement(oldAge, adultDur, delta)
 	
 	if !INPUT.bigMode: touchingBig = false
-	if touchingBig: health -= delta
+	if touchingBig: health -= delta * 2
 
 # Selección de comportamiento según el tipo de movimiento
 func apply_movement(moveType, dur, delta):
@@ -135,10 +136,18 @@ func enter_next_stage(nextStage):
 func die():
 	if health <= 0:
 		SCORE.add_score(SCORE.combo)
-		var item = medal.instantiate()
-		get_tree().current_scene.add_child(item)
-		item.position = global_position
-		item.get_distance(global_position)
+		# Si el jugador está a menos de 200 píxeles, duplica medalCount
+		var player_pos = GETPLAYER.get_player()
+		if position.distance_to(player_pos) < 200:
+			medalCount *= 2  # Duplica la cantidad de medallas
+		# Spawnear varias medallas según "medalCount"
+		for i in range(medalCount):
+			var item = medal.instantiate()
+			get_tree().current_scene.add_child(item)
+			
+			# Posición con desplazamiento aleatorio
+			var offset = Vector2(randf_range(-10, 10), randf_range(-10, 10))
+			item.position = global_position + offset  
 		queue_free()
 
 # Behaviors

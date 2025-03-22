@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bi7uyv2plo07x"]
+[gd_scene load_steps=16 format=3 uid="uid://bi7uyv2plo07x"]
 
 [ext_resource type="Script" path="res://source/levels/world.gd" id="1_btnht"]
 [ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="3_0hlg8"]
@@ -12,7 +12,9 @@
 [ext_resource type="PackedScene" uid="uid://ber78ar7g5504" path="res://scenes/UI/fever_bar.tscn" id="11_yb1ae"]
 [ext_resource type="Texture2D" uid="uid://d3f6lssibddb5" path="res://progress.png" id="13_wf7gd"]
 [ext_resource type="PackedScene" uid="uid://bh5j5lxy0e3ox" path="res://scenes/enemies/MA-Ad01.tscn" id="13_wto8c"]
+[ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="14_kq4rh"]
 [ext_resource type="PackedScene" uid="uid://cxlnulg54i4r6" path="res://scenes/enemies/EA-Dc01.tscn" id="14_m2u0j"]
+[ext_resource type="Script" path="res://source/UI/lives.gd" id="15_nlt8f"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_btnht")
@@ -123,23 +125,52 @@ enemy_scenes = Array[PackedScene]([ExtResource("6_kdx7s"), ExtResource("7_ewcwf"
 
 [node name="ComboLabel" parent="." instance=ExtResource("9_ckr2p")]
 z_index = 10
+offset_left = -165.0
+offset_top = 160.0
+offset_right = 8.0
+offset_bottom = 232.0
+text = "+9999"
 
 [node name="RankLabel" parent="." instance=ExtResource("9_ckr2p")]
 z_index = 10
-offset_left = 450.0
-offset_right = 623.0
+offset_left = -165.0
+offset_top = 160.0
+offset_right = 8.0
+offset_bottom = 232.0
+text = "x6"
 labelEnum = 2
 
 [node name="ScoreLabel" parent="." instance=ExtResource("10_s7d0j")]
 z_index = 10
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -86.5
+offset_top = 10.0
+offset_right = 86.5
+offset_bottom = 82.0
+grow_horizontal = 2
+scale = Vector2(1.1, 1.1)
+text = "Score: 999999999999"
 
 [node name="FeverBar" parent="." instance=ExtResource("11_yb1ae")]
 z_index = 10
 offset_left = -218.0
-offset_top = 166.0
+offset_top = 220.0
 offset_right = 382.0
-offset_bottom = 766.0
+offset_bottom = 820.0
 scale = Vector2(-0.1, -0.1)
+pivot_offset = Vector2(275, -75)
 fill_mode = 4
 texture_progress = ExtResource("13_wf7gd")
 fever_color = Color(0.921569, 0, 0, 1)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+z_index = 10
+offset_left = 30.0
+offset_top = 30.0
+offset_right = 70.0
+offset_bottom = 70.0
+scale = Vector2(0.25, 0.25)
+script = ExtResource("15_nlt8f")
+heart_texture = ExtResource("14_kq4rh")

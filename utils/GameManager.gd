@@ -5,6 +5,7 @@ extends Node
 
 var spawnPoint: Vector2 = Vector2(150, 830)
 var goPoint: Vector2 = Vector2(150, 600)
+var lives: float = 3
 
 var characters_scenes: Array[PackedScene] = []
 var selected_character: PackedScene = null  # Guardará el personaje seleccionado
@@ -14,7 +15,7 @@ func _ready():
 	characters_scenes = [wide_cat, linear_cat]
 
 func spawn():
-	if selected_character:
+	if selected_character and lives >= 0:
 		var player_instance = selected_character.instantiate()
 		player_instance.position = spawnPoint  # Asigna la posición de spawn
 		get_tree().current_scene.add_child.call_deferred(player_instance)  # Agrega el personaje a la escena

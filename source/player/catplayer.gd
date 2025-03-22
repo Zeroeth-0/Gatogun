@@ -99,8 +99,8 @@ func shield(duration):  # Duración ajustable (1.5 segundos por defecto)
 
 # Detecta si el hurtbox entra en un Area2D
 func _on_hurtbox_area_entered(area):
-	if area.is_in_group("Ground"): area.get_parent().canShoot = false
 	if !INPUT.bigMode and canDie and area.is_in_group("Damage"):
+		GAME.lives -= 0.5
 		SCORE.reset()
 		GAME.spawn()
 		queue_free()

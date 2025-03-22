@@ -17,7 +17,7 @@ func _input(event):
 	elif Input.is_action_pressed("LEFT"):
 		selected_index = (selected_index - 1 + character_names.size()) % character_names.size()
 		update_selection()
-	elif Input.is_action_just_pressed("C"):  # "C" asignado en Input Map
+	elif Input.is_action_just_pressed("C") or Input.is_action_just_pressed("A"):  # "C" asignado en Input Map
 		start_game()
 
 func update_selection():

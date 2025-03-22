@@ -99,6 +99,7 @@ C={
 [physics]
 
 common/physics_ticks_per_second=240
+2d/physics_engine="GodotPhysics2D"
 
 [rendering]
 
