@@ -36,7 +36,7 @@ func _process(_delta):
 		
 		if !SCORE.isFever and !INPUT.fireHold: speed = 350
 		if SCORE.isFever: speed = 150
-		if !SCORE.isFever and INPUT.fireHold: speed = 200
+		if !SCORE.isFever and INPUT.fireHold: speed = 150
 
 		if SCORE.isFever:
 			normalWeapon.set_deferred("process_mode", Node.PROCESS_MODE_DISABLED)
