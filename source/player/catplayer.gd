@@ -16,7 +16,6 @@ var direction: Vector2 = Vector2.UP
 var playable: bool = false  # Controla si el jugador puede moverse
 var go_point: Vector2  # Punto al que debe llegar antes de ser jugable
 var canDie: bool = true
-var bombed: bool = false
 
 func _ready():
 	# Desactivar controles al inicio
@@ -31,8 +30,7 @@ func _process(_delta):
 	if playable:
 		movement()
 		screen_clamp(get_viewport().get_visible_rect().size)
-		if GAME.selected_character == GAME.characters_scenes[0]: big_mode()
-		if GAME.selected_character == GAME.characters_scenes[1]: bombing()
+		bombing()
 		
 		if !SCORE.isFever and !INPUT.fireHold: speed = 350
 		if SCORE.isFever: speed = 150
@@ -70,25 +68,12 @@ func movement():
 	velocity = direction.normalized() * speed
 	move_and_slide()
 
-func big_mode():
-	if INPUT.bigMode:
-		scale = Vector2(5, 5)
-		hitbox.scale = Vector2(0.8, 0.8)
-		z_index = 6
-	else:
-		shield(1.5)
-		scale = Vector2(1, 1)
-		hitbox.scale = Vector2(1.7, 1.7)
-		z_index = 3
-
 func bombing():
-	if INPUT.bigMode and !bombed:
+	if INPUT.bombing:
 		var bomb_instance = bomb.instantiate()
 		bomb_instance.position = Vector2(340, 1000)
 		get_tree().current_scene.add_child.call_deferred(bomb_instance)
-		bombed = true
 		shield(3)
-	if !INPUT.bigMode: bombed = false
 
 func shield(duration):  # Duración ajustable (1.5 segundos por defecto)
 	canDie = false
@@ -99,7 +84,7 @@ func shield(duration):  # Duración ajustable (1.5 segundos por defecto)
 
 # Detecta si el hurtbox entra en un Area2D
 func _on_hurtbox_area_entered(area):
-	if !INPUT.bigMode and canDie and area.is_in_group("Damage"):
+	if canDie and area.is_in_group("Damage"):
 		GAME.lives -= 0.5
 		SCORE.reset()
 		GAME.spawn()

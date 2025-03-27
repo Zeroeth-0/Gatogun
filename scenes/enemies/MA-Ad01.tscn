@@ -14,7 +14,9 @@
 z_index = 1
 scale = Vector2(2, 2)
 script = ExtResource("1_rj0f3")
+size = 50
 health = 80
+scoreCount = 5
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 0, 1, 1)

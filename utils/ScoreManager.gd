@@ -88,7 +88,7 @@ func increase_combo(val):
 	comboLimit = 0.001
 
 func increase_fever(val):
-	if !INPUT.bigMode: fever += val
+	fever += val
 	feverTimer = 1.0
 
 func reset():

@@ -17,6 +17,7 @@ enum MoveType { STRAIGHT,
 }
 
 # Parámetros generales
+@export var size = 20
 @export var intensity = 1
 @export_range(0, 90, 15) var deviationAngle: int = 90
 @export var scrollFollow: bool = false
@@ -25,8 +26,8 @@ enum MoveType { STRAIGHT,
 var canDie: bool = false
 var canShoot: bool = true
 @export var medal: PackedScene = preload("res://scenes/items/medal.tscn")
-@export var medalCount: int = 1
-var touchingBig: bool = false
+@export var revengeBullet: PackedScene = preload("res://scenes/bullets/revenge_bullet.tscn")
+@export var scoreCount: int = 1
 
 # Direction
 enum Direction { NORTH, WEST, SOUTH, EAST }
@@ -107,9 +108,6 @@ func _process(delta):
 		"old_age":
 			speed = oldSpeed
 			apply_movement(oldAge, adultDur, delta)
-	
-	if !INPUT.bigMode: touchingBig = false
-	if touchingBig: health -= delta * 2
 
 # Selección de comportamiento según el tipo de movimiento
 func apply_movement(moveType, dur, delta):
@@ -138,17 +136,20 @@ func die():
 		SCORE.add_score(SCORE.combo)
 		# Si el jugador está a menos de 200 píxeles, duplica medalCount
 		var player_pos = GETPLAYER.get_player()
-		if position.distance_to(player_pos) < 200:
-			medalCount *= 2  # Duplica la cantidad de medallas
+		if position.distance_to(player_pos) < 200: score_spawn(scoreCount, medal)
+		if position.y < 250: score_spawn(scoreCount, revengeBullet)
+		
+		queue_free()
+
+func score_spawn(count, entity):
 		# Spawnear varias medallas según "medalCount"
-		for i in range(medalCount):
-			var item = medal.instantiate()
-			get_tree().current_scene.add_child(item)
+		for i in range(count):
+			var item = entity.instantiate()
+			get_tree().current_scene.call_deferred("add_child", item)
 			
 			# Posición con desplazamiento aleatorio
-			var offset = Vector2(randf_range(-10, 10), randf_range(-10, 10))
+			var offset = Vector2(randf_range(-size, size), 0)
 			item.position = global_position + offset  
-		queue_free()
 
 # Behaviors
 
@@ -284,13 +285,11 @@ func _on_hurtbox_area_entered(area):
 	if area.is_in_group("Fire") and canDie: health -= area.damage
 	if area.is_in_group("Player"):
 		if isGround: canShoot = false
-		if INPUT.bigMode: touchingBig = true
 	if area.is_in_group("Bomb"): health -= area.damage
 
 func _on_hurtbox_area_exited(area):
 	if area.is_in_group("Player"):
 		if isGround: canShoot = true
-		touchingBig = false
 
 func _on_hitbox_area_entered(area):
 	if area.is_in_group("Play"): canDie = true

@@ -1,10 +1,13 @@
 extends Area2D
 
 # Properties
-var speed: int
+var speed: int = 250
 var direction: Vector2
 var rotationSpeed: int = 360
 @export var sprite: Sprite2D
+@export var revenge: bool = false
+@export var medal: PackedScene = preload("res://scenes/items/medal.tscn")
+var revHealth: int = 20
 
 # Direction
 enum Type { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM }
@@ -27,6 +30,7 @@ var grav: bool = false
 var acceleration: Vector2 = Vector2.ZERO  # Vector de aceleración
 
 func _ready() -> void:
+	if revenge: direction = (GETPLAYER.get_player() - position).normalized()
 	velocity = direction * speed
 	sndStartTime += fstStartTime
 
@@ -92,5 +96,16 @@ func update_speed() -> void:
 	elif elapsedTime >= sndStartTime:
 		speed = sndNewSpeed
 
+func cancel():
+	var item = medal.instantiate()
+	get_tree().current_scene.call_deferred("add_child", item)
+	item.position = global_position  
+	queue_free()
+
 func _on_area_exited(area):
 	if area.is_in_group("Free"): queue_free()
+
+func _on_area_entered(area):
+	if area.is_in_group("Fire") and revenge:
+		revHealth -= 1
+		if revHealth <= 0: cancel()

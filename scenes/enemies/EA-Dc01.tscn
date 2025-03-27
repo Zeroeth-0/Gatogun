@@ -15,7 +15,9 @@
 z_index = 1
 scale = Vector2(3, 3)
 script = ExtResource("1_ywed8")
+size = 100
 health = 300
+scoreCount = 10
 childHood = 5
 adultHood = 4
 adultDur = 5.0
@@ -25,15 +27,18 @@ oldSpeed = 300
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 0, 1, 1)
 z_index = 1
+position = Vector2(0, -15)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_g71v6")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -15)
 shape = SubResource("RectangleShape2D_jtchi")
 disabled = true
 debug_color = Color(1, 0, 0, 0.419608)
 
 [node name="Hitbox" type="Area2D" parent="."]
+position = Vector2(0, -15)
 scale = Vector2(2, 2)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
@@ -41,6 +46,7 @@ shape = SubResource("RectangleShape2D_vwy2o")
 debug_color = Color(1, 0, 0, 0.419608)
 
 [node name="Hurtbox" type="Area2D" parent="." groups=["Enemy"]]
+position = Vector2(0, -15)
 scale = Vector2(0.7, 0.7)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
@@ -49,12 +55,13 @@ shape = SubResource("RectangleShape2D_divk0")
 debug_color = Color(0, 1, 0, 0.419608)
 
 [node name="Emitter" parent="." instance=ExtResource("3_g81c8")]
+position = Vector2(0, -15)
 
 [node name="Emitter2" parent="." instance=ExtResource("4_jvbmq")]
-position = Vector2(-25, 0)
+position = Vector2(-25, -15)
 
 [node name="Emitter3" parent="." instance=ExtResource("4_jvbmq")]
-position = Vector2(25, 0)
+position = Vector2(25, -15)
 
 [connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]
 [connection signal="area_exited" from="Hitbox" to="." method="_on_hitbox_area_exited"]

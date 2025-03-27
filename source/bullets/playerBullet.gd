@@ -30,13 +30,8 @@ func set_dir(newDir, devAngle):
 	# Rotar el nodo para que apunte en la dirección inicial
 	rotation = direction.angle()
 
-func point_blank():
-	var distance = global_position.distance_to(GETPLAYER.get_player())
-	if distance < 200: return true
-
 func _on_area_entered(area):
 	if area.is_in_group("Enemy") and !isBomb:
-		if point_blank(): damage *= 2
 		SCORE.increase_combo(damage)
 		SCORE.increase_fever(damage)
 		queue_free()

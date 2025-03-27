@@ -13,7 +13,8 @@
 [node name="Enemy" type="CharacterBody2D"]
 z_index = 1
 script = ExtResource("1_krfr6")
-health = 10
+health = 5
+scoreCount = 3
 childHood = 8
 childDur = 2.0
 childSpeed = 250

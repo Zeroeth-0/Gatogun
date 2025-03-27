@@ -14,6 +14,7 @@
 z_index = 1
 script = ExtResource("1_phoag")
 health = 5
+scoreCount = 3
 childDur = 2.0
 childSpeed = 200
 adultHood = 12

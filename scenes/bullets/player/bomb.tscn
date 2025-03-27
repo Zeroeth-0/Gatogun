@@ -9,7 +9,7 @@
 scale = Vector2(8, 8)
 script = ExtResource("1_1ecob")
 speed = 500.0
-damage = 200
+damage = 500
 isBomb = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

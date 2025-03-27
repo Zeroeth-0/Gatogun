@@ -3,12 +3,12 @@ extends Node
 # Movement
 var xAxis: float
 var yAxis: float
-var bigMode: bool = false
 
 # Firing
 var fireHold: bool = false
 var firing: bool = false
 var fireDir: Vector2 = Vector2.UP
+var bombing: bool = false
 
 # Timer
 var holdTimer: float = 0.0
@@ -18,16 +18,13 @@ var buffYes: bool = false
 
 func _process(delta):
 	d_pad()
-	if !bigMode: action_input(delta)
-	else: for bullet in get_tree().get_nodes_in_group("Fire"): bullet.queue_free()
+	action_input(delta)
 	
 	if Input.is_action_just_pressed("B") && SCORE.canBomb:
-		buffYes = false
-		firing = false
-		fireHold = false
-		bigMode = true
 		SCORE.bombCount += 1
-	if SCORE.fever <= 0: bigMode = false
+		for bullet in get_tree().get_nodes_in_group("Fire"): bullet.queue_free()
+	
+	bombing = Input.is_action_just_pressed("B") && SCORE.canBomb
 
 # D-Pad Movement
 func d_pad():
