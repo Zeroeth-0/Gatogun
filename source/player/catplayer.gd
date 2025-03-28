@@ -10,7 +10,6 @@ var direction: Vector2 = Vector2.UP
 
 @export_category("WEAPONS")
 @export var normalWeapon: Node2D
-@export var hyperWeapon: Node2D
 @export var hitbox: Node2D
 
 var playable: bool = false  # Controla si el jugador puede moverse
@@ -21,27 +20,14 @@ func _ready():
 	# Desactivar controles al inicio
 	playable = false
 	go_point = GAME.goPoint
-	
-	# Desactivar el arma pesada al inicio
-	normalWeapon.set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
-	hyperWeapon.set_deferred("process_mode", Node.PROCESS_MODE_DISABLED)
 
 func _process(_delta):
 	if playable:
 		movement()
 		screen_clamp(get_viewport().get_visible_rect().size)
 		bombing()
-		
-		if !SCORE.isFever and !INPUT.fireHold: speed = 350
-		if SCORE.isFever: speed = 150
-		if !SCORE.isFever and INPUT.fireHold: speed = 150
-
-		if SCORE.isFever:
-			normalWeapon.set_deferred("process_mode", Node.PROCESS_MODE_DISABLED)
-			hyperWeapon.set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
-		else:
-			normalWeapon.set_deferred("process_mode", Node.PROCESS_MODE_INHERIT)
-			hyperWeapon.set_deferred("process_mode", Node.PROCESS_MODE_DISABLED)
+		if INPUT.fireHold: speed = 150
+		else: speed = 350
 	else:
 		# Movimiento automático hasta `go_point`
 		shield(2.5)
@@ -92,6 +78,3 @@ func _on_hurtbox_area_entered(area):
 
 func _on_hurtbox_area_exited(area):
 	if area.is_in_group("Ground"): area.get_parent().canShoot = true
-
-func _on_grazebox_area_entered(area):
-	if area.is_in_group("Enemy Bullet"): SCORE.increase_fever(2)

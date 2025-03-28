@@ -108,4 +108,7 @@ func _on_area_exited(area):
 func _on_area_entered(area):
 	if area.is_in_group("Fire") and revenge:
 		revHealth -= 1
-		if revHealth <= 0: cancel()
+		if revHealth <= 0:
+			var player_pos = GETPLAYER.get_player()
+			if position.distance_to(player_pos) < 200: cancel()
+			else: queue_free()

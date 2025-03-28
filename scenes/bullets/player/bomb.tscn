@@ -8,7 +8,7 @@
 [node name="Player Bullet" type="Area2D" groups=["Bomb"]]
 scale = Vector2(8, 8)
 script = ExtResource("1_1ecob")
-speed = 500.0
+speed = 600.0
 damage = 500
 isBomb = true
 

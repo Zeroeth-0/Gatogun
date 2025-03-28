@@ -28,6 +28,7 @@ var canShoot: bool = true
 @export var medal: PackedScene = preload("res://scenes/items/medal.tscn")
 @export var revengeBullet: PackedScene = preload("res://scenes/bullets/revenge_bullet.tscn")
 @export var scoreCount: int = 1
+@export var isElite: bool = false
 
 # Direction
 enum Direction { NORTH, WEST, SOUTH, EAST }
@@ -139,6 +140,8 @@ func die():
 		if position.distance_to(player_pos) < 200: score_spawn(scoreCount, medal)
 		if position.y < 250: score_spawn(scoreCount, revengeBullet)
 		
+		if isElite:
+			for bullet in get_tree().get_nodes_in_group("Enemy Bullet"): bullet.cancel()
 		queue_free()
 
 func score_spawn(count, entity):

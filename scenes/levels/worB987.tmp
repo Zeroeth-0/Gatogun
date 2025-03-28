@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bi7uyv2plo07x"]
+[gd_scene load_steps=15 format=3 uid="uid://bi7uyv2plo07x"]
 
 [ext_resource type="Script" path="res://source/levels/world.gd" id="1_btnht"]
 [ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="3_0hlg8"]
@@ -10,9 +10,10 @@
 [ext_resource type="PackedScene" uid="uid://chegi2am56x1" path="res://scenes/UI/combo_label.tscn" id="9_ckr2p"]
 [ext_resource type="PackedScene" uid="uid://jkopai8ptvrm" path="res://scenes/UI/score_label.tscn" id="10_s7d0j"]
 [ext_resource type="PackedScene" uid="uid://ber78ar7g5504" path="res://scenes/UI/fever_bar.tscn" id="11_yb1ae"]
-[ext_resource type="PackedScene" uid="uid://c7eeyaje6ghkn" path="res://scenes/UI/h_box_container.tscn" id="13_e6078"]
 [ext_resource type="PackedScene" uid="uid://bh5j5lxy0e3ox" path="res://scenes/enemies/MA-Ad01.tscn" id="13_wto8c"]
+[ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="14_kq4rh"]
 [ext_resource type="PackedScene" uid="uid://cxlnulg54i4r6" path="res://scenes/enemies/EA-Dc01.tscn" id="14_m2u0j"]
+[ext_resource type="Script" path="res://source/UI/lives.gd" id="15_nlt8f"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_btnht")
@@ -153,5 +154,20 @@ text = "Score: 999999999999"
 
 [node name="FeverBar" parent="." instance=ExtResource("11_yb1ae")]
 z_index = 10
+offset_left = -218.0
+offset_top = 220.0
+offset_right = 382.0
+offset_bottom = 820.0
+scale = Vector2(-0.1, -0.1)
+pivot_offset = Vector2(275, -75)
+fever_color = Color(0.921569, 0, 0, 1)
 
-[node name="HBoxContainer" parent="." instance=ExtResource("13_e6078")]
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+z_index = 10
+offset_left = 30.0
+offset_top = 30.0
+offset_right = 70.0
+offset_bottom = 70.0
+scale = Vector2(0.25, 0.25)
+script = ExtResource("15_nlt8f")
+heart_texture = ExtResource("14_kq4rh")

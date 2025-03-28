@@ -6,7 +6,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ujur0"]
 
 [node name="Medal" type="Area2D"]
-z_as_relative = false
+z_index = 2
 script = ExtResource("1_8fdno")
 speed = 500.0
 

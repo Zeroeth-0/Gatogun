@@ -1,10 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://bdwrnere5ixd8"]
+[gd_scene load_steps=6 format=3 uid="uid://bdwrnere5ixd8"]
 
 [ext_resource type="Script" path="res://source/player/catplayer.gd" id="1_yk73g"]
 [ext_resource type="PackedScene" uid="uid://cayls45qnqvte" path="res://scenes/bullets/player/bomb.tscn" id="2_2l8o3"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_l3m3u"]
 [ext_resource type="PackedScene" uid="uid://c1kw6fapw2mwv" path="res://scenes/weapons/player/linear_weapon.tscn" id="4_hwc81"]
-[ext_resource type="PackedScene" uid="uid://nesd4qi4sce2" path="res://scenes/weapons/player/hyper_weapon.tscn" id="5_6vgd8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_klkvo"]
 
@@ -16,7 +15,7 @@ bomb = ExtResource("2_2l8o3")
 speed = 300
 screenMargin = 50
 normalWeapon = NodePath("Weapon")
-hyperWeapon = NodePath("Hyper")
+hyperWeapon = NodePath("")
 hitbox = NodePath("Denialzone")
 
 [node name="Hurtbox" type="Area2D" parent="." groups=["Collect", "Player"]]
@@ -48,8 +47,6 @@ shape = SubResource("RectangleShape2D_klkvo")
 debug_color = Color(0, 1, 0, 0.419608)
 
 [node name="Weapon" parent="." instance=ExtResource("4_hwc81")]
-
-[node name="Hyper" parent="." instance=ExtResource("5_6vgd8")]
 
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
 [connection signal="area_exited" from="Hurtbox" to="." method="_on_hurtbox_area_exited"]

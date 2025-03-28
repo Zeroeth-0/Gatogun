@@ -5,9 +5,9 @@ extends Area2D
 @export var damage: int = 1
 @export var lifeTime: float = 10.0
 @export var isBomb: bool = false
+@export var isFocus: bool = false
 var direction: Vector2 = Vector2(0, -1)
 var deviationAngle: float = 0.0 # Desviación en grados (0, 30 o -30)
-@export var hyper: bool = false
 
 # Convertir la desviación a radianes
 var deviationRadians: float = 0.0
@@ -20,7 +20,8 @@ func _process(delta: float):
 	lifeTime -= delta
 	if lifeTime <= 0: queue_free()
 	
-	if hyper: global_position.x = GETPLAYER.get_player().x
+	if isBomb:
+		for bullet in get_tree().get_nodes_in_group("Enemy Bullet"): bullet.cancel()
 
 func set_dir(newDir, devAngle):
 	deviationAngle = devAngle
@@ -33,7 +34,8 @@ func set_dir(newDir, devAngle):
 func _on_area_entered(area):
 	if area.is_in_group("Enemy") and !isBomb:
 		SCORE.increase_combo(damage)
-		SCORE.increase_fever(damage)
+		if isFocus: SCORE.keep_fever()
+		else: SCORE.increase_fever(damage)
 		queue_free()
 
 func _on_area_exited(area):

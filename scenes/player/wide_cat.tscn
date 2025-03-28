@@ -1,14 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://81sktqqbp7ea"]
+[gd_scene load_steps=6 format=3 uid="uid://81sktqqbp7ea"]
 
 [ext_resource type="Script" path="res://source/player/catplayer.gd" id="1_ujjkf"]
 [ext_resource type="PackedScene" uid="uid://cayls45qnqvte" path="res://scenes/bullets/player/bomb.tscn" id="2_fs4o1"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_fwlg7"]
 [ext_resource type="PackedScene" uid="uid://cjhkionj3a6h3" path="res://scenes/weapons/player/wide_weapon.tscn" id="3_8e7om"]
-[ext_resource type="PackedScene" uid="uid://nesd4qi4sce2" path="res://scenes/weapons/player/hyper_weapon.tscn" id="5_tudg7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_klkvo"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ckb6v"]
 
 [node name="CatPlayer" type="CharacterBody2D" node_paths=PackedStringArray("sprite", "normalWeapon", "hyperWeapon", "hitbox") groups=["Player"]]
 z_index = 3
@@ -18,7 +15,7 @@ bomb = ExtResource("2_fs4o1")
 speed = 300
 screenMargin = 50
 normalWeapon = NodePath("Weapon")
-hyperWeapon = NodePath("Hyper")
+hyperWeapon = NodePath("")
 hitbox = NodePath("Denialzone")
 
 [node name="Hurtbox" type="Area2D" parent="." groups=["Collect", "Player"]]
@@ -51,14 +48,5 @@ debug_color = Color(0, 1, 0, 0.419608)
 
 [node name="Weapon" parent="." instance=ExtResource("3_8e7om")]
 
-[node name="Hyper" parent="." instance=ExtResource("5_tudg7")]
-
-[node name="Grazebox" type="Area2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Grazebox"]
-scale = Vector2(3, 3)
-shape = SubResource("RectangleShape2D_ckb6v")
-
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
 [connection signal="area_exited" from="Hurtbox" to="." method="_on_hurtbox_area_exited"]
-[connection signal="area_entered" from="Grazebox" to="." method="_on_grazebox_area_entered"]
