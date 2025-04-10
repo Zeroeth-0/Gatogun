@@ -4,7 +4,7 @@ extends Marker2D
 
 @export_category("BULLET")
 @export var bulletScene: PackedScene = preload("res://scenes/bullets/bullet.tscn")
-@export_range(-250, 250, 50) var baseSpeed: float = 250.0
+@export_range(-400, 400, 50) var baseSpeed: float = 400.0
 
 @export_group("DIRECTION")
 enum Type { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM }
@@ -53,10 +53,13 @@ var direction: Vector2 = Vector2(0, 1)
 # ------------------------------------------------Burst---------------------------------------------------
 
 @export_category("BURST")
+@export_range(0, 5, 0.5) var delay: float = 0 # Implementado
 @export_range(1, 16, 1) var arms: int = 1 # Implementado
+@export_range(1, 5, 1) var armWidth: int = 1 # Implementado
+@export_range(0, 1, 0.1) var armSpacingFactor: float = 0.5 # Implementado
 @export_range(1, 10, 1) var burstCount: int = 1 # Implementado
 @export_range(0, 1, 0.05) var bulletInterval: float = 0.1 # Implementado
-@export_range(0, 5, 0.5) var warmUp: float = 1.0 # Implementado
+@export_range(0, 5, 0.1) var warmUp: float = 1.0 # Implementado
 @export_range(0, 450, 50) var distanceCenter: int = 0 # Implementado
 
 @export_group("SPREAD")
@@ -64,7 +67,7 @@ var direction: Vector2 = Vector2(0, 1)
 @export_range(0, 600, 100) var spreadOffset: int = 100 # Implementado
 enum SpeedVar { BULLET, ARM }
 @export var speedVar: SpeedVar = SpeedVar.BULLET # Implementado
-@export_range(0.9, 1.1, 0.02) var speedVariation: float = 1 # Implementado
+@export_range(0.9, 1.1, 0.01) var speedVariation: float = 1 # Implementado
 @export var useSymmetry: bool = false # Implementado
 
 @export_group("PROBABILITY")
@@ -136,6 +139,9 @@ func handle_rotation():
 		elif rotation_degrees <= rotationAngle and rotationAngle < 360: rotation_direction = 0
 
 func shoot():
+	# Esperar el tiempo definido en waitStart antes de iniciar el disparo
+	await get_tree().create_timer(delay).timeout
+	
 	while true:
 		await get_tree().create_timer(warmUp).timeout
 		var new_spd = speed
@@ -160,8 +166,7 @@ func fire(new_spd) -> void:
 	else:
 		eachArmAngle = spreadAngle / float(arms - 1)
 	
-	var offsetCorrection = 0.0
-	offsetCorrection = eachSpreadOffset / 2
+	var offsetCorrection = eachSpreadOffset / 2
 	
 	for r in range(repeatCount):
 		if keepSpeed:
@@ -202,13 +207,18 @@ func fire(new_spd) -> void:
 				if spreadAngle == 360:
 					shoot_dir *= -1
 			
-			# Velocidad final ajustada
-			var curr_spd = shoot_spd * rng.randf_range(1 - randomSpeed, 1 + randomSpeed)
-			# Lógica de simetría (opcional)
-			if !useSymmetry: shoot_bullet(shoot_dir, shoot_pos, curr_spd)
-			else:
-				shoot_bullet(shoot_dir.rotated(deg_to_rad(45)), shoot_pos, curr_spd)
-				shoot_bullet(shoot_dir.rotated(deg_to_rad(45)) * Vector2(-1, 1), shoot_pos, curr_spd)
+			# 🔹 **NUEVO: Generar múltiples balas por brazo para el grosor**
+			for j in range(armWidth):  
+				var arm_offset = ((j - (armWidth - 1) / 2.0) * eachSpreadOffset * armSpacingFactor)
+				var bullet_pos = shoot_pos + shoot_dir.orthogonal() * arm_offset
+				var curr_spd = shoot_spd * rng.randf_range(1 - randomSpeed, 1 + randomSpeed)
+
+				# Lógica de simetría (opcional)
+				if !useSymmetry: 
+					shoot_bullet(shoot_dir, bullet_pos, curr_spd)
+				else:
+					shoot_bullet(shoot_dir.rotated(deg_to_rad(45)), bullet_pos, curr_spd)
+					shoot_bullet(shoot_dir.rotated(deg_to_rad(45)) * Vector2(-1, 1), bullet_pos, curr_spd)
 
 func shoot_bullet(shoot_dir: Vector2, shoot_pos: Vector2, shoot_spd: float):
 	var bullet = bulletScene.instantiate() as Node2D

@@ -32,10 +32,6 @@ func _process(delta):
 	
 	var threshold = feverSize * (1 - pow(0.5, bombCount + 1))
 	canBomb = fever >= threshold
-	
-	if rankCounter >= rankLimit:
-		rank += 1
-		rankCounter = 0
 
 func fever_counter(delta):
 	feverTimer -= delta

@@ -1,23 +1,16 @@
-[gd_scene load_steps=14 format=3 uid="uid://bi7uyv2plo07x"]
+[gd_scene load_steps=9 format=3 uid="uid://bi7uyv2plo07x"]
 
 [ext_resource type="Script" path="res://source/levels/world.gd" id="1_btnht"]
 [ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="3_0hlg8"]
 [ext_resource type="PackedScene" uid="uid://cgts6rg8xrau" path="res://scenes/levels/playzone.tscn" id="4_hkylk"]
 [ext_resource type="PackedScene" uid="uid://4y26tmtqbxdx" path="res://scenes/levels/ground.tscn" id="5_sf1u2"]
-[ext_resource type="PackedScene" uid="uid://col2b2mp7eu6y" path="res://scenes/enemies/PT-Pr03.tscn" id="6_ay5fw"]
-[ext_resource type="PackedScene" uid="uid://b75rvmh44msfh" path="res://scenes/enemies/PA-Pr01.tscn" id="6_kdx7s"]
-[ext_resource type="PackedScene" uid="uid://1jns7p21mhry" path="res://scenes/enemies/PA-Pr02.tscn" id="7_ewcwf"]
 [ext_resource type="PackedScene" uid="uid://chegi2am56x1" path="res://scenes/UI/combo_label.tscn" id="9_ckr2p"]
 [ext_resource type="PackedScene" uid="uid://jkopai8ptvrm" path="res://scenes/UI/score_label.tscn" id="10_s7d0j"]
 [ext_resource type="PackedScene" uid="uid://ber78ar7g5504" path="res://scenes/UI/fever_bar.tscn" id="11_yb1ae"]
 [ext_resource type="PackedScene" uid="uid://c7eeyaje6ghkn" path="res://scenes/UI/h_box_container.tscn" id="13_e6078"]
-[ext_resource type="PackedScene" uid="uid://bh5j5lxy0e3ox" path="res://scenes/enemies/MA-Ad01.tscn" id="13_wto8c"]
-[ext_resource type="PackedScene" uid="uid://cxlnulg54i4r6" path="res://scenes/enemies/EA-Dc01.tscn" id="14_m2u0j"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_btnht")
-csv_file = "res://source/levels/test.txt"
-enemy_scenes = Array[PackedScene]([ExtResource("6_kdx7s"), ExtResource("7_ewcwf"), ExtResource("6_ay5fw"), ExtResource("13_wto8c"), ExtResource("14_m2u0j")])
 
 [node name="North Lane" type="Node2D" parent="."]
 position = Vector2(340, -100)
@@ -115,7 +108,6 @@ position = Vector2(261, 0)
 
 [node name="Ground" parent="." instance=ExtResource("5_sf1u2")]
 csv_file = null
-enemy_scenes = Array[PackedScene]([ExtResource("6_kdx7s"), ExtResource("7_ewcwf"), ExtResource("6_ay5fw")])
 
 [node name="DeadBounds" parent="." instance=ExtResource("3_0hlg8")]
 

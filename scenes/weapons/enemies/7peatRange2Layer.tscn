@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://dq64s13mhx5py"]
+
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/emitter.tscn" id="1_bdcgu"]
+
+[node name="Emitter" instance=ExtResource("1_bdcgu")]
+rotationAngle = 135
+rotationSpeed = 20
+pingPong = true
+arms = 7
+warmUp = 1.5
+spreadAngle = 90.0
+
+[node name="Emitter" parent="." index="0" instance=ExtResource("1_bdcgu")]
+baseSpeed = 250.0
+rotationAngle = 135
+rotationSpeed = 20
+pingPong = true
+arms = 5
+warmUp = 1.5
+spreadAngle = 30.0

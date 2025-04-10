@@ -1,9 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://ca65gvi7s2km7"]
-
-[ext_resource type="Script" path="res://source/weapons/emitter.gd" id="1_4817i"]
-
-[node name="Emitter" type="Marker2D"]
-script = ExtResource("1_4817i")
-aimAtPlayer = true
-arms = 7
-spreadAngle = 120.0

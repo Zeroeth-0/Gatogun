@@ -1,0 +1,37 @@
+[gd_scene load_steps=2 format=3 uid="uid://yaq4467h0uj"]
+
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/emitter.tscn" id="1_pu1mo"]
+
+[node name="Emitter" instance=ExtResource("1_pu1mo")]
+baseSpeed = 300.0
+aimAtPlayer = true
+arms = 5
+burstCount = 2
+bulletInterval = 0.2
+warmUp = 2.0
+spreadAngle = 60.0
+
+[node name="Emitter2" parent="." index="0" instance=ExtResource("1_pu1mo")]
+baseSpeed = 300.0
+type = 1
+dirDuration = 0.1
+aimAtPlayer = true
+parallel = true
+delay = 1.0
+arms = 2
+burstCount = 3
+bulletInterval = 0.2
+warmUp = 1.8
+speedVariation = 1.15
+
+[node name="Emitter" parent="." index="1" instance=ExtResource("1_pu1mo")]
+baseSpeed = 300.0
+aimAtPlayer = true
+delay = 1.0
+arms = 2
+armWidth = 2
+armSpacingFactor = 1.0
+burstCount = 3
+bulletInterval = 0.2
+warmUp = 1.8
+speedVariation = 1.15
