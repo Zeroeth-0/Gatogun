@@ -1,40 +1,40 @@
 extends Area2D
 
-enum ItemType {
-	MEDAL,
-	OTHER
-}
+# === ENUM DE TIPOS DE ÍTEMS ===
+enum ItemType { MEDAL, OTHER }
 
-@export var itemEnum: ItemType = ItemType.MEDAL
-@export var speed: float = 200.0
-@export var grav: float = 800.0  # Fuerza de gravedad
-@export var launch_force: float = 200.0  # Fuerza del disparo inicial
-@export var delay_before_follow: float = 0.7  # Tiempo antes de que empiecen a seguir al jugador
+# === EXPORTABLES CONFIGURABLES ===
+@export var itemEnum: ItemType = ItemType.MEDAL                                 # Tipo de item
+@export var speed: float = 200.0                                                # Velocidad hacia jugador
+@export var grav: float = 800.0                                                 # Gravedad
+@export var launchForce: float = 200.0                                          # Fuerza de lanzamiento inicial
+@export var delayBeforeFollow: float = 0.7                                      # Tiempo hasta ir a jugador
 
+# === ESTADO INTERNO ===
 var velocity: Vector2 = Vector2.ZERO
-var following_player: bool = false
+var followingPlayer: bool = false
 
-func _ready():
-	velocity = Vector2(0, randf_range(-launch_force * 0.5, -launch_force * 2))
+func _ready() -> void:
+	# Lanzamiento inicial con fuerza aleatoria hacia arriba
+	velocity = Vector2(0, randf_range(-launchForce * 0.5, -launchForce * 2))
+	
+	# Esperar antes de activar seguimiento
+	await get_tree().create_timer(delayBeforeFollow).timeout
+	followingPlayer = true
 
-	# Esperar antes de empezar a seguir al jugador
-	await get_tree().create_timer(delay_before_follow).timeout
-	following_player = true
-
-func _process(delta):
-	if following_player:
-		move_towards_player(delta)
+func _process(delta: float) -> void:
+	if followingPlayer: _move_towards_player(delta)
 	else:
-		# Aplicar gravedad y movimiento inicial
-		velocity.y += grav * delta  # Simula la gravedad
+		# Simula caída con gravedad hasta que empieza a seguir
+		velocity.y += grav * delta
 		position += velocity * delta
 
-func move_towards_player(delta):
-	var playerPos = GETPLAYER.get_player()
+func _move_towards_player(delta: float) -> void:
+	var playerPos = GAME.get_player()
 	var direction = (playerPos - position).normalized()
 	position += direction * speed * delta
 
-func _on_area_entered(area):
+func _on_area_entered(area: Node) -> void:
 	if area.is_in_group("Collect"):
 		SCORE.add_score(SCORE.combo / 2)
 		queue_free()

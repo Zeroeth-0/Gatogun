@@ -1,84 +1,87 @@
 extends Node2D
 
-# Variables para el CSV y la lista de enemigos
-@export_file var csv_file: String
-@export var enemy_scenes: Array[PackedScene] = []
-const laneGap: int = 87;
+# === EXPORTS ===
+@export_file var csvFile: String                                                # Información del nivel
+@export var enemyScenes: Array[PackedScene] = []                                # Enemigos disponibles
 
-# Markers por cada lado
-var lanes = {
+# === CONSTANTES ===
+const LANE_GAP: int = 87
+
+# === LÍNEAS DE APARICIÓN ===
+var lanes := {
 	"N": [],
 	"S": [],
 	"E": [],
 	"W": []
 }
 
-# Ejecutar en _ready para cargar el archivo y empezar la lógica
-func _ready():
-	load_markers()
-	load_csv_data(csv_file)
+# === FLUJO PRINCIPAL ===
+func _ready() -> void:
+	_load_markers()
+	await _load_csv_data(csvFile)
 	GAME.spawn()
 
-# Carga los Marker2D en las listas correspondientes por lado (N, S, E, W)
-func load_markers():
+# === INICIALIZACIÓN DE MARCADORES ===
+func _load_markers() -> void:
 	lanes["N"] = get_node("North Lane").get_children()
 	lanes["S"] = get_node("South Lane").get_children()
 	lanes["E"] = get_node("East Lane").get_children()
 	lanes["W"] = get_node("West Lane").get_children()
 
-# Leer y parsear el CSV
-func load_csv_data(file_path: String):
-	var file = FileAccess.open(file_path, FileAccess.READ)
-	if file:
-		file.get_line()  # Saltar la primera línea (encabezados)
-		while not file.eof_reached():
-			var line = file.get_line().strip_edges()
-			if line == "":
-				continue  # Saltar líneas vacías
-			var data = line.split(",")
-			# Instanciar enemigo usando la data del CSV con espera
-			await get_tree().create_timer(float(data[6])).timeout
-			spawn_enemy(data)
-		file.close()
+# === CARGA Y PROCESAMIENTO DEL CSV ===
+func _load_csv_data(path: String) -> void:
+	var file = FileAccess.open(path, FileAccess.READ)
+	if not file:
+		printerr("No se pudo abrir el archivo: ", path)
+		return
+	
+	# Saltar encabezado
+	file.get_line()
+	
+	while not file.eof_reached():
+		var line = file.get_line().strip_edges()
+		if line == "": continue
+		
+		var data = line.split(",")
+		var delay = float(data[6])
+		await get_tree().create_timer(delay).timeout
+		_spawn_enemy(data)
+	
+	file.close()
 
-# Función para instanciar el enemigo
-func spawn_enemy(data: Array) -> void:
-	var enemy_type = data[0] # Nombre del tipo de enemigo
-	var lane_side = data[1]  # N, S, E, W
-	var lane_number = int(data[2])  # Carril (0-6)
-	var lane_offset = float(data[3])
-	var handedness = data[4]  # R o L
-	var direction = data[5]  # Dirección N, S, E, W
+# === INSTANCIACIÓN DE ENEMIGOS ===
+func _spawn_enemy(data: Array) -> void:
+	var enemyType = data[0]
+	var laneSide = data[1]
+	var laneIndex = int(data[2])
+	var laneOffset = float(data[3])
+	var handed = data[4]
+	var dir = data[5]
 	
-	# Buscar la escena del enemigo por nombre
-	var enemy_scene = get_enemy_scene_by_name(enemy_type)
+	var scene = _get_enemy_scene_by_name(enemyType)
+	var enemy = scene.instantiate()
+	var spawnPos = lanes[laneSide][laneIndex].global_position
 	
-	var enemy_instance = enemy_scene.instantiate()
+	# Aplicar offset según dirección
+	if laneSide in ["N", "S"]: spawnPos.x += laneOffset * LANE_GAP
+	else: spawnPos.y += laneOffset * LANE_GAP
+	enemy.position = spawnPos
 	
-	# Obtener el Marker2D correspondiente y ubicar al enemigo
-	var spawn_position = lanes[lane_side][lane_number].global_position
-	if lane_side == "N" or lane_side == "S": spawn_position.x += lane_offset * laneGap
-	if lane_side == "W" or lane_side == "E": spawn_position.y += lane_offset * laneGap
-	enemy_instance.position = spawn_position
+	# Configurar handedness y dirección
+	if handed == "R": enemy.handedness = enemy.Handedness.RIGHT
+	elif handed == "L": enemy.handedness = enemy.Handedness.LEFT
 	
-	match handedness:
-		"R": enemy_instance.handedness = enemy_instance.Handedness.RIGHT
-		"L": enemy_instance.handedness = enemy_instance.Handedness.LEFT
+	match dir:
+		"N": enemy.directionEnum = enemy.Direction.NORTH
+		"S": enemy.directionEnum = enemy.Direction.SOUTH
+		"E": enemy.directionEnum = enemy.Direction.EAST
+		"W": enemy.directionEnum = enemy.Direction.WEST
 	
-	match direction:
-		"N": enemy_instance.directionEnum = enemy_instance.Direction.NORTH
-		"S": enemy_instance.directionEnum = enemy_instance.Direction.SOUTH
-		"W": enemy_instance.directionEnum = enemy_instance.Direction.WEST
-		"E": enemy_instance.directionEnum = enemy_instance.Direction.EAST
-	
-	get_tree().current_scene.add_child(enemy_instance)
+	get_tree().current_scene.add_child(enemy)
 
-# Obtener el PackedScene basado en el nombre
-func get_enemy_scene_by_name(enemyName: String) -> PackedScene:
-	for scene in enemy_scenes:
-		# Obtener el nombre del archivo sin la extensión (.tscn)
-		var scene_name = scene.resource_path.get_file().get_basename()
-		# Compara con el nombre pasado como argumento
-		if scene_name == enemyName:
-			return scene
+# === SELECCIÓN DE ESCENA DE ENEMIGO ===
+func _get_enemy_scene_by_name(enemyName: String) -> PackedScene:
+	for scene in enemyScenes:
+		var baseName = scene.resource_path.get_file().get_basename()
+		if baseName == enemyName: return scene
 	return null

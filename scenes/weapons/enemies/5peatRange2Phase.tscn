@@ -21,7 +21,7 @@ delay = 1.0
 arms = 2
 burstCount = 3
 bulletInterval = 0.2
-warmUp = 1.8
+warmUp = 2.0
 speedVariation = 1.15
 
 [node name="Emitter" parent="." index="1" instance=ExtResource("1_pu1mo")]
@@ -33,5 +33,5 @@ armWidth = 2
 armSpacingFactor = 1.0
 burstCount = 3
 bulletInterval = 0.2
-warmUp = 1.8
-speedVariation = 1.15
+warmUp = 2.0
+speedVariation = 1.2

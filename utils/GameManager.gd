@@ -1,21 +1,34 @@
 extends Node
 
-@onready var wide_cat: PackedScene = preload("res://scenes/player/wide_cat.tscn")
-@onready var linear_cat: PackedScene = preload("res://scenes/player/linear_cat.tscn")
+# === ESCENAS DISPONIBLES ===
+@onready var wideCat: PackedScene = preload("res://scenes/player/wide_cat.tscn")                    # Disparo ancho
+@onready var linearCat: PackedScene = preload("res://scenes/player/linear_cat.tscn")                # Disparo lineal
 
+# === ESTADO GLOBAL DEL JUGADOR ===
 var spawnPoint: Vector2 = Vector2(150, 830)
 var goPoint: Vector2 = Vector2(150, 600)
 var lives: float = 3
 
-var characters_scenes: Array[PackedScene] = []
-var selected_character: PackedScene = null  # Guardará el personaje seleccionado
+var player: Node2D = null
+var characterScenes: Array[PackedScene] = []
+var selectedCharacter: PackedScene = null
 
-func _ready():
-	# Almacenar las escenas en el array
-	characters_scenes = [wide_cat, linear_cat]
+func _ready() -> void:
+	# Guardamos los personajes jugables en el array
+	characterScenes = [wideCat, linearCat]
 
-func spawn():
-	if selected_character and lives >= 0:
-		var player_instance = selected_character.instantiate()
-		player_instance.position = spawnPoint  # Asigna la posición de spawn
-		get_tree().current_scene.add_child.call_deferred(player_instance)  # Agrega el personaje a la escena
+func spawn() -> void:
+	# Solo se hace respawn si hay personaje seleccionado y vidas disponibles
+	if selectedCharacter and lives > 0:
+		var instance = selectedCharacter.instantiate()
+		instance.position = spawnPoint
+		get_tree().current_scene.call_deferred("add_child", instance)
+
+func get_player() -> Vector2:
+	var players = get_tree().get_nodes_in_group("Player")
+	if players.is_empty():
+		player = null
+		return spawnPoint
+	else:
+		player = players[0]
+		return player.global_position

@@ -1,14 +1,13 @@
 extends HBoxContainer
 
-@export var heart_texture: Texture2D  # Textura del corazón
+@export var heart_texture: Texture2D                                            # Textura de la vida extra
 var current_lives
 
-# Actualiza la cantidad de corazones visibles
-func _process(delta):
+# Actualiza la cantidad de vidas extra visibles
+func _process(_delta):
 	current_lives = GAME.lives
-	# Limpia los corazones actuales antes de volver a crearlos
-	for child in get_children():
-		child.queue_free()
+	# Limpia las vidas extra actuales antes de volver a crearlas
+	for child in get_children(): child.queue_free()
 	
 	# Crea un corazón por cada vida restante
 	for i in range(current_lives):

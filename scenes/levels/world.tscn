@@ -107,7 +107,6 @@ position = Vector2(174, 0)
 position = Vector2(261, 0)
 
 [node name="Ground" parent="." instance=ExtResource("5_sf1u2")]
-csv_file = null
 
 [node name="DeadBounds" parent="." instance=ExtResource("3_0hlg8")]
 

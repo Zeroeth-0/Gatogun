@@ -1,9 +1,9 @@
 extends Node
 
-@export var scroll: int = 25
+@export var scroll: int = 25                                                    # Velocidad scroll
 
 enum Direction { NORTH, WEST, SOUTH, EAST }
-@export var directionEnum: Direction = Direction.SOUTH # Implementado
+@export var directionEnum: Direction = Direction.SOUTH                          # Dirección de scroll
 var DIRECTION_MAP = {
 	Direction.NORTH: Vector2(0, -1).normalized(),
 	Direction.SOUTH: Vector2(0, 1).normalized(),

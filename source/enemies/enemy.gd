@@ -1,117 +1,103 @@
 extends CharacterBody2D
 
-# Definir los tipos de movimiento
-enum MoveType { STRAIGHT,
-				SINUSOIDAL,
-				OSCILLATE,
-				BREATH,
-				BLOCK,
-				CENTER,
-				CURVE,
-				CIRCULAR,
-				TOWARDS_PLAYER,
-				LEAVE,
-				LEAVE_SIDE,
-				DIAGONAL,
-				STILL
-}
-
-# Parámetros generales
-@export var size = 20
-@export var intensity = 1
-@export_range(0, 90, 15) var deviationAngle: int = 90
-@export var scrollFollow: bool = false
-@export var isGround: bool = false
-@export var health: int
-var canDie: bool = false
-var canShoot: bool = true
-@export var medal: PackedScene = preload("res://scenes/items/medal.tscn")
-@export var revengeBullet: PackedScene = preload("res://scenes/bullets/revenge_bullet.tscn")
-@export var scoreCount: int = 1
-@export var isElite: bool = false
-
-# Direction
+# === ENUMS DE COMPORTAMIENTO ===
+enum MoveType { STRAIGHT, SINUSOIDAL, OSCILLATE, BREATH, BLOCK, CENTER, CURVE, CIRCULAR, TOWARDS_PLAYER, LEAVE, LEAVE_SIDE, DIAGONAL, STILL }
 enum Direction { NORTH, WEST, SOUTH, EAST }
-@export var directionEnum: Direction = Direction.SOUTH
-var DIRECTION_MAP = {
-	Direction.NORTH: Vector2(0, -1).normalized(),
-	Direction.SOUTH: Vector2(0, 1).normalized(),
-	Direction.WEST: Vector2(-1, 0).normalized(),
-	Direction.EAST: Vector2(1, 0).normalized()
-}
-var direction: Vector2 = Vector2(0, 1)
-
-# Handedness
 enum Handedness { LEFT, RIGHT }
-@export var handedness = Handedness.RIGHT
 
+# === EXPORTS GENERALES ===
+@export var size := 20                                                          # Tamaño del enemigo
+@export var intensity := 1                                                      # Intensidad de comportamiento
+@export_range(0, 90, 15) var deviationAngle: int = 90                           # Cantidad de giro
+@export var scrollFollow := false                                               # ¿Sigue el scroll?
+@export var isGround := false                                                   # ¿Es enemigo de tierra?
+@export var health: int                                                         # Vida del enemigo
+@export var medal: PackedScene = preload("res://scenes/items/medal.tscn")                           # Item que recompensa
+@export var revengeBullet: PackedScene = preload("res://scenes/bullets/revenge_bullet.tscn")        # Balas que devuelve
+@export var scoreCount: int = 1                                                 # Cantidad de items/balas devueltos
+@export var isElite := false                                                    # ¿Es enemigo élite?
+@export var directionEnum: Direction = Direction.SOUTH                          # Dirección general
+@export var handedness: Handedness = Handedness.RIGHT                           # Mano dominante
+
+# === MOVIMIENTOS POR ETAPAS ===
 @export_category("CHILDHOOD")
-@export var childHood : MoveType = MoveType.STRAIGHT
-@export var childDur = 1.0
-@export var childSpeed = 100
-@export var adultInv: bool = false
+@export var childhood: MoveType = MoveType.STRAIGHT                             # Tipo de comportamiento
+@export var childDuration := 1.0                                                # Duración de etapa vital
+@export var childSpeed := 100                                                   # Velocidad durante etapa vital
+@export var adultInvert := false                                                # ¿Invertir mano dominante?
 
 @export_category("ADULTHOOD")
-@export var adultHood : MoveType = MoveType.STRAIGHT
-@export var adultDur = 1.0
-@export var adultSpeed = 100
-@export var oldInv: bool = false
+@export var adulthood: MoveType = MoveType.STRAIGHT                             # Tipo de comportamiento
+@export var adultDuration := 1.0                                                # Duración de etapa vital
+@export var adultSpeed := 100                                                   # Velocidad durante etapa vital
+@export var oldInvert := false                                                  # Invertir mano dominante?
 
 @export_category("OLD AGE")
-@export var oldAge : MoveType = MoveType.STRAIGHT
-@export var oldSpeed = 100
+@export var oldAge: MoveType = MoveType.STRAIGHT                                # Tipo de comportamiento
+@export var oldSpeed := 100                                                     # Velocidad durante etapa vital
 
-# Etapa actual
-var currentStage = "childhood"
-var stageTimer = 0.0
-var speed = 200
-var extraVel: Vector2 = Vector2.ZERO
-var hSide
-var currDir
-var rng = RandomNumberGenerator.new()
-var rand_side = 1 if rng.randf() < 0.5 else -1
+# === ESTADO INTERNO ===
+var currentStage := "childhood"
+var stageTimer := 0.0
+var speed := 200
+var extraVel := Vector2.ZERO
+var direction := Vector2.DOWN
+var currentDirection := Vector2.ZERO
+var hSide: int
+var randSide: int
+var canDie := false
+var canShoot := true
+var cantShoot := false
 
-var cantShoot: bool = false
+var DIRECTION_MAP = {
+	Direction.NORTH: Vector2.UP,
+	Direction.SOUTH: Vector2.DOWN,
+	Direction.WEST: Vector2.LEFT,
+	Direction.EAST: Vector2.RIGHT
+}
 
-# Configurar el movimiento inicial
-func _ready():
-	direction = DIRECTION_MAP.get(directionEnum)
+func _ready() -> void:
+	direction = DIRECTION_MAP.get(directionEnum, Vector2.DOWN)
+	currentDirection = direction
 	stageTimer = 0.0
 	hSide = -1 if handedness == Handedness.RIGHT else 1
-	currDir = direction
+	randSide = -1 if randi() % 2 == 0 else 1
+	
 	if isGround: $Hurtbox.add_to_group("Ground")
 	else: $Hitbox.add_to_group("Damage")
 
-# Manejo del tiempo y cambios de fase
-func _process(delta):
-	die()
+# === PROCESO DE VIDA Y FASES ===
+func _process(delta: float) -> void:
+	_check_death()
 	stageTimer += delta
-	if scrollFollow: velocity = SCROLL.get_scroll() + extraVel
-	else: velocity = extraVel
+	
+	velocity = SCROLL.get_scroll() + extraVel if scrollFollow else extraVel
 	
 	match currentStage:
 		"childhood":
-			if stageTimer > childDur:
-				currDir = direction
-				if adultInv: hSide *= -1
-				enter_next_stage("adulthood")
+			if stageTimer > childDuration: _change_stage("adulthood", adultInvert)
 			else:
 				speed = childSpeed
-				apply_movement(childHood, childDur, delta)
+				apply_movement(childhood, childDuration, delta)
+		
 		"adulthood":
-			if stageTimer > adultDur:
-				currDir = direction
-				if oldInv: hSide *= -1
-				enter_next_stage("old_age")
+			if stageTimer > adultDuration: _change_stage("old_age", oldInvert)
 			else:
 				speed = adultSpeed
-				apply_movement(adultHood, adultDur, delta)
+				apply_movement(adulthood, adultDuration, delta)
+		
 		"old_age":
 			speed = oldSpeed
-			apply_movement(oldAge, adultDur, delta)
+			apply_movement(oldAge, adultDuration, delta)
 
-# Selección de comportamiento según el tipo de movimiento
-func apply_movement(moveType, dur, delta):
+func _change_stage(nextStage: String, shouldInvert: bool) -> void:
+	currentStage = nextStage
+	stageTimer = 0.0
+	currentDirection = direction
+	if shouldInvert: hSide *= -1
+
+# === MOVIMIENTO GENERAL ===
+func apply_movement(moveType: MoveType, dur: float, delta: float) -> void:
 	match moveType:
 		MoveType.STRAIGHT: move_straight()
 		MoveType.SINUSOIDAL: move_sinusoidal()
@@ -127,130 +113,86 @@ func apply_movement(moveType, dur, delta):
 		MoveType.DIAGONAL: move_diagonal()
 		MoveType.STILL: move_still()
 
-# Cambiar a la siguiente fase de comportamiento
-func enter_next_stage(nextStage):
-	currentStage = nextStage
-	stageTimer = 0.0
+# === MUERTE Y RECOMPENSAS ===
+func _check_death() -> void:
+	if health > 0: return
+	SCORE.add_score(SCORE.combo)
+	
+	var playerPos = GAME.get_player()
+	if position.distance_to(playerPos) < 200: _spawn_score(scoreCount, medal)
+	if position.y < 250: _spawn_score(scoreCount, revengeBullet)
+	
+	if isElite:
+		for bullet in get_tree().get_nodes_in_group("Enemy Bullet"):
+			if bullet.has_method("cancel"): bullet.cancel()
 
-func die():
-	if health <= 0:
-		SCORE.add_score(SCORE.combo)
-		# Si el jugador está a menos de 200 píxeles, duplica medalCount
-		var player_pos = GETPLAYER.get_player()
-		if position.distance_to(player_pos) < 200: score_spawn(scoreCount, medal)
-		if position.y < 250: score_spawn(scoreCount, revengeBullet)
-		
-		if isElite:
-			for bullet in get_tree().get_nodes_in_group("Enemy Bullet"): bullet.cancel()
-		queue_free()
+	queue_free()
 
-func score_spawn(count, entity):
-		# Spawnear varias medallas según "medalCount"
-		for i in range(count):
-			var item = entity.instantiate()
-			get_tree().current_scene.call_deferred("add_child", item)
-			
-			# Posición con desplazamiento aleatorio
-			var offset = Vector2(randf_range(-size, size), 0)
-			item.position = global_position + offset  
+func _spawn_score(count: int, entity: PackedScene) -> void:
+	for i in count:
+		var item = entity.instantiate()
+		get_tree().current_scene.call_deferred("add_child", item)
+		item.position = global_position + Vector2(randf_range(-size, size), 0)
 
-# Behaviors
+# === TIPOS DE MOVIMIENTO ===
 
-func move_straight():
-	extraVel = direction * speed
-	move_and_slide()
+func move_straight(): extraVel = direction * speed; move_and_slide()
 
 func move_sinusoidal():
-	var frequency = 2.0  # Frecuencia de la oscilación
-	var amplitude = 50.0  # Amplitud de la oscilación
-	var offset = sin(frequency * stageTimer + PI / 2) * amplitude * intensity * hSide  # Desfase con hSide
-	var perpendicular_dir = Vector2(-direction.y, direction.x)  # Perpendicular a la dirección actual
-	
-	# Ajusta la velocidad y dirección
-	extraVel = (direction * speed) + (perpendicular_dir * offset)
+	var offset = sin(2.0 * stageTimer + PI / 2) * 50.0 * intensity * hSide
+	var side = Vector2(-direction.y, direction.x)
+	extraVel = direction * speed + side * offset
 	move_and_slide()
 
 func move_oscillate():
-	var frequency = 2.0  # Frecuencia de la oscilación
-	var amplitude = 50.0  # Amplitud de la oscilación
-	var offset = sign(sin(frequency * stageTimer + PI / 2)) * amplitude * intensity * hSide  # Picos en vez de curva
-	var perpendicular_dir = Vector2(-direction.y, direction.x)  # Perpendicular a la dirección actual
-	
-	# Ajusta la velocidad y dirección
-	extraVel = (direction * speed) + (perpendicular_dir * offset)
+	var offset = sign(sin(2.0 * stageTimer + PI / 2)) * 50.0 * intensity * hSide
+	var side = Vector2(-direction.y, direction.x)
+	extraVel = direction * speed + side * offset
 	move_and_slide()
 
 func move_breath():
-	var frequency = 2
-	var horizontal_amplitude = 15.0
-	var vertical_amplitude = 7.0
-
-	# Movimiento en forma de ocho con alternancia suave
-	var horizontal_offset = cos(frequency * stageTimer) * horizontal_amplitude * rand_side
-	var vertical_offset = sin(frequency * stageTimer * 1.5) * vertical_amplitude
-
-	# Crear una dirección temporal combinando ambas
-	var temp_direction = Vector2(horizontal_offset, vertical_offset) * intensity
-
-	# Aplicar la velocidad suavizada con aleatoriedad
-	extraVel = temp_direction
+	var xOffset = cos(2.0 * stageTimer) * 15.0 * randSide
+	var yOffset = sin(3.0 * stageTimer) * 7.0
+	extraVel = Vector2(xOffset, yOffset) * intensity
 	move_and_slide()
 
-func move_block(delta):
-	var player_pos = GETPLAYER.get_player()
-	var distance = global_position.distance_to(player_pos)
+func move_block(delta: float):
+	var playerPos = GAME.get_player()
+	var dist = global_position.distance_to(playerPos)
+	var followSpeed = clamp(1.0 / (dist * 0.05 + 0.5), 1.0, 3.0)
 	
-	# FACTORES DE AJUSTE
-	var min_speed = 1.0  # Velocidad mínima cuando está muy lejos
-	var max_speed = 3.0  # Velocidad máxima cuando está cerca
-	var distance_factor = 0.05  # Factor de influencia de la distancia
-	
-	# Calculamos la velocidad como inversa de la distancia, ajustada con los factores
-	var follow_speed = clamp(1.0 / (distance * distance_factor + 0.5), min_speed, max_speed)
-	
-	# Movimiento suavizado en la dirección permitida
-	if directionEnum == Direction.NORTH or directionEnum == Direction.SOUTH:
-		global_position.x = lerp(global_position.x, player_pos.x, follow_speed * delta)
-	elif directionEnum == Direction.EAST or directionEnum == Direction.WEST:
-		global_position.y = lerp(global_position.y, player_pos.y, follow_speed * delta)
+	if directionEnum in [Direction.NORTH, Direction.SOUTH]:
+		global_position.x = lerp(global_position.x, playerPos.x, followSpeed * delta)
+	else: global_position.y = lerp(global_position.y, playerPos.y, followSpeed * delta)
 
-
-func move_center(delta):
-	var center_pos = get_viewport().get_visible_rect().size / 2
-	var move_speed = 200  # Ajusta esto a la velocidad que quieras (pixeles por segundo)
+func move_center(delta: float):
+	var center = get_viewport().get_visible_rect().size / 2
+	var moveSpeed = 200
 	
-	if directionEnum == Direction.NORTH or directionEnum == Direction.SOUTH:
-		# Mover X hacia el centro
-		var diff_x = center_pos.x - global_position.x
-		global_position.x += sign(diff_x) * move_speed * delta
-		# Evitar pasarse del centro
-		if abs(diff_x) < move_speed * delta:
-			global_position.x = center_pos.x
-	
-	elif directionEnum == Direction.EAST or directionEnum == Direction.WEST:
-		# Mover Y hacia el centro
-		var diff_y = center_pos.y - global_position.y
-		global_position.y += sign(diff_y) * move_speed * delta
-		# Evitar pasarse del centro
-		if abs(diff_y) < move_speed * delta:
-			global_position.y = center_pos.y
+	if directionEnum in [Direction.NORTH, Direction.SOUTH]:
+		var dx = center.x - global_position.x
+		global_position.x += sign(dx) * moveSpeed * delta
+		if abs(dx) < moveSpeed * delta: global_position.x = center.x
+	else:
+		var dy = center.y - global_position.y
+		global_position.y += sign(dy) * moveSpeed * delta
+		if abs(dy) < moveSpeed * delta: global_position.y = center.y
 
-func move_curve(dur, delta):
-	var rotationSpeed = deg_to_rad(deviationAngle) / dur
-	if abs(direction.angle_to(currDir)) < deg_to_rad(deviationAngle):
-		direction = direction.rotated(rotationSpeed * hSide * delta)
+func move_curve(dur: float, delta: float):
+	var rotSpeed = deg_to_rad(deviationAngle) / dur
+	if abs(direction.angle_to(currentDirection)) < deg_to_rad(deviationAngle):
+		direction = direction.rotated(rotSpeed * hSide * delta)
 	extraVel = direction * speed
 	move_and_slide()
 
-func move_circular(delta):
+func move_circular(delta: float):
 	direction = direction.rotated(deg_to_rad(deviationAngle) * hSide * delta)
 	extraVel = direction * speed
 	move_and_slide()
 
 func move_towards_player():
 	scrollFollow = false
-	var playerPos = GETPLAYER.get_player()
-	direction = (playerPos - global_position).normalized()
+	direction = (GAME.get_player() - global_position).normalized()
 	extraVel = direction * speed
 	move_and_slide()
 
@@ -261,7 +203,7 @@ func move_leave():
 
 func move_leave_side():
 	scrollFollow = false
-	var newDir = Vector2 (0, 0)
+	var newDir
 	match directionEnum:
 		Direction.NORTH: newDir = Vector2(-hSide, 1)
 		Direction.SOUTH: newDir = Vector2(-hSide, -1)
@@ -271,7 +213,7 @@ func move_leave_side():
 	move_and_slide()
 
 func move_diagonal():
-	var newDir = Vector2 (0, 0)
+	var newDir
 	match directionEnum:
 		Direction.NORTH: newDir = Vector2(-hSide * 1.5, -1)
 		Direction.SOUTH: newDir = Vector2(-hSide * 2, 1)
@@ -284,18 +226,18 @@ func move_still():
 	extraVel = Vector2.ZERO
 	move_and_slide()
 
-func _on_hurtbox_area_entered(area):
+# === COLISIONES ===
+
+func _on_hurtbox_area_entered(area: Node) -> void:
 	if area.is_in_group("Fire") and canDie: health -= area.damage
-	if area.is_in_group("Player"):
-		if isGround: canShoot = false
+	if area.is_in_group("Player") and isGround: canShoot = false
 	if area.is_in_group("Bomb"): health -= area.damage
 
-func _on_hurtbox_area_exited(area):
-	if area.is_in_group("Player"):
-		if isGround: canShoot = true
+func _on_hurtbox_area_exited(area: Node) -> void:
+	if area.is_in_group("Player") and isGround: canShoot = true
 
-func _on_hitbox_area_entered(area):
+func _on_hitbox_area_entered(area: Node) -> void:
 	if area.is_in_group("Play"): canDie = true
 
-func _on_hitbox_area_exited(area):
+func _on_hitbox_area_exited(area: Node) -> void:
 	if area.is_in_group("Free"): queue_free()

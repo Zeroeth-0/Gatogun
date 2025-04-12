@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://ber78ar7g5504"]
 
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="1_vkc7f"]
-[ext_resource type="Script" path="res://source/UI/feverBar.gd" id="2_km53o"]
+[ext_resource type="Script" path="res://source/UI/fever_bar.gd" id="2_km53o"]
 
 [node name="FeverBar" type="TextureProgressBar"]
 offset_left = 40.0

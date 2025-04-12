@@ -19,10 +19,10 @@ config/icon="res://icon.svg"
 [autoload]
 
 INPUT="*res://utils/InputManager.gd"
-GETPLAYER="*res://utils/GetPlayer.gd"
 SCROLL="*res://utils/ScrollManager.gd"
 SCORE="*res://utils/ScoreManager.gd"
 GAME="*res://utils/GameManager.gd"
+GETPLAYER="*res://utils/GetPlayer.gd"
 
 [display]
 

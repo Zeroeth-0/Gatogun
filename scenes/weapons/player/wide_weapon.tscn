@@ -1,13 +1,13 @@
 [gd_scene load_steps=4 format=3 uid="uid://cjhkionj3a6h3"]
 
-[ext_resource type="Script" path="res://source/weapons/weaponManager.gd" id="1_bb8ca"]
+[ext_resource type="Script" path="res://source/weapons/weapon_manager.gd" id="1_bb8ca"]
 [ext_resource type="PackedScene" uid="uid://mijejse1m0kt" path="res://scenes/weapons/player/player_emmiter.tscn" id="2_0mt0c"]
 [ext_resource type="PackedScene" uid="uid://bkkquuwyecdv2" path="res://scenes/bullets/player/heavy_bullet.tscn" id="3_2mg8p"]
 
 [node name="Weapon" type="Node2D"]
 script = ExtResource("1_bb8ca")
-bullet_scene = ExtResource("3_2mg8p")
-fire_rate = 0.03
+bulletScene = ExtResource("3_2mg8p")
+fireRate = 0.015
 
 [node name="PlayerEmmiter" parent="." instance=ExtResource("2_0mt0c")]
 

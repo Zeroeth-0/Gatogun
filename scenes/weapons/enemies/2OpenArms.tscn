@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3 uid="uid://clseswg7d8yap"]
+
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/emitter.tscn" id="1_cicma"]
+
+[node name="Emitter" instance=ExtResource("1_cicma")]
+baseSpeed = 300.0
+dirOffset = 25.0
+arms = 2
+warmUp = 2.0
+spreadAngle = 15.0
+useSymmetry = true
+speedVar = 1
+speedVariation = 1.2
+
+[node name="Emitter2" parent="." index="0" instance=ExtResource("1_cicma")]
+baseSpeed = 300.0
+type = 1
+dirDuration = 0.1
+aimAtPlayer = true
+parallel = true
+arms = 2
+burstCount = 3
+warmUp = 2.0
+speedVariation = 1.15
