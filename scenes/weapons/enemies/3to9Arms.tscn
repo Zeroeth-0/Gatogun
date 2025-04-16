@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://dhovrws3moegs"]
+
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/emitter.tscn" id="1_25nan"]
+
+[node name="Emitter" instance=ExtResource("1_25nan")]
+arms = 3
+growWithRound = true
+burstCount = 9
+bulletInterval = 0.3
+warmUp = 5.0
+spreadAngle = 90.0

@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://bxqx2fgpmsmhm"]
+
+[ext_resource type="PackedScene" uid="uid://cpaqrklh3fr4s" path="res://scenes/enemies/midEnemy.tscn" id="1_yl1ar"]
+[ext_resource type="PackedScene" uid="uid://bm7rcpgmosj2b" path="res://scenes/weapons/enemies/3peatAimed.tscn" id="2_7j237"]
+
+[node name="Enemy" instance=ExtResource("1_yl1ar")]
+childDuration = 2.5
+adultDuration = 7.0
+adultSpeed = 50
+
+[node name="Emitter" parent="." index="4" instance=ExtResource("2_7j237")]

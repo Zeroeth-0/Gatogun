@@ -1,6 +1,6 @@
 extends Node
 
-@export var scroll: int = 25                                                    # Velocidad scroll
+@export var scroll: int = 50                                                    # Velocidad scroll
 
 enum Direction { NORTH, WEST, SOUTH, EAST }
 @export var directionEnum: Direction = Direction.SOUTH                          # Dirección de scroll

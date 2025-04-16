@@ -4,10 +4,10 @@
 
 [node name="Emitter" instance=ExtResource("1_cicma")]
 baseSpeed = 300.0
-dirOffset = 25.0
+aimAtPlayer = true
 arms = 2
 warmUp = 2.0
-spreadAngle = 15.0
+spreadAngle = 60.0
 useSymmetry = true
 speedVar = 1
 speedVariation = 1.2

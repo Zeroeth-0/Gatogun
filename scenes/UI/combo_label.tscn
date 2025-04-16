@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://chegi2am56x1"]
 
-[ext_resource type="Script" path="res://source/UI/label.gd" id="1_01v1u"]
+[ext_resource type="Script" uid="uid://p4wmi2otpdi7" path="res://source/UI/label.gd" id="1_01v1u"]
 
 [node name="ComboLabel" type="RichTextLabel"]
 top_level = true

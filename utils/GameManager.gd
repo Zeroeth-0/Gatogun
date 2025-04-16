@@ -7,7 +7,7 @@ extends Node
 # === ESTADO GLOBAL DEL JUGADOR ===
 var spawnPoint: Vector2 = Vector2(150, 830)
 var goPoint: Vector2 = Vector2(150, 600)
-var lives: float = 3
+var lives: float = 2
 
 var player: Node2D = null
 var characterScenes: Array[PackedScene] = []

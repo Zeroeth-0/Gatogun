@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://cnyxkggm0gvp1"]
+
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/emitter.tscn" id="1_oyfsf"]
+
+[node name="Emitter" instance=ExtResource("1_oyfsf")]
+arms = 3
+burstCount = 6
+spreadAngle = 75.0
+randomAngle = 5

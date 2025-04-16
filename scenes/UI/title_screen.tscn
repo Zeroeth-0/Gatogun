@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dra7yqg0s7urp"]
 
-[ext_resource type="Script" path="res://source/UI/title_screen.gd" id="1_tg2ys"]
+[ext_resource type="Script" uid="uid://ce6rccpqgcq1s" path="res://source/UI/title_screen.gd" id="1_tg2ys"]
 [ext_resource type="PackedScene" uid="uid://2ljl16vuntk2" path="res://scenes/UI/character_select.tscn" id="2_iedop"]
 
 [node name="Title Screen" type="Control"]

@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://cpaqrklh3fr4s"]
+
+[ext_resource type="PackedScene" uid="uid://45jy2ekapnll" path="res://scenes/enemies/enemy.tscn" id="1_wviyb"]
+
+[node name="Enemy" instance=ExtResource("1_wviyb")]
+scale = Vector2(2, 2)
+size = 40
+health = 100
+scoreCount = 3
+
+[node name="Sprite2D" parent="." index="0"]
+position = Vector2(0, -10)
+
+[node name="CollisionShape2D" parent="." index="1"]
+position = Vector2(0, -10)
+
+[node name="Hitbox" parent="." index="2"]
+position = Vector2(0, -10)
+
+[node name="Hurtbox" parent="." index="3"]
+position = Vector2(0, -10)

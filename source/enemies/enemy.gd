@@ -119,7 +119,7 @@ func _check_death() -> void:
 	SCORE.add_score(SCORE.combo)
 	
 	var playerPos = GAME.get_player()
-	if position.distance_to(playerPos) < 200: _spawn_score(scoreCount, medal)
+	if position.distance_to(playerPos) < 250: _spawn_score(scoreCount, medal)
 	if position.y < 250: _spawn_score(scoreCount, revengeBullet)
 	
 	if isElite:

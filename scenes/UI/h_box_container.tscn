@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://c7eeyaje6ghkn"]
 
-[ext_resource type="Script" path="res://source/UI/lives.gd" id="1_w8x7p"]
+[ext_resource type="Script" uid="uid://dvn75yjtwqxt4" path="res://source/UI/lives.gd" id="1_w8x7p"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_suado"]
 
 [node name="HBoxContainer" type="HBoxContainer"]

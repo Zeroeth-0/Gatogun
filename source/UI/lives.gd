@@ -15,4 +15,3 @@ func _process(_delta):
 		heart.texture = heart_texture
 		heart.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT  # Mantiene la proporción
 		add_child(heart)
-

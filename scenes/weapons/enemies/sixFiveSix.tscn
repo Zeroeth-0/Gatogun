@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://wkjfe5ncjqq3"]
+
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/emitter.tscn" id="1_004ul"]
+
+[node name="Emitter" instance=ExtResource("1_004ul")]
+baseSpeed = 300.0
+arms = 6
+alterArms = 5
+burstCount = 3
+bulletInterval = 0.4
+warmUp = 3.0
+spreadAngle = 90.0
+speedVariation = 1.1

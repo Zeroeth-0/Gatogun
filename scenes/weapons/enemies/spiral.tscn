@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://d3gsxy2tc02a1"]
+
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/emitter.tscn" id="1_oikpi"]
+
+[node name="Emitter" instance=ExtResource("1_oikpi")]
+burstRotation = true
+rotationAngle = 360
+rotationSpeed = 100
+pingPong = true
+burstCount = 20

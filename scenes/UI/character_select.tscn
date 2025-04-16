@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://2ljl16vuntk2"]
 
-[ext_resource type="Script" path="res://source/UI/character_select.gd" id="1_f6u33"]
+[ext_resource type="Script" uid="uid://carynk1lny4fj" path="res://source/UI/character_select.gd" id="1_f6u33"]
 [ext_resource type="PackedScene" uid="uid://bi7uyv2plo07x" path="res://scenes/levels/world.tscn" id="2_24n8n"]
 
 [node name="Character Select" type="Control" node_paths=PackedStringArray("character_sprite", "character_label")]

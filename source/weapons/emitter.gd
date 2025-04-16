@@ -10,7 +10,6 @@ enum BulletDirection { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM }
 @export var type: BulletDirection = BulletDirection.NONE                        # Tipo de dirección alterada
 @export_range(0, 1, 0.1) var gravIntensity: float = 0.5                         # Intensidad de gravedad
 @export_range(0, 180, 45) var deviationAngle: int = 45                          # Ángulo de desviación
-@export_range(-45, 45, 5) var dirOffset: float = 0.0                            # Compensación de dirección
 @export_range(0, 5, 0.1) var dirStartTime: float = 0.0                          # Tiempo inicio alteración
 @export_range(0, 5, 0.1) var dirDuration: float = 5.0                           # Duración alteración
 
@@ -54,9 +53,11 @@ var direction := Vector2.DOWN
 @export_category("BURST")
 @export_range(0, 5, 0.5) var delay: float = 0.0                                 # Retraso de disparo
 @export_range(1, 16, 1) var arms: int = 1                                       # Brazos por ráfaga
+@export_range(0, 16, 1) var alterArms: int = 0                                  # Alternativa de brazos (0 = desactivado)
+@export var growWithRound: bool = false                                         # Incrementar brazos en cada ronda
 @export_range(1, 5, 1) var armWidth: int = 1                                    # Balas por brazo
 @export_range(0, 1, 0.1) var armSpacingFactor: float = 0.5                      # Distancia balas brazo
-@export_range(1, 10, 1) var burstCount: int = 1                                 # Repeticiones por ráfaga
+@export_range(1, 20, 1) var burstCount: int = 1                                 # Repeticiones por ráfaga
 @export_range(0, 1, 0.05) var bulletInterval: float = 0.1                       # Espera entre repeticiones
 @export_range(0, 5, 0.1) var warmUp: float = 1.0                                # Espera entre ráfagas
 @export_range(0, 450, 50) var distanceCenter: int = 0                           # Distancia del centro
@@ -70,7 +71,7 @@ enum SpeedVar { BULLET, ARM }
 @export_range(0.8, 1.2, 0.01) var speedVariation: float = 1.0                   # Cantidad de aceleración
 
 @export_group("PROBABILITY")
-@export_range(0, 100, 10) var randomAngle: int = 0                              # Aleatorización de ángulo
+@export_range(0, 10, 1) var randomAngle: int = 0                              # Aleatorización de ángulo
 @export_range(0, 100, 10) var randomOffset: int = 0                             # Aleatorización de posición
 @export_range(0, 0.9, 0.1) var randomSpeed: float = 0.0                         # Aleatorización de velocidad
 
@@ -86,10 +87,12 @@ var stopRotation := false
 var playerPos: Vector2 = Vector2.ZERO
 var speed: float
 var canShoot: bool = true
-var adjustedDirection = direction
-var rank := SCORE.rank
+var usableArms: int
+var rank := float(SCORE.rank)
+var round: int = 0
 
 func _ready() -> void:
+	usableArms = arms
 	speed = baseSpeed
 	direction = directionMap.get(directionEnum, Vector2.DOWN)
 	_apply_rank_modifiers()
@@ -105,14 +108,14 @@ func _process(delta: float) -> void:
 func _apply_rank_modifiers() -> void:
 	if rank == 4: rank = 4.5
 	
-	var scale := (rank / 6.0) ** 2
+	var pScale := (rank / 6.0) ** 2
 	if rank > 1:
-		speed = lerp(speed, speed + speed / 2, scale)
-		arms = lerp(arms, arms + arms / 2, scale)
-		burstCount = lerp(burstCount, burstCount + burstCount / 2, scale) \
+		speed = lerp(speed, speed + speed / 2, pScale)
+		arms = lerp(arms, arms + arms / 2, pScale)
+		burstCount = lerp(burstCount, burstCount + burstCount / 2, pScale) \
 			if burstCount > 1 \
-			else lerp(burstCount, burstCount * 3, scale)
-		rotationSpeed = lerp(rotationSpeed, rotationSpeed + rotationSpeed / 2, scale)
+			else lerp(burstCount, burstCount * 3, pScale)
+		rotationSpeed = lerp(rotationSpeed, rotationSpeed + rotationSpeed / 2, pScale)
 	
 	if rank == 0:
 		speed *= 0.75
@@ -141,54 +144,70 @@ func _handle_rotation_bounds() -> void:
 
 func shoot() -> void:
 	await get_tree().create_timer(delay).timeout
+	var timeSinceLastBurst := 0.0
 	
 	while true:
 		if aimAtPlayer: playerPos = GAME.get_player()
-		else: adjustedDirection = direction.rotated(deg_to_rad(dirOffset))
 		
 		var currentSpeed = speed
 		if not burstRotation: stopRotation = true
 		
-		# Iniciamos el temporizador del próximo ciclo de ráfaga YA
-		var nextWarmupTimer = get_tree().create_timer(warmUp)
+		var burstStartTime = Time.get_ticks_msec() / 1000.0  # Tiempo actual en segundos
 		
+		# Ejecutamos toda la ráfaga
 		for i in burstCount:
 			if speedVar == SpeedVar.BULLET: currentSpeed *= speedVariation
 			if canShoot: fire(currentSpeed)
 			await get_tree().create_timer(bulletInterval).timeout
 		
+		# Resetea cantidad de brazos
+		usableArms = arms
+		
 		if not burstRotation: stopRotation = false
 		
-		# Esperamos a que el warmUp se termine *después* de haber disparado todo
-		await nextWarmupTimer.timeout
+		# Tiempo total que tardó la ráfaga
+		timeSinceLastBurst = (Time.get_ticks_msec() / 1000.0) - burstStartTime
+		
+		# Si sobró tiempo antes del siguiente warmUp, esperamos lo que falta
+		if timeSinceLastBurst < warmUp: await get_tree().create_timer(warmUp - timeSinceLastBurst).timeout
 
 func fire(currentSpeed: float) -> void:
-	var spreadStep = spreadOffset / float(arms)
-	var divisor = arms if spreadAngle == 360 else (arms - 1)
-	var angleStep = spreadAngle / float(divisor)
-	var offsetCorrection = spreadStep / 2.0
+	var spreadStep
+	var divisor
+	var angleStep
+	var offsetCorrection
+	
+	# Alternar cantidad de brazos
+	var armsToUse = alterArms if alterArms > 0 and round % 2 == 1 else usableArms
 	
 	for r in repeatCount:
-		var repeatRotation = repeatAngle / float(repeatCount) * r
-		var baseDir = adjustedDirection.rotated(rotation + deg_to_rad(repeatRotation))
 		
-		for i in arms:
+		spreadStep = spreadOffset / float(armsToUse)
+		divisor = armsToUse if spreadAngle == 360 else max(1, armsToUse - 1)
+		angleStep = spreadAngle / float(divisor)
+		offsetCorrection = spreadStep / 2.0
+		
+		var repeatRotation = repeatAngle / float(repeatCount) * r
+		var baseDir = direction.rotated(rotation + deg_to_rad(repeatRotation))
+		if aimAtPlayer: baseDir = (playerPos - global_position).normalized()
+		
+		for i in armsToUse:
 			if speedVar == SpeedVar.ARM: currentSpeed *= speedVariation
+			
 			var shootDir = baseDir
 			var shootPos = global_position
-			
-			if aimAtPlayer: shootDir = (playerPos - shootPos).normalized().rotated(deg_to_rad(dirOffset))
+			if aimAtPlayer: shootDir = (playerPos - shootPos).normalized()
 			
 			if parallel:
-				var offset = (i - arms / 2.0) * spreadStep + rng.randf_range(-randomOffset, randomOffset)
-				var steepFactor = abs(i - (arms - 1) / 2.0) * steepness
+				var offset = (i - armsToUse / 2.0) * spreadStep + rng.randf_range(-randomOffset, randomOffset)
+				var steepFactor = abs(i - (armsToUse - 1) / 2.0) * steepness
 				
 				shootPos += shootDir * steepFactor
 				shootDir = shootDir.rotated(deg_to_rad(steepFactor * 0.01))
 				shootPos += shootDir.orthogonal() * (offset + offsetCorrection)
 			else:
 				var angleOffset = angleStep * i - spreadAngle / 2.0 + rng.randf_range(-randomAngle, randomAngle)
-				if arms != 1: shootDir = shootDir.rotated(deg_to_rad(angleOffset))
+				if armsToUse != 1: shootDir = shootDir.rotated(deg_to_rad(angleOffset))
 				if spreadAngle == 360: shootDir *= -1
 			
 			for j in armWidth:
@@ -198,9 +217,20 @@ func fire(currentSpeed: float) -> void:
 				
 				if not useSymmetry: _shoot_bullet(shootDir, finalPos, finalSpeed)
 				else:
-					var symmetryDir = shootDir
-					_shoot_bullet(symmetryDir, finalPos, finalSpeed)
-					_shoot_bullet(symmetryDir * Vector2(-1, 1), finalPos, finalSpeed)
+					var mirrorDir = mirror_direction(shootDir, baseDir)
+					_shoot_bullet(shootDir, finalPos, finalSpeed)
+					_shoot_bullet(mirrorDir, shootPos, finalSpeed)
+	
+	# Contador de ronda
+	round += 1
+	if growWithRound: usableArms += 1
+
+func mirror_direction(dir: Vector2, axis: Vector2) -> Vector2:
+	return reflect_vector(dir, axis).normalized()
+
+func reflect_vector(v: Vector2, axis: Vector2) -> Vector2:
+	var n = axis.normalized()
+	return 2 * v.dot(n) * n - v
 
 func _shoot_bullet(dir: Vector2, pos: Vector2, spd: float) -> void:
 	var bullet = bulletScene.instantiate()

@@ -1,8 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://45jy2ekapnll"]
+[gd_scene load_steps=6 format=3 uid="uid://45jy2ekapnll"]
 
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="1_ff2ik"]
-[ext_resource type="Script" path="res://source/enemies/enemy.gd" id="1_nfbc7"]
-[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/emitter.tscn" id="3_3fkqk"]
+[ext_resource type="Script" uid="uid://cvkdieusnj2ng" path="res://source/enemies/enemy.gd" id="1_nfbc7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jtchi"]
 
@@ -25,13 +24,6 @@ texture = ExtResource("1_ff2ik")
 shape = SubResource("RectangleShape2D_jtchi")
 disabled = true
 debug_color = Color(1, 0, 0, 0.419608)
-
-[node name="Emitter" parent="." instance=ExtResource("3_3fkqk")]
-type = 1
-dirDuration = 0.1
-aimAtPlayer = true
-parallel = true
-arms = 3
 
 [node name="Hitbox" type="Area2D" parent="."]
 scale = Vector2(0.8, 0.8)
