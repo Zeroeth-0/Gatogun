@@ -9,7 +9,7 @@ extends Area2D
 var speed := 250
 var direction := Vector2.ZERO
 var rotationSpeed := 360
-var revHealth := 20
+var revHealth := 10
 
 # === CONFIGURACIÓN DE DIRECCIÓN ===
 enum DirectionType { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM }

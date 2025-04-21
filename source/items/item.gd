@@ -13,6 +13,7 @@ enum ItemType { MEDAL, OTHER }
 # === ESTADO INTERNO ===
 var velocity: Vector2 = Vector2.ZERO
 var followingPlayer: bool = false
+var oscillationTimer: float = 0.0                                               # Contador movimiento sinusoidal
 
 func _ready() -> void:
 	# Lanzamiento inicial con fuerza aleatoria hacia arriba
@@ -23,11 +24,20 @@ func _ready() -> void:
 	followingPlayer = true
 
 func _process(delta: float) -> void:
-	if followingPlayer: _move_towards_player(delta)
+	if itemEnum == ItemType.OTHER:
+		# Movimiento sinusoidal hacia abajo
+		oscillationTimer += delta
+		var amplitude = 160.0  # Ancho de la oscilación
+		var frequency = 5.0   # Frecuencia de la oscilación
+		var offsetX = sin(oscillationTimer * frequency) * amplitude
+		var velocityY = grav / 5
+		position += Vector2(offsetX, velocityY) * delta
 	else:
-		# Simula caída con gravedad hasta que empieza a seguir
-		velocity.y += grav * delta
-		position += velocity * delta
+		# Movimiento medalla
+		if followingPlayer: _move_towards_player(delta)
+		else:
+			velocity.y += grav * delta
+			position += velocity * delta
 
 func _move_towards_player(delta: float) -> void:
 	var playerPos = GAME.get_player()
