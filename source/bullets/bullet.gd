@@ -31,6 +31,7 @@ var elapsedTime := 0.0
 var velocity := Vector2.ZERO
 var useGravity := false
 var acceleration := Vector2.ZERO
+var isCancelled := false
 
 
 # === FUNCIONES PRINCIPALES ===
@@ -122,7 +123,8 @@ func _on_area_exited(area) -> void:
 func _on_area_entered(area) -> void:
 	if area.is_in_group("Fire") and revenge:
 		revHealth -= 1
-		if revHealth <= 0:
+		if revHealth <= 0 and not isCancelled:
+			isCancelled = true  # Bloquea ejecuciones futuras
 			var playerPos = GAME.get_player()
-			if position.distance_to(playerPos) < 200: _cancel()
+			if position.distance_to(playerPos) < 200 or SCORE.medalCountdown >0: _cancel()
 			else: queue_free()

@@ -5,7 +5,7 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ex51n"]
 
-[node name="Player Bullet" type="Area2D" groups=["Bomb"]]
+[node name="Bomb" type="Area2D" groups=["Bomb"]]
 scale = Vector2(8, 8)
 script = ExtResource("1_1ecob")
 speed = 600.0

@@ -31,7 +31,7 @@ func _handle_actions(delta: float) -> void:
 	if Input.is_action_just_pressed("C"):
 		fireDir = Vector2.UP
 		buffActive = true
-		buffTimer = 0.1
+		buffTimer = 0.5
 	
 	if Input.is_action_pressed("C"):
 		holdTimer += delta
@@ -41,8 +41,7 @@ func _handle_actions(delta: float) -> void:
 		fireHold = false
 
 	# Control del mini-buff para fuego instantáneo al presionar
-	if buffTimer > 0.0:
-		buffTimer -= delta
+	if buffTimer > 0.0: buffTimer -= delta
 	else:
 		buffActive = false
 		buffTimer = 0.0

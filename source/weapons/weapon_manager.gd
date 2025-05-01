@@ -3,6 +3,8 @@ extends Node2D
 # === CONFIGURACIÓN ===
 @export var bulletScene: PackedScene                                            # Tipo de bala
 @export var fireRate: float = 0.015                                             # Cadencia de tiro
+@export var rightOption: Node2D                                                 # Option derecho
+@export var leftOption: Node2D                                                  # Option izquierdo
 
 # === ESTADO INTERNO ===
 var cooldown := 0.0
@@ -12,6 +14,13 @@ func _process(delta: float) -> void:
 	cooldown -= delta
 	children = get_children()
 	
+	# Activar o desactivar opciones según flags del juego
+	rightOption.visible = GAME.rOptActive
+	rightOption.set_process(GAME.rOptActive)
+
+	leftOption.visible = GAME.lOptActive
+	leftOption.set_process(GAME.lOptActive)
+	
 	# Verificamos si todos los hijos están listos para disparar
 	var allReady = true
 	for child in children:
@@ -19,8 +28,9 @@ func _process(delta: float) -> void:
 			allReady = false
 			break
 	
-	# Se mantiene presionado disparo, cooldown terminado, y todos los hijos pueden disparar
-	if INPUT.fireHold and cooldown <= 0.0 and allReady: _fire_burst(Vector2.UP)
+	# Se mantiene presionado disparo, cooldown terminadoc
+	if INPUT.fireHold and cooldown <= 0.0:
+		_fire_burst(Vector2.UP)
 
 # === DISPARO EN RÁFAGA SIMPLE ===
 func _fire_burst(direction: Vector2) -> void:

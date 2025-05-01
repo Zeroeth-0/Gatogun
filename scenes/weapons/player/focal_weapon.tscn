@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://1vbydiro8ryb"]
+
+[ext_resource type="Script" uid="uid://cwqfgmqokmuta" path="res://source/weapons/weapon_manager.gd" id="1_02q3d"]
+[ext_resource type="PackedScene" uid="uid://bkkquuwyecdv2" path="res://scenes/bullets/player/heavy_bullet.tscn" id="2_e7877"]
+[ext_resource type="PackedScene" uid="uid://mijejse1m0kt" path="res://scenes/weapons/player/player_emmiter.tscn" id="3_ofjs4"]
+[ext_resource type="PackedScene" uid="uid://d1f0btwlnwl27" path="res://scenes/weapons/player/option.tscn" id="4_4db0m"]
+
+[node name="Weapon" type="Node2D" node_paths=PackedStringArray("rightOption", "leftOption")]
+script = ExtResource("1_02q3d")
+bulletScene = ExtResource("2_e7877")
+fireRate = 0.03
+rightOption = NodePath("OptionR")
+leftOption = NodePath("OptionL")
+
+[node name="PlayerEmmiter" parent="." instance=ExtResource("3_ofjs4")]
+position = Vector2(0, 20)
+
+[node name="OptionR" parent="." instance=ExtResource("4_4db0m")]
+position = Vector2(70, 40)
+deviationAngle = -10.0
+targetPos = Vector2(70, 40)
+focusTarget = Vector2(40, -60)
+
+[node name="OptionL" parent="." instance=ExtResource("4_4db0m")]
+position = Vector2(-70, 40)
+deviationAngle = 10.0
+targetPos = Vector2(-70, 40)
+focusTarget = Vector2(-40, -60)

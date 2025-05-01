@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://dob11md81o6bp" path="res://source/UI/fever_bar.gd" id="2_km53o"]
 
 [node name="FeverBar" type="TextureProgressBar"]
+z_index = 10
 offset_left = 40.0
 offset_top = 80.0
 offset_right = 168.0

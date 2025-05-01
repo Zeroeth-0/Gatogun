@@ -1,7 +1,7 @@
 extends RichTextLabel
 
 # === TIPOS DE TEXTO ===
-enum LabelType { GSCORE, COMBO, RANK }
+enum LabelType { GSCORE, COMBO }
 @export var labelEnum: LabelType                                                # Tipo de etiqueta
 
 # === ANIMACIÓN ===
@@ -17,9 +17,6 @@ func _process(_delta: float) -> void:
 			add_to_group("Combo")
 			output = "+" + str(SCORE.combo)
 			_update_combo_scale(SCORE.combo)
-		LabelType.RANK:
-			add_to_group("Rank")
-			output = "x" + str(SCORE.rank)
 	
 	text = output
 

@@ -31,9 +31,7 @@ func _load_markers() -> void:
 # === CARGA Y PROCESAMIENTO DEL CSV ===
 func _load_csv_data(path: String) -> void:
 	var file = FileAccess.open(path, FileAccess.READ)
-	if not file:
-		printerr("No se pudo abrir el archivo: ", path)
-		return
+	if not file: return
 	
 	# Saltar encabezado
 	file.get_line()

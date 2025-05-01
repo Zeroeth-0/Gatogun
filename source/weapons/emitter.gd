@@ -50,7 +50,7 @@ var direction := Vector2.DOWN
 @export var centerStart: bool = true                                            # Comenzar en el centro
 
 # === BURST CONFIG ===
-@export_category("BURST")
+@export_group("BURST")
 @export_range(0, 5, 0.5) var delay: float = 0.0                                 # Retraso de disparo
 @export_range(1, 16, 1) var arms: int = 1                                       # Brazos por ráfaga
 @export_range(0, 16, 1) var alterArms: int = 0                                  # Alternativa de brazos (0 = desactivado)

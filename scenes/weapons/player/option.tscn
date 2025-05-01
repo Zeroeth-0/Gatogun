@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://d1f0btwlnwl27"]
+
+[ext_resource type="PackedScene" uid="uid://mijejse1m0kt" path="res://scenes/weapons/player/player_emmiter.tscn" id="1_naxuw"]
+[ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_6f1wc"]
+
+[node name="PlayerEmmiter" instance=ExtResource("1_naxuw")]
+baseLvl = 0
+isOption = true
+
+[node name="Icon" type="Sprite2D" parent="." index="0"]
+scale = Vector2(0.35, 0.35)
+texture = ExtResource("2_6f1wc")

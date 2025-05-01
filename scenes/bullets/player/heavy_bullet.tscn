@@ -5,12 +5,11 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ex51n"]
 
-[node name="Player Bullet" type="Area2D" groups=["Fire"]]
+[node name="Heavy Bullet" type="Area2D" groups=["Fire"]]
 z_index = 1
 scale = Vector2(1.1, 1.1)
 script = ExtResource("1_hdvn3")
 speed = 1100.0
-damage = 4
 lifeTime = 0.4
 isFocus = true
 

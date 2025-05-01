@@ -4,6 +4,7 @@
 
 [node name="ComboLabel" type="RichTextLabel"]
 top_level = true
+z_index = 10
 offset_left = 27.0
 offset_top = 25.0
 offset_right = 200.0

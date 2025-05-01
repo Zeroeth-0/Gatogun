@@ -4,16 +4,18 @@ extends CharacterBody2D
 enum MoveType { STRAIGHT, SINUSOIDAL, OSCILLATE, BREATH, BLOCK, CENTER, CURVE, CIRCULAR, TOWARDS_PLAYER, LEAVE, LEAVE_SIDE, DIAGONAL, STILL }
 enum Direction { NORTH, WEST, SOUTH, EAST }
 enum Handedness { LEFT, RIGHT }
+enum EnemyType { STD, MID, ELITE }
 
 # === EXPORTS GENERALES ===
+@export var typeEnum: EnemyType = EnemyType.STD
 @export var size := 20                                                          # Tamaño del enemigo
 @export var intensity := 1                                                      # Intensidad de comportamiento
 @export_range(0, 90, 15) var deviationAngle: int = 90                           # Cantidad de giro
 @export var scrollFollow := false                                               # ¿Sigue el scroll?
 @export var isGround := false                                                   # ¿Es enemigo de tierra?
-@export var health: int                                                         # Vida del enemigo
 @export var medal: PackedScene = preload("res://scenes/items/medal.tscn")                           # Item que recompensa
 @export var revengeBullet: PackedScene = preload("res://scenes/bullets/revenge_bullet.tscn")        # Balas que devuelve
+@export var powerUp: PackedScene = preload("res://scenes/items/power.tscn")     # Potenciador que recompensa
 @export var scoreCount: int = 1                                                 # Cantidad de items/balas devueltos
 @export var isElite := false                                                    # ¿Es enemigo élite?
 @export var directionEnum: Direction = Direction.SOUTH                          # Dirección general
@@ -48,6 +50,8 @@ var randSide: int
 var canDie := false
 var canShoot := true
 var cantShoot := false
+var health: int
+var lastBullet
 
 var DIRECTION_MAP = {
 	Direction.NORTH: Vector2.UP,
@@ -57,6 +61,10 @@ var DIRECTION_MAP = {
 }
 
 func _ready() -> void:
+	match typeEnum:
+		EnemyType.STD: health = 20
+		EnemyType.MID: health = 50
+		EnemyType.ELITE: health = 100
 	direction = DIRECTION_MAP.get(directionEnum, Vector2.DOWN)
 	currentDirection = direction
 	stageTimer = 0.0
@@ -119,13 +127,21 @@ func _check_death() -> void:
 	SCORE.add_score(SCORE.combo)
 	
 	var playerPos = GAME.get_player()
-	if position.distance_to(playerPos) < 250: _spawn_score(scoreCount, medal)
-	if position.y < 250: _spawn_score(scoreCount, revengeBullet)
+	# Devuelve medallas si se mata a bocajarro o si el contador de medallas está activo
+	if position.distance_to(playerPos) < 200 or SCORE.medalCountdown > 0:
+		_spawn_score(scoreCount, medal)
+		if lastBullet and !SCORE.medalCountdown > 0: SCORE.medalCountdown = 5
+	# Devuelve balas de venganza si se mata alto en la pantalla
+	if position.y < 250: _spawn_score(scoreCount, revengeBullet) 
 	
+	# Enemigos medianos instancian potenciadores
+	if typeEnum == EnemyType.MID: _spawn_score(1, powerUp)
+	
+	# Enemigos élite cancelan todas las balas
 	if isElite:
 		for bullet in get_tree().get_nodes_in_group("Enemy Bullet"):
 			if bullet.has_method("cancel"): bullet.cancel()
-
+	
 	queue_free()
 
 func _spawn_score(count: int, entity: PackedScene) -> void:
@@ -229,7 +245,9 @@ func move_still():
 # === COLISIONES ===
 
 func _on_hurtbox_area_entered(area: Node) -> void:
-	if area.is_in_group("Fire") and canDie: health -= area.damage
+	if area.is_in_group("Fire") and canDie:
+		health -= area.damage
+		lastBullet = area.isWide
 	if area.is_in_group("Player") and isGround: canShoot = false
 	if area.is_in_group("Bomb"): health -= area.damage
 

@@ -5,9 +5,11 @@ var GeneralGameScore: int = 0
 var combo: int = 0
 var fever: int = 0
 var rank: int = 1
+var medalChain: int = 100
+var medalCountdown: float = 0
 
 # === TIMERS ===
-var comboTimer: float = 1.0
+var comboTimer: float = 0.1
 var feverTimer: float = 1.0
 var comboDrainTime: float = 0.0
 var feverDrainTime: float = 0.0
@@ -31,11 +33,13 @@ func _process(delta: float) -> void:
 	_update_combo(delta)
 	_check_caps()
 	_check_bomb_ready()
+	
+	if medalCountdown >= 0: medalCountdown -= delta
+	else: medalCountdown = 0
 
 # === ACTUALIZACIÓN DE LABELS ===
 func _update_labels() -> void:
 	comboLabel = get_tree().get_first_node_in_group("Combo")
-	rankLabel = get_tree().get_first_node_in_group("Rank")
 
 # === SISTEMA DE FIEBRE ===
 func _update_fever(delta: float) -> void:
@@ -50,7 +54,7 @@ func _update_fever(delta: float) -> void:
 
 # === SISTEMA DE COMBO ===
 func _update_combo(delta: float) -> void:
-	comboTimer -= delta
+	if fever <= 0 and comboTimer >= 0: comboTimer -= delta
 	if combo <= 0:
 		combo = 0
 		return
@@ -58,9 +62,10 @@ func _update_combo(delta: float) -> void:
 	if comboTimer <= 0:
 		comboLabel.label_out()
 		comboDrainTime += delta
+		medalChain = 100
 		
-		var baseLimit = 0.001
-		var minLimit = 0.0001
+		var baseLimit = 0.01
+		var minLimit = 0.001
 		comboLimit = max(baseLimit * pow(0.95, combo), minLimit)
 		
 		while comboDrainTime >= comboLimit:
@@ -83,12 +88,15 @@ func increase_combo(value: int) -> void:
 	if combo <= 0: comboLabel.label_in()
 	
 	combo += value
-	comboTimer = 1.0
+	comboTimer = 0.1
 	comboLimit = 0.001
 
 func increase_fever(value: int) -> void:
 	fever = min(fever + value, feverSize)
 	feverTimer = 1.0
+
+func increase_medal_chain() -> void:
+	if medalChain < 10000: medalChain += 100
 
 func keep_fever() -> void:
 	feverTimer = 1.0

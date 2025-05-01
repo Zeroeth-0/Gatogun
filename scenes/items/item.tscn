@@ -5,8 +5,11 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ujur0"]
 
 [node name="Item" type="Area2D"]
+z_index = 2
 script = ExtResource("1_ogwa2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_ujur0")
 debug_color = Color(1, 1, 0, 0.419608)
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

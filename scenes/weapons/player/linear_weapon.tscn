@@ -3,33 +3,24 @@
 [ext_resource type="Script" uid="uid://cwqfgmqokmuta" path="res://source/weapons/weapon_manager.gd" id="1_shp7y"]
 [ext_resource type="PackedScene" uid="uid://bkkquuwyecdv2" path="res://scenes/bullets/player/heavy_bullet.tscn" id="2_bfrvy"]
 [ext_resource type="PackedScene" uid="uid://mijejse1m0kt" path="res://scenes/weapons/player/player_emmiter.tscn" id="3_kp0wp"]
-[ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="4_jhmse"]
+[ext_resource type="PackedScene" uid="uid://d1f0btwlnwl27" path="res://scenes/weapons/player/option.tscn" id="5_4bp0s"]
 
-[node name="Weapon" type="Node2D"]
+[node name="Weapon" type="Node2D" node_paths=PackedStringArray("rightOption", "leftOption")]
 script = ExtResource("1_shp7y")
 bulletScene = ExtResource("2_bfrvy")
 fireRate = 0.03
+rightOption = NodePath("OptionR")
+leftOption = NodePath("OptionL")
 
 [node name="PlayerEmmiter" parent="." instance=ExtResource("3_kp0wp")]
 position = Vector2(0, 20)
-weaponLvl = 3
 
-[node name="PlayerEmmiter2" parent="." instance=ExtResource("3_kp0wp")]
+[node name="OptionR" parent="." instance=ExtResource("5_4bp0s")]
 position = Vector2(70, 40)
-weaponLvl = 2
 targetPos = Vector2(70, 40)
-followDelay = 10
+focusTarget = Vector2(40, -60)
 
-[node name="Icon" type="Sprite2D" parent="PlayerEmmiter2"]
-scale = Vector2(0.3, 0.3)
-texture = ExtResource("4_jhmse")
-
-[node name="PlayerEmmiter3" parent="." instance=ExtResource("3_kp0wp")]
+[node name="OptionL" parent="." instance=ExtResource("5_4bp0s")]
 position = Vector2(-70, 40)
-weaponLvl = 2
 targetPos = Vector2(-70, 40)
-followDelay = 10
-
-[node name="Icon" type="Sprite2D" parent="PlayerEmmiter3"]
-scale = Vector2(0.3, 0.3)
-texture = ExtResource("4_jhmse")
+focusTarget = Vector2(-40, -60)
