@@ -18,9 +18,9 @@ position = Vector2(0, 20)
 [node name="OptionR" parent="." instance=ExtResource("5_4bp0s")]
 position = Vector2(70, 40)
 targetPos = Vector2(70, 40)
-focusTarget = Vector2(40, -60)
+focusTarget = Vector2(0, -60)
 
 [node name="OptionL" parent="." instance=ExtResource("5_4bp0s")]
 position = Vector2(-70, 40)
 targetPos = Vector2(-70, 40)
-focusTarget = Vector2(-40, -60)
+focusTarget = Vector2(0, -60)

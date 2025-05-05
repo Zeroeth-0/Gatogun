@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bi7uyv2plo07x"]
+[gd_scene load_steps=11 format=3 uid="uid://bi7uyv2plo07x"]
 
 [ext_resource type="Script" uid="uid://hrxsyfgjv1kg" path="res://source/levels/world.gd" id="1_btnht"]
 [ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="3_0hlg8"]
@@ -6,9 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://4y26tmtqbxdx" path="res://scenes/levels/ground.tscn" id="5_sf1u2"]
 [ext_resource type="PackedScene" uid="uid://dg3240gsrod7n" path="res://scenes/UI/medal_countdown.tscn" id="8_mmplq"]
 [ext_resource type="PackedScene" uid="uid://chegi2am56x1" path="res://scenes/UI/combo_label.tscn" id="9_ckr2p"]
-[ext_resource type="PackedScene" uid="uid://sc2mi3jdynyo" path="res://scenes/enemies/midGoStopGo.tscn" id="10_csbb7"]
+[ext_resource type="PackedScene" uid="uid://b7qli8odaowig" path="res://scenes/items/power.tscn" id="9_f1v6p"]
 [ext_resource type="PackedScene" uid="uid://jkopai8ptvrm" path="res://scenes/UI/score_label.tscn" id="10_s7d0j"]
-[ext_resource type="PackedScene" uid="uid://45jy2ekapnll" path="res://scenes/enemies/enemy.tscn" id="11_mmplq"]
 [ext_resource type="PackedScene" uid="uid://ber78ar7g5504" path="res://scenes/UI/fever_bar.tscn" id="11_yb1ae"]
 [ext_resource type="PackedScene" uid="uid://c7eeyaje6ghkn" path="res://scenes/UI/h_box_container.tscn" id="13_e6078"]
 
@@ -146,32 +145,14 @@ step = 0.01
 
 [node name="HBoxContainer" parent="." instance=ExtResource("13_e6078")]
 
-[node name="Enemy" parent="." instance=ExtResource("10_csbb7")]
-position = Vector2(123, -647)
+[node name="Item" parent="." instance=ExtResource("9_f1v6p")]
+position = Vector2(378, 419)
 
-[node name="Enemy2" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(435, -455)
+[node name="Item2" parent="." instance=ExtResource("9_f1v6p")]
+position = Vector2(243, 374)
 
-[node name="Enemy3" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(596, -304)
+[node name="Item3" parent="." instance=ExtResource("9_f1v6p")]
+position = Vector2(519, 391)
 
-[node name="Enemy4" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(164, -267)
-
-[node name="Enemy5" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(582, -598)
-
-[node name="Enemy6" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(353, -644)
-
-[node name="Enemy7" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(523, -823)
-
-[node name="Enemy8" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(238, -850)
-
-[node name="Enemy9" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(77, -455)
-
-[node name="Enemy10" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(661, -456)
+[node name="Item4" parent="." instance=ExtResource("9_f1v6p")]
+position = Vector2(388, 267)

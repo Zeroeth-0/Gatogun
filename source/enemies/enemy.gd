@@ -20,6 +20,8 @@ enum EnemyType { STD, MID, ELITE }
 @export var isElite := false                                                    # ¿Es enemigo élite?
 @export var directionEnum: Direction = Direction.SOUTH                          # Dirección general
 @export var handedness: Handedness = Handedness.RIGHT                           # Mano dominante
+@export var comboLabel: RichTextLabel                                           # Etiqueta de pts
+
 
 # === MOVIMIENTOS POR ETAPAS ===
 @export_category("CHILDHOOD")
@@ -245,11 +247,14 @@ func move_still():
 # === COLISIONES ===
 
 func _on_hurtbox_area_entered(area: Node) -> void:
-	if area.is_in_group("Fire") and canDie:
-		health -= area.damage
+	if area.is_in_group("Fire"):
+		if comboLabel: comboLabel.show_combo()
+		if canDie: health -= area.damage
 		lastBullet = area.isWide
-	if area.is_in_group("Player") and isGround: canShoot = false
-	if area.is_in_group("Bomb"): health -= area.damage
+	if area.is_in_group("Player") and isGround:
+		canShoot = false
+	if area.is_in_group("Bomb"):
+		health -= area.damage
 
 func _on_hurtbox_area_exited(area: Node) -> void:
 	if area.is_in_group("Player") and isGround: canShoot = true

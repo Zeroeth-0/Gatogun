@@ -19,3 +19,7 @@ position = Vector2(0, -10)
 
 [node name="Hurtbox" parent="." index="3"]
 position = Vector2(0, -10)
+
+[node name="EnemyCombo" parent="." index="4"]
+offset_top = -70.0
+offset_bottom = -30.0

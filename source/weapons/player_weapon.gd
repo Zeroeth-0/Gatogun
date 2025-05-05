@@ -2,7 +2,6 @@ extends Node2D
 
 # === CONFIGURACIÓN EXPORTADA ===
 @export var bulletScene: PackedScene                                            # Tipo de bala
-@export var optFocusBullet: PackedScene                                         # Bala options concentrado
 @export var fireRate: float = 0.05                                              # Cadencia de tiro
 @export_range(-20, 20, 5) var deviationAngle: float = 0.0                       # Ángulo de desviación
 @export var MAX_BULLETS: int = 3                                                # Balas máximas en pantalla
@@ -26,8 +25,6 @@ func _process(delta) -> void:
 	
 	if INPUT.firing and canFire and activeBullets < maxBullets:
 		await _fire_burst(INPUT.fireDir, bulletScene)
-	if INPUT.fireHold and canFire and activeBullets < maxBullets and isOption:
-		await _fire_burst(INPUT.fireDir, optFocusBullet)
 	
 	# Comportamiento options
 	if followDelay > 0 and isOption: options(delta)

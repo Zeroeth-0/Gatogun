@@ -19,10 +19,10 @@ position = Vector2(0, 20)
 position = Vector2(70, 40)
 deviationAngle = -10.0
 targetPos = Vector2(70, 40)
-focusTarget = Vector2(40, -60)
+focusTarget = Vector2(0, -60)
 
 [node name="OptionL" parent="." instance=ExtResource("4_4db0m")]
 position = Vector2(-70, 40)
 deviationAngle = 10.0
 targetPos = Vector2(-70, 40)
-focusTarget = Vector2(-40, -60)
+focusTarget = Vector2(0, -60)

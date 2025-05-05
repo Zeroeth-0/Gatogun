@@ -24,7 +24,6 @@ var bombCount: int = 0
 
 # === REFERENCIAS UI ===
 var comboLabel: RichTextLabel = null
-var rankLabel: RichTextLabel = null
 
 # === LOOP PRINCIPAL ===
 func _process(delta: float) -> void:
