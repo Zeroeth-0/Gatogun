@@ -5,17 +5,17 @@ var GeneralGameScore: int = 0
 var combo: int = 0
 var fever: int = 0
 var rank: int = 1
-var medalChain: int = 100
+var medalMult: int = 1
 var medalCountdown: float = 0
 
 # === TIMERS ===
 var comboTimer: float = 0.1
-var feverTimer: float = 1.0
+var feverTimer: float = 0.2
 var comboDrainTime: float = 0.0
 var feverDrainTime: float = 0.0
 
 # === CONFIGURACIÓN DE SISTEMA ===
-var feverSize: float = 1000
+var feverSize: float = 100
 var comboLimit: float = 0.001
 var rankCounter: int = 0
 var rankLimit: int = 3000
@@ -24,6 +24,7 @@ var bombCount: int = 0
 
 # === REFERENCIAS UI ===
 var comboLabel: RichTextLabel = null
+var multLabel: RichTextLabel = null
 
 # === LOOP PRINCIPAL ===
 func _process(delta: float) -> void:
@@ -39,6 +40,7 @@ func _process(delta: float) -> void:
 # === ACTUALIZACIÓN DE LABELS ===
 func _update_labels() -> void:
 	comboLabel = get_tree().get_first_node_in_group("Combo")
+	multLabel = get_tree().get_first_node_in_group("Mult")
 
 # === SISTEMA DE FIEBRE ===
 func _update_fever(delta: float) -> void:
@@ -49,7 +51,7 @@ func _update_fever(delta: float) -> void:
 	
 	if feverTimer <= 0:
 		feverTimer = 0
-		fever = max(0, fever - 2)
+		fever = max(0, fever - 1)
 
 # === SISTEMA DE COMBO ===
 func _update_combo(delta: float) -> void:
@@ -59,9 +61,9 @@ func _update_combo(delta: float) -> void:
 		return
 	
 	if comboTimer <= 0:
+		multLabel.label_out()
 		comboLabel.label_out()
 		comboDrainTime += delta
-		medalChain = 100
 		
 		var baseLimit = 0.01
 		var minLimit = 0.001
@@ -69,6 +71,7 @@ func _update_combo(delta: float) -> void:
 		
 		while comboDrainTime >= comboLimit:
 			combo -= 1
+			if medalMult > 1: medalMult -= 1
 			comboDrainTime -= comboLimit
 
 # === RESTRICCIONES DE VALORES MÁXIMOS ===
@@ -85,17 +88,17 @@ func _check_bomb_ready() -> void:
 
 func increase_combo(value: int) -> void:
 	if combo <= 0: comboLabel.label_in()
-	
 	combo += value
 	comboTimer = 0.1
 	comboLimit = 0.001
 
 func increase_fever(value: int) -> void:
 	fever = min(fever + value, feverSize)
-	feverTimer = 1.0
+	feverTimer = 0.2
 
-func increase_medal_chain() -> void:
-	if medalChain < 10000: medalChain += 100
+func increase_medal_mult() -> void:
+	multLabel.label_in()
+	medalMult += 1
 
 func keep_fever() -> void:
 	feverTimer = 1.0
@@ -107,4 +110,4 @@ func reset() -> void:
 	bombCount = 0
 
 func add_score(score: int) -> void:
-	GeneralGameScore += score
+	GeneralGameScore += score * medalMult

@@ -3,7 +3,6 @@ extends Node
 # === ESCENAS DISPONIBLES ===
 @onready var wideCat: PackedScene = preload("res://scenes/player/wide_cat.tscn")                    # Disparo ancho
 @onready var linearCat: PackedScene = preload("res://scenes/player/linear_cat.tscn")                # Disparo lineal
-@onready var focalCat: PackedScene = preload("res://scenes/player/focal_cat.tscn")                  # Disparo focal
 
 # === ESTADO GLOBAL DEL JUGADOR ===
 var spawnPoint: Vector2 = Vector2(150, 830)
@@ -13,6 +12,8 @@ var weaponLvl: float = 1.0
 var rOptActive: bool = false
 var lOptActive: bool = false
 var optionCounter: float = 0.0
+var innerMedalChain: int = 0
+var medalLevel: int = 0
 
 var player: Node2D = null
 var characterScenes: Array[PackedScene] = []
@@ -20,7 +21,7 @@ var selectedCharacter: PackedScene = null
 
 func _ready() -> void:
 	# Guardamos los personajes jugables en el array
-	characterScenes = [wideCat, linearCat, focalCat]
+	characterScenes = [wideCat, linearCat]
 
 func spawn() -> void:
 	# Solo se hace respawn si hay personaje seleccionado y vidas disponibles

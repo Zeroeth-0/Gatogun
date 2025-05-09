@@ -15,7 +15,6 @@ enum EnemyType { STD, MID, ELITE }
 @export var isGround := false                                                   # ¿Es enemigo de tierra?
 @export var medal: PackedScene = preload("res://scenes/items/medal.tscn")                           # Item que recompensa
 @export var revengeBullet: PackedScene = preload("res://scenes/bullets/revenge_bullet.tscn")        # Balas que devuelve
-@export var powerUp: PackedScene = preload("res://scenes/items/power.tscn")     # Potenciador que recompensa
 @export var scoreCount: int = 1                                                 # Cantidad de items/balas devueltos
 @export var isElite := false                                                    # ¿Es enemigo élite?
 @export var directionEnum: Direction = Direction.SOUTH                          # Dirección general
@@ -134,10 +133,7 @@ func _check_death() -> void:
 		_spawn_score(scoreCount, medal)
 		if lastBullet and !SCORE.medalCountdown > 0: SCORE.medalCountdown = 5
 	# Devuelve balas de venganza si se mata alto en la pantalla
-	if position.y < 250: _spawn_score(scoreCount, revengeBullet) 
-	
-	# Enemigos medianos instancian potenciadores
-	if typeEnum == EnemyType.MID: _spawn_score(1, powerUp)
+	if position.y < 250: _spawn_score(scoreCount, revengeBullet)
 	
 	# Enemigos élite cancelan todas las balas
 	if isElite:

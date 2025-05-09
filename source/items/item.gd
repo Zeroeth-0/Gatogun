@@ -1,7 +1,7 @@
 extends Area2D
 
 # === ENUM DE TIPOS DE ÍTEMS ===
-enum ItemType { MEDAL, POWER }
+enum ItemType { MEDAL}
 
 # === EXPORTABLES CONFIGURABLES ===
 @export var itemEnum: ItemType = ItemType.MEDAL                                 # Tipo de item
@@ -16,32 +16,18 @@ var velocity: Vector2 = Vector2.ZERO
 var followingPlayer: bool = false
 var oscillationTimer: float = 0.0
 var isCollected := false
-var medalVal: int = 100
-
 
 func _ready() -> void:
 	# Lanzamiento inicial con fuerza aleatoria hacia arriba
 	velocity = Vector2(0, randf_range(-launchForce * 0.5, -launchForce * 2))
-	
-	medalVal = SCORE.medalChain
-	if itemEnum == ItemType.MEDAL: _show_label(medalVal)
 	
 	# Esperar antes de activar seguimiento
 	await get_tree().create_timer(delayBeforeFollow).timeout
 	followingPlayer = true
 
 func _process(delta: float) -> void:
-		# Movimiento medalla
-	if followingPlayer:
-		if itemEnum == ItemType.POWER:
-			# Movimiento potenciador
-			oscillationTimer += delta
-			var amplitude = 160.0  # Ancho de la oscilación
-			var frequency = 5.0   # Frecuencia de la oscilación
-			var offsetX = sin(oscillationTimer * frequency) * amplitude
-			var velocityY = grav / 5
-			position += Vector2(offsetX, velocityY) * delta
-		else: _move_towards_player(delta) # Movimiento medallacccccccccccccccd
+	# Movimiento medalla
+	if followingPlayer: _move_towards_player(delta)
 	else:
 		velocity.y += grav * delta
 		position += velocity * delta
@@ -57,23 +43,31 @@ func _move_towards_player(delta: float) -> void:
 	var direction = (playerPos - position).normalized()
 	position += direction * speed * delta
 
+func _handle_power_up():
+	if _current_medal_level() == 1 and GAME.optionCounter < 1:
+		GAME.optionCounter += 1
+		GAME.rOptActive = true
+	elif _current_medal_level() == 2 and GAME.optionCounter < 2:
+		GAME.optionCounter += 1
+		GAME.lOptActive = true
+	elif GAME.weaponLvl < 3 and GAME.optionCounter >= 2:
+		match _current_medal_level():
+			3: GAME.weaponLvl = 2.0
+			4: GAME.weaponLvl = 3.0
+
+func _current_medal_level():
+	if GAME.innerMedalChain >= 64: return 4
+	elif GAME.innerMedalChain >= 32: return 3
+	elif GAME.innerMedalChain >= 16: return 2
+	elif GAME.innerMedalChain >= 8: return 1
+	else: return 0
+
 func _on_area_entered(area: Node) -> void:
 	if isCollected: return
 	if area.is_in_group("Collect"):
 		isCollected = true  # Bloquea múltiples ejecuciones
-		match itemEnum:
-			ItemType.MEDAL:
-				SCORE.add_score(medalVal)
-				if SCORE.medalCountdown > 0: SCORE.increase_medal_chain()
-			ItemType.POWER:
-				if GAME.optionCounter < 1:
-					GAME.optionCounter += 1
-					GAME.rOptActive = true
-				elif GAME.optionCounter < 2:
-					GAME.optionCounter += 1
-					GAME.lOptActive = true
-				elif GAME.weaponLvl < 3 and GAME.optionCounter >= 2: GAME.weaponLvl += 1
-				else:
-					SCORE.add_score(10000)
-					if itemEnum == ItemType.POWER and GAME.weaponLvl >= 3: _show_label(10000)
+		if itemEnum == ItemType.MEDAL:
+			if SCORE.medalCountdown > 0: SCORE.increase_medal_mult()
+			GAME.innerMedalChain += 1
+			_handle_power_up()
 		queue_free()

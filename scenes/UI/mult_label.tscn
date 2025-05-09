@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://gyhjwciacmac"]
+
+[ext_resource type="Script" uid="uid://p4wmi2otpdi7" path="res://source/UI/label.gd" id="1_p0k7x"]
+
+[node name="MultLabel" type="RichTextLabel"]
+top_level = true
+z_index = 10
+offset_left = 27.0
+offset_top = 25.0
+offset_right = 200.0
+offset_bottom = 97.0
+script = ExtResource("1_p0k7x")
+labelEnum = 2
