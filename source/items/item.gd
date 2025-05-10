@@ -67,7 +67,7 @@ func _on_area_entered(area: Node) -> void:
 	if area.is_in_group("Collect"):
 		isCollected = true  # Bloquea múltiples ejecuciones
 		if itemEnum == ItemType.MEDAL:
-			if SCORE.medalCountdown > 0: SCORE.increase_medal_mult()
 			GAME.innerMedalChain += 1
+			SCORE.increase_mult()
 			_handle_power_up()
 		queue_free()

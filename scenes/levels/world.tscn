@@ -123,10 +123,10 @@ offset_bottom = 232.0
 text = "+9999"
 
 [node name="MultLabel" parent="." instance=ExtResource("6_mmplq")]
-offset_left = -165.0
-offset_top = 160.0
-offset_right = 8.0
-offset_bottom = 232.0
+offset_left = 560.0
+offset_top = 35.0
+offset_right = 733.0
+offset_bottom = 107.0
 text = "x999"
 
 [node name="ScoreLabel" parent="." instance=ExtResource("10_s7d0j")]
