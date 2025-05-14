@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bi7uyv2plo07x"]
+[gd_scene load_steps=11 format=3 uid="uid://bi7uyv2plo07x"]
 
 [ext_resource type="Script" uid="uid://hrxsyfgjv1kg" path="res://source/levels/world.gd" id="1_btnht"]
 [ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="3_0hlg8"]
@@ -8,7 +8,6 @@
 [ext_resource type="PackedScene" uid="uid://dg3240gsrod7n" path="res://scenes/UI/medal_countdown.tscn" id="8_mmplq"]
 [ext_resource type="PackedScene" uid="uid://chegi2am56x1" path="res://scenes/UI/combo_label.tscn" id="9_ckr2p"]
 [ext_resource type="PackedScene" uid="uid://jkopai8ptvrm" path="res://scenes/UI/score_label.tscn" id="10_s7d0j"]
-[ext_resource type="PackedScene" uid="uid://cpaqrklh3fr4s" path="res://scenes/enemies/midEnemy.tscn" id="11_mmplq"]
 [ext_resource type="PackedScene" uid="uid://ber78ar7g5504" path="res://scenes/UI/fever_bar.tscn" id="11_yb1ae"]
 [ext_resource type="PackedScene" uid="uid://c7eeyaje6ghkn" path="res://scenes/UI/h_box_container.tscn" id="13_e6078"]
 
@@ -152,42 +151,3 @@ max_value = 5.0
 step = 0.01
 
 [node name="HBoxContainer" parent="." instance=ExtResource("13_e6078")]
-
-[node name="Enemy" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(133, -188)
-
-[node name="Enemy2" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(432, -270)
-
-[node name="Enemy3" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(647, -405)
-
-[node name="Enemy4" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(120, -723)
-
-[node name="Enemy5" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(361, -586)
-
-[node name="Enemy6" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(606, -754)
-
-[node name="Enemy7" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(630, -1016)
-
-[node name="Enemy8" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(165, -1025)
-
-[node name="Enemy9" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(668, -1445)
-
-[node name="Enemy10" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(404, -1203)
-
-[node name="Enemy11" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(197, -1437)
-
-[node name="Enemy12" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(447, -1627)
-
-[node name="Enemy13" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(150, -1878)

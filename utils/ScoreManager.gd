@@ -14,12 +14,11 @@ var multDrainTime: float = 0.0
 var feverTimer: float = 0.0
 
 # === CONFIGURACIÓN DE SISTEMA ===
-var feverDrainRate: float = 33.3
+var feverDrainRate: float = 50.0
 var feverSize: float = 100
 var comboLimit: float = 0.001
 var multDrainLimit: float = 0.03
-var rankCounter: int = 0
-var rankLimit: int = 3000
+var rank = 1
 var canBomb: bool = false
 var bombCount: int = 0
 

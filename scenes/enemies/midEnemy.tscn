@@ -5,7 +5,7 @@
 [node name="Enemy" instance=ExtResource("1_wviyb")]
 scale = Vector2(2, 2)
 typeEnum = 1
-size = 40
+size = 80
 scoreCount = 3
 
 [node name="Sprite2D" parent="." index="0"]
