@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_sm3cw"]
 
 [node name="Item" groups=["PowerUp"] instance=ExtResource("1_x7t37")]
-z_index = 3
+z_index = 4
 itemEnum = 1
 
 [node name="Sprite2D" type="Sprite2D" parent="." index="0"]

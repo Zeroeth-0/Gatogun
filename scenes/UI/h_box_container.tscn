@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://c7eeyaje6ghkn"]
 
-[ext_resource type="Script" uid="uid://dvn75yjtwqxt4" path="res://source/UI/lives.gd" id="1_w8x7p"]
+[ext_resource type="Script" uid="uid://dvn75yjtwqxt4" path="res://source/UI/lives_bombs.gd" id="1_w8x7p"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_suado"]
 
 [node name="HBoxContainer" type="HBoxContainer"]
@@ -11,4 +11,4 @@ offset_right = 70.0
 offset_bottom = 70.0
 scale = Vector2(0.25, 0.25)
 script = ExtResource("1_w8x7p")
-heart_texture = ExtResource("2_suado")
+resource_texture = ExtResource("2_suado")

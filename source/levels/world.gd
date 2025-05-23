@@ -19,6 +19,7 @@ var lanes := {
 func _ready() -> void:
 	_load_markers()
 	await _load_csv_data(csvFile)
+	GAME.lives = 2
 	GAME.spawn()
 
 # === INICIALIZACIÓN DE MARCADORES ===

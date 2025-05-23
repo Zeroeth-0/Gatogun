@@ -15,6 +15,7 @@ var direction := Vector2.UP                                                     
 var playable := false
 var goPoint: Vector2
 var canDie := true
+var shielded = false
 
 # === INICIO ===
 func _ready() -> void:
@@ -26,11 +27,13 @@ func _process(_delta: float) -> void:
 	if playable:
 		_handle_movement()
 		_clamp_to_screen(get_viewport().get_visible_rect().size)
-		_handle_bombing()
+		if Input.is_action_just_pressed("B") and GAME.bombCount > 0 and canDie: _handle_bombing()
 		speed = 150 if INPUT.fireHold else 350
 	else:
 		# Movimiento automático antes de habilitar control
-		activate_shield(2.5)
+		if not shielded:
+			shielded = true
+			activate_shield(2.5)
 		_auto_move_to_go_point()
 
 # === MOVIMIENTO PRE-JUGABLE ===
@@ -49,11 +52,12 @@ func _handle_movement() -> void:
 
 # === BOMBA ===
 func _handle_bombing() -> void:
-	if INPUT.bombing:
-		var bombInstance = bomb.instantiate()
-		bombInstance.position = Vector2(340, 1000)
-		get_tree().current_scene.add_child.call_deferred(bombInstance)
-		activate_shield(3)
+	var bombInstance = bomb.instantiate()
+	bombInstance.position = Vector2(340, 1000)
+	get_tree().current_scene.add_child.call_deferred(bombInstance)
+	GAME.bombCount -= 1
+	for bullet in get_tree().get_nodes_in_group("Fire"): bullet.queue_free()
+	activate_shield(3)
 
 # === ESCUDO TEMPORAL ===
 func activate_shield(duration: float) -> void:
@@ -71,9 +75,8 @@ func _clamp_to_screen(screenSize: Vector2) -> void:
 # === COLISIONES ===
 func _on_hurtbox_area_entered(area: Node) -> void:
 	if canDie and area.is_in_group("Damage"):
-		GAME.lives -= 0.5
-		SCORE.reset()
-		GAME.spawn()
+		GAME.lives -= 1
+		GAME.spawn(global_position, false)
 		queue_free()
 
 func _on_hurtbox_area_exited(area: Node) -> void:

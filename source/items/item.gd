@@ -1,7 +1,7 @@
 extends Area2D
 
 # === ENUM DE TIPOS DE ÍTEMS ===
-enum ItemType { MEDAL, POWERUP}
+enum ItemType { MEDAL, POWERUP, BOMB }
 
 # === EXPORTABLES CONFIGURABLES ===
 @export var itemEnum: ItemType = ItemType.MEDAL                                 # Tipo de item
@@ -10,6 +10,7 @@ enum ItemType { MEDAL, POWERUP}
 @export var launchForce: float = 200.0                                          # Fuerza de lanzamiento inicial
 @export var delayBeforeFollow: float = 0.7                                      # Tiempo hasta ir a jugador
 @export var medal_label: PackedScene = preload("res://scenes/UI/medal_val_label.tscn")              # Etiqueta de pts
+@export var isMaxPowerUp: bool = false
 
 # === ESTADO INTERNO ===
 var velocity: Vector2 = Vector2.ZERO
@@ -31,6 +32,7 @@ func _process(delta: float) -> void:
 	match itemEnum:
 		ItemType.MEDAL: _move_medal(delta) # Movimiento medalla
 		ItemType.POWERUP: _move_powerup(delta) # Movimiento potenciador
+		ItemType.BOMB: _move_powerup(delta) # Movimiento bomba (igual que potenciador)
 
 func _move_medal(delta):
 		if followingPlayer: _move_towards_player(delta)
@@ -70,10 +72,13 @@ func _handle_power_up():
 	elif GAME.optionCounter < 2:
 		GAME.optionCounter += 1
 		GAME.lOptActive = true
-	elif GAME.weaponLvl < 3 and GAME.optionCounter >= 2:
-		match GAME.weaponLvl:
-			1: GAME.weaponLvl = 2.0
-			2: GAME.weaponLvl = 3.0
+	elif GAME.weaponLvl < 3 and GAME.optionCounter >= 2: GAME.weaponLvl += 1
+	
+	if isMaxPowerUp:
+		GAME.rOptActive = true
+		GAME.lOptActive = true
+		GAME.optionCounter = 2
+		GAME.weaponLvl = 3
 
 func _on_area_entered(area: Node) -> void:
 	if isCollected: return
@@ -84,4 +89,7 @@ func _on_area_entered(area: Node) -> void:
 				GAME.innerMedalChain += 1
 				SCORE.increase_mult()
 			ItemType.POWERUP: _handle_power_up()
+			ItemType.BOMB:
+				print(GAME.bombCount)
+				if GAME.bombCount < 6: GAME.bombCount += 1
 		queue_free()

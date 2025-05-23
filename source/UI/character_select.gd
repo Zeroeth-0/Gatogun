@@ -5,7 +5,7 @@ extends Control
 @export var next_scene: PackedScene                                             # Próxima escena
 
 var selected_index: int = 0
-var character_names: Array[String] = ["Wide Cat", "Linear Cat", "Focal Cat"]
+var character_names: Array[String] = ["Wide Cat", "Linear Cat"]
 
 func _ready():
 	update_selection()

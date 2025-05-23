@@ -13,9 +13,9 @@ func _ready():
 		BarType.FEVER: set_vals(max_fever)
 		BarType.MEDALCTD: set_vals(max_medalctd)
 
-func set_vals(max):
+func set_vals(maxim):
 	min_value = 0
-	max_value = max
+	max_value = maxim
 	value = 0  # Inicia en cero
 
 func _process(_delta):

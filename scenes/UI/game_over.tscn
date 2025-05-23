@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://dra7yqg0s7urp"]
+[gd_scene load_steps=3 format=3 uid="uid://do0plaogmk66"]
 
-[ext_resource type="Script" uid="uid://ce6rccpqgcq1s" path="res://source/UI/title_gameover.gd" id="1_tg2ys"]
-[ext_resource type="PackedScene" uid="uid://2ljl16vuntk2" path="res://scenes/UI/character_select.tscn" id="2_iedop"]
+[ext_resource type="Script" uid="uid://ce6rccpqgcq1s" path="res://source/UI/title_gameover.gd" id="1_vop4n"]
+[ext_resource type="PackedScene" uid="uid://dra7yqg0s7urp" path="res://scenes/UI/title_screen.tscn" id="2_vop4n"]
 
 [node name="Title Screen" type="Control"]
 layout_mode = 3
@@ -10,16 +10,16 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_tg2ys")
-nextScene = ExtResource("2_iedop")
+script = ExtResource("1_vop4n")
+nextScene = ExtResource("2_vop4n")
 
 [node name="Title" type="Label" parent="."]
 layout_mode = 0
-offset_left = 302.0
-offset_top = 199.0
-offset_right = 394.0
-offset_bottom = 225.0
-text = "GATODIUS"
+offset_left = 300.0
+offset_top = 340.0
+offset_right = 392.0
+offset_bottom = 366.0
+text = "GAME OVER"
 horizontal_alignment = 1
 vertical_alignment = 1
 

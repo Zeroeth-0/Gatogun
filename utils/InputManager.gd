@@ -8,7 +8,6 @@ var yAxis: float = 0.0
 var fireHold: bool = false
 var firing: bool = false
 var fireDir: Vector2 = Vector2.UP
-var bombing: bool = false
 
 # === TIMERS ===
 var holdTimer: float = 0.0
@@ -19,7 +18,8 @@ var buffActive: bool = false
 func _process(delta: float) -> void:
 	_handle_dpad()
 	_handle_actions(delta)
-	_handle_bomb_input()
+	
+	if get_tree().get_nodes_in_group("Player").size() > 3: get_tree().get_nodes_in_group("Player")[3].queue_free()
 
 # === MOVIMIENTO ANALÓGICO O DIGITAL ===
 func _handle_dpad() -> void:
@@ -48,11 +48,3 @@ func _handle_actions(delta: float) -> void:
 
 	# Firing activo si hay buff o se mantiene presionado A
 	firing = buffActive or Input.is_action_pressed("A")
-
-# === BOMBA (UNA SOLA VEZ AL PRESIONAR) ===
-func _handle_bomb_input() -> void:
-	if Input.is_action_just_pressed("B") and SCORE.canBomb:
-		SCORE.bombCount += 1
-		for bullet in get_tree().get_nodes_in_group("Fire"): bullet.queue_free()
-	
-	bombing = Input.is_action_just_pressed("B") and SCORE.canBomb
