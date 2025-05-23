@@ -1,7 +1,7 @@
 extends Area2D
 
 # === ENUM DE TIPOS DE ÍTEMS ===
-enum ItemType { MEDAL}
+enum ItemType { MEDAL, POWERUP}
 
 # === EXPORTABLES CONFIGURABLES ===
 @export var itemEnum: ItemType = ItemType.MEDAL                                 # Tipo de item
@@ -16,6 +16,7 @@ var velocity: Vector2 = Vector2.ZERO
 var followingPlayer: bool = false
 var oscillationTimer: float = 0.0
 var isCollected := false
+var powerupDir := Vector2(1, 1).normalized()
 
 func _ready() -> void:
 	# Lanzamiento inicial con fuerza aleatoria hacia arriba
@@ -26,11 +27,30 @@ func _ready() -> void:
 	followingPlayer = true
 
 func _process(delta: float) -> void:
-	# Movimiento medalla
-	if followingPlayer: _move_towards_player(delta)
-	else:
-		velocity.y += grav * delta
-		position += velocity * delta
+	
+	match itemEnum:
+		ItemType.MEDAL: _move_medal(delta) # Movimiento medalla
+		ItemType.POWERUP: _move_powerup(delta) # Movimiento potenciador
+
+func _move_medal(delta):
+		if followingPlayer: _move_towards_player(delta)
+		else:
+			velocity.y += grav * delta
+			position += velocity * delta
+
+func _move_powerup(delta):
+	var moveSpeed := 150.0
+	position += powerupDir * moveSpeed * delta
+
+	# Obtener los límites de la pantalla
+	var screenSize := get_viewport().get_visible_rect().size
+	var halfSize := 16
+
+	# Revisar colisiones con los bordes de la pantalla
+	if position.x - halfSize <= 0 or position.x + halfSize >= screenSize.x:
+		powerupDir.x *= -1
+	if position.y - halfSize <= 0 or position.y + halfSize >= screenSize.y:
+		powerupDir.y *= -1
 
 func _show_label(scoreVal):
 		var label = medal_label.instantiate()
@@ -44,30 +64,24 @@ func _move_towards_player(delta: float) -> void:
 	position += direction * speed * delta
 
 func _handle_power_up():
-	if _current_medal_level() == 1 and GAME.optionCounter < 1:
+	if GAME.optionCounter < 1:
 		GAME.optionCounter += 1
 		GAME.rOptActive = true
-	elif _current_medal_level() == 2 and GAME.optionCounter < 2:
+	elif GAME.optionCounter < 2:
 		GAME.optionCounter += 1
 		GAME.lOptActive = true
 	elif GAME.weaponLvl < 3 and GAME.optionCounter >= 2:
-		match _current_medal_level():
-			3: GAME.weaponLvl = 2.0
-			4: GAME.weaponLvl = 3.0
-
-func _current_medal_level():
-	if GAME.innerMedalChain >= 64: return 4
-	elif GAME.innerMedalChain >= 32: return 3
-	elif GAME.innerMedalChain >= 16: return 2
-	elif GAME.innerMedalChain >= 8: return 1
-	else: return 0
+		match GAME.weaponLvl:
+			1: GAME.weaponLvl = 2.0
+			2: GAME.weaponLvl = 3.0
 
 func _on_area_entered(area: Node) -> void:
 	if isCollected: return
 	if area.is_in_group("Collect"):
 		isCollected = true  # Bloquea múltiples ejecuciones
-		if itemEnum == ItemType.MEDAL:
-			GAME.innerMedalChain += 1
-			SCORE.increase_mult()
-			_handle_power_up()
+		match itemEnum:
+			ItemType.MEDAL:
+				GAME.innerMedalChain += 1
+				SCORE.increase_mult()
+			ItemType.POWERUP: _handle_power_up()
 		queue_free()

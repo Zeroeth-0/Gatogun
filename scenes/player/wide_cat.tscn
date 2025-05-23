@@ -4,12 +4,12 @@
 [ext_resource type="PackedScene" uid="uid://cayls45qnqvte" path="res://scenes/bullets/player/bomb.tscn" id="2_fs4o1"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_fwlg7"]
 [ext_resource type="PackedScene" uid="uid://cjhkionj3a6h3" path="res://scenes/weapons/player/wide_weapon.tscn" id="3_8e7om"]
-[ext_resource type="PackedScene" uid="uid://bkkquuwyecdv2" path="res://scenes/bullets/player/heavy_bullet.tscn" id="5_isl7y"]
+[ext_resource type="PackedScene" uid="uid://bx21afnc5m1an" path="res://scenes/weapons/player/pulsezone.tscn" id="5_3s2us"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_klkvo"]
 
 [node name="CatPlayer" type="CharacterBody2D" node_paths=PackedStringArray("sprite", "hitbox") groups=["Player"]]
-z_index = 3
+z_index = 4
 script = ExtResource("1_ujjkf")
 sprite = NodePath("Icon")
 bomb = ExtResource("2_fs4o1")
@@ -27,7 +27,7 @@ debug_color = Color(0, 1, 0, 0.419608)
 
 [node name="Icon" type="Sprite2D" parent="."]
 modulate = Color(0, 1, 0, 1)
-z_index = 2
+z_index = 4
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_fwlg7")
 
@@ -46,7 +46,8 @@ shape = SubResource("RectangleShape2D_klkvo")
 debug_color = Color(0, 1, 0, 0.419608)
 
 [node name="Weapon" parent="." instance=ExtResource("3_8e7om")]
-bulletScene = ExtResource("5_isl7y")
+
+[node name="Pulsezone" parent="." instance=ExtResource("5_3s2us")]
 
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
 [connection signal="area_exited" from="Hurtbox" to="." method="_on_hurtbox_area_exited"]

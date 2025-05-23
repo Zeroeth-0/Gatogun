@@ -13,14 +13,13 @@ enum EnemyType { STD, MID, ELITE }
 @export_range(0, 90, 15) var deviationAngle: int = 90                           # Cantidad de giro
 @export var scrollFollow := false                                               # ¿Sigue el scroll?
 @export var isGround := false                                                   # ¿Es enemigo de tierra?
-@export var medal: PackedScene = preload("res://scenes/items/medal.tscn")                           # Item que recompensa
+@export var medal: PackedScene = preload("res://scenes/items/medal.tscn")                           # Medalla que recompensa
 @export var revengeBullet: PackedScene = preload("res://scenes/bullets/revenge_bullet.tscn")        # Balas que devuelve
+@export var powerUp: PackedScene = preload("res://scenes/items/power_up.tscn")                      # Potenciador que recompensa
 @export var scoreCount: int = 1                                                 # Cantidad de items/balas devueltos
-@export var isElite := false                                                    # ¿Es enemigo élite?
 @export var directionEnum: Direction = Direction.SOUTH                          # Dirección general
 @export var handedness: Handedness = Handedness.RIGHT                           # Mano dominante
 @export var comboLabel: RichTextLabel                                           # Etiqueta de pts
-
 
 # === MOVIMIENTOS POR ETAPAS ===
 @export_category("CHILDHOOD")
@@ -53,6 +52,8 @@ var canShoot := true
 var cantShoot := false
 var health: int
 var lastBullet
+var pulseMarked := false
+var pulseDamaged := false
 
 var DIRECTION_MAP = {
 	Direction.NORTH: Vector2.UP,
@@ -63,7 +64,7 @@ var DIRECTION_MAP = {
 
 func _ready() -> void:
 	match typeEnum:
-		EnemyType.STD: health = 20
+		EnemyType.STD: health = 15
 		EnemyType.MID: health = 50
 		EnemyType.ELITE: health = 100
 	direction = DIRECTION_MAP.get(directionEnum, Vector2.DOWN)
@@ -81,6 +82,11 @@ func _process(delta: float) -> void:
 	stageTimer += delta
 	
 	velocity = SCROLL.get_scroll() + extraVel if scrollFollow else extraVel
+	
+	# Pulse damage
+	if pulseMarked and (INPUT.firing or INPUT.fireHold) and !pulseDamaged:
+		health -= 15
+		pulseDamaged = true
 	
 	match currentStage:
 		"childhood":
@@ -129,24 +135,30 @@ func _check_death() -> void:
 	
 	var playerPos = GAME.get_player()
 	# Devuelve medallas si se mata a bocajarro o si el contador de medallas está activo
-	if position.distance_to(playerPos) < 200 or SCORE.medalCountdown > 0:
+	if position.distance_to(playerPos) < 200 or SCORE.medalCountdown > 0 or pulseMarked:
 		_spawn_score(scoreCount, medal)
-		if lastBullet and !SCORE.medalCountdown > 0: SCORE.medalCountdown = 5
+		if lastBullet and !SCORE.medalCountdown > 0 and !pulseMarked: SCORE.medalCountdown = 5
 	# Devuelve balas de venganza si se mata alto en la pantalla
-	if position.y < 250: _spawn_score(scoreCount, revengeBullet)
+	if position.y < 250 or pulseMarked: _spawn_score(scoreCount, revengeBullet)
+	if typeEnum == EnemyType.MID: _spawn_score(1, powerUp, true)
 	
 	# Enemigos élite cancelan todas las balas
-	if isElite:
+	if typeEnum == EnemyType.ELITE:
 		for bullet in get_tree().get_nodes_in_group("Enemy Bullet"):
 			if bullet.has_method("cancel"): bullet.cancel()
 	
+	if pulseMarked:
+		SCORE.increase_fever(5)
+		SCORE.increase_combo(100)
+	
 	queue_free()
 
-func _spawn_score(count: int, entity: PackedScene) -> void:
+func _spawn_score(count: int, entity: PackedScene, center: bool = false) -> void:
 	for i in count:
 		var item = entity.instantiate()
 		get_tree().current_scene.call_deferred("add_child", item)
-		item.position = global_position + Vector2(randf_range(-size, size), 0)
+		var spawnOffset = Vector2(randf_range(-size, size), 0) if !center else Vector2(0, 0)
+		item.position = global_position + spawnOffset
 
 # === TIPOS DE MOVIMIENTO ===
 
@@ -249,11 +261,12 @@ func _on_hurtbox_area_entered(area: Node) -> void:
 		lastBullet = area.isWide
 	if area.is_in_group("Player") and isGround:
 		canShoot = false
-	if area.is_in_group("Bomb"):
-		health -= area.damage
+	if area.is_in_group("Bomb"): health -= area.damage
+	if area.is_in_group("Pulse"): pulseMarked = true
 
 func _on_hurtbox_area_exited(area: Node) -> void:
 	if area.is_in_group("Player") and isGround: canShoot = true
+	if area.is_in_group("Pulse"): pulseMarked = false
 
 func _on_hitbox_area_entered(area: Node) -> void:
 	if area.is_in_group("Play"): canDie = true
