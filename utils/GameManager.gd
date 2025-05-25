@@ -36,7 +36,7 @@ func spawn(pos = Vector2(0, 0), continued = false) -> void:
 	directions.shuffle() # Mezcla el array
 	
 	# Solo se hace respawn si hay personaje seleccionado y vidas disponibles
-	if selectedCharacter and lives > 0:
+	if selectedCharacter and lives >= 0:
 		# Instanciar potenciadores
 		var totalItems = (weaponLvl - 1) + optionCounter if !continued else 0
 		for i in totalItems:
