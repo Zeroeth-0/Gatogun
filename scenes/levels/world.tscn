@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bi7uyv2plo07x"]
+[gd_scene load_steps=12 format=3 uid="uid://bi7uyv2plo07x"]
 
 [ext_resource type="Script" uid="uid://hrxsyfgjv1kg" path="res://source/levels/world.gd" id="1_btnht"]
 [ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="3_0hlg8"]
@@ -9,9 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://chegi2am56x1" path="res://scenes/UI/combo_label.tscn" id="9_ckr2p"]
 [ext_resource type="PackedScene" uid="uid://jkopai8ptvrm" path="res://scenes/UI/score_label.tscn" id="10_s7d0j"]
 [ext_resource type="PackedScene" uid="uid://dyjlf0d78pbvd" path="res://scenes/UI/b_box_container.tscn" id="11_de0io"]
-[ext_resource type="PackedScene" uid="uid://dyljylelji4wa" path="res://scenes/items/bomb_item.tscn" id="11_mmplq"]
 [ext_resource type="PackedScene" uid="uid://ber78ar7g5504" path="res://scenes/UI/fever_bar.tscn" id="11_yb1ae"]
-[ext_resource type="PackedScene" uid="uid://cpaqrklh3fr4s" path="res://scenes/enemies/midEnemy.tscn" id="12_de0io"]
 [ext_resource type="PackedScene" uid="uid://c7eeyaje6ghkn" path="res://scenes/UI/h_box_container.tscn" id="13_e6078"]
 
 [node name="World" type="Node2D"]
@@ -156,15 +154,3 @@ step = 0.01
 [node name="HBoxContainer" parent="." instance=ExtResource("13_e6078")]
 
 [node name="BBoxContainer" parent="." instance=ExtResource("11_de0io")]
-
-[node name="Item" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(190, 197)
-
-[node name="Item2" parent="." instance=ExtResource("11_mmplq")]
-position = Vector2(554, 401)
-
-[node name="Enemy" parent="." instance=ExtResource("12_de0io")]
-position = Vector2(445, -115)
-
-[node name="Enemy2" parent="." instance=ExtResource("12_de0io")]
-position = Vector2(170, -439)

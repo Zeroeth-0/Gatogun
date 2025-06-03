@@ -10,4 +10,7 @@ childhood = 11
 adulthood = 11
 oldAge = 11
 
+[node name="Sprite2D" parent="." index="0"]
+modulate = Color(0, 0, 1, 1)
+
 [node name="Emitter" parent="." index="4" instance=ExtResource("2_brr2b")]

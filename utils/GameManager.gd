@@ -33,8 +33,6 @@ func _ready() -> void:
 	characterScenes = [wideCat, linearCat]
 
 func spawn(pos = Vector2(0, 0), continued = false) -> void:
-	directions.shuffle() # Mezcla el array
-	
 	# Solo se hace respawn si hay personaje seleccionado y vidas disponibles
 	if selectedCharacter and lives >= 0:
 		# Instanciar potenciadores

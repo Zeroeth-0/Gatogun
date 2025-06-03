@@ -1,7 +1,7 @@
 extends Area2D
 
 # === ENUM DE TIPOS DE ÍTEMS ===
-enum ItemType { MEDAL, POWERUP, BOMB }
+enum ItemType { MEDAL, POWERUP, BOMB, ONEUP }
 
 # === EXPORTABLES CONFIGURABLES ===
 @export var itemEnum: ItemType = ItemType.MEDAL                                 # Tipo de item
@@ -28,11 +28,11 @@ func _ready() -> void:
 	followingPlayer = true
 
 func _process(delta: float) -> void:
-	
 	match itemEnum:
 		ItemType.MEDAL: _move_medal(delta) # Movimiento medalla
 		ItemType.POWERUP: _move_powerup(delta) # Movimiento potenciador
 		ItemType.BOMB: _move_powerup(delta) # Movimiento bomba (igual que potenciador)
+		ItemType.ONEUP: _move_powerup(delta) # Movimiento 1-Up (igual que potenciador)
 
 func _move_medal(delta):
 		if followingPlayer: _move_towards_player(delta)
@@ -89,7 +89,6 @@ func _on_area_entered(area: Node) -> void:
 				GAME.innerMedalChain += 1
 				SCORE.increase_mult()
 			ItemType.POWERUP: _handle_power_up()
-			ItemType.BOMB:
-				print(GAME.bombCount)
-				if GAME.bombCount < 6: GAME.bombCount += 1
+			ItemType.BOMB: if GAME.bombCount < 6: GAME.bombCount += 1
+			ItemType.ONEUP: if GAME.lives < 6: GAME.lives += 1
 		queue_free()
