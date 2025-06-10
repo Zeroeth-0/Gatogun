@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Gatodius"
+config/name="Gatogun"
 run/main_scene="res://scenes/UI/title_screen.tscn"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 run/max_fps=240

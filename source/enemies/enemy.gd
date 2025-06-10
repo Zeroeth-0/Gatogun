@@ -85,7 +85,7 @@ func _process(delta: float) -> void:
 	
 	# Pulse damage
 	if pulseMarked and (INPUT.firing or INPUT.fireHold) and !pulseDamaged:
-		health -= 15
+		health -= 50
 		pulseDamaged = true
 	
 	match currentStage:
