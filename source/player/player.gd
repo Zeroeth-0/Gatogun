@@ -76,7 +76,7 @@ func _clamp_to_screen(screenSize: Vector2) -> void:
 func _on_hurtbox_area_entered(area: Node) -> void:
 	if canDie and area.is_in_group("Damage"):
 		GAME.lives -= 1
-		GAME.spawn(global_position, false)
+		GAME.store(global_position, false)
 		queue_free()
 
 func _on_hurtbox_area_exited(area: Node) -> void:

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://clseswg7d8yap"]
 
-[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/emitter.tscn" id="1_cicma"]
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/base/emitter.tscn" id="1_cicma"]
 
 [node name="Emitter" instance=ExtResource("1_cicma")]
 baseSpeed = 300.0

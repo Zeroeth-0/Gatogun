@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bm7rcpgmosj2b"]
 
-[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/emitter.tscn" id="1_vfe65"]
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/base/emitter.tscn" id="1_vfe65"]
 
 [node name="Emitter" instance=ExtResource("1_vfe65")]
 type = 1

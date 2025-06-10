@@ -31,7 +31,7 @@ func _process(delta):
 		get_tree().paused = false
 		GAME.lives = 2
 		SCORE.reset_game_score()
-		GAME.spawn(GAME.CENTER, true)
+		GAME.store(GAME.CENTER, true)
 		queue_free()
 
 func _on_timer_timeout():
@@ -41,4 +41,5 @@ func _on_timer_timeout():
 		# Aquí puedes decidir si terminar el juego o ir al menú principal
 		get_tree().paused = false
 		GAME.game_over()
+		GAME.selectedCharacter = null
 		queue_free()

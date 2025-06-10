@@ -231,10 +231,10 @@ func move_leave_side():
 	scrollFollow = false
 	var newDir
 	match directionEnum:
-		Direction.NORTH: newDir = Vector2(-hSide, 1)
-		Direction.SOUTH: newDir = Vector2(-hSide, -1)
-		Direction.WEST: newDir = Vector2(1, -hSide)
-		Direction.EAST: newDir = Vector2(-1, -hSide)
+		Direction.NORTH: newDir = Vector2(hSide, 1)
+		Direction.SOUTH: newDir = Vector2(hSide, -1)
+		Direction.WEST: newDir = Vector2(1, hSide)
+		Direction.EAST: newDir = Vector2(-1, hSide)
 	extraVel = newDir.normalized() * speed
 	move_and_slide()
 
