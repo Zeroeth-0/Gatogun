@@ -1,4 +1,5 @@
-popcornComeLeave at N2+1.5 after 1
-midGoStopGo at N2 after 1
-midGoStopGo at N3 after 1
-midGoStopGo at N4 after 1
+popcornComeLeave at N1 after 0
+popcornComeLeave at N2-0.5 after 0
+popcornComeLeave at N2 after 0
+popcornComeLeave at N2+0.5 after 0
+popcornComeLeave at N3 after 0

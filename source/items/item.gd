@@ -18,6 +18,7 @@ var followingPlayer: bool = false
 var oscillationTimer: float = 0.0
 var isCollected := false
 var powerupDir := Vector2(1, 1).normalized()
+var powerUpFollowPlayer: bool = false
 
 func _ready() -> void:
 	# Lanzamiento inicial con fuerza aleatoria hacia arriba
@@ -42,7 +43,7 @@ func _move_medal(delta):
 
 func _move_powerup(delta):
 	var moveSpeed := 150.0
-	position += powerupDir * moveSpeed * delta
+	if !powerUpFollowPlayer: position += powerupDir * moveSpeed * delta
 
 	# Obtener los límites de la pantalla
 	var screenSize := get_viewport().get_visible_rect().size
@@ -53,6 +54,11 @@ func _move_powerup(delta):
 		powerupDir.x *= -1
 	if position.y - halfSize <= 0 or position.y + halfSize >= screenSize.y:
 		powerupDir.y *= -1
+	
+	if GAME.get_player().y < 250: powerUpFollowPlayer = true
+	if powerUpFollowPlayer:
+		speed = 400
+		_move_towards_player(delta)
 
 func _show_label(scoreVal):
 		var label = medal_label.instantiate()

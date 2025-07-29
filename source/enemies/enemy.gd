@@ -146,6 +146,7 @@ func _check_death() -> void:
 	if typeEnum == EnemyType.ELITE:
 		for bullet in get_tree().get_nodes_in_group("Enemy Bullet"):
 			if bullet.has_method("cancel"): bullet.cancel()
+			print("Hey")
 	
 	if pulseMarked:
 		SCORE.increase_fever(5)

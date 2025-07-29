@@ -14,6 +14,7 @@
 z_index = 3
 script = ExtResource("1_nfbc7")
 size = 40
+scoreCount = 5
 comboLabel = NodePath("EnemyCombo")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

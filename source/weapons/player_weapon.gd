@@ -4,9 +4,8 @@ extends Node2D
 @export var bulletScene: PackedScene
 @export var fireRate: float = 0.05
 @export_range(-20, 20, 5) var deviationAngle: float = 0.0
-@export var MAX_BULLETS: int = 3
+@export var MAX_BULLETS: int = 5
 @export_range(0, 3, 1) var baseLvl: int = 1
-
 @export var targetPos: Vector2 = Vector2.ZERO
 @export_range(0, 20, 1) var followDelay: int = 15
 @export var focusTarget: Vector2 = Vector2.ZERO

@@ -109,7 +109,7 @@ func _update_speed() -> void:
 # === INTERACCIÓN Y FINALIZACIÓN ===
 
 # Muestra la medalla y elimina la bala
-func _cancel() -> void:
+func cancel() -> void:
 	var item = medal.instantiate()
 	get_tree().current_scene.call_deferred("add_child", item)
 	item.position = global_position
@@ -126,5 +126,5 @@ func _on_area_entered(area) -> void:
 		if revHealth <= 0 and not isCancelled:
 			isCancelled = true  # Bloquea ejecuciones futuras
 			var playerPos = GAME.get_player()
-			if position.distance_to(playerPos) < 200 or SCORE.medalCountdown >0: _cancel()
+			if position.distance_to(playerPos) < 200 or SCORE.medalCountdown >0: cancel()
 			else: queue_free()
