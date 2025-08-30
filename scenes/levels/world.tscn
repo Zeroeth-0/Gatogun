@@ -16,7 +16,6 @@
 [ext_resource type="PackedScene" uid="uid://dog0k55xaa2s" path="res://scenes/items/max_power_up.tscn" id="14_8c33x"]
 
 [node name="World" type="Node2D"]
-position = Vector2(1, 0)
 script = ExtResource("1_btnht")
 waveFile = "res://source/levels/test.txt"
 enemyScenes = Array[PackedScene]([ExtResource("12_de0io"), ExtResource("3_xidr1")])

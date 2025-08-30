@@ -1,5 +1,4 @@
-popcornComeLeave at N1 after 0
-popcornComeLeave at N2-0.5 after 0
-popcornComeLeave at N2 after 0
-popcornComeLeave at N2+0.5 after 0
-popcornComeLeave at N3 after 0
+SWARM(thickness=3,length=2,warmup=0.5) popcornComeLeave at N0 after 1
+LADDER(step=7,direction=R,jump=1,warmup=0.5) popcornComeLeave at N0 after 1
+MIRROR(warmup=0.5) popcornComeLeave at N0 after 1
+PARADE(thickness=3,length=7,warmup=0.5) popcornComeLeave at N0 after 1

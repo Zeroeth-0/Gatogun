@@ -74,10 +74,11 @@ func _clamp_to_screen(screenSize: Vector2) -> void:
 
 # === COLISIONES ===
 func _on_hurtbox_area_entered(area: Node) -> void:
-	if canDie and area.is_in_group("Damage"):
+	if canDie and area.is_in_group("Damage") and GAME.bombCount == 0:
 		GAME.lives -= 1
 		GAME.store(global_position, false)
 		queue_free()
+	elif canDie and area.is_in_group("Damage"): _handle_bombing()
 
 func _on_hurtbox_area_exited(area: Node) -> void:
 	if area.is_in_group("Ground"): area.get_parent().canShoot = true

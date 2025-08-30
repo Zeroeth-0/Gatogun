@@ -15,6 +15,8 @@ var lanes := {
 var pattern_definitions := {
 	"LADDER": _pattern_ladder,
 	"PARADE": _pattern_parade,
+	"MIRROR": _pattern_mirror,
+	"SWARM": _pattern_swarm,
 }
 
 func _ready() -> void:
@@ -229,7 +231,7 @@ func _pattern_ladder(base: String, args: Dictionary) -> Array:
 		current_index = clamp(current_index, 0, lane_size - 1)
 
 		# Generar línea con delay relativo al primero
-		var delay = warmup
+		var delay = warmup if i > 0 else base_delay
 		var line = "%s@%s%d+%.2f:%s>%s|%.3f" % [
 			type, lane, current_index, offset,
 			hand, move_dir, delay
@@ -266,6 +268,82 @@ func _pattern_parade(base: String, args: Dictionary) -> Array:
 
 			var line = "%s@%s%d+%.2f:%s>%s|%.3f" % [
 				type, lane, current_index, offset,
+				hand, move_dir, row_delay
+			]
+			lines.append(line)
+			row_delay = 0
+
+	return lines
+
+func _pattern_mirror(base: String, args: Dictionary) -> Array:
+	var parsed = _parse_wave_line(base)
+	if parsed.is_empty():
+		return []
+
+	var lane = parsed["lane"]
+	var index = parsed["index"]
+	var offset = parsed["offset"]
+	var base_delay = parsed["delay"]
+	var type = parsed["type"]
+	var hand = parsed["hand"]
+	var move_dir = parsed["dir"]
+
+	var delay_mirror = float(args.get("warmup", 0.2))
+	var lane_size = lanes[lane].size()
+	var mirror_index = lane_size - 1 - index
+
+	var lines = []
+
+	# Línea original
+	var line_original = "%s@%s%d+%.2f:%s>%s|%.3f" % [
+		type, lane, index, offset,
+		hand, move_dir, base_delay
+	]
+	lines.append(line_original)
+
+	# Línea espejo
+	if mirror_index != index and mirror_index >= 0 and mirror_index < lane_size:
+		var mirror_line = "%s@%s%d+%.2f:%s>%s|%.3f" % [
+			type, lane, mirror_index, offset,
+			hand, move_dir, base_delay + delay_mirror
+		]
+		lines.append(mirror_line)
+
+	return lines
+
+func _pattern_swarm(base: String, args: Dictionary) -> Array:
+	var thickness = int(args.get("thickness", 3))
+	var length = int(args.get("length", 4))
+	var warmup = float(args.get("warmup", 0.3))
+
+	var lines: Array = []
+	var parsed = _parse_wave_line(base)
+	if parsed.is_empty():
+		return []
+
+	var lane = parsed["lane"]
+	var start_index = parsed["index"]
+	var base_offset = parsed["offset"]
+	var base_delay = parsed["delay"]
+	var type = parsed["type"]
+	var hand = parsed["hand"]
+	var move_dir = parsed["dir"]
+
+	var lane_size = lanes[lane].size()
+
+	for row in range(length):
+		var row_delay = warmup
+
+		var current_thickness = thickness if row % 2 == 0 else thickness - 1
+		var offset_shift = 0.0 if row % 2 == 0 else 0.5
+
+		for i in range(current_thickness):
+			var current_index = start_index + i
+			if current_index < 0 or current_index >= lane_size:
+				continue
+
+			var line = "%s@%s%d+%.2f:%s>%s|%.3f" % [
+				type, lane, current_index, base_offset + offset_shift,
 				hand, move_dir, row_delay
 			]
 			lines.append(line)
