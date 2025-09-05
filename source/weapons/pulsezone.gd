@@ -2,11 +2,12 @@ extends Area2D
 
 @export var scaleSpeed := 20.0
 @export var scaleResetSpeed := 300.0
-@export var maxScale := 30.0
+@export var maxScale := 10.0
 @export var minScale := 1.0
 
 func _process(delta):
 	var targetScale: float
+	maxScale = GAME.weaponLvl * 10
 
 	if not INPUT.firing and not INPUT.fireHold:
 		targetScale = maxScale

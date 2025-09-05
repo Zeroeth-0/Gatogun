@@ -56,7 +56,8 @@ func _update_mult(delta: float) -> void:
 	if fever <= 0 and mult > 1:
 		multDrainTime += delta
 		while multDrainTime >= multDrainLimit:
-			mult -= 1
+			if (mult - 3 >= 1): mult -= 3
+			else: mult -= 1
 			multDrainTime -= multDrainLimit
 
 # === SISTEMA DE COMBO ===
@@ -106,6 +107,7 @@ func increase_mult() -> void:
 	mult += 1
 
 func reset() -> void:
+	if rank > 1: rank -= 1
 	fever = 0
 	combo = 0
 	mult = 1
@@ -117,3 +119,4 @@ func add_score(score: int) -> void:
 
 func reset_game_score() -> void:
 	GeneralGameScore = 0
+	rank = 1

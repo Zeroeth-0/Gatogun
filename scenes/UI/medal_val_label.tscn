@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://cayh0njccwp1h"]
+[gd_scene load_steps=2 format=3 uid="uid://7pou2o2sayiq"]
 
-[ext_resource type="Script" uid="uid://bges5l21ni4dq" path="res://source/UI/medal_val_label.gd" id="1_8jwxa"]
+[ext_resource type="Script" uid="uid://bx6ojl6vvd0rp" path="res://source/UI/medal_val_label.gd" id="1_8jwxa"]
 
 [node name="MedalValLabel" type="RichTextLabel"]
 z_index = 10

@@ -27,10 +27,10 @@ func _process(_delta: float) -> void:
 # === ANIMACIONES ===
 
 func label_in() -> void:
-	_start_tween(Vector2(35, 160))
+	_start_tween(Vector2(35, 180))
 
 func label_out() -> void:
-	_start_tween(Vector2(-165, 160))
+	_start_tween(Vector2(-165, 180))
 
 func _start_tween(targetPos: Vector2) -> void:
 	if tween: tween.kill()  # Evita conflictos si hay uno corriendo

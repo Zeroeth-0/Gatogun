@@ -54,6 +54,7 @@ var health: int
 var lastBullet
 var pulseMarked := false
 var pulseDamaged := false
+var byBomb := false
 
 var DIRECTION_MAP = {
 	Direction.NORTH: Vector2.UP,
@@ -139,7 +140,7 @@ func _check_death() -> void:
 		_spawn_score(scoreCount, medal)
 		if lastBullet and !SCORE.medalCountdown > 0 and !pulseMarked: SCORE.medalCountdown = 5
 	# Devuelve balas de venganza si se mata alto en la pantalla
-	if position.y < 250 or pulseMarked: _spawn_score(scoreCount, revengeBullet)
+	if (position.y < 250 or pulseMarked) and !byBomb: _spawn_score(scoreCount, revengeBullet)
 	if typeEnum == EnemyType.MID: _spawn_score(1, powerUp, true)
 	
 	# Enemigos élite cancelan todas las balas
@@ -262,7 +263,9 @@ func _on_hurtbox_area_entered(area: Node) -> void:
 		lastBullet = area.isWide
 	if area.is_in_group("Player") and isGround:
 		canShoot = false
-	if area.is_in_group("Bomb"): health -= area.damage
+	if area.is_in_group("Bomb"):
+		byBomb = true
+		health -= area.damage
 	if area.is_in_group("Pulse"): pulseMarked = true
 
 func _on_hurtbox_area_exited(area: Node) -> void:

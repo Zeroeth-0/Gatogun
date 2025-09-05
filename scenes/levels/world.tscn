@@ -115,6 +115,7 @@ position = Vector2(174, 0)
 position = Vector2(261, 0)
 
 [node name="Ground" parent="." instance=ExtResource("5_sf1u2")]
+script = null
 
 [node name="DeadBounds" parent="." instance=ExtResource("3_0hlg8")]
 
@@ -122,9 +123,9 @@ position = Vector2(261, 0)
 
 [node name="ComboLabel" parent="." instance=ExtResource("9_ckr2p")]
 offset_left = -165.0
-offset_top = 160.0
+offset_top = 180.0
 offset_right = 8.0
-offset_bottom = 232.0
+offset_bottom = 252.0
 text = "+9999"
 
 [node name="MultLabel" parent="." instance=ExtResource("6_mmplq")]
@@ -162,3 +163,8 @@ step = 0.01
 
 [node name="Item" parent="." instance=ExtResource("14_8c33x")]
 position = Vector2(363, 162)
+speed = null
+grav = null
+launchForce = null
+delayBeforeFollow = null
+medal_label = null
