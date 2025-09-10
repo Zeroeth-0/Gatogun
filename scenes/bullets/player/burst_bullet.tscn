@@ -5,12 +5,11 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ex51n"]
 
-[node name="Wide Bullet" type="Area2D" groups=["BulletCount", "Fire"]]
+[node name="Burst Bullet" type="Area2D" groups=["BulletCount", "Fire"]]
 z_index = 1
 scale = Vector2(2, 1)
 script = ExtResource("1_08ob5")
 speed = 2000.0
-isWide = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 0.627451, 0, 1)

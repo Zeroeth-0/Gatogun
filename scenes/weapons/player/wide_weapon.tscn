@@ -1,30 +1,35 @@
-[gd_scene load_steps=5 format=3 uid="uid://cjhkionj3a6h3"]
+[gd_scene load_steps=7 format=3 uid="uid://cjhkionj3a6h3"]
 
-[ext_resource type="Script" uid="uid://cwqfgmqokmuta" path="res://source/weapons/weapon_manager.gd" id="1_bb8ca"]
-[ext_resource type="PackedScene" uid="uid://mijejse1m0kt" path="res://scenes/weapons/player/player_emmiter.tscn" id="2_0mt0c"]
-[ext_resource type="PackedScene" uid="uid://bkkquuwyecdv2" path="res://scenes/bullets/player/heavy_bullet.tscn" id="3_2mg8p"]
-[ext_resource type="PackedScene" uid="uid://d1f0btwlnwl27" path="res://scenes/weapons/player/option.tscn" id="5_2m218"]
+[ext_resource type="Script" uid="uid://cwqfgmqokmuta" path="res://source/weapons/option_checker.gd" id="1_bb8ca"]
+[ext_resource type="PackedScene" uid="uid://bm7txdh8pkm75" path="res://scenes/weapons/player/burst.tscn" id="4_6aoh4"]
+[ext_resource type="PackedScene" uid="uid://d1f0btwlnwl27" path="res://scenes/weapons/player/option.tscn" id="4_a4nj2"]
+[ext_resource type="PackedScene" uid="uid://1p0g651xshsv" path="res://scenes/weapons/player/charge.tscn" id="5_2m218"]
+[ext_resource type="PackedScene" uid="uid://dhpo7sa5v3t30" path="res://scenes/weapons/player/laser.tscn" id="5_a4nj2"]
+[ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="6_2m218"]
 
-[node name="Weapon" type="Node2D" node_paths=PackedStringArray("rightOption", "leftOption")]
+[node name="Weapon" type="Node2D"]
 script = ExtResource("1_bb8ca")
-bulletScene = ExtResource("3_2mg8p")
-fireRate = 0.03
-rightOption = NodePath("OptionR")
-leftOption = NodePath("OptionL")
 
-[node name="PlayerEmmiter" parent="." instance=ExtResource("2_0mt0c")]
-position = Vector2(0, 20)
+[node name="Laser" parent="." instance=ExtResource("5_a4nj2")]
 
-[node name="OptionR" parent="." instance=ExtResource("5_2m218")]
-position = Vector2(70, 40)
-deviationAngle = 10.0
-targetPos = Vector2(70, 40)
-focusTarget = Vector2(0, -60)
-offSign = -1
+[node name="Burst" parent="." instance=ExtResource("4_6aoh4")]
 
-[node name="OptionL" parent="." instance=ExtResource("5_2m218")]
-position = Vector2(-70, 40)
-deviationAngle = -10.0
+[node name="OptionL" parent="." node_paths=PackedStringArray("targetNode") instance=ExtResource("4_a4nj2")]
 targetPos = Vector2(-70, 40)
-focusTarget = Vector2(0, -60)
+targetNode = NodePath("../OptionR")
 offSign = 1
+deviationAngle = -10.0
+
+[node name="OptionR" parent="." node_paths=PackedStringArray("targetNode") instance=ExtResource("4_a4nj2")]
+targetPos = Vector2(70, 40)
+targetNode = NodePath("..")
+offSign = -1
+deviationAngle = 10.0
+
+[node name="Charge" parent="." node_paths=PackedStringArray("sprite") instance=ExtResource("5_2m218")]
+sprite = NodePath("../Icon")
+
+[node name="Icon" type="Sprite2D" parent="."]
+position = Vector2(0, -50)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("6_2m218")

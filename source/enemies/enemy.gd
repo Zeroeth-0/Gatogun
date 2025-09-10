@@ -13,13 +13,9 @@ enum EnemyType { STD, MID, ELITE }
 @export_range(0, 90, 15) var deviationAngle: int = 90                           # Cantidad de giro
 @export var scrollFollow := false                                               # ¿Sigue el scroll?
 @export var isGround := false                                                   # ¿Es enemigo de tierra?
-@export var medal: PackedScene = preload("res://scenes/items/medal.tscn")                           # Medalla que recompensa
-@export var revengeBullet: PackedScene = preload("res://scenes/bullets/revenge_bullet.tscn")        # Balas que devuelve
-@export var powerUp: PackedScene = preload("res://scenes/items/power_up.tscn")                      # Potenciador que recompensa
 @export var scoreCount: int = 1                                                 # Cantidad de items/balas devueltos
 @export var directionEnum: Direction = Direction.SOUTH                          # Dirección general
 @export var handedness: Handedness = Handedness.RIGHT                           # Mano dominante
-@export var comboLabel: RichTextLabel                                           # Etiqueta de pts
 
 # === MOVIMIENTOS POR ETAPAS ===
 @export_category("CHILDHOOD")
@@ -42,19 +38,11 @@ enum EnemyType { STD, MID, ELITE }
 var currentStage := "childhood"
 var stageTimer := 0.0
 var speed := 200
-var extraVel := Vector2.ZERO
+var extraVel := Vector2.ZERO                                                    # Necesario para scroll follow
 var direction := Vector2.DOWN
 var currentDirection := Vector2.ZERO
 var hSide: int
 var randSide: int
-var canDie := false
-var canShoot := true
-var cantShoot := false
-var health: int
-var lastBullet
-var pulseMarked := false
-var pulseDamaged := false
-var byBomb := false
 
 var DIRECTION_MAP = {
 	Direction.NORTH: Vector2.UP,
@@ -63,48 +51,13 @@ var DIRECTION_MAP = {
 	Direction.EAST: Vector2.RIGHT
 }
 
+# === FLUJO DE COMPORTAMIENTO ===
 func _ready() -> void:
-	match typeEnum:
-		EnemyType.STD: health = 15
-		EnemyType.MID: health = 50
-		EnemyType.ELITE: health = 100
 	direction = DIRECTION_MAP.get(directionEnum, Vector2.DOWN)
 	currentDirection = direction
 	stageTimer = 0.0
 	hSide = -1 if handedness == Handedness.RIGHT else 1
 	randSide = -1 if randi() % 2 == 0 else 1
-	
-	if isGround: $Hurtbox.add_to_group("Ground")
-	else: $Hitbox.add_to_group("Damage")
-
-# === PROCESO DE VIDA Y FASES ===
-func _process(delta: float) -> void:
-	_check_death()
-	stageTimer += delta
-	
-	velocity = SCROLL.get_scroll() + extraVel if scrollFollow else extraVel
-	
-	# Pulse damage
-	if pulseMarked and (INPUT.firing or INPUT.fireHold) and !pulseDamaged:
-		health -= 50
-		pulseDamaged = true
-	
-	match currentStage:
-		"childhood":
-			if stageTimer > childDuration: _change_stage("adulthood", adultInvert)
-			else:
-				speed = childSpeed
-				apply_movement(childhood, childDuration, delta)
-		
-		"adulthood":
-			if stageTimer > adultDuration: _change_stage("old_age", oldInvert)
-			else:
-				speed = adultSpeed
-				apply_movement(adulthood, adultDuration, delta)
-		
-		"old_age":
-			speed = oldSpeed
-			apply_movement(oldAge, adultDuration, delta)
 
 func _change_stage(nextStage: String, shouldInvert: bool) -> void:
 	currentStage = nextStage
@@ -129,41 +82,7 @@ func apply_movement(moveType: MoveType, dur: float, delta: float) -> void:
 		MoveType.DIAGONAL: move_diagonal()
 		MoveType.STILL: move_still()
 
-# === MUERTE Y RECOMPENSAS ===
-func _check_death() -> void:
-	if health > 0: return
-	SCORE.add_score(SCORE.combo)
-	
-	var playerPos = GAME.get_player()
-	# Devuelve medallas si se mata a bocajarro o si el contador de medallas está activo
-	if position.distance_to(playerPos) < 200 or SCORE.medalCountdown > 0 or pulseMarked:
-		_spawn_score(scoreCount, medal)
-		if lastBullet and !SCORE.medalCountdown > 0 and !pulseMarked: SCORE.medalCountdown = 5
-	# Devuelve balas de venganza si se mata alto en la pantalla
-	if (position.y < 250 or pulseMarked) and !byBomb: _spawn_score(scoreCount, revengeBullet)
-	if typeEnum == EnemyType.MID: _spawn_score(1, powerUp, true)
-	
-	# Enemigos élite cancelan todas las balas
-	if typeEnum == EnemyType.ELITE:
-		for bullet in get_tree().get_nodes_in_group("Enemy Bullet"):
-			if bullet.has_method("cancel"): bullet.cancel()
-			print("Hey")
-	
-	if pulseMarked:
-		SCORE.increase_fever(5)
-		SCORE.increase_combo(100)
-	
-	queue_free()
-
-func _spawn_score(count: int, entity: PackedScene, center: bool = false) -> void:
-	for i in count:
-		var item = entity.instantiate()
-		get_tree().current_scene.call_deferred("add_child", item)
-		var spawnOffset = Vector2(randf_range(-size, size), 0) if !center else Vector2(0, 0)
-		item.position = global_position + spawnOffset
-
 # === TIPOS DE MOVIMIENTO ===
-
 func move_straight(): extraVel = direction * speed; move_and_slide()
 
 func move_sinusoidal():
@@ -253,27 +172,3 @@ func move_diagonal():
 func move_still():
 	extraVel = Vector2.ZERO
 	move_and_slide()
-
-# === COLISIONES ===
-
-func _on_hurtbox_area_entered(area: Node) -> void:
-	if area.is_in_group("Fire"):
-		if comboLabel: comboLabel.show_combo()
-		if canDie: health -= area.damage
-		lastBullet = area.isWide
-	if area.is_in_group("Player") and isGround:
-		canShoot = false
-	if area.is_in_group("Bomb"):
-		byBomb = true
-		health -= area.damage
-	if area.is_in_group("Pulse"): pulseMarked = true
-
-func _on_hurtbox_area_exited(area: Node) -> void:
-	if area.is_in_group("Player") and isGround: canShoot = true
-	if area.is_in_group("Pulse"): pulseMarked = false
-
-func _on_hitbox_area_entered(area: Node) -> void:
-	if area.is_in_group("Play"): canDie = true
-
-func _on_hitbox_area_exited(area: Node) -> void:
-	if area.is_in_group("Free"): queue_free()

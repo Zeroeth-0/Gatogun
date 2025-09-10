@@ -16,10 +16,6 @@ var directions = [Vector2(1, 1), Vector2(-1, 1), Vector2(1, -1), Vector2(-1, -1)
 var spawnPoint: Vector2 = Vector2(150, 830)
 var goPoint: Vector2 = Vector2(150, 600)
 var lives: float = 2
-var weaponLvl: float = 1.0
-var rOptActive: bool = false
-var lOptActive: bool = false
-var optionCounter: float = 0.0
 var innerMedalChain: int = 0
 var medalLevel: int = 0
 var bombCount: int = 3
@@ -45,7 +41,7 @@ func spawn() -> void:
 	# Solo se hace respawn si hay personaje seleccionado y vidas disponibles
 	if selectedCharacter and lives >= 0:
 		# Instanciar potenciadores
-		var totalItems = (weaponLvl - 1) + optionCounter if !spawnContinued else 0
+		var totalItems = (WEAPON.burstLvl - 1) + WEAPON.optionCounter if !spawnContinued else 0
 		for i in totalItems - get_tree().get_nodes_in_group("PowerUp").size():
 			var item = powerUp.instantiate()
 			item.position = spawnPos
@@ -54,10 +50,10 @@ func spawn() -> void:
 		
 		# Resetear estado (armas + cadenas/combos)
 		SCORE.reset()
-		weaponLvl = 1.0
-		rOptActive = false
-		lOptActive = false
-		optionCounter = 0
+		WEAPON.burstLvl = 1.0
+		WEAPON.rOptActive = false
+		WEAPON.lOptActive = false
+		WEAPON.optionCounter = 0
 		
 		# Instanciar jugador
 		var instance = selectedCharacter.instantiate()

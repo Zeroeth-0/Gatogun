@@ -163,8 +163,3 @@ step = 0.01
 
 [node name="Item" parent="." instance=ExtResource("14_8c33x")]
 position = Vector2(363, 162)
-speed = null
-grav = null
-launchForce = null
-delayBeforeFollow = null
-medal_label = null

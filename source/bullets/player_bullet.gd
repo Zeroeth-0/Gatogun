@@ -1,80 +1,79 @@
 extends Area2D
 
+# === TIPOS DE BALA ===
+enum BulletEnum { BOMB, LASER, FOLLOW, BURST, CHARGE }
+
 # === CONFIGURACIÓN EXPORTADA ===
-@export var speed: float = 1000.0                                               # Velocidad en píxeles por segundo
-@export var damage: int = 1                                                     # Daño que inflige
-@export var lifeTime: float = 10.0                                              # Duración de la bala
-@export var isBomb: bool = false                                                # ¿Es bomba?
-@export var isFocus: bool = false                                               # ¿Es disparo concentrado?
-@export var isFollow: bool = false                                              # ¿Persigue al enemigo?
-@export var isWide: bool = false                                                # ¿Es disparo ancho?
+@export var BulletType: BulletEnum = BulletEnum.BURST
+@export var speed: float = 1000.0
+@export var damage: int = 1
+@export var lifeTime: float = 3.0
 
 # === ESTADO INTERNO ===
 var direction: Vector2 = Vector2.UP
 var deviationAngle: float = 0.0
 var deviationRadians: float = 0.0
 
-# === ACTUALIZACIÓN CADA FRAME ===
+# === CICLO DE VIDA ===
+func _ready() -> void:
+	if BulletType == BulletEnum.LASER:
+		var full_scale := 0.5 + (WEAPON.laserLvl * 0.25)
+		damage = WEAPON.laserLvl + 1
+		scale = Vector2(full_scale, full_scale)
+
 func _process(delta: float) -> void:
-	if isFollow: _update_follow_direction(delta)
-	
-	position += direction * speed * delta
+	if BulletType == BulletEnum.FOLLOW: _update_follow_direction(delta)
+	if BulletType != BulletEnum.CHARGE: position += direction * speed * delta
 	
 	lifeTime -= delta
 	if lifeTime <= 0:
 		queue_free()
 		return
 	
-	if isBomb:
+	if BulletType == BulletEnum.BOMB:
 		for bullet in get_tree().get_nodes_in_group("Enemy Bullet"):
-			if bullet.has_method("cancel"): bullet.cancel()
-
-# === INICIALIZACIÓN ===
-func _ready() -> void:
-	if isFocus:
-		var fullScale := 0.5 + (GAME.weaponLvl * 0.25)
-		damage = GAME.weaponLvl + 1
-		scale = Vector2(fullScale, fullScale)
+			if bullet.has_method("remove"):
+				bullet.remove()
 
 # === CONFIGURAR DIRECCIÓN INICIAL ===
-func set_dir(newDirection: Vector2, devAngle: float) -> void:
+func set_dir(newDir: Vector2, devAngle: float) -> void:
 	deviationAngle = devAngle
 	deviationRadians = deg_to_rad(deviationAngle)
-	direction = newDirection.rotated(deviationRadians)
+	direction = newDir.rotated(deviationRadians)
 	rotation = direction.angle()
 
-# === ACTUALIZAR DIRECCIÓN SI isFollow ===
+# === COMPORTAMIENTO FOLLOW ===
 func _update_follow_direction(delta: float) -> void:
 	var target = _get_closest_enemy()
 	if target == null: return
 	
-	var toTarget = (target.global_position - global_position).normalized()
-	var turnRate = 10.0  # Cuanto más alto, más rápido gira el misil
-	# Interpolamos suavemente entre la dirección actual y la nueva
-	direction = direction.lerp(toTarget, turnRate * delta).normalized()
+	var to_target = (target.global_position - global_position).normalized()
+	var turn_rate = 10.0
+	direction = direction.lerp(to_target, turn_rate * delta).normalized()
 	rotation = direction.angle()
 
-# === OBTENER ENEMIGO MÁS CERCANO ===
+# === AUXILIAR ===
 func _get_closest_enemy() -> Node2D:
 	var enemies = get_tree().get_nodes_in_group("Enemy")
 	var closest
-	var minDist := INF
-	
+	var min_dist := INF
 	for enemy in enemies:
 		var dist = global_position.distance_to(enemy.global_position)
-		if dist < minDist:
-			minDist = dist
+		if dist < min_dist:
+			min_dist = dist
 			closest = enemy
 	return closest
 
 # === COLISIONES ===
 func _on_area_entered(area: Node) -> void:
-	if area.is_in_group("Enemy") and not isBomb:
+	if area.is_in_group("Enemy") and BulletType != BulletEnum.BOMB and BulletType != BulletEnum.CHARGE:
 		SCORE.increase_combo(damage)
-		if INPUT.fireHold: SCORE.keep_fever()
-		else: SCORE.increase_fever(damage)
-		
+		if INPUT.fireHold:
+			SCORE.keep_fever()
+		else:
+			SCORE.increase_fever(damage)
 		queue_free()
 
 func _on_area_exited(area: Node) -> void:
-	if area.is_in_group("Free"): queue_free()
+	if area.is_in_group("Free"):
+		queue_free()

@@ -1,10 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://81sktqqbp7ea"]
+[gd_scene load_steps=6 format=3 uid="uid://81sktqqbp7ea"]
 
 [ext_resource type="Script" uid="uid://dtihhbg6wigvr" path="res://source/player/player.gd" id="1_ujjkf"]
 [ext_resource type="PackedScene" uid="uid://cayls45qnqvte" path="res://scenes/bullets/player/bomb.tscn" id="2_fs4o1"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_fwlg7"]
 [ext_resource type="PackedScene" uid="uid://cjhkionj3a6h3" path="res://scenes/weapons/player/wide_weapon.tscn" id="3_8e7om"]
-[ext_resource type="PackedScene" uid="uid://bx21afnc5m1an" path="res://scenes/weapons/player/pulsezone.tscn" id="5_3s2us"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_klkvo"]
 
@@ -45,9 +44,8 @@ scale = Vector2(4, 4)
 shape = SubResource("RectangleShape2D_klkvo")
 debug_color = Color(0, 1, 0, 0.419608)
 
-[node name="Weapon" parent="." instance=ExtResource("3_8e7om")]
-
-[node name="Pulsezone" parent="." instance=ExtResource("5_3s2us")]
+[node name="Weapon" parent="." node_paths=PackedStringArray("sprite") instance=ExtResource("3_8e7om")]
+sprite = NodePath("../Icon")
 
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
 [connection signal="area_exited" from="Hurtbox" to="." method="_on_hurtbox_area_exited"]

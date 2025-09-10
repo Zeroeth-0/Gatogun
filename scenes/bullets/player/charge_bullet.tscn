@@ -1,22 +1,23 @@
-[gd_scene load_steps=4 format=3 uid="uid://cayls45qnqvte"]
+[gd_scene load_steps=4 format=3 uid="uid://3axj6btm7n4j"]
 
-[ext_resource type="Script" uid="uid://d1bosw6cv4bjk" path="res://source/bullets/player_bullet.gd" id="1_1ecob"]
-[ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_lojgi"]
+[ext_resource type="Script" uid="uid://d1bosw6cv4bjk" path="res://source/bullets/player_bullet.gd" id="1_qwrgv"]
+[ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_76n17"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ex51n"]
 
-[node name="Bomb" type="Area2D" groups=["Bomb"]]
-scale = Vector2(8, 8)
-script = ExtResource("1_1ecob")
-BulletType = 0
-speed = 600.0
-damage = 500
+[node name="ChargeBullet" type="Area2D" groups=["Charge"]]
+scale = Vector2(3.5, 3.5)
+script = ExtResource("1_qwrgv")
+BulletType = 4
+speed = 0.0
+damage = 20
+lifeTime = 2.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 0.627451, 0, 1)
 z_index = 1
 scale = Vector2(0.8, 0.8)
-texture = ExtResource("2_lojgi")
+texture = ExtResource("2_76n17")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 z_index = 1

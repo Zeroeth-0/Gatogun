@@ -1,6 +1,6 @@
 extends Area2D
 
-# === ENUM DE TIPOS DE ÍTEMS ===
+# === TIPOS DE ITEM ===
 enum ItemType { MEDAL, POWERUP, BOMB, ONEUP }
 
 # === EXPORTABLES CONFIGURABLES ===
@@ -71,21 +71,6 @@ func _move_towards_player(delta: float) -> void:
 	var direction = (playerPos - position).normalized()
 	position += direction * speed * delta
 
-func _handle_power_up():
-	if GAME.optionCounter < 1:
-		GAME.optionCounter += 1
-		GAME.rOptActive = true
-	elif GAME.optionCounter < 2:
-		GAME.optionCounter += 1
-		GAME.lOptActive = true
-	elif GAME.weaponLvl < 3 and GAME.optionCounter >= 2: GAME.weaponLvl += 1
-	
-	if isMaxPowerUp:
-		GAME.rOptActive = true
-		GAME.lOptActive = true
-		GAME.optionCounter = 2
-		GAME.weaponLvl = 3
-
 func _on_area_entered(area: Node) -> void:
 	if isCollected: return
 	if area.is_in_group("Collect"):
@@ -94,7 +79,7 @@ func _on_area_entered(area: Node) -> void:
 			ItemType.MEDAL:
 				GAME.innerMedalChain += 1
 				SCORE.increase_mult()
-			ItemType.POWERUP: _handle_power_up()
+			ItemType.POWERUP: WEAPON.lvl_up("MAX")
 			ItemType.BOMB: if GAME.bombCount < 6: GAME.bombCount += 1
 			ItemType.ONEUP: if GAME.lives < 6: GAME.lives += 1
 		queue_free()

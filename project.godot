@@ -22,6 +22,7 @@ INPUT="*res://utils/InputManager.gd"
 SCROLL="*res://utils/ScrollManager.gd"
 SCORE="*res://utils/ScoreManager.gd"
 GAME="*res://utils/GameManager.gd"
+WEAPON="*res://utils/WeaponManager.gd"
 
 [display]
 

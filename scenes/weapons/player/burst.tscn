@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://bm7txdh8pkm75"]
+
+[ext_resource type="Script" uid="uid://cdvw5nw5c2e2u" path="res://source/weapons/burst_weapon.gd" id="1_s4iif"]
+[ext_resource type="PackedScene" uid="uid://k3dc4e2ha3m1" path="res://scenes/bullets/player/burst_bullet.tscn" id="2_wokbd"]
+
+[node name="Burst" type="Node2D"]
+script = ExtResource("1_s4iif")
+bulletScene = ExtResource("2_wokbd")
