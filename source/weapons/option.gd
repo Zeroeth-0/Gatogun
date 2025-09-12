@@ -56,7 +56,8 @@ func _process_option_behavior(delta: float) -> void:
 		match OptionType:
 			OptionEnum.SIDES:
 				followDelay = 15
-				if !isLinear: deviationAngle = -10 * offSign
+				if !isLinear: deviationAngle = 10 * offSign
+				else: deviationAngle = 0
 				position = position.lerp(targetPos, followDelay * delta)
 			OptionEnum.FOLLOW:
 				followDelay = 4

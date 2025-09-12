@@ -18,7 +18,7 @@ var byBomb := false
 # === FLUJO DE COMPORTAMIENTO ===
 func _ready() -> void:
 	match typeEnum:
-		EnemyType.STD: health = 150
+		EnemyType.STD: health = 15
 		EnemyType.MID: health = 50
 		EnemyType.ELITE: health = 100
 	

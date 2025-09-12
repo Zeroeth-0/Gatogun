@@ -2,7 +2,7 @@ extends Node2D
 
 # === EXPORTS GENERALES ===
 @export var bullet_scene: PackedScene
-@export var cooldownTime := 2.0  # segundos
+@export var cooldownTime := 3.0  # segundos
 @export var sprite: Sprite2D
 
 # === ESTADO INTERNO
@@ -29,4 +29,3 @@ func _spawn_bullet() -> void:
 	var bullet = bullet_scene.instantiate()
 	bullet.global_position = global_position - Vector2(0, 100)
 	get_tree().current_scene.add_child(bullet)
-	print("Bala instanciada")

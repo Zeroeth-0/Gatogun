@@ -1,0 +1,37 @@
+[gd_scene load_steps=7 format=3 uid="uid://cjhkionj3a6h3"]
+
+[ext_resource type="Script" uid="uid://cwqfgmqokmuta" path="res://source/weapons/option_manager.gd" id="1_3ropm"]
+[ext_resource type="PackedScene" uid="uid://dhpo7sa5v3t30" path="res://scenes/weapons/player/laser.tscn" id="2_7ca01"]
+[ext_resource type="PackedScene" uid="uid://bm7txdh8pkm75" path="res://scenes/weapons/player/burst.tscn" id="3_ae5gp"]
+[ext_resource type="PackedScene" uid="uid://d1f0btwlnwl27" path="res://scenes/weapons/player/option.tscn" id="4_etdfv"]
+[ext_resource type="PackedScene" uid="uid://1p0g651xshsv" path="res://scenes/weapons/player/charge.tscn" id="5_yrtdw"]
+[ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="6_yip46"]
+
+[node name="Weapon" type="Node2D"]
+script = ExtResource("1_3ropm")
+stdTargetPos = Vector2(70, 40)
+dpsTargetPos = Vector2(40, 40)
+
+[node name="Laser" parent="." instance=ExtResource("2_7ca01")]
+
+[node name="Burst" parent="." instance=ExtResource("3_ae5gp")]
+
+[node name="OptionL" parent="." node_paths=PackedStringArray("targetNode") instance=ExtResource("4_etdfv")]
+targetPos = Vector2(-70, 40)
+targetNode = NodePath("../OptionR")
+offSign = 1
+deviationAngle = -10.0
+
+[node name="OptionR" parent="." node_paths=PackedStringArray("targetNode") instance=ExtResource("4_etdfv")]
+targetPos = Vector2(70, 40)
+targetNode = NodePath("..")
+offSign = -1
+deviationAngle = 10.0
+
+[node name="Charge" parent="." node_paths=PackedStringArray("sprite") instance=ExtResource("5_yrtdw")]
+sprite = NodePath("../Icon")
+
+[node name="Icon" type="Sprite2D" parent="."]
+position = Vector2(0, -50)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("6_yip46")
