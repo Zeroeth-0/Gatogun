@@ -45,7 +45,7 @@ func _process_option_behavior(delta: float) -> void:
 		# === Posición visual desplazada lateralmente
 		var targetPosition = parent.global_position + dir * distance
 		var offsetDir := dir.orthogonal().normalized()
-		targetPosition += offsetDir * offSign * sideOffset
+		targetPosition += offsetDir * -offSign * sideOffset
 		
 		global_position = global_position.lerp(targetPosition, followDelay * delta)
 		followDelay = 15
@@ -60,7 +60,7 @@ func _process_option_behavior(delta: float) -> void:
 				else: deviationAngle = 0
 				position = position.lerp(targetPos, followDelay * delta)
 			OptionEnum.FOLLOW:
-				followDelay = 4
+				followDelay = 5
 				deviationAngle = 0
 				if targetNode and is_instance_valid(targetNode):
 					global_position = global_position.lerp(targetNode.global_position, followDelay * delta)

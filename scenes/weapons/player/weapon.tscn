@@ -19,13 +19,13 @@ dpsTargetPos = Vector2(40, 40)
 [node name="OptionL" parent="." node_paths=PackedStringArray("targetNode") instance=ExtResource("4_etdfv")]
 targetPos = Vector2(-70, 40)
 targetNode = NodePath("../OptionR")
-offSign = 1
+offSign = -1
 deviationAngle = -10.0
 
 [node name="OptionR" parent="." node_paths=PackedStringArray("targetNode") instance=ExtResource("4_etdfv")]
 targetPos = Vector2(70, 40)
 targetNode = NodePath("..")
-offSign = -1
+offSign = 1
 deviationAngle = 10.0
 
 [node name="Charge" parent="." node_paths=PackedStringArray("sprite") instance=ExtResource("5_yrtdw")]

@@ -7,7 +7,7 @@ enum BulletEnum { BOMB, LASER, FOLLOW, BURST, CHARGE }
 @export var BulletType: BulletEnum = BulletEnum.BURST
 @export var speed: float = 1000.0
 @export var damage: int = 1
-@export var lifeTime: float = 3.0
+@export var lifeTime: float = 1.0
 
 # === ESTADO INTERNO ===
 var direction: Vector2 = Vector2.UP

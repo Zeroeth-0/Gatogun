@@ -2,7 +2,7 @@ extends Node2D
 
 # === EXPORTS GENERALES ===
 @export var bullet_scene: PackedScene
-@export var cooldownTime := 3.0  # segundos
+@export var cooldownTime := 1.5  # segundos
 @export var sprite: Sprite2D
 
 # === ESTADO INTERNO

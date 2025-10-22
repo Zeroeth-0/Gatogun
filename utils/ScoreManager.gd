@@ -11,7 +11,7 @@ var mult: int = 1
 var comboTimer: float = 0.1
 var comboDrainTime: float = 0.0
 var multDrainTime: float = 0.0
-var feverTimer: float = 0.0
+var feverTimer: float = 1.0
 
 # === CONFIGURACIÓN DE SISTEMA ===
 var feverDrainRate: float = 50.0
@@ -98,7 +98,7 @@ func increase_combo(value: int) -> void:
 
 func increase_fever(value: int) -> void:
 	fever = min(fever + value, feverSize)
-	feverTimer = 0.1  # Delay antes de que empiece a bajar
+	feverTimer = 1.0  # Delay antes de que empiece a bajar
 
 func keep_fever() -> void:
 	feverTimer = 0.1
