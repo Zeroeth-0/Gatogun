@@ -10,6 +10,7 @@
 [node name="CatPlayer" type="CharacterBody2D" node_paths=PackedStringArray("sprite", "hitbox") groups=["Player"]]
 z_index = 4
 script = ExtResource("1_7pfs0")
+DollStyle = 2
 sprite = NodePath("Icon")
 bomb = ExtResource("2_ufgkt")
 hitbox = NodePath("Denialzone")
@@ -44,8 +45,7 @@ scale = Vector2(4, 4)
 shape = SubResource("RectangleShape2D_klkvo")
 debug_color = Color(0, 1, 0, 0.419608)
 
-[node name="Weapon" parent="." node_paths=PackedStringArray("sprite") instance=ExtResource("4_g6re5")]
-sprite = NodePath("../Icon")
+[node name="Weapon" parent="." instance=ExtResource("4_g6re5")]
 
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
 [connection signal="area_exited" from="Hurtbox" to="." method="_on_hurtbox_area_exited"]

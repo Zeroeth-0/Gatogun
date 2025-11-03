@@ -15,7 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://c7eeyaje6ghkn" path="res://scenes/UI/h_box_container.tscn" id="13_e6078"]
 [ext_resource type="PackedScene" uid="uid://dog0k55xaa2s" path="res://scenes/items/max_power_up.tscn" id="14_8c33x"]
 
-[node name="World" type="Node2D"]
+[node name="World" type="Node2D" groups=["Level"]]
 script = ExtResource("1_btnht")
 waveFile = "res://source/levels/test.txt"
 enemyScenes = Array[PackedScene]([ExtResource("12_de0io"), ExtResource("3_xidr1")])

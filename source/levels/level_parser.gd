@@ -2,6 +2,8 @@ extends Node2D
 
 @export_file var waveFile: String
 @export var enemyScenes: Array[PackedScene] = []
+var lives = 3
+var playing = true
 
 const LANE_GAP: int = 87
 
@@ -22,7 +24,6 @@ var pattern_definitions := {
 func _ready() -> void:
 	_load_markers()
 	await _load_wave_data(waveFile)
-	GAME.lives = 2
 	GAME.spawn()
 
 func _load_markers() -> void:

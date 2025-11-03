@@ -1,22 +1,24 @@
 extends Node2D
 
 # === ESTILOS ===
-enum StyleEnum { MAIN, STRONG, NEWBIE, CLASSIC, DAMAGE }
+enum StyleEnum { RANGE, DAMAGE, CLASSIC }
 
 # === EXPORTS GENERALES ===
-@export var PlayStyle: StyleEnum = StyleEnum.MAIN
+@export var GatoStyle: StyleEnum = StyleEnum.RANGE
 @export var stdTargetPos: Vector2 = Vector2.ZERO
 @export var dpsTargetPos: Vector2 = Vector2.ZERO
 
 # === FLUJO DE COMPORTAMIENTO ===
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	option_waker()
+
+func _ready():
 	formation_handler()
 	shot_type()
 
 # === AUXILIAR ===
 func formation_handler():
-	match PlayStyle:
+	match GatoStyle:
 		StyleEnum.CLASSIC:
 			$OptionR.OptionType = $OptionR.OptionEnum.FOLLOW
 			$OptionL.OptionType = $OptionL.OptionEnum.FOLLOW
@@ -25,7 +27,7 @@ func formation_handler():
 			$OptionL.OptionType = $OptionL.OptionEnum.SIDES
 
 func shot_type():
-	match PlayStyle:
+	match GatoStyle:
 		StyleEnum.DAMAGE:
 			$OptionR.isLinear = true
 			$OptionL.isLinear = true

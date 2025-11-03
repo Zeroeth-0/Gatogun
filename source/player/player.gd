@@ -1,13 +1,17 @@
 extends CharacterBody2D
 
+# === ESTILOS ===
+enum StyleEnum { SPEED, STRONG, NEWBIE }
+
 # === EXPORTS GENERALES ===
+@export var DollStyle: StyleEnum = StyleEnum.SPEED
 @export var sprite: Sprite2D                                                    # Aspecto del jugador
 @export var bomb: PackedScene                                                   # Bomba
 @export var hitbox: Node2D                                                      # Colisión
 
 # === MOVIMIENTO ===
 @export_category("MOVEMENT")
-@export_range(150, 350, 50) var speed: int                                      # Velocidad de movimiento
+@export_range(150, 400, 50) var speed: int                                      # Velocidad de movimiento
 @export var screenMargin: int                                                   # Bordes de la pantalla
 var direction := Vector2.UP                                                     # Dirección de movimiento
 
@@ -21,6 +25,8 @@ var shielded = false
 func _ready() -> void:
 	playable = false
 	goPoint = GAME.goPoint
+	
+	if DollStyle == StyleEnum.STRONG: WEAPON.lvl_up("MAX")
 
 # === LOOP PRINCIPAL ===
 func _process(_delta: float) -> void:
@@ -28,7 +34,8 @@ func _process(_delta: float) -> void:
 		_handle_movement()
 		_clamp_to_screen(get_viewport().get_visible_rect().size)
 		if Input.is_action_just_pressed("B") and GAME.bombCount > 0 and canDie: _handle_bombing()
-		speed = 150 if INPUT.fireHold else 350
+		if DollStyle == StyleEnum.SPEED: speed = 200 if INPUT.fireHold else 400
+		else: speed = 150 if INPUT.fireHold else 350
 	else:
 		# Movimiento automático antes de habilitar control
 		if not shielded:
@@ -74,11 +81,12 @@ func _clamp_to_screen(screenSize: Vector2) -> void:
 
 # === COLISIONES ===
 func _on_hurtbox_area_entered(area: Node) -> void:
-	if canDie and area.is_in_group("Damage") and GAME.bombCount == 0:
-		GAME.lives -= 1
-		GAME.store(global_position, false)
-		queue_free()
-	elif canDie and area.is_in_group("Damage"): _handle_bombing()
-
-func _on_hurtbox_area_exited(area: Node) -> void:
+	if canDie and area.is_in_group("Damage"):
+		if DollStyle == StyleEnum.NEWBIE and GAME.bombCount > 0: _handle_bombing()
+		else:
+			GAME.lives -= 1
+			GAME.store(global_position, false)
+			queue_free()
+	
+func _on_hurtbox_area_exited(area: Node) -> void: # Enemy cutoff
 	if area.is_in_group("Ground"): area.get_parent().canShoot = true

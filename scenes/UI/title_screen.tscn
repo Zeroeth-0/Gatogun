@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dra7yqg0s7urp"]
 
 [ext_resource type="Script" uid="uid://ce6rccpqgcq1s" path="res://source/UI/title_gameover.gd" id="1_tg2ys"]
-[ext_resource type="PackedScene" uid="uid://2ljl16vuntk2" path="res://scenes/UI/character_select.tscn" id="2_iedop"]
+[ext_resource type="PackedScene" uid="uid://bi7uyv2plo07x" path="res://scenes/levels/world.tscn" id="2_u5veq"]
 
 [node name="Title Screen" type="Control"]
 layout_mode = 3
@@ -11,7 +11,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_tg2ys")
-nextScene = ExtResource("2_iedop")
+nextScene = ExtResource("2_u5veq")
 
 [node name="Title" type="Label" parent="."]
 layout_mode = 0
