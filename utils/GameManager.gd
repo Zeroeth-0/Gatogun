@@ -48,10 +48,7 @@ func spawn() -> void:
 		
 		# Resetear estado (armas + cadenas/combos)
 		SCORE.reset()
-		WEAPON.burstLvl = 1.0
-		WEAPON.rOptActive = false
-		WEAPON.lOptActive = false
-		WEAPON.optionCounter = 0
+		WEAPON.reset_lvl()
 		
 		# Instanciar jugador
 		var instance = cat.instantiate()

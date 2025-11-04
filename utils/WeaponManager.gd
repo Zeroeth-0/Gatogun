@@ -21,7 +21,7 @@ var optionCounter: float = 0.0
 func lvl_up(weapon: String):
 	match weapon:
 		"ALL":
-			for key in weapons: weapons[key] = min(weapons[key] + 1.0, maxLvl)
+			for key in weapons:weapons[key] = min(weapons[key] + 1.0, maxLvl)
 		"MAX":
 			for key in weapons: weapons[key] = maxLvl
 			optionCounter = 2
@@ -29,6 +29,13 @@ func lvl_up(weapon: String):
 			if optionCounter < 2: optionCounter += 1.0
 		_:
 			if weapons.has(weapon): weapons[weapon] = min(weapons[weapon] + 1.0, maxLvl)
+	remap_lvl()
+
+func reset_lvl():
+	for key in weapons: weapons[key] = 1.0
+	rOptActive = false
+	lOptActive = false
+	optionCounter = 0
 	remap_lvl()
 
 func remap_lvl():

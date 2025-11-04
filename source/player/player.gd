@@ -34,8 +34,8 @@ func _process(_delta: float) -> void:
 		_handle_movement()
 		_clamp_to_screen(get_viewport().get_visible_rect().size)
 		if Input.is_action_just_pressed("B") and GAME.bombCount > 0 and canDie: _handle_bombing()
-		if DollStyle == StyleEnum.SPEED: speed = 200 if INPUT.fireHold else 400
-		else: speed = 150 if INPUT.fireHold else 350
+		if DollStyle == StyleEnum.SPEED: speed = 150 if INPUT.fireHold else 350
+		else: speed = 150 if INPUT.fireHold else 300
 	else:
 		# Movimiento automático antes de habilitar control
 		if not shielded:

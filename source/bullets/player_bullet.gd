@@ -5,7 +5,7 @@ enum BulletEnum { BOMB, LASER, FOLLOW, BURST, CHARGE }
 
 # === CONFIGURACIÓN EXPORTADA ===
 @export var BulletType: BulletEnum = BulletEnum.BURST
-@export var speed: float = 1000.0
+@export var speed: float = 2500.0
 @export var damage: int = 1
 @export var lifeTime: float = 1.0
 
