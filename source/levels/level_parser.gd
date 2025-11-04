@@ -2,7 +2,7 @@ extends Node2D
 
 @export_file var waveFile: String
 @export var enemyScenes: Array[PackedScene] = []
-var lives = 3
+var lives = 2
 var playing = true
 
 const LANE_GAP: int = 87

@@ -20,13 +20,25 @@ var playable := false
 var goPoint: Vector2
 var canDie := true
 var shielded = false
+var maxBombs = 4
+var bombCount = 2
 
 # === INICIO ===
 func _ready() -> void:
 	playable = false
 	goPoint = GAME.goPoint
 	
-	if DollStyle == StyleEnum.STRONG: WEAPON.lvl_up("MAX")
+	match DollStyle:
+		StyleEnum.SPEED:
+			maxBombs = 4
+			bombCount = 2
+		StyleEnum.STRONG:
+			WEAPON.lvl_up("MAX")
+			maxBombs = 2
+			bombCount = 1
+		StyleEnum.NEWBIE:
+			maxBombs = 6
+			bombCount = 3
 
 # === LOOP PRINCIPAL ===
 func _process(_delta: float) -> void:
@@ -62,7 +74,7 @@ func _handle_bombing() -> void:
 	var bombInstance = bomb.instantiate()
 	bombInstance.position = Vector2(340, 1000)
 	get_tree().current_scene.add_child.call_deferred(bombInstance)
-	GAME.bombCount -= 1
+	bombCount -= 1
 	for bullet in get_tree().get_nodes_in_group("Fire"): bullet.queue_free()
 	activate_shield(3)
 

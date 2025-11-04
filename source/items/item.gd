@@ -79,6 +79,8 @@ func _on_area_entered(area: Node) -> void:
 				SCORE.increase_mult()
 			ItemType.POWERUP: WEAPON.lvl_up("ALL")
 			ItemType.MAXPOWERUP: WEAPON.lvl_up("MAX")
-			ItemType.BOMB: if GAME.bombCount < 6: GAME.bombCount += 1
+			ItemType.BOMB:
+				var player = get_tree().get_first_node_in_group("Player")
+				if player.bombCount < player.maxBombs: player.bombCount += 1
 			ItemType.ONEUP: if GAME.lives < 6: GAME.lives += 1
 		queue_free()

@@ -10,6 +10,7 @@
 [node name="CatPlayer" type="CharacterBody2D" node_paths=PackedStringArray("sprite", "hitbox") groups=["Player"]]
 z_index = 4
 script = ExtResource("1_7pfs0")
+DollStyle = 2
 sprite = NodePath("Icon")
 bomb = ExtResource("2_ufgkt")
 hitbox = NodePath("Denialzone")

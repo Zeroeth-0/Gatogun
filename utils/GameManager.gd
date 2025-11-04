@@ -17,7 +17,8 @@ var goPoint: Vector2 = Vector2(150, 600)
 var lives: float = 2
 var innerMedalChain: int = 0
 var medalLevel: int = 0
-var bombCount: int = 3
+var maxBombs: int = 4
+var bombCount: int = 2
 
 var player: Node2D = null
 
@@ -27,10 +28,14 @@ var playing: bool = false
 
 func _process(_delta):
 	if get_tree().get_nodes_in_group("Level").size() >= 1:
-		var world = get_tree().get_first_node_in_group("Level");
+		var world = get_tree().get_first_node_in_group("Level")
 		lives = world.lives
 		playing = world.playing
 	if get_tree().get_nodes_in_group("Player").size() <= 0 and playing: spawn()
+	if get_tree().get_nodes_in_group("Player").size() > 0:
+		var player = get_tree().get_first_node_in_group("Player")
+		maxBombs = player.maxBombs
+		bombCount = player.bombCount
 
 func spawn() -> void:
 	# Si ya hay un jugador en escena, no hacer nada
