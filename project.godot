@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Gatogun"
 run/main_scene="res://scenes/UI/title_screen.tscn"
-config/features=PackedStringArray("4.4", "GL Compatibility")
+config/features=PackedStringArray("4.5", "GL Compatibility")
 run/max_fps=240
 config/icon="res://icon.svg"
 

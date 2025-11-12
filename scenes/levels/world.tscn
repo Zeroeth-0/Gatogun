@@ -1,18 +1,12 @@
-[gd_scene load_steps=15 format=3 uid="uid://bi7uyv2plo07x"]
+[gd_scene load_steps=9 format=3 uid="uid://bi7uyv2plo07x"]
 
 [ext_resource type="Script" uid="uid://hrxsyfgjv1kg" path="res://source/levels/level_parser.gd" id="1_btnht"]
 [ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="3_0hlg8"]
 [ext_resource type="PackedScene" uid="uid://sc2mi3jdynyo" path="res://scenes/enemies/mid/midGoStopGo.tscn" id="3_xidr1"]
 [ext_resource type="PackedScene" uid="uid://cgts6rg8xrau" path="res://scenes/levels/playzone.tscn" id="4_hkylk"]
 [ext_resource type="PackedScene" uid="uid://4y26tmtqbxdx" path="res://scenes/levels/ground.tscn" id="5_sf1u2"]
-[ext_resource type="PackedScene" uid="uid://gyhjwciacmac" path="res://scenes/UI/mult_label.tscn" id="6_mmplq"]
-[ext_resource type="PackedScene" uid="uid://dg3240gsrod7n" path="res://scenes/UI/medal_countdown.tscn" id="8_mmplq"]
-[ext_resource type="PackedScene" uid="uid://chegi2am56x1" path="res://scenes/UI/combo_label.tscn" id="9_ckr2p"]
-[ext_resource type="PackedScene" uid="uid://jkopai8ptvrm" path="res://scenes/UI/score_label.tscn" id="10_s7d0j"]
-[ext_resource type="PackedScene" uid="uid://dyjlf0d78pbvd" path="res://scenes/UI/b_box_container.tscn" id="11_de0io"]
-[ext_resource type="PackedScene" uid="uid://ber78ar7g5504" path="res://scenes/UI/fever_bar.tscn" id="11_yb1ae"]
+[ext_resource type="PackedScene" uid="uid://duam5mtyrxv5l" path="res://scenes/UI/hud.tscn" id="7_dp8al"]
 [ext_resource type="PackedScene" uid="uid://bbrlpm3jwipc3" path="res://scenes/enemies/popcorn/popcornComeLeave.tscn" id="12_de0io"]
-[ext_resource type="PackedScene" uid="uid://c7eeyaje6ghkn" path="res://scenes/UI/h_box_container.tscn" id="13_e6078"]
 [ext_resource type="PackedScene" uid="uid://dog0k55xaa2s" path="res://scenes/items/max_power_up.tscn" id="14_8c33x"]
 
 [node name="World" type="Node2D" groups=["Level"]]
@@ -121,45 +115,7 @@ script = null
 
 [node name="Playzone" parent="." instance=ExtResource("4_hkylk")]
 
-[node name="ComboLabel" parent="." instance=ExtResource("9_ckr2p")]
-offset_left = -165.0
-offset_top = 180.0
-offset_right = 8.0
-offset_bottom = 252.0
-text = "+9999"
-
-[node name="MultLabel" parent="." instance=ExtResource("6_mmplq")]
-offset_left = 560.0
-offset_top = 35.0
-offset_right = 733.0
-offset_bottom = 107.0
-text = "x999"
-
-[node name="ScoreLabel" parent="." instance=ExtResource("10_s7d0j")]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -86.5
-offset_top = 10.0
-offset_right = 86.5
-offset_bottom = 82.0
-grow_horizontal = 2
-scale = Vector2(1.1, 1.1)
-text = "Score: 999999999999"
-
-[node name="FeverBar" parent="." instance=ExtResource("11_yb1ae")]
-
-[node name="MedalCountdown" parent="." instance=ExtResource("8_mmplq")]
-offset_left = 130.0
-offset_top = 100.0
-offset_right = 258.0
-offset_bottom = 228.0
-max_value = 5.0
-step = 0.01
-
-[node name="HBoxContainer" parent="." instance=ExtResource("13_e6078")]
-
-[node name="BBoxContainer" parent="." instance=ExtResource("11_de0io")]
+[node name="HUD" parent="." instance=ExtResource("7_dp8al")]
 
 [node name="Item" parent="." instance=ExtResource("14_8c33x")]
 position = Vector2(363, 162)

@@ -96,7 +96,7 @@ func _on_hurtbox_area_entered(area: Node) -> void:
 	if canDie and area.is_in_group("Damage"):
 		if DollStyle == StyleEnum.NEWBIE and GAME.bombCount > 0: _handle_bombing()
 		else:
-			GAME.lives -= 1
+			get_parent().lives -= 1
 			GAME.store(global_position, false)
 			queue_free()
 	

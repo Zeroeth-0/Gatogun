@@ -21,7 +21,7 @@ var multDrainLimit: float = 0.03
 var rank = 1
 
 # === REFERENCIAS UI ===
-var comboLabel: RichTextLabel = null
+var HUD: Control = null
 var comboAvailable: bool = true
 
 # === LOOP PRINCIPAL ===
@@ -39,7 +39,7 @@ func _process(delta: float) -> void:
 
 # === ACTUALIZACIÓN DE LABELS ===
 func _update_labels() -> void:
-	comboLabel = get_tree().get_first_node_in_group("Combo")
+	HUD = get_tree().get_first_node_in_group("HUD")
 
 # === SISTEMA DE FIEBRE ===
 func _update_fever(delta: float) -> void:
@@ -70,7 +70,7 @@ func _update_combo(delta: float) -> void:
 		return
 	
 	if comboTimer <= 0:
-		if comboLabel: comboLabel.label_out()
+		if HUD: HUD.label_out()
 		comboAvailable = true
 		comboDrainTime += delta
 		
@@ -90,7 +90,7 @@ func _check_caps() -> void:
 
 func increase_combo(value: int) -> void:
 	if comboAvailable:
-		if comboLabel: comboLabel.label_in()
+		if HUD: HUD.label_in()
 		comboAvailable = false
 	combo += value
 	comboTimer = 0.1
@@ -112,7 +112,7 @@ func reset() -> void:
 	combo = 0
 	mult = 1
 	multDrainTime = 0.0
-	if comboLabel: comboLabel.label_out()
+	if HUD: HUD.label_out()
 
 func add_score(score: int) -> void:
 	GeneralGameScore += score * mult

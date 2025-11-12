@@ -9,7 +9,6 @@ enum ItemType { MEDAL, POWERUP, MAXPOWERUP, BOMB, ONEUP }
 @export var grav: float = 800.0                                                 # Gravedad
 @export var launchForce: float = 200.0                                          # Fuerza de lanzamiento inicial
 @export var delayBeforeFollow: float = 0.7                                      # Tiempo hasta ir a jugador
-@export var medal_label: PackedScene = preload("res://scenes/UI/medal_val_label.tscn")              # Etiqueta de pts
 @export var isMaxPowerUp: bool = false
 
 # === ESTADO INTERNO ===
@@ -57,12 +56,6 @@ func _move_powerup(delta):
 	if powerUpFollowPlayer:
 		speed = 400
 		_move_towards_player(delta)
-
-func _show_label(scoreVal):
-		var label = medal_label.instantiate()
-		get_tree().current_scene.add_child(label)
-		label.set_val(scoreVal)
-		label.global_position = global_position
 
 func _move_towards_player(delta: float) -> void:
 	var playerPos = GAME.get_player()
