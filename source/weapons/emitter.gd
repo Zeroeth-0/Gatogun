@@ -143,7 +143,7 @@ func _handle_rotation_bounds() -> void:
 		elif rotation_degrees <= rotationAngle and rotationAngle < 360: rotationDirection = 0
 
 func shoot() -> void:
-	await get_tree().create_timer(delay).timeout
+	await get_tree().create_timer(delay, false).timeout
 	var timeSinceLastBurst := 0.0
 	
 	while true:
@@ -158,7 +158,7 @@ func shoot() -> void:
 		for i in burstCount:
 			if speedVar == SpeedVar.BULLET: currentSpeed *= speedVariation
 			if canShoot: fire(currentSpeed)
-			await get_tree().create_timer(bulletInterval).timeout
+			await get_tree().create_timer(bulletInterval, false).timeout
 		
 		# Resetea cantidad de brazos
 		usableArms = arms
@@ -169,7 +169,7 @@ func shoot() -> void:
 		timeSinceLastBurst = (Time.get_ticks_msec() / 1000.0) - burstStartTime
 		
 		# Si sobró tiempo antes del siguiente warmUp, esperamos lo que falta
-		if timeSinceLastBurst < warmUp: await get_tree().create_timer(warmUp - timeSinceLastBurst).timeout
+		if timeSinceLastBurst < warmUp: await get_tree().create_timer(warmUp - timeSinceLastBurst, false).timeout
 
 func fire(currentSpeed: float) -> void:
 	var spreadStep

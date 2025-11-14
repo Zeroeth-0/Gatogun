@@ -24,10 +24,10 @@ func _process(delta: float) -> void:
 func _fire_burst(direction: Vector2, scene: PackedScene) -> void:
 	canFire = false
 	for i in MAX_BULLETS:
-		await get_tree().create_timer(0.05).timeout
+		await get_tree().create_timer(0.05, false).timeout
 		_fire_bullet(direction, scene)
 
-	await get_tree().create_timer(fireRate if direction == INPUT.fireDir else 0.0).timeout
+	await get_tree().create_timer(fireRate if direction == INPUT.fireDir else 0.0, false).timeout
 	canFire = true
 
 func _fire_bullet(direction: Vector2, scene: PackedScene) -> void:

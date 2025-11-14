@@ -7,7 +7,7 @@ extends Control
 @export var multLabel: RichTextLabel
 
 # === BARRAS ===
-@export var intensityBar: TextureProgressBar
+@export var hotBar: TextureProgressBar
 @export var medalCountdown: TextureProgressBar
 
 # === CONTENEDORES ===
@@ -17,7 +17,7 @@ extends Control
 @export var resource_texture: Texture2D                                         # Textura contenedor
 
 # === VALORES INTERNOS ===
-var maxIntensity: float = SCORE.feverSize
+var maxHot: float = SCORE.hotSize
 var maxMedalCountdown: float = 5.0
 var currentLives
 var currentBombs
@@ -28,7 +28,7 @@ var currMaxBombs
 var tween: Tween
 
 func _ready():
-	set_bar_vals(intensityBar, maxIntensity)
+	set_bar_vals(hotBar, maxHot)
 	set_bar_vals(medalCountdown, maxMedalCountdown)
 
 func _process(_delta):
@@ -43,7 +43,7 @@ func _process(_delta):
 	_update_label_scale(multLabel, SCORE.mult, 0.05)
 	
 	# Barras
-	intensityBar.value = SCORE.fever
+	hotBar.value = SCORE.hot
 	medalCountdown.value = SCORE.medalCountdown
 	
 	# Contenedores

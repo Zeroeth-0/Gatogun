@@ -20,7 +20,7 @@ func _ready():
 
 	timerLabel.text = str(countdown)
 
-func _process(delta):
+func _process(_delta):
 	if Input.is_action_just_pressed("A") or \
 	   Input.is_action_just_pressed("B") or \
 	   Input.is_action_just_pressed("C"):  # A, B, C por defecto
@@ -32,6 +32,7 @@ func _process(delta):
 		GAME.lives = 2
 		SCORE.reset_game_score()
 		GAME.store(GAME.CENTER, true)
+		GAME.spawn()
 		queue_free()
 
 func _on_timer_timeout():
@@ -41,5 +42,4 @@ func _on_timer_timeout():
 		# Aquí puedes decidir si terminar el juego o ir al menú principal
 		get_tree().paused = false
 		GAME.game_over()
-		GAME.selectedCharacter = null
 		queue_free()

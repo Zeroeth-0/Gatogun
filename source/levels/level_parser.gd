@@ -44,7 +44,7 @@ func _load_wave_data(path: String) -> void:
 		for l in expanded_lines:
 			var data = _parse_wave_line(l)
 			if data.is_empty(): continue
-			await get_tree().create_timer(data.delay).timeout
+			await get_tree().create_timer(data.delay, false).timeout
 			_spawn_enemy(data)
 
 	file.close()

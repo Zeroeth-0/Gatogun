@@ -82,7 +82,7 @@ func _handle_bombing() -> void:
 func activate_shield(duration: float) -> void:
 	canDie = false
 	sprite.modulate = Color.RED
-	await get_tree().create_timer(duration).timeout
+	await get_tree().create_timer(duration, false).timeout
 	canDie = true
 	sprite.modulate = Color.GREEN
 

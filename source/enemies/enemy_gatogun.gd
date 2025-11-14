@@ -74,7 +74,7 @@ func _check_death() -> void:
 			if bullet.has_method("cancel"): bullet.cancel()
 	
 	if pulseMarked:
-		SCORE.increase_fever(5)
+		SCORE.increase_hot(5)
 		SCORE.increase_combo(100)
 	
 	queue_free()

@@ -25,6 +25,7 @@ var player: Node2D = null
 var spawnPos: Vector2 = Vector2(0, 0)
 var spawnContinued: bool = false
 var playing: bool = false
+var dead: bool = false
 
 func _process(_delta):
 	if get_tree().get_nodes_in_group("Level").size() >= 1:
@@ -38,37 +39,60 @@ func _process(_delta):
 		bombCount = player.bombCount
 
 func spawn() -> void:
-	# Si ya hay un jugador en escena, no hacer nada
 	if get_tree().get_nodes_in_group("Player").size() > 0: return
 	
-	# Solo se hace respawn si hay personaje seleccionado y vidas disponibles
-	if cat and lives >= 0:
-		# Instanciar potenciadores
-		var totalItems = (WEAPON.burstLvl - 1) + WEAPON.optionCounter if !spawnContinued else 0
-		for i in totalItems - get_tree().get_nodes_in_group("PowerUp").size():
-			var item = powerUp.instantiate()
-			item.position = spawnPos
-			item.powerupDir = directions[i]
-			get_tree().current_scene.call_deferred("add_child", item)
-		
-		# Resetear estado (armas + cadenas/combos)
-		SCORE.reset()
-		WEAPON.reset_lvl()
-		
-		# Instanciar jugador
-		var instance = cat.instantiate()
-		instance.position = spawnPoint
-		if get_tree().current_scene: get_tree().current_scene.call_deferred("add_child", instance)
-	elif cat and lives < 0:
-		var uiCont = uiContinue.instantiate()
-		uiCont.position = Vector2(0, 0)
-		if get_tree().current_scene: get_tree().current_scene.call_deferred("add_child", uiCont)
+	if not cat: return
+	
+	if lives >= 0:
+		_respawn_player()
+	else:
+		_show_continue()
+
+func _respawn_player() -> void:
+	dead = false
+	
+	_spawn_missing_powerups()
+	_reset_game_state()
+	_instance_player()
 	
 	if spawnContinued:
-		var item = maxPowerUp.instantiate()
-		item.position = spawnPos
-		item.powerupDir = directions[0]
-		get_tree().current_scene.call_deferred("add_child", item)
+		_spawn_powerup(3, maxPowerUp)
+
+func _spawn_missing_powerups() -> void:
+	if spawnContinued: return
+	
+	var counter = 0
+	var totalBurst = WEAPON.burstLvl - 1
+	var totalLaser = WEAPON.laserLvl - 1
+	
+	for i in totalBurst:
+		_spawn_powerup(i, powerUp)
+		counter += 1
+	
+	for i in totalLaser: _spawn_powerup(counter + i, powerUp)
+
+func _spawn_powerup(index: int, node: PackedScene) -> void:
+	var item = node.instantiate()
+	item.position = spawnPos
+	item.powerupDir = directions[index % directions.size()]  # seguridad por índice
+	get_tree().current_scene.call_deferred("add_child", item)
+
+func _reset_game_state() -> void:
+	SCORE.reset()
+	WEAPON.reset_lvl()
+
+func _instance_player() -> void:
+	var instance = cat.instantiate()
+	instance.position = spawnPoint
+	get_tree().current_scene.call_deferred("add_child", instance)
+
+func _show_continue() -> void:
+	if dead: return
+	
+	dead = true
+	var uiCont = uiContinue.instantiate()
+	uiCont.position = Vector2(0, 0)
+	get_tree().current_scene.call_deferred("add_child", uiCont)
 
 func get_player() -> Vector2:
 	var players = get_tree().get_nodes_in_group("Player")
@@ -84,4 +108,5 @@ func store(pos = Vector2(0, 0), continued = false):
 	spawnContinued = continued
 
 func game_over():
+	_reset_game_state()
 	get_tree().change_scene_to_packed(gameOver)

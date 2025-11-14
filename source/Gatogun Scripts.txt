@@ -1,0 +1,39 @@
+Bullets:
+- bullet.gd			(okay) (base)
+- bullet_gatogun.gd		(okay)
+- player_bullet.gd		(okay)
+
+Enemies:
+- enemy.gd			(okay) (base)
+- enemy_gatogun.gd		(okay)
+
+Items:
+- item.gd			(okay) (base)
+- item_gatogun.gd		(okay)
+
+Levels:
+- level_parser.gd		(okay) (base)
+
+Player:
+- player.gd			(okay)
+
+UI:
+- continue.gd			(temp)
+- enemy_combo.gd		(okay)
+- hud				(okay)
+- title_gameover.gd		(temp)
+
+Weapons:
+- burst_weapon.gd		(okay)
+- charge_weapon.gd		(okay)
+- emitter.gd			(okay) (base)
+- laser_weapon.gd		(okay)
+- option.gd			(okay)
+- option_manager.gd		(okay)
+
+Utils:
+- GameManager.gd		(okay)
+- InputManager.gd		(okay) (base)
+- ScoreManager.gd		(okay)
+- ScrollManager.gd		(okay)
+- WeaponManager.gd		(okay)

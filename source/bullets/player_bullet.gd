@@ -6,8 +6,8 @@ enum BulletEnum { BOMB, LASER, FOLLOW, BURST, CHARGE }
 # === CONFIGURACIÓN EXPORTADA ===
 @export var BulletType: BulletEnum = BulletEnum.BURST
 @export var speed: float = 2500.0
-@export var damage: int = 1
-@export var lifeTime: float = 1.0
+@export var damage: float = 1.0
+@export var lifeTime: float = 1.5
 
 # === ESTADO INTERNO ===
 var direction: Vector2 = Vector2.UP
@@ -18,7 +18,7 @@ var deviationRadians: float = 0.0
 func _ready() -> void:
 	if BulletType == BulletEnum.LASER:
 		var full_scale := 0.5 + (WEAPON.laserLvl * 0.25)
-		damage = WEAPON.laserLvl + 1
+		damage = WEAPON.laserLvl + 1.0
 		scale = Vector2(full_scale, full_scale)
 
 func _process(delta: float) -> void:
@@ -69,9 +69,9 @@ func _on_area_entered(area: Node) -> void:
 	if area.is_in_group("Enemy") and BulletType != BulletEnum.BOMB and BulletType != BulletEnum.CHARGE:
 		SCORE.increase_combo(damage)
 		if INPUT.fireHold:
-			SCORE.keep_fever()
+			SCORE.keep_hot()
 		else:
-			SCORE.increase_fever(damage)
+			SCORE.increase_hot(damage)
 		queue_free()
 
 func _on_area_exited(area: Node) -> void:

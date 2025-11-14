@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://ccmb0til07tbv" path="res://source/UI/hud.gd" id="1_rd3kb"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_y5tme"]
 
-[node name="HUD" type="Control" node_paths=PackedStringArray("gameScore", "highScore", "comboLabel", "multLabel", "intensityBar", "medalCountdown", "heartContainer", "currBombContainer", "maxBombContainer") groups=["HUD"]]
+[node name="HUD" type="Control" node_paths=PackedStringArray("gameScore", "highScore", "comboLabel", "multLabel", "hotBar", "medalCountdown", "heartContainer", "currBombContainer", "maxBombContainer") groups=["HUD"]]
 z_index = 100
 layout_mode = 3
 anchors_preset = 15
@@ -20,7 +20,7 @@ gameScore = NodePath("ScoreContainer/GameContainer/GameScore")
 highScore = NodePath("ScoreContainer/HighContainer/HighScore")
 comboLabel = NodePath("ComboLabel")
 multLabel = NodePath("MultLabel")
-intensityBar = NodePath("IntensityBar")
+hotBar = NodePath("HotBar")
 medalCountdown = NodePath("MedalCountdown")
 heartContainer = NodePath("HeartContainer")
 currBombContainer = NodePath("BombContainer/CurrBombContainer")
@@ -47,7 +47,7 @@ offset_right = 650.0
 offset_bottom = 170.0
 text = "x999"
 
-[node name="IntensityBar" type="TextureProgressBar" parent="."]
+[node name="HotBar" type="TextureProgressBar" parent="."]
 z_index = 10
 layout_mode = 0
 offset_left = 25.0
