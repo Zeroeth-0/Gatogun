@@ -4,6 +4,7 @@ extends Node
 const CENTER: Vector2 = Vector2(340, 365)
 @onready var gameOver: PackedScene = preload("res://scenes/UI/game_over.tscn")  # Próxima escena
 var directions = [Vector2(1, 1), Vector2(-1, 1), Vector2(1, -1), Vector2(-1, -1)]
+var liveCount: int = 2
 
 # === ESCENAS DISPONIBLES ===
 @onready var cat: PackedScene = preload("res://scenes/player/player.tscn")                          # Jugador
@@ -56,6 +57,8 @@ func _respawn_player() -> void:
 	_instance_player()
 	
 	if spawnContinued:
+		var world = get_tree().get_first_node_in_group("Level")
+		world.lives = liveCount
 		_spawn_powerup(3, maxPowerUp)
 
 func _spawn_missing_powerups() -> void:
