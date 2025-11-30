@@ -12,15 +12,18 @@ var followingPlayer: bool = false
 var isCollected := false
 var powerupDir := Vector2(1, 1).normalized()
 var powerUpFollowPlayer: bool = false
+var randSign: int = 1
 
 # === CONSTANTES ===
-const POWERUP_MOVE_SPEED: float = 150
+const POWERUP_MOVE_SPEED: float = 250
 const POWERUP_FOLLOW_SPEED: float = 400
 const ITEM_HALF_SIZE: float = 16
 
 func _ready() -> void:
 	# Lanzamiento inicial con fuerza aleatoria hacia arriba
 	velocity = Vector2(0, randf_range(-launchForce * 0.5, -launchForce * 2))
+	
+	randSign = -1 if randf() > 0.5 else 1
 	
 	# Esperar antes de activar seguimiento
 	await get_tree().create_timer(delayBeforeFollow, false).timeout
@@ -33,14 +36,14 @@ func _move_medal(delta):
 		position += velocity * delta
 
 func _move_powerup(delta):
-	var moveSpeed := POWERUP_MOVE_SPEED
-	if !powerUpFollowPlayer:
-		position += powerupDir * moveSpeed * delta
-		_bounce_off_walls()
-	
 	if powerUpFollowPlayer:
 		speed = POWERUP_FOLLOW_SPEED
 		_move_towards_player(delta)
+	else:
+		if velocity.y < POWERUP_MOVE_SPEED:
+			velocity.y += grav * delta
+		else: position.x += sin((Time.get_ticks_msec() / 1000.0) * TAU * 1) * 0.5 * randSign
+		position += velocity * delta
 
 func _bounce_off_walls():
 	var screenSize := get_viewport_rect().size

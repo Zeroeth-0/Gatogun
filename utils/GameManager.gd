@@ -59,26 +59,23 @@ func _respawn_player() -> void:
 	if spawnContinued:
 		var world = get_tree().get_first_node_in_group("Level")
 		world.lives = liveCount
-		_spawn_powerup(3, maxPowerUp)
+		_spawn_powerup(maxPowerUp)
 
 func _spawn_missing_powerups() -> void:
 	if spawnContinued: return
 	
-	var counter = 0
 	var totalBurst = WEAPON.burstLvl - 1
 	var totalLaser = WEAPON.laserLvl - 1
 	
-	for i in totalBurst:
-		_spawn_powerup(i, powerUp)
-		counter += 1
+	for i in totalBurst: _spawn_powerup(powerUp)
 	
-	for i in totalLaser: _spawn_powerup(counter + i, powerUp)
+	for i in totalLaser: _spawn_powerup(powerUp)
 
-func _spawn_powerup(index: int, node: PackedScene) -> void:
+func _spawn_powerup(node: PackedScene) -> void:
 	var item = node.instantiate()
-	item.position = spawnPos
-	item.powerupDir = directions[index % directions.size()]  # seguridad por índice
 	get_tree().current_scene.call_deferred("add_child", item)
+	var spawnOffset = Vector2(randf_range(-128, 128), 0)
+	item.position = spawnPos + spawnOffset
 
 func _reset_game_state() -> void:
 	SCORE.reset()

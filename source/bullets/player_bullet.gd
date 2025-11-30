@@ -68,10 +68,6 @@ func _get_closest_enemy() -> Node2D:
 func _on_area_entered(area: Node) -> void:
 	if area.is_in_group("Enemy") and BulletType != BulletEnum.BOMB and BulletType != BulletEnum.CHARGE:
 		SCORE.increase_combo(damage)
-		if INPUT.fireHold:
-			SCORE.keep_hot()
-		else:
-			SCORE.increase_hot(damage)
 		queue_free()
 
 func _on_area_exited(area: Node) -> void:

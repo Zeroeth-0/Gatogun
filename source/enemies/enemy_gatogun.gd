@@ -73,9 +73,7 @@ func _check_death() -> void:
 		for bullet in get_tree().get_nodes_in_group("Enemy Bullet"):
 			if bullet.has_method("cancel"): bullet.cancel()
 	
-	if pulseMarked:
-		SCORE.increase_hot(5)
-		SCORE.increase_combo(100)
+	if pulseMarked: SCORE.increase_combo(100)
 	
 	queue_free()
 
