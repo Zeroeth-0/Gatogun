@@ -8,6 +8,7 @@ enum ItemType { MEDAL, POWERUP, MAXPOWERUP, BOMB, ONEUP }
 
 # === CONSTANTES ===
 const COLLECT_HEIGHT_THRESHOLD: float = 250
+const FREE_THRESHOLD: float = 800
 
 func _process(delta: float) -> void:
 	match itemEnum:
@@ -15,6 +16,7 @@ func _process(delta: float) -> void:
 		_: _move_powerup(delta) # Movimiento potenciador
 	
 	if GAME.get_player().y < COLLECT_HEIGHT_THRESHOLD: powerUpFollowPlayer = true
+	if position.y > FREE_THRESHOLD: queue_free()
 
 func _on_area_entered(area: Node) -> void:
 	if isCollected: return

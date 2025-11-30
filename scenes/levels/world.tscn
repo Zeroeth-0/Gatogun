@@ -119,3 +119,7 @@ waveFile = "res://source/levels/test_ground.txt"
 
 [node name="Item" parent="." instance=ExtResource("14_8c33x")]
 position = Vector2(363, 162)
+speed = null
+grav = null
+launchForce = null
+delayBeforeFollow = null

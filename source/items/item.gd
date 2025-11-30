@@ -45,15 +45,6 @@ func _move_powerup(delta):
 		else: position.x += sin((Time.get_ticks_msec() / 1000.0) * TAU * 1) * 0.5 * randSign
 		position += velocity * delta
 
-func _bounce_off_walls():
-	var screenSize := get_viewport_rect().size
-	
-	# Revisar colisiones con los bordes de la pantalla
-	if position.x - ITEM_HALF_SIZE <= 0 or position.x + ITEM_HALF_SIZE >= screenSize.x:
-		powerupDir.x *= -1
-	if position.y - ITEM_HALF_SIZE <= 0 or position.y + ITEM_HALF_SIZE >= screenSize.y:
-		powerupDir.y *= -1
-
 func _move_towards_player(delta: float) -> void:
 	var playerPos = GAME.get_player()
 	var direction = (playerPos - position).normalized()
