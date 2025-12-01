@@ -18,7 +18,7 @@ extends Control
 
 # === VALORES INTERNOS ===
 var maxHot: float = SCORE.hotSize
-var maxMedalCountdown: float = 5.0
+var maxMedalCountdown: float = SCORE.MAX_MEDAL_COUNTDOWN
 var currentLives
 var currentBombs
 var currMaxBombs

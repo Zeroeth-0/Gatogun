@@ -11,10 +11,9 @@ var baseLvl := 1.0
 var canFire := true
 var activeBullets := 0
 var maxBullets := 0
-var realAngle := deviationAngle
 
 # === FLUJO DE COMPORTAMIENTO ===
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	activeBullets = get_tree().get_nodes_in_group("BulletCount").size()
 	maxBullets = MAX_BULLETS
 	if INPUT.firing and canFire and activeBullets < maxBullets and not INPUT.fireHold:
@@ -39,5 +38,5 @@ func _fire_bullet(direction: Vector2, scene: PackedScene) -> void:
 		var offset = (i - (totalLvl - 1) / 2.0) * spacing
 		var bullet = scene.instantiate()
 		bullet.position = global_position + orthogonal * offset
-		bullet.set_dir(direction, realAngle)
+		bullet.set_dir(direction, deviationAngle)
 		get_tree().current_scene.add_child(bullet)

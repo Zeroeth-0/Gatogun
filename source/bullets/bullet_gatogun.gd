@@ -34,5 +34,5 @@ func _on_area_entered(area) -> void:
 		if revHealth <= 0 and not isCancelled:
 			isCancelled = true  # Bloquea ejecuciones futuras
 			var playerPos = GAME.get_player()
-			if position.distance_to(playerPos) < 200 or SCORE.medalCountdown >0: cancel()
+			if position.distance_to(playerPos) < 150 or SCORE.medalCountdown >0: cancel()
 			else: queue_free()

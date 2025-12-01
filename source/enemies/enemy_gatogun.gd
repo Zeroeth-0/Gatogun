@@ -10,7 +10,7 @@ extends "res://source/enemies/enemy.gd"
 # === ESTADO INTERNO ===
 var canDie := false
 var canShoot := true
-var health: int
+var health: float
 var lastBullet
 var pulseMarked := false
 var byBomb := false
@@ -61,9 +61,10 @@ func _check_death() -> void:
 	
 	var playerPos = GAME.get_player()
 	# Devuelve medallas si se mata a bocajarro o si el contador de medallas está activo
-	if !byBomb and (position.distance_to(playerPos) < 200 or SCORE.medalCountdown > 0 or pulseMarked):
+	if !byBomb and (position.distance_to(playerPos) < 150 or SCORE.medalCountdown > 0 or pulseMarked):
 		_spawn_score(scoreCount, medal)
-		if lastBullet and !SCORE.medalCountdown > 0 and !pulseMarked: SCORE.medalCountdown = 5
+		if lastBullet and !SCORE.medalCountdown > 0 and !pulseMarked: SCORE.medalCountdown = SCORE.MAX_MEDAL_COUNTDOWN
+		elif lastBullet and !pulseMarked: SCORE.medalCountdown += 0.1
 	# Devuelve balas de venganza si se mata alto en la pantalla
 	if (position.y < 250 or pulseMarked) and !byBomb: _spawn_score(scoreCount, revengeBullet)
 	if typeEnum == EnemyType.MID: _spawn_score(1, powerUp, true)

@@ -29,15 +29,11 @@ func formation_handler():
 func shot_type():
 	match GatoStyle:
 		StyleEnum.DAMAGE:
-			$OptionR.isLinear = true
-			$OptionL.isLinear = true
 			$OptionR.targetPos = dpsTargetPos * Vector2($OptionR.offSign, 1)
 			$OptionL.targetPos = dpsTargetPos * Vector2($OptionL.offSign, 1)
 		_:
 			$OptionR.targetPos = stdTargetPos * Vector2($OptionR.offSign, 1)
 			$OptionL.targetPos = stdTargetPos * Vector2($OptionL.offSign, 1)
-			$OptionR.isLinear = false
-			$OptionL.isLinear = false
 
 func option_waker():
 	$OptionR.visible = WEAPON.rOptActive

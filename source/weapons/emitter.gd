@@ -89,7 +89,7 @@ var speed: float
 var canShoot: bool = true
 var usableArms: int
 var rank := float(SCORE.rank)
-var round: int = 0
+var bRound: int = 0
 
 func _ready() -> void:
 	usableArms = arms
@@ -178,7 +178,7 @@ func fire(currentSpeed: float) -> void:
 	var offsetCorrection
 	
 	# Alternar cantidad de brazos
-	var armsToUse = alterArms if alterArms > 0 and round % 2 == 1 else usableArms
+	var armsToUse = alterArms if alterArms > 0 and bRound % 2 == 1 else usableArms
 	
 	for r in repeatCount:
 		
@@ -222,7 +222,7 @@ func fire(currentSpeed: float) -> void:
 					_shoot_bullet(mirrorDir, shootPos, finalSpeed)
 	
 	# Contador de ronda
-	round += 1
+	bRound += 1
 	if growWithRound: usableArms += 1
 
 func mirror_direction(dir: Vector2, axis: Vector2) -> Vector2:

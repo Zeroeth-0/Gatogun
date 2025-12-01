@@ -10,7 +10,6 @@ scale = Vector2(8, 8)
 script = ExtResource("1_1ecob")
 BulletType = 0
 speed = 600.0
-damage = 500
 lifeTime = 3.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

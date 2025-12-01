@@ -208,7 +208,7 @@ func _pattern_ladder(base: String, args: Dictionary) -> Array:
 	var lane = parsed["lane"]
 	var index = parsed["index"]
 	var offset = parsed["offset"]
-	var base_delay = parsed["delay"]
+	var _base_delay = parsed["delay"]
 	var type = parsed["type"]
 	var hand = parsed["hand"]
 	var move_dir = parsed["dir"]
@@ -232,7 +232,7 @@ func _pattern_ladder(base: String, args: Dictionary) -> Array:
 		current_index = clamp(current_index, 0, lane_size - 1)
 
 		# Generar línea con delay relativo al primero
-		var delay = warmup if i > 0 else base_delay
+		var delay = warmup if i > 0 else _base_delay
 		var line = "%s@%s%d+%.2f:%s>%s|%.3f" % [
 			type, lane, current_index, offset,
 			hand, move_dir, delay
@@ -255,7 +255,7 @@ func _pattern_parade(base: String, args: Dictionary) -> Array:
 	var lane = parsed["lane"]
 	var start_index = parsed["index"]
 	var offset = parsed["offset"]
-	var base_delay = parsed["delay"]
+	var _base_delay = parsed["delay"]
 	var type = parsed["type"]
 	var hand = parsed["hand"]
 	var move_dir = parsed["dir"]
@@ -284,7 +284,7 @@ func _pattern_mirror(base: String, args: Dictionary) -> Array:
 	var lane = parsed["lane"]
 	var index = parsed["index"]
 	var offset = parsed["offset"]
-	var base_delay = parsed["delay"]
+	var _base_delay = parsed["delay"]
 	var type = parsed["type"]
 	var hand = parsed["hand"]
 	var move_dir = parsed["dir"]
@@ -298,7 +298,7 @@ func _pattern_mirror(base: String, args: Dictionary) -> Array:
 	# Línea original
 	var line_original = "%s@%s%d+%.2f:%s>%s|%.3f" % [
 		type, lane, index, offset,
-		hand, move_dir, base_delay
+		hand, move_dir, _base_delay
 	]
 	lines.append(line_original)
 
@@ -306,7 +306,7 @@ func _pattern_mirror(base: String, args: Dictionary) -> Array:
 	if mirror_index != index and mirror_index >= 0 and mirror_index < lane_size:
 		var mirror_line = "%s@%s%d+%.2f:%s>%s|%.3f" % [
 			type, lane, mirror_index, offset,
-			hand, move_dir, base_delay + delay_mirror
+			hand, move_dir, _base_delay + delay_mirror
 		]
 		lines.append(mirror_line)
 
@@ -325,7 +325,7 @@ func _pattern_swarm(base: String, args: Dictionary) -> Array:
 	var lane = parsed["lane"]
 	var start_index = parsed["index"]
 	var base_offset = parsed["offset"]
-	var base_delay = parsed["delay"]
+	var _base_delay = parsed["delay"]
 	var type = parsed["type"]
 	var hand = parsed["hand"]
 	var move_dir = parsed["dir"]

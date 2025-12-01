@@ -16,10 +16,15 @@ var deviationRadians: float = 0.0
 
 # === CICLO DE VIDA ===
 func _ready() -> void:
-	if BulletType == BulletEnum.LASER:
-		var full_scale := 0.5 + (WEAPON.laserLvl * 0.25)
-		damage = WEAPON.laserLvl + 1.0
-		scale = Vector2(full_scale, full_scale)
+	match BulletType:
+		BulletEnum.LASER:
+			var full_scale := 0.5 + (WEAPON.laserLvl * 0.25)
+			damage = WEAPON.laserLvl + 1.0
+			scale = Vector2(full_scale, full_scale)
+			lifeTime = 0.3
+		BulletEnum.BOMB: lifeTime = 3.0
+		BulletEnum.CHARGE: lifeTime = 1.5
+		BulletEnum.BURST: lifeTime = 1.5
 
 func _process(delta: float) -> void:
 	if BulletType == BulletEnum.FOLLOW: _update_follow_direction(delta)

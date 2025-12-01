@@ -35,7 +35,7 @@ func _process(_delta):
 		playing = world.playing
 	if get_tree().get_nodes_in_group("Player").size() <= 0 and playing: spawn()
 	if get_tree().get_nodes_in_group("Player").size() > 0:
-		var player = get_tree().get_first_node_in_group("Player")
+		player = get_tree().get_first_node_in_group("Player")
 		maxBombs = player.maxBombs
 		bombCount = player.bombCount
 

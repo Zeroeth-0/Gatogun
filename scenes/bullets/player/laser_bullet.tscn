@@ -11,8 +11,7 @@ scale = Vector2(1.1, 1.1)
 script = ExtResource("1_xyv0w")
 BulletType = 1
 speed = 1100.0
-damage = 2
-lifeTime = 0.4
+lifeTime = 0.3
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 0.627451, 0, 1)

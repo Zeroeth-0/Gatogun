@@ -12,6 +12,7 @@ const HOT_DRAIN_RATE: float = 50.0
 const HOT_SIZE: float = 100.0
 const COMBO_LIMIT: float = 0.001
 const MULT_DRAIN_LIMIT: float = 0.03
+const MAX_MEDAL_COUNTDOWN: float = 2.0
 
 # === ESTADO DE PUNTUACIÓN ===
 var GeneralGameScore: int = ZERO
@@ -55,7 +56,7 @@ func _update_hot() -> void:
 		if is_instance_valid(e):
 			dist = min(dist, GAME.get_player().distance_to(e.global_position))
 	if medalCountdown > 0: hot = 100.0
-	else: hot = clamp(remap(dist, 200.0, 500.0, 100.0, 0.0), 0.0, 100.0)
+	else: hot = clamp(remap(dist, 150.0, 500.0, 100.0, 0.0), 0.0, 100.0)
 
 # === SISTEMA DE MULT ===
 func _update_mult(delta: float) -> void:
