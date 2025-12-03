@@ -76,6 +76,8 @@ func _check_death() -> void:
 	
 	if pulseMarked: SCORE.increase_combo(100)
 	
+	if comboLabel: comboLabel.free_label()
+	
 	queue_free()
 
 func _spawn_score(count: int, entity: PackedScene, center: bool = false) -> void:
