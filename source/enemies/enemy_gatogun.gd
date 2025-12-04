@@ -14,13 +14,16 @@ var health: float
 var lastBullet
 var pulseMarked := false
 var byBomb := false
+var halvedHealth := false
+var emitter: Node2D = null
 
 # === FLUJO DE COMPORTAMIENTO ===
 func _ready() -> void:
+	if $Emitter: emitter = $Emitter
 	match typeEnum:
-		EnemyType.STD: health = 15
-		EnemyType.MID: health = 50
-		EnemyType.ELITE: health = 100
+		EnemyType.STD: health = 16
+		EnemyType.MID: health = 80
+		EnemyType.ELITE: health = 160
 	
 	if isGround: $Hurtbox.add_to_group("Ground")
 	else: $Hitbox.add_to_group("Damage")
@@ -37,7 +40,19 @@ func _process(delta: float) -> void:
 	for a in overlap:
 		if a.is_in_group("Charge"):
 			pulseMarked = true
-			health -= delta
+			health -= delta * a.damage
+	
+	# Vulnerabilidad post-1er disparo
+	if emitter != null and !halvedHealth:
+		match typeEnum:
+			EnemyType.ELITE:
+				if emitter.totalRounds == 2:
+					health = health /2
+					halvedHealth = true
+			_:
+				if emitter.totalRounds == 1:
+					health = health / 2
+					halvedHealth = true
 	
 	match currentStage:
 		"childhood":
@@ -96,9 +111,9 @@ func _on_hurtbox_area_entered(area: Node) -> void:
 	if area.is_in_group("Player") and isGround:
 		canShoot = false
 	if area.is_in_group("Bomb"):
+		print(area.damage)
 		byBomb = true
 		health -= area.damage
-	if area.is_in_group("Pulse"): pulseMarked = true
 
 func _on_hurtbox_area_exited(area: Node) -> void:
 	if area.is_in_group("Player") and isGround: canShoot = true

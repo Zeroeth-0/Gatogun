@@ -90,6 +90,7 @@ var canShoot: bool = true
 var usableArms: int
 var rank := float(SCORE.rank)
 var bRound: int = 0
+var totalRounds: int = 0
 
 func _ready() -> void:
 	usableArms = arms
@@ -170,6 +171,9 @@ func shoot() -> void:
 		
 		# Si sobró tiempo antes del siguiente warmUp, esperamos lo que falta
 		if timeSinceLastBurst < warmUp: await get_tree().create_timer(warmUp - timeSinceLastBurst, false).timeout
+		
+		# Contar rondas disparadas
+		totalRounds += 1
 
 func fire(currentSpeed: float) -> void:
 	var spreadStep

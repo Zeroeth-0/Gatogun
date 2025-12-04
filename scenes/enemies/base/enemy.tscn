@@ -44,9 +44,7 @@ shape = SubResource("RectangleShape2D_divk0")
 debug_color = Color(0, 1, 0, 0.419608)
 
 [node name="EnemyCombo" parent="." instance=ExtResource("3_38ino")]
-offset_left = -75.0
 offset_top = 10.0
-offset_right = 25.0
 offset_bottom = 50.0
 
 [connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]

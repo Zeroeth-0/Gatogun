@@ -5,14 +5,14 @@ var timer := 0.0
 var isShowing := false
 var freeSet := false
 
-var freeDuration := 0.5    # Tiempo de vida
-var finalScale := Vector2(1.5, 1.5)  # Tamaño final
+var freeDuration := 0.5 # Tiempo de vida
+var finalScale := Vector2(1.5, 1.5) # Tamaño final
 
 # Parpadeo
-var blinkCount := 3      # Parpadeos
-var offTime := 0.07   # Tiempo apagado
-var onTime := 0.07   # Tiempo encendido
-var startDelay := 0.3   # Retraso parpadeo
+var blinkCount := 3 # Parpadeos
+var offTime := 0.07 # Tiempo apagado
+var onTime := 0.07 # Tiempo encendido
+var startDelay := 0.3 # Retraso parpadeo
 
 func show_combo():
 	text = "+" + str(SCORE.combo)
