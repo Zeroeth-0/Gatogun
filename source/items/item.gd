@@ -42,7 +42,7 @@ func _move_powerup(delta):
 	else:
 		if velocity.y < POWERUP_MOVE_SPEED:
 			velocity.y += grav * delta
-		else: position.x += sin((Time.get_ticks_msec() / 1000.0) * TAU * 1) * 0.5 * randSign
+		else: position.x += sin((Time.get_ticks_msec() / 1000.0) * TAU * 1) * delta * 100 * randSign
 		position += velocity * delta
 
 func _move_towards_player(delta: float) -> void:

@@ -16,14 +16,21 @@ var pulseMarked := false
 var byBomb := false
 var halvedHealth := false
 var emitter: Node2D = null
+var enemType: String
 
 # === FLUJO DE COMPORTAMIENTO ===
 func _ready() -> void:
 	if $Emitter: emitter = $Emitter
 	match typeEnum:
-		EnemyType.STD: health = 16
-		EnemyType.MID: health = 80
-		EnemyType.ELITE: health = 160
+		EnemyType.STD:
+			health = 16
+			enemType = "STD"
+		EnemyType.MID:
+			health = 80
+			enemType = "MID"
+		EnemyType.ELITE:
+			health = 160
+			enemType = "ELITE"
 	
 	if isGround: $Hurtbox.add_to_group("Ground")
 	else: $Hitbox.add_to_group("Damage")
@@ -91,7 +98,7 @@ func _check_death() -> void:
 	
 	if pulseMarked: SCORE.increase_combo(100)
 	
-	if comboLabel: comboLabel.free_label()
+	if comboLabel: comboLabel.free_label(enemType)
 	
 	queue_free()
 
