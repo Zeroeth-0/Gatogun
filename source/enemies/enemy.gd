@@ -41,7 +41,8 @@ var speed := 200
 var extraVel := Vector2.ZERO                                                    # Necesario para scroll follow
 var direction := Vector2.DOWN
 var currentDirection := Vector2.ZERO
-var hSide: int
+var hSide: int : 
+	get: return -1 if handedness == Handedness.RIGHT else 1
 var randSide: int
 
 var DIRECTION_MAP = {
@@ -56,7 +57,6 @@ func _ready() -> void:
 	direction = DIRECTION_MAP.get(directionEnum, Vector2.DOWN)
 	currentDirection = direction
 	stageTimer = 0.0
-	hSide = -1 if handedness == Handedness.RIGHT else 1
 	randSide = -1 if randi() % 2 == 0 else 1
 
 func _change_stage(nextStage: String, shouldInvert: bool) -> void:
