@@ -26,7 +26,7 @@ func _ready() -> void:
 			health = 16
 			enemType = "STD"
 		EnemyType.MID:
-			health = 80
+			health = 100
 			enemType = "MID"
 		EnemyType.ELITE:
 			health = 160

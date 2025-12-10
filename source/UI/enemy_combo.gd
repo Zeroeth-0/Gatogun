@@ -32,10 +32,10 @@ func free_label(enemType: String):
 			offset = 50
 		"MID":
 			finalScale = Vector2(4, 4)
-			offset = 100
+			offset = 150
 		"ELITE":
 			finalScale = Vector2(6, 6)
-			offset = 150
+			offset = 300
 	
 	reparent(get_tree().current_scene)
 	if !freeSet: text = "+" + str(SCORE.combo * SCORE.mult)
