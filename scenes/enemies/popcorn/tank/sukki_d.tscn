@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://bl51xrgbhdkps"]
+
+[ext_resource type="PackedScene" uid="uid://45jy2ekapnll" path="res://scenes/enemies/base/enemy.tscn" id="1_ap77r"]
+[ext_resource type="PackedScene" uid="uid://c5iphdw8gww7y" path="res://scenes/weapons/enemies/popcorn/doubleAimed.tscn" id="2_ibqap"]
+
+[node name="Enemy" instance=ExtResource("1_ap77r")]
+z_index = 2
+scale = Vector2(1.2, 1.2)
+scrollFollow = true
+isGround = true
+childhood = 11
+adulthood = 11
+oldAge = 11
+
+[node name="Sprite2D" parent="." index="0"]
+modulate = Color(0, 0, 1, 1)
+
+[node name="Emitter" parent="." index="5" instance=ExtResource("2_ibqap")]

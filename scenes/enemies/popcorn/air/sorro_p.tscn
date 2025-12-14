@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://caswiih003iid"]
+
+[ext_resource type="PackedScene" uid="uid://45jy2ekapnll" path="res://scenes/enemies/base/enemy.tscn" id="1_lfdny"]
+[ext_resource type="PackedScene" uid="uid://bt5gwutxmj013" path="res://scenes/weapons/enemies/popcorn/singleAimed.tscn" id="2_o26be"]
+
+[node name="Enemy" instance=ExtResource("1_lfdny")]
+childhood = 8
+childSpeed = 150
+adulthood = 8
+adultDuration = 2.0
+adultSpeed = 200
+oldAge = 8
+oldSpeed = 200
+
+[node name="Emitter" parent="." index="4" instance=ExtResource("2_o26be")]

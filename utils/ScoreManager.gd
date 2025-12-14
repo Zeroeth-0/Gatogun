@@ -6,6 +6,7 @@ const ZERO_POINT: float = 0.0
 const ONE: int = 1
 const ONE_POINT: float = 1.0
 const POINT_ONE: float = 0.1
+const POINT_FIVE: float = 0.5
 
 # === CONST VALS ===
 const HOT_DRAIN_RATE: float = 50.0
@@ -25,7 +26,7 @@ var mult: int = ONE
 var comboResetTimer: float = POINT_ONE
 var comboDrainTime: float = ZERO_POINT
 var multDrainTime: float = ZERO_POINT
-var hotDrainDelay: float = ONE_POINT
+var hotDrainDelay: float = POINT_FIVE
 
 # === CONFIGURACIÓN DE SISTEMA ===
 var hotDrainRate: float = HOT_DRAIN_RATE

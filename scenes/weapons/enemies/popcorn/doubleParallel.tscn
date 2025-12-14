@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://dtaq8qa3hmj72"]
+
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/base/emitter.tscn" id="1_8rsoa"]
+
+[node name="Emitter" instance=ExtResource("1_8rsoa")]
+position = Vector2(1, 0)
+baseSpeed = 350.0
+aimAtPlayer = true
+parallel = true
+arms = 2
+warmUp = 1.5

@@ -8,6 +8,7 @@ childDuration = 2.3
 childSpeed = 150
 adulthood = 12
 adultDuration = 2.0
+oldAge = 8
 oldSpeed = 200
 
 [node name="Emitter" parent="." index="4" instance=ExtResource("2_xihgw")]
