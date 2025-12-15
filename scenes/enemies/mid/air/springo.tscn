@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://dud5qahk5max2"]
+
+[ext_resource type="PackedScene" uid="uid://cpaqrklh3fr4s" path="res://scenes/enemies/base/midEnemy.tscn" id="1_xutdt"]
+[ext_resource type="PackedScene" uid="uid://c5ytsubll34kv" path="res://scenes/weapons/enemies/mid/curvedFiller.tscn" id="2_rl6pw"]
+
+[node name="Enemy" instance=ExtResource("1_xutdt")]
+childhood = 11
+childDuration = 2.5
+adulthood = 4
+adultDuration = 7.0
+adultSpeed = 50
+oldAge = 9
+oldSpeed = 200
+
+[node name="Emitter" parent="." index="5" instance=ExtResource("2_rl6pw")]

@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3 uid="uid://ckt8ptwvv6ss8"]
+
+[ext_resource type="Script" uid="uid://brhb4mwkf3rn1" path="res://source/weapons/emitter.gd" id="1_dcow7"]
+[ext_resource type="PackedScene" uid="uid://dha3ds2h57s2b" path="res://scenes/bullets/bullet.tscn" id="2_p5eya"]
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/base/emitter.tscn" id="3_p5eya"]
+
+[node name="Emitter" type="Marker2D"]
+script = ExtResource("1_dcow7")
+bulletScene = ExtResource("2_p5eya")
+burstRotation = true
+rotationAngle = 45
+rotationSpeed = 90
+pingPong = true
+arms = 3
+armSpacingFactor = 1.0
+burstCount = 3
+bulletInterval = 0.05
+warmUp = 1.4
+spreadAngle = 75.0
+
+[node name="Emitter" parent="." instance=ExtResource("3_p5eya")]
+burstRotation = true
+rotationAngle = -45
+rotationSpeed = 90
+pingPong = true
+delay = 0.2
+arms = 3
+burstCount = 3
+bulletInterval = 0.05
+warmUp = 1.4
+spreadAngle = 75.0

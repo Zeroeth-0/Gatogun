@@ -1,4 +1,5 @@
-SWARM(thickness=3,length=2,warmup=0.5) popcornComeLeave at N0 after 1
-LADDER(step=7,direction=R,jump=1,warmup=0.5) popcornComeLeave at N0 after 1
-MIRROR(warmup=0.5) popcornComeLeave at N0 after 1
-PARADE(thickness=3,length=7,warmup=0.5) popcornComeLeave at N0 after 1
+SWARM(thickness=3,length=2,warmup=0.5) sorro_l at N0 after 1
+LADDER(step=7,direction=R,jump=1,warmup=0.5) sorro at N0 after 1
+MIRROR(warmup=0.5) torro at N0 after 1
+PARADE(thickness=3,length=7,warmup=0.5) rikki_s at N0 after 1
+blammo at E3 to S after 1

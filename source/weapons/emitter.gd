@@ -51,7 +51,7 @@ var direction := Vector2.DOWN
 
 # === BURST CONFIG ===
 @export_group("BURST")
-@export_range(0, 5, 0.5) var delay: float = 0.0                                 # Retraso de disparo
+@export_range(0, 5, 0.1) var delay: float = 0.0                                 # Retraso de disparo
 @export_range(1, 16, 1) var arms: int = 1                                       # Brazos por ráfaga
 @export_range(0, 16, 1) var alterArms: int = 0                                  # Alternativa de brazos (0 = desactivado)
 @export var growWithRound: bool = false                                         # Incrementar brazos en cada ronda
@@ -98,6 +98,7 @@ func _ready() -> void:
 	direction = directionMap.get(directionEnum, Vector2.DOWN)
 	_apply_rank_modifiers()
 	shoot()
+	_reset_rotation_direction()
 
 func _process(delta: float) -> void:
 	if "canShoot" in get_parent(): canShoot = get_parent().canShoot
@@ -105,6 +106,10 @@ func _process(delta: float) -> void:
 	if not stopRotation: rotation_degrees += rotationSpeed * delta * rotationDirection
 	
 	_handle_rotation_bounds()
+
+func _reset_rotation_direction() -> void:
+	if rotationAngle == 0: rotationDirection = 0
+	else: rotationDirection = 1 if rotationAngle >= 0 else -1
 
 func _apply_rank_modifiers() -> void:
 	if rank == 4: rank = 4.5
@@ -164,7 +169,9 @@ func shoot() -> void:
 		# Resetea cantidad de brazos
 		usableArms = arms
 		
-		if not burstRotation: stopRotation = false
+		if not burstRotation:
+			stopRotation = false
+			_reset_rotation_direction()
 		
 		# Tiempo total que tardó la ráfaga
 		timeSinceLastBurst = (Time.get_ticks_msec() / 1000.0) - burstStartTime

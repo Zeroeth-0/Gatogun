@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://c4fvn2f5ho8el"]
+
+[ext_resource type="PackedScene" uid="uid://cpaqrklh3fr4s" path="res://scenes/enemies/base/midEnemy.tscn" id="1_shtqm"]
+[ext_resource type="PackedScene" uid="uid://clseswg7d8yap" path="res://scenes/weapons/enemies/mid/2openArms.tscn" id="2_1mfxc"]
+
+[node name="Enemy" instance=ExtResource("1_shtqm")]
+z_index = 2
+isGround = true
+childDuration = 2.5
+adultDuration = 7.0
+
+[node name="Sprite2D" parent="." index="0"]
+modulate = Color(0, 0, 1, 1)
+
+[node name="Emitter" parent="." index="5" instance=ExtResource("2_1mfxc")]

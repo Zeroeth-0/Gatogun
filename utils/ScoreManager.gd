@@ -33,7 +33,7 @@ var hotDrainRate: float = HOT_DRAIN_RATE
 var hotSize: float = HOT_SIZE
 var comboLimit: float = COMBO_LIMIT
 var multDrainLimit: float = MULT_DRAIN_LIMIT
-var rank = ONE
+var rank = 1
 
 # === REFERENCIAS UI ===
 var HUD: Control = null

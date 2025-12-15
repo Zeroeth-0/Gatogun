@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://gpd1ntke4nv1"]
+
+[ext_resource type="PackedScene" uid="uid://45jy2ekapnll" path="res://scenes/enemies/base/enemy.tscn" id="1_evi7u"]
+[ext_resource type="PackedScene" uid="uid://dtaq8qa3hmj72" path="res://scenes/weapons/enemies/popcorn/doubleParallel.tscn" id="2_qa81a"]
+
+[node name="Enemy" instance=ExtResource("1_evi7u")]
+z_index = 2
+scrollFollow = true
+isGround = true
+childSpeed = 0
+adultSpeed = 0
+oldSpeed = 0
+
+[node name="Sprite2D" parent="." index="0"]
+modulate = Color(0, 0, 1, 1)
+
+[node name="Emitter" parent="." index="5" instance=ExtResource("2_qa81a")]

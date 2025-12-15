@@ -1,17 +1,32 @@
-[gd_scene load_steps=9 format=3 uid="uid://bi7uyv2plo07x"]
+[gd_scene load_steps=23 format=3 uid="uid://bi7uyv2plo07x"]
 
 [ext_resource type="Script" uid="uid://hrxsyfgjv1kg" path="res://source/levels/level_parser.gd" id="1_btnht"]
 [ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="3_0hlg8"]
 [ext_resource type="PackedScene" uid="uid://sc2mi3jdynyo" path="res://scenes/enemies/mid/air/bommi.tscn" id="3_xidr1"]
 [ext_resource type="PackedScene" uid="uid://cgts6rg8xrau" path="res://scenes/levels/playzone.tscn" id="4_hkylk"]
+[ext_resource type="PackedScene" uid="uid://ux02h6c48bqc" path="res://scenes/enemies/mid/air/kabbi.tscn" id="4_jtmcs"]
 [ext_resource type="PackedScene" uid="uid://4y26tmtqbxdx" path="res://scenes/levels/ground.tscn" id="5_sf1u2"]
+[ext_resource type="PackedScene" uid="uid://dud5qahk5max2" path="res://scenes/enemies/mid/air/springo.tscn" id="6_3lsws"]
 [ext_resource type="PackedScene" uid="uid://duam5mtyrxv5l" path="res://scenes/UI/hud.tscn" id="7_dp8al"]
+[ext_resource type="PackedScene" uid="uid://c4fvn2f5ho8el" path="res://scenes/enemies/mid/turret/hoppi.tscn" id="7_yywnm"]
+[ext_resource type="PackedScene" uid="uid://gpd1ntke4nv1" path="res://scenes/enemies/popcorn/turret/pikko.tscn" id="9_csbb7"]
+[ext_resource type="PackedScene" uid="uid://60qb43njmjls" path="res://scenes/enemies/mid/air/blammo.tscn" id="9_f1v6p"]
+[ext_resource type="PackedScene" uid="uid://d3wmttwclkdt1" path="res://scenes/enemies/popcorn/air/sorro_l.tscn" id="9_rny25"]
+[ext_resource type="PackedScene" uid="uid://bxqx2fgpmsmhm" path="res://scenes/enemies/mid/air/poppo.tscn" id="10_csbb7"]
+[ext_resource type="PackedScene" uid="uid://caswiih003iid" path="res://scenes/enemies/popcorn/air/sorro_p.tscn" id="10_gc5je"]
+[ext_resource type="PackedScene" uid="uid://bvtnw342e8xsy" path="res://scenes/enemies/popcorn/turret/yukko.tscn" id="10_mmplq"]
+[ext_resource type="PackedScene" uid="uid://chxcaanjxbqw2" path="res://scenes/enemies/popcorn/air/torro.tscn" id="11_yxm4g"]
 [ext_resource type="PackedScene" uid="uid://bbrlpm3jwipc3" path="res://scenes/enemies/popcorn/air/sorro.tscn" id="12_de0io"]
+[ext_resource type="PackedScene" uid="uid://jhl4f6yw03ra" path="res://scenes/enemies/popcorn/tank/rikki_d.tscn" id="12_ues0t"]
+[ext_resource type="PackedScene" uid="uid://bpq47v1bplbew" path="res://scenes/enemies/popcorn/tank/rikki_s.tscn" id="13_0e0f6"]
 [ext_resource type="PackedScene" uid="uid://dog0k55xaa2s" path="res://scenes/items/max_power_up.tscn" id="14_8c33x"]
+[ext_resource type="PackedScene" uid="uid://bl51xrgbhdkps" path="res://scenes/enemies/popcorn/tank/sukki_d.tscn" id="14_68ntl"]
+[ext_resource type="PackedScene" uid="uid://clxkeo672dm54" path="res://scenes/enemies/popcorn/tank/sukki_s.tscn" id="15_jjsu1"]
 
 [node name="World" type="Node2D" groups=["Level"]]
 script = ExtResource("1_btnht")
-enemyScenes = Array[PackedScene]([ExtResource("12_de0io"), ExtResource("3_xidr1")])
+waveFile = "res://source/levels/test.txt"
+enemyScenes = Array[PackedScene]([ExtResource("9_f1v6p"), ExtResource("3_xidr1"), ExtResource("4_jtmcs"), ExtResource("10_csbb7"), ExtResource("6_3lsws"), ExtResource("7_yywnm"), ExtResource("12_de0io"), ExtResource("9_rny25"), ExtResource("10_gc5je"), ExtResource("11_yxm4g"), ExtResource("12_ues0t"), ExtResource("13_0e0f6"), ExtResource("14_68ntl"), ExtResource("15_jjsu1"), ExtResource("9_csbb7"), ExtResource("10_mmplq")])
 
 [node name="North Lane" type="Node2D" parent="."]
 position = Vector2(340, -100)

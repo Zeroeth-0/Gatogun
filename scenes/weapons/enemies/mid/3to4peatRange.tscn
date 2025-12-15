@@ -7,4 +7,4 @@ aimAtPlayer = true
 arms = 3
 alterArms = 4
 burstCount = 2
-spreadAngle = 15.0
+spreadAngle = 30.0
