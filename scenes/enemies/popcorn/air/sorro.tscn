@@ -4,11 +4,11 @@
 [ext_resource type="PackedScene" uid="uid://bt5gwutxmj013" path="res://scenes/weapons/enemies/popcorn/singleAimed.tscn" id="2_xihgw"]
 
 [node name="Enemy" instance=ExtResource("1_etmv5")]
-childDuration = 2.3
-childSpeed = 150
+childDuration = 1.5
+childSpeed = 250
 adulthood = 12
 adultDuration = 2.0
 oldAge = 8
-oldSpeed = 200
+oldSpeed = 250
 
 [node name="Emitter" parent="." index="4" instance=ExtResource("2_xihgw")]

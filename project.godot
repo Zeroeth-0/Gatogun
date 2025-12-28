@@ -23,6 +23,7 @@ SCROLL="*res://utils/ScrollManager.gd"
 SCORE="*res://utils/ScoreManager.gd"
 GAME="*res://utils/GameManager.gd"
 WEAPON="*res://utils/WeaponManager.gd"
+Spawning="*res://addons/BulletUpHell/Spawning.tscn"
 
 [display]
 
@@ -39,6 +40,10 @@ project/assembly_name="Gatodius"
 
 movie_writer/movie_file="C:/Users/Amós/Desktop/GameDev/En Desarrollo/Movies/Gatodius_mov.avi"
 movie_writer/mix_rate.movie=0
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/BulletUpHell/plugin.cfg")
 
 [input]
 

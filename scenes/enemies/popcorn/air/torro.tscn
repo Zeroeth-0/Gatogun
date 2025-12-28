@@ -5,11 +5,11 @@
 
 [node name="Enemy" instance=ExtResource("1_q4r1a")]
 childhood = 8
-childSpeed = 200
+childSpeed = 250
 adulthood = 8
 adultDuration = 2.0
-adultSpeed = 200
+adultSpeed = 250
 oldAge = 8
-oldSpeed = 200
+oldSpeed = 250
 
 [node name="Emitter" parent="." index="5" instance=ExtResource("2_iksxd")]

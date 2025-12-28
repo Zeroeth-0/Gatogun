@@ -351,3 +351,11 @@ func _pattern_swarm(base: String, args: Dictionary) -> Array:
 			row_delay = 0
 
 	return lines
+
+# How to use:
+# EnemyName at DirectionNumber+offset (N0+0.5) with Handedness (R/L) to Direction (N/S/E/W) after Time (1)
+# EnemyName @ DirectionNumber+offset (N0+0.5) : Handedness (R/L) > Direction (N/S/E/W) | Time (1)
+# SWARM(thickness,length,warmup) Std
+# LADDER(step,direction,jump,warmup) Std
+# MIRROR(warmup) Std
+# PARADE(thickness,length,warmup) Std
