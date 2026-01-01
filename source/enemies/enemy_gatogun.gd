@@ -118,7 +118,6 @@ func _on_hurtbox_area_entered(area: Node) -> void:
 	if area.is_in_group("Player") and isGround:
 		canShoot = false
 	if area.is_in_group("Bomb"):
-		print(area.damage)
 		byBomb = true
 		health -= area.damage
 
