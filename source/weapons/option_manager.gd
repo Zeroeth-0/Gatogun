@@ -8,9 +8,13 @@ enum StyleEnum { RANGE, DAMAGE, CLASSIC }
 @export var stdTargetPos: Vector2 = Vector2.ZERO
 @export var dpsTargetPos: Vector2 = Vector2.ZERO
 
+# === ESTADO INTERNO ===
+var lastMoveDirection: Vector2 = Vector2.DOWN
+
 # === FLUJO DE COMPORTAMIENTO ===
 func _process(_delta: float) -> void:
 	option_waker()
+	lastMoveDirection = get_parent().lastMoveDirection
 
 func _ready():
 	formation_handler()

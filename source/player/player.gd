@@ -22,6 +22,7 @@ var canDie := true
 var shielded = false
 var maxBombs = 4
 var bombCount = 2
+var lastMoveDirection: Vector2 = Vector2.DOWN
 
 # === INICIO ===
 func _ready() -> void:
@@ -54,6 +55,10 @@ func _process(_delta: float) -> void:
 			shielded = true
 			activate_shield(2.5)
 		_auto_move_to_go_point()
+	
+	var inputDir := Vector2(INPUT.xAxis, INPUT.yAxis).normalized()
+	if inputDir.length_squared() > 0.01:
+		lastMoveDirection = inputDir
 
 # === MOVIMIENTO PRE-JUGABLE ===
 func _auto_move_to_go_point() -> void:
