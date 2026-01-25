@@ -37,7 +37,7 @@ func free_label(enemType: String):
 			finalScale = Vector2(6, 6)
 			offset = 300
 	
-	reparent(get_tree().current_scene)
+	reparent(GLOBAL.get_subtree())
 	if !freeSet: text = "+" + str(SCORE.combo * SCORE.mult)
 	freeSet = true
 	

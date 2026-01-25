@@ -13,7 +13,6 @@ var DIRECTION_MAP = {
 var direction: Vector2 = Vector2(0, 1)
 
 func _process(_delta):
-	# print(get_tree().get_nodes_in_group("Enemy Bullet").size())
 	direction = DIRECTION_MAP.get(directionEnum)
 
 func get_scroll():

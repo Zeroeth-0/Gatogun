@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Gatogun"
-run/main_scene="res://scenes/UI/title_screen.tscn"
+run/main_scene="uid://cejse351xo6ye"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 run/max_fps=240
 config/icon="res://icon.svg"
@@ -23,13 +23,14 @@ SCROLL="*res://utils/ScrollManager.gd"
 SCORE="*res://utils/ScoreManager.gd"
 GAME="*res://utils/GameManager.gd"
 WEAPON="*res://utils/WeaponManager.gd"
+GLOBAL="*res://utils/GlobalUtils.gd"
 Spawning="*res://addons/BulletUpHell/Spawning.tscn"
 
 [display]
 
-window/size/viewport_width=680
-window/size/viewport_height=730
-window/stretch/mode="canvas_items"
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/stretch/mode="viewport"
 window/vsync/vsync_mode=0
 
 [dotnet]

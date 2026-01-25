@@ -16,7 +16,7 @@ func _ready():
 	countdown_timer.timeout.connect(_on_timer_timeout)
 
 	# Pausar todo menos esta escena
-	get_tree().paused = true
+	GLOBAL.pause_game()
 
 	timerLabel.text = str(countdown)
 
@@ -28,7 +28,7 @@ func _process(_delta):
 		timerLabel.text = str(countdown)
 
 	if Input.is_action_just_pressed("Start"):  # Start
-		get_tree().paused = false
+		GLOBAL.resume_game()
 		GAME.lives = 2
 		SCORE.reset_game_score()
 		GAME.store(GAME.CENTER, true)
@@ -40,6 +40,6 @@ func _on_timer_timeout():
 	timerLabel.text = str(countdown)
 	if countdown <= 0:
 		# Aquí puedes decidir si terminar el juego o ir al menú principal
-		get_tree().paused = false
+		GLOBAL.resume_game()
 		GAME.game_over()
 		queue_free()

@@ -20,6 +20,11 @@ var moveDir: int
 var lastMoveDirection: Vector2 = Vector2.DOWN
 var currentRotationAngle: float = 0.0   # Ángulo actual suavizado para la rotación en RANGE sin hold
 
+# Variables para la órbita (solo usadas en DAMAGE !fireHold)
+var orbit_angle: float = 0.0
+@export var orbit_radius: float = 60.0
+@export var orbit_angular_speed: float = 2.5   # rad/s — antihorario (positivo)
+
 # === FLUJO DE COMPORTAMIENTO ===
 func _ready() -> void:
 	baseLvl = 0.0
@@ -27,6 +32,7 @@ func _ready() -> void:
 	deviationAngle = 0
 	currLatOffset = -offSign * sideOffset
 	moveDir = 1 if offSign == 1 else -1
+	orbit_angle = offSign * PI / 2.0   # uno empieza más a la derecha, otro a la izquierda
 
 func _process(delta: float) -> void:
 	super._process(delta)
@@ -44,51 +50,56 @@ func _process_option_behavior(delta: float) -> void:
 	var StyleEnum = parent.StyleEnum
 
 	if INPUT.fireHold:
+		# ── Comportamiento cuando se mantiene el disparo (sin cambios) ──
 		match GatoStyle:
-			StyleEnum.RANGE: _range_hold(parent, dir, delta)
-			StyleEnum.DAMAGE: _damage_hold(parent, dir, delta)
+			StyleEnum.RANGE:   _range_hold(parent, dir, delta)
+			StyleEnum.DAMAGE:  _damage_hold(parent, dir, delta)
 			StyleEnum.CLASSIC: _classic_hold(dir, delta)
-	else:
-		global_position -= parentDelta
-		match OptionType:
-			OptionEnum.SIDES:
-				followDelay = 15
-				
-				var effectiveTargetPos = targetPos
-				var baseDeviation = 10 * offSign if GatoStyle == StyleEnum.RANGE else 0
-				
-				if GatoStyle == StyleEnum.RANGE:
-					var maxRotationDegrees: float = 15.0
-					var targetRotation = deg_to_rad(INPUT.xAxis * maxRotationDegrees)
-					
-					# Suavizamos el ángulo hacia el objetivo
-					var rotationLerpSpeed: float = 4.0   # ajusta para más/menos inercia
-					currentRotationAngle = lerp_angle(currentRotationAngle, targetRotation, rotationLerpSpeed * delta)
-					
-					effectiveTargetPos = targetPos.rotated(currentRotationAngle)
-					
-					# deviationAngle combina el valor base + el ángulo de rotación actual (en grados)
-					# Si las balas se desvían al revés → cámbialo a: baseDeviation - rad_to_deg(currentRotationAngle)
-					deviationAngle = baseDeviation + rad_to_deg(currentRotationAngle)
-				
-				else:
-					deviationAngle = baseDeviation
-				
-				position = position.lerp(effectiveTargetPos, followDelay * delta)
-			OptionEnum.FOLLOW:
-				followDelay = 5
-				deviationAngle = 0
-				if targetNode and is_instance_valid(targetNode) and (INPUT.xAxis != 0 or INPUT.yAxis != 0):
-					global_position = global_position.lerp(targetNode.global_position, followDelay * delta)
+		
+		# Reseteamos órbita para que al soltar vuelva a empezar limpio
+		orbit_angle = offSign * PI / 2.0
 
-# === ESTILOS ===
+	else:
+		# ── Comportamiento cuando NO se dispara ──
+		if GatoStyle == StyleEnum.DAMAGE:
+			# ── Especial DAMAGE: órbita antihoraria ──
+			_damage_no_hold_orbit(parent, delta)
+		else:
+			# ── Comportamiento original para RANGE y CLASSIC (sin hold) ──
+			global_position -= parentDelta
+			
+			match OptionType:
+				OptionEnum.SIDES:
+					followDelay = 15
+					
+					var effectiveTargetPos = targetPos
+					var baseDeviation = 10 * offSign if GatoStyle == StyleEnum.RANGE else 0
+					
+					if GatoStyle == StyleEnum.RANGE:
+						var maxRotationDegrees: float = 15.0
+						var targetRotation = deg_to_rad(INPUT.xAxis * maxRotationDegrees)
+						var rotationLerpSpeed: float = 4.0
+						currentRotationAngle = lerp_angle(currentRotationAngle, targetRotation, rotationLerpSpeed * delta)
+						effectiveTargetPos = targetPos.rotated(currentRotationAngle)
+						deviationAngle = baseDeviation + rad_to_deg(currentRotationAngle)
+					else:
+						deviationAngle = baseDeviation
+					
+					position = position.lerp(effectiveTargetPos, followDelay * delta)
+				
+				OptionEnum.FOLLOW:
+					followDelay = 5
+					deviationAngle = 0
+					if targetNode and is_instance_valid(targetNode) and (INPUT.xAxis != 0 or INPUT.yAxis != 0):
+						global_position = global_position.lerp(targetNode.global_position, followDelay * delta)
+
+# === ESTILOS (hold) ===
 func _range_hold(parent: Node2D, dir: Vector2, delta: float) -> void:
 	var enemy = _get_closest_enemy()
 	dir = (enemy.global_position - parent.global_position).normalized() if enemy else Vector2.UP
 	var distance := 50.0
 	deviationAngle = 0
 	
-	# === Posición visual desplazada lateralmente
 	var targetPosition = parent.global_position + dir * distance
 	var offsetDir := dir.orthogonal().normalized()
 	targetPosition += offsetDir * -offSign * sideOffset
@@ -103,17 +114,14 @@ func _damage_hold(parent: Node2D, dir: Vector2, delta: float) -> void:
 	var distance := 75.0
 	var nSideOffset = sideOffset * 1.5
 	
-	# Calculamos la velocidad efectiva: lenta cerca del centro (currLatOffset ~ 0), rápida en extremos
 	var ratio = abs(currLatOffset) / nSideOffset
-	var minSpeedFactor: float = 0.3   # 0.3 = 30% de oscSpeed en centro (ajusta para más/menos pausa)
+	var minSpeedFactor: float = 0.3
 	var effectiveSpeed = oscSpeed * (minSpeedFactor + (1 - minSpeedFactor) * ratio)
 	
-	# Actualizar el offset lateral de manera cíclica con velocidad variable
 	currLatOffset += moveDir * effectiveSpeed * delta
 	
 	var jumped: bool = false
 	
-	# Cuando llega a un extremo → salta al opuesto (manteniendo la misma dirección)
 	if currLatOffset >= nSideOffset:
 		currLatOffset = -nSideOffset + 10
 		jumped = true
@@ -121,7 +129,6 @@ func _damage_hold(parent: Node2D, dir: Vector2, delta: float) -> void:
 		currLatOffset = nSideOffset - 10
 		jumped = true
 	
-	# === Posición visual desplazada lateralmente
 	var targetPosition = parent.global_position + dir * distance
 	var offsetDir := dir.orthogonal().normalized()
 	targetPosition += offsetDir * currLatOffset
@@ -156,11 +163,31 @@ func _classic_hold(dir: Vector2, delta: float) -> void:
 			var backDir = -targetNode.lastMoveDirection.normalized()
 			idealPos = targetPos + backDir * desiredDistance
 		
-		# movemos suavemente hacia la posición ideal
 		global_position = global_position.lerp(idealPos, speedFactor * delta)
 	
 	if canFire and activeBullets < maxBullets:
 		await _fire_burst(dir, bulletScene)
+
+# === Órbita ===
+func _damage_no_hold_orbit(parent: Node2D, delta: float) -> void:
+	followDelay = 10   # suavizado razonable
+	
+	# Avanzamos el ángulo (positivo = antihorario en Godot 2D)
+	orbit_angle -= orbit_angular_speed * delta
+	
+	# Offset en coordenadas locales del jugador
+	var offset = Vector2(
+		cos(orbit_angle) * orbit_radius,
+		sin(orbit_angle) * orbit_radius
+	)
+	
+	var target_global = parent.global_position + offset
+	
+	# Movimiento suave
+	global_position = global_position.lerp(target_global, followDelay * delta)
+	
+	# Normalmente no queremos desviación de disparo en órbita
+	deviationAngle = 0
 
 # === AUXILIAR ===
 func _get_closest_enemy() -> Node2D:

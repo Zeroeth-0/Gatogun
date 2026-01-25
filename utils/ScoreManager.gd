@@ -55,8 +55,7 @@ func _update_hot(delta: float) -> void:
 	if hot > 0:
 		if hotDrainDelay > 0: hotDrainDelay -= delta
 		else:
-			if INPUT.firing: hot -= hotDrainRate * delta
-			else: hot -= hotDrainRate * delta / 2
+			hot -= hotDrainRate * delta
 			if hot <= 0:
 				hot = 0
 

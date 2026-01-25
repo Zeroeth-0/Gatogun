@@ -73,7 +73,7 @@ func _spawn_missing_powerups() -> void:
 
 func _spawn_powerup(node: PackedScene) -> void:
 	var item = node.instantiate()
-	get_tree().current_scene.call_deferred("add_child", item)
+	GLOBAL.add_to_game(item, true)
 	var spawnOffset = Vector2(randf_range(-128, 128), 0)
 	item.position = spawnPos + spawnOffset
 
@@ -84,7 +84,7 @@ func _reset_game_state() -> void:
 func _instance_player() -> void:
 	var instance = cat.instantiate()
 	instance.position = spawnPoint
-	get_tree().current_scene.call_deferred("add_child", instance)
+	GLOBAL.add_to_game(instance, true)
 
 func _show_continue() -> void:
 	if dead: return
@@ -92,7 +92,7 @@ func _show_continue() -> void:
 	dead = true
 	var uiCont = uiContinue.instantiate()
 	uiCont.position = Vector2(0, 0)
-	get_tree().current_scene.call_deferred("add_child", uiCont)
+	GLOBAL.add_to_game(uiCont, true)
 
 func get_player() -> Vector2:
 	var players = get_tree().get_nodes_in_group("Player")

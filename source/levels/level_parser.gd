@@ -154,34 +154,33 @@ func _get_opposite_dir(dir: String) -> String:
 func _spawn_enemy(data: Dictionary) -> void:
 	if data.type == "END_MARKER":
 		return
-
+	
 	if not data.has("type") or not data.has("lane") or not data.has("index"):
 		return
-
+	
 	var scene = _get_enemy_scene_by_name(data.type)
 	if not scene: return
-
-	if not lanes.has(data.lane) or data.index >= lanes[data.lane].size():
-		return
-
+	
+	if not lanes.has(data.lane) or data.index >= lanes[data.lane].size(): return
+	
 	var enemy = scene.instantiate()
 	var spawnPos = lanes[data.lane][data.index].global_position
-
+	
 	if data.lane in ["N", "S"]:
 		spawnPos.x += data.offset * LANE_GAP
 	else:
 		spawnPos.y += data.offset * LANE_GAP
-
+	
 	enemy.position = spawnPos
 	enemy.handedness = enemy.Handedness.RIGHT if data.hand == "R" else enemy.Handedness.LEFT
-
+	
 	match data.dir:
 		"N": enemy.directionEnum = enemy.Direction.NORTH
 		"S": enemy.directionEnum = enemy.Direction.SOUTH
 		"E": enemy.directionEnum = enemy.Direction.EAST
 		"W": enemy.directionEnum = enemy.Direction.WEST
-
-	get_tree().current_scene.add_child(enemy)
+	
+	GLOBAL.add_to_game(enemy)
 
 func _get_enemy_scene_by_name(enemyName: String) -> PackedScene:
 	for scene in enemyScenes:

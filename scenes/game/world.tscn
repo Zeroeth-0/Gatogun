@@ -1,0 +1,135 @@
+[gd_scene load_steps=23 format=3 uid="uid://bi7uyv2plo07x"]
+
+[ext_resource type="Script" uid="uid://hrxsyfgjv1kg" path="res://source/levels/level_parser.gd" id="1_g3wwy"]
+[ext_resource type="PackedScene" uid="uid://60qb43njmjls" path="res://scenes/enemies/mid/air/blammo.tscn" id="2_ssxqg"]
+[ext_resource type="PackedScene" uid="uid://sc2mi3jdynyo" path="res://scenes/enemies/mid/air/bommi.tscn" id="3_8tx05"]
+[ext_resource type="PackedScene" uid="uid://ux02h6c48bqc" path="res://scenes/enemies/mid/air/kabbi.tscn" id="4_kkypk"]
+[ext_resource type="PackedScene" uid="uid://bxqx2fgpmsmhm" path="res://scenes/enemies/mid/air/poppo.tscn" id="5_aa8ij"]
+[ext_resource type="PackedScene" uid="uid://dud5qahk5max2" path="res://scenes/enemies/mid/air/springo.tscn" id="6_xjrwe"]
+[ext_resource type="PackedScene" uid="uid://c4fvn2f5ho8el" path="res://scenes/enemies/mid/turret/hoppi.tscn" id="7_3y1yf"]
+[ext_resource type="PackedScene" uid="uid://bbrlpm3jwipc3" path="res://scenes/enemies/popcorn/air/sorro.tscn" id="8_cqqua"]
+[ext_resource type="PackedScene" uid="uid://d3wmttwclkdt1" path="res://scenes/enemies/popcorn/air/sorro_l.tscn" id="9_vsddf"]
+[ext_resource type="PackedScene" uid="uid://caswiih003iid" path="res://scenes/enemies/popcorn/air/sorro_p.tscn" id="10_dius1"]
+[ext_resource type="PackedScene" uid="uid://chxcaanjxbqw2" path="res://scenes/enemies/popcorn/air/torro.tscn" id="11_xe6ae"]
+[ext_resource type="PackedScene" uid="uid://jhl4f6yw03ra" path="res://scenes/enemies/popcorn/tank/rikki_d.tscn" id="12_nsaos"]
+[ext_resource type="PackedScene" uid="uid://bpq47v1bplbew" path="res://scenes/enemies/popcorn/tank/rikki_s.tscn" id="13_51ibf"]
+[ext_resource type="PackedScene" uid="uid://bl51xrgbhdkps" path="res://scenes/enemies/popcorn/tank/sukki_d.tscn" id="14_exrju"]
+[ext_resource type="PackedScene" uid="uid://clxkeo672dm54" path="res://scenes/enemies/popcorn/tank/sukki_s.tscn" id="15_pyypn"]
+[ext_resource type="PackedScene" uid="uid://gpd1ntke4nv1" path="res://scenes/enemies/popcorn/turret/pikko.tscn" id="16_o7v5e"]
+[ext_resource type="PackedScene" uid="uid://bvtnw342e8xsy" path="res://scenes/enemies/popcorn/turret/yukko.tscn" id="17_si4k2"]
+[ext_resource type="PackedScene" uid="uid://4y26tmtqbxdx" path="res://scenes/levels/ground.tscn" id="18_gy7ni"]
+[ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="19_01lr2"]
+[ext_resource type="PackedScene" uid="uid://cgts6rg8xrau" path="res://scenes/levels/playzone.tscn" id="20_g0bee"]
+[ext_resource type="PackedScene" uid="uid://duam5mtyrxv5l" path="res://scenes/UI/hud.tscn" id="21_kc3r2"]
+[ext_resource type="PackedScene" uid="uid://dog0k55xaa2s" path="res://scenes/items/max_power_up.tscn" id="22_3qeyn"]
+
+[node name="World" type="Node2D" groups=["Level"]]
+script = ExtResource("1_g3wwy")
+waveFile = "res://source/levels/test.txt"
+enemyScenes = Array[PackedScene]([ExtResource("2_ssxqg"), ExtResource("3_8tx05"), ExtResource("4_kkypk"), ExtResource("5_aa8ij"), ExtResource("6_xjrwe"), ExtResource("7_3y1yf"), ExtResource("8_cqqua"), ExtResource("9_vsddf"), ExtResource("10_dius1"), ExtResource("11_xe6ae"), ExtResource("12_nsaos"), ExtResource("13_51ibf"), ExtResource("14_exrju"), ExtResource("15_pyypn"), ExtResource("16_o7v5e"), ExtResource("17_si4k2")])
+
+[node name="North Lane" type="Node2D" parent="."]
+position = Vector2(340, -100)
+
+[node name="Zero" type="Marker2D" parent="North Lane"]
+position = Vector2(-261, 0)
+
+[node name="One" type="Marker2D" parent="North Lane"]
+position = Vector2(-174, 0)
+
+[node name="Two" type="Marker2D" parent="North Lane"]
+position = Vector2(-87, 0)
+
+[node name="Three" type="Marker2D" parent="North Lane"]
+
+[node name="Four" type="Marker2D" parent="North Lane"]
+position = Vector2(87, 0)
+
+[node name="Five" type="Marker2D" parent="North Lane"]
+position = Vector2(174, 0)
+
+[node name="Six" type="Marker2D" parent="North Lane"]
+position = Vector2(261, 0)
+
+[node name="West Lane" type="Node2D" parent="."]
+position = Vector2(-100, 250)
+rotation = 1.5708
+
+[node name="Zero" type="Marker2D" parent="West Lane"]
+position = Vector2(-261, 0)
+
+[node name="One" type="Marker2D" parent="West Lane"]
+position = Vector2(-174, 0)
+
+[node name="Two" type="Marker2D" parent="West Lane"]
+position = Vector2(-87, 0)
+
+[node name="Three" type="Marker2D" parent="West Lane"]
+
+[node name="Four" type="Marker2D" parent="West Lane"]
+position = Vector2(87, 0)
+
+[node name="Five" type="Marker2D" parent="West Lane"]
+position = Vector2(174, 0)
+
+[node name="Six" type="Marker2D" parent="West Lane"]
+position = Vector2(261, 0)
+
+[node name="East Lane" type="Node2D" parent="."]
+position = Vector2(780, 250)
+rotation = 1.5708
+
+[node name="Zero" type="Marker2D" parent="East Lane"]
+position = Vector2(-261, 0)
+
+[node name="One" type="Marker2D" parent="East Lane"]
+position = Vector2(-174, 0)
+
+[node name="Two" type="Marker2D" parent="East Lane"]
+position = Vector2(-87, 0)
+
+[node name="Three" type="Marker2D" parent="East Lane"]
+
+[node name="Four" type="Marker2D" parent="East Lane"]
+position = Vector2(87, 0)
+
+[node name="Five" type="Marker2D" parent="East Lane"]
+position = Vector2(174, 0)
+
+[node name="Six" type="Marker2D" parent="East Lane"]
+position = Vector2(261, 0)
+
+[node name="South Lane" type="Node2D" parent="."]
+position = Vector2(340, 830)
+
+[node name="Zero" type="Marker2D" parent="South Lane"]
+position = Vector2(-261, 0)
+
+[node name="One" type="Marker2D" parent="South Lane"]
+position = Vector2(-174, 0)
+
+[node name="Two" type="Marker2D" parent="South Lane"]
+position = Vector2(-87, 0)
+
+[node name="Three" type="Marker2D" parent="South Lane"]
+
+[node name="Four" type="Marker2D" parent="South Lane"]
+position = Vector2(87, 0)
+
+[node name="Five" type="Marker2D" parent="South Lane"]
+position = Vector2(174, 0)
+
+[node name="Six" type="Marker2D" parent="South Lane"]
+position = Vector2(261, 0)
+
+[node name="Ground" parent="." instance=ExtResource("18_gy7ni")]
+waveFile = "res://source/levels/test_ground.txt"
+
+[node name="DeadBounds" parent="." instance=ExtResource("19_01lr2")]
+
+[node name="Playzone" parent="." instance=ExtResource("20_g0bee")]
+
+[node name="HUD" parent="." instance=ExtResource("21_kc3r2")]
+
+[node name="Item" parent="." instance=ExtResource("22_3qeyn")]
+position = Vector2(363, 162)

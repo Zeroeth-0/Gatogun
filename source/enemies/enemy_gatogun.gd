@@ -49,10 +49,6 @@ func _process(delta: float) -> void:
 			pulseMarked = true
 			health -= delta * a.damage
 	
-	# Mantener intensidad si el jugador está cerca de los enemigos
-	if position.distance_to(GAME.get_player()) < 250 or SCORE.medalCountdown > 0:
-		SCORE.keep_hot()
-	
 	# Vulnerabilidad post-1er disparo
 	if emitter != null and !halvedHealth:
 		match typeEnum:
@@ -112,7 +108,7 @@ func _check_death() -> void:
 func _spawn_score(count: int, entity: PackedScene, center: bool = false) -> void:
 	for i in count:
 		var item = entity.instantiate()
-		get_tree().current_scene.call_deferred("add_child", item)
+		GLOBAL.add_to_game(item, true)
 		var spawnOffset = Vector2(randf_range(-size, size), 0) if !center else Vector2(0, 0)
 		item.position = global_position + spawnOffset
 

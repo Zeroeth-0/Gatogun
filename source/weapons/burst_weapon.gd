@@ -39,4 +39,4 @@ func _fire_bullet(direction: Vector2, scene: PackedScene) -> void:
 		var bullet = scene.instantiate()
 		bullet.position = global_position + orthogonal * offset
 		bullet.set_dir(direction, deviationAngle)
-		get_tree().current_scene.add_child(bullet)
+		GLOBAL.add_to_game(bullet)

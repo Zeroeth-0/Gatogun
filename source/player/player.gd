@@ -78,10 +78,11 @@ func _handle_movement() -> void:
 func _handle_bombing() -> void:
 	var bombInstance = bomb.instantiate()
 	bombInstance.position = Vector2(340, 1000)
-	get_tree().current_scene.add_child.call_deferred(bombInstance)
+	GLOBAL.add_to_game(bombInstance, true)
 	bombCount -= 1
 	for bullet in get_tree().get_nodes_in_group("Fire"): bullet.queue_free()
 	activate_shield(3)
+	SCORE.reset()
 
 # === ESCUDO TEMPORAL ===
 func activate_shield(duration: float) -> void:

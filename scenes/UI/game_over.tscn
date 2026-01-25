@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://do0plaogmk66"]
 
 [ext_resource type="Script" uid="uid://ce6rccpqgcq1s" path="res://source/UI/title_gameover.gd" id="1_vop4n"]
-[ext_resource type="PackedScene" uid="uid://dra7yqg0s7urp" path="res://scenes/UI/title_screen.tscn" id="2_vop4n"]
+[ext_resource type="PackedScene" uid="uid://dra7yqg0s7urp" path="res://scenes/game/title_screen.tscn" id="2_vop4n"]
 
 [node name="Title Screen" type="Control"]
 layout_mode = 3

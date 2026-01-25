@@ -249,4 +249,4 @@ func _shoot_bullet(dir: Vector2, pos: Vector2, spd: float) -> void:
 	bullet.set_properties(dir, spd)
 	bullet.modify_direction(type, gravIntensity, deviationAngle, dirStartTime, dirDuration)
 	if modifySpeed: bullet.modify_speed(fstNewSpeed, fstStartTime, sndNewSpeed, sndStartTime)
-	get_tree().current_scene.add_child(bullet)
+	GLOBAL.add_to_game(bullet)

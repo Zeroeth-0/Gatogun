@@ -23,4 +23,4 @@ func _fire_bullet(direction: Vector2) -> void:
 	var bullet = bulletScene.instantiate()
 	bullet.position = global_position
 	bullet.set_dir(direction, 0)  # Sin desviación
-	get_tree().current_scene.add_child(bullet)
+	GLOBAL.add_to_game(bullet)

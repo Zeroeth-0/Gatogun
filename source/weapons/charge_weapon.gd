@@ -28,4 +28,4 @@ func _process(delta: float) -> void:
 func _spawn_bullet() -> void:
 	var bullet = bullet_scene.instantiate()
 	bullet.global_position = global_position - Vector2(0, 100)
-	get_tree().current_scene.add_child(bullet)
+	GLOBAL.add_to_game(bullet)

@@ -1,0 +1,63 @@
+[gd_scene load_steps=5 format=3 uid="uid://cejse351xo6ye"]
+
+[ext_resource type="Texture2D" uid="uid://chijma6mb38wf" path="res://background_cats.png" id="1_7h61r"]
+[ext_resource type="PackedScene" uid="uid://dra7yqg0s7urp" path="res://scenes/game/title_screen.tscn" id="2_7h61r"]
+[ext_resource type="Script" uid="uid://dtbsevhrfaxw" path="res://scenes/UI/zoom_viewport.gd" id="3_0sr1o"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_0sr1o"]
+viewport_path = NodePath("GameViewportContainer/GameViewport")
+
+[node name="Game" type="Node2D"]
+
+[node name="BackgroundCats" type="Sprite2D" parent="."]
+position = Vector2(961.25, 538)
+scale = Vector2(3.3626087, 2.5534883)
+texture = ExtResource("1_7h61r")
+
+[node name="GameViewportContainer" type="SubViewportContainer" parent="."]
+texture_filter = 1
+offset_left = 528.0
+offset_top = 62.0
+offset_right = 1208.0
+offset_bottom = 792.0
+scale = Vector2(1.3, 1.3)
+
+[node name="GameViewport" type="SubViewport" parent="GameViewportContainer"]
+own_world_3d = true
+handle_input_locally = false
+size = Vector2i(680, 730)
+render_target_update_mode = 4
+
+[node name="Title Screen" parent="GameViewportContainer/GameViewport" instance=ExtResource("2_7h61r")]
+
+[node name="ZoomViewportContainer" type="SubViewportContainer" parent="."]
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1432.0
+offset_top = 710.0
+offset_right = 1632.0
+offset_bottom = 910.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.5, 1.5)
+
+[node name="ZoomViewport" type="SubViewport" parent="ZoomViewportContainer"]
+handle_input_locally = false
+size = Vector2i(200, 200)
+render_target_update_mode = 4
+script = ExtResource("3_0sr1o")
+
+[node name="TextureRect" type="TextureRect" parent="ZoomViewportContainer/ZoomViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 480.0
+offset_bottom = 530.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_0sr1o")
+
+[node name="PlayerCamera" type="Camera2D" parent="ZoomViewportContainer/ZoomViewport"]
+zoom = Vector2(1.5, 1.5)

@@ -17,7 +17,7 @@ func _ready() -> void:
 # Muestra la medalla y elimina la bala
 func cancel() -> void:
 	var item = medal.instantiate()
-	get_tree().current_scene.call_deferred("add_child", item)
+	GLOBAL.add_to_game(item, true)
 	item.position = global_position
 	queue_free()
 
