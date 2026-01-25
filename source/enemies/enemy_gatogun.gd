@@ -49,6 +49,10 @@ func _process(delta: float) -> void:
 			pulseMarked = true
 			health -= delta * a.damage
 	
+	# Mantener intensidad si el jugador está cerca de los enemigos
+	if position.distance_to(GAME.get_player()) < 250 or SCORE.medalCountdown > 0:
+		SCORE.keep_hot()
+	
 	# Vulnerabilidad post-1er disparo
 	if emitter != null and !halvedHealth:
 		match typeEnum:
@@ -85,8 +89,9 @@ func _check_death() -> void:
 	# Devuelve medallas si se mata a bocajarro o si el contador de medallas está activo
 	if !byBomb and (position.distance_to(playerPos) < 250 or SCORE.medalCountdown > 0 or pulseMarked):
 		_spawn_score(scoreCount, medal)
-		if lastBullet and !SCORE.medalCountdown > 0 and !pulseMarked: SCORE.medalCountdown = SCORE.MAX_MEDAL_COUNTDOWN
-		elif lastBullet and !pulseMarked: SCORE.medalCountdown += 0.1
+		if lastBullet and !SCORE.medalCountdown > 0 and !pulseMarked and !INPUT.fireHold:
+			SCORE.medalCountdown = SCORE.MAX_MEDAL_COUNTDOWN
+		elif lastBullet and !pulseMarked and !INPUT.fireHold: SCORE.medalCountdown += 0.1
 	# Devuelve balas de venganza si se mata alto en la pantalla
 	if (position.y < 300 or pulseMarked) and !byBomb: _spawn_score(scoreCount, revengeBullet)
 	if typeEnum == EnemyType.MID: _spawn_score(1, powerUp, true)
@@ -96,7 +101,9 @@ func _check_death() -> void:
 		for bullet in get_tree().get_nodes_in_group("Enemy Bullet"):
 			if bullet.has_method("cancel"): bullet.cancel()
 	
-	if pulseMarked: SCORE.increase_combo(100)
+	if pulseMarked:
+		SCORE.increase_hot(5)
+		SCORE.increase_combo(100)
 	
 	if comboLabel: comboLabel.free_label(enemType)
 	

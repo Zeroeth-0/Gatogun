@@ -41,7 +41,7 @@ var comboAvailable: bool = true
 
 # === LOOP PRINCIPAL ===
 func _process(delta: float) -> void:
-	_update_hot()
+	_update_hot(delta)
 	_update_combo(delta)
 	_update_mult(delta)
 	
@@ -51,13 +51,21 @@ func _process(delta: float) -> void:
 		medalCountdown = 0
 
 # === SISTEMA DE INTENSIDAD ===
-func _update_hot() -> void:
-	var dist = INF
-	for e in get_tree().get_nodes_in_group("Enemy"):
-		if is_instance_valid(e):
-			dist = min(dist, GAME.get_player().distance_to(e.global_position))
-	if medalCountdown > 0: hot = 100.0
-	else: hot = clamp(remap(dist, 250.0, 500.0, 100.0, 0.0), 0.0, 100.0)
+func _update_hot(delta: float) -> void:
+	if hot > 0:
+		if hotDrainDelay > 0: hotDrainDelay -= delta
+		else:
+			if INPUT.firing: hot -= hotDrainRate * delta
+			else: hot -= hotDrainRate * delta / 2
+			if hot <= 0:
+				hot = 0
+
+func increase_hot(value: int) -> void:
+	hot = clampf(hot + value, 0.0, hotSize)
+	hotDrainDelay = 1.0  # Delay antes de que empiece a bajar
+
+func keep_hot() -> void:
+	hotDrainDelay = 0.1
 
 # === SISTEMA DE MULT ===
 func _update_mult(delta: float) -> void:
@@ -77,13 +85,7 @@ func _update_mult(delta: float) -> void:
 
 # === SISTEMA DE COMBO ===
 func _update_combo(delta: float) -> void:
-	var needWait: bool = true
-	if hot <= 0 and comboResetTimer >= 0:
-		if needWait:
-			await get_tree().create_timer(3.0).timeout
-			needWait = false
-		comboResetTimer -= delta
-	else: needWait = true
+	if hot <= 0 and comboResetTimer >= 0: comboResetTimer -= delta
 	
 	if combo <= 0:
 		combo = 0

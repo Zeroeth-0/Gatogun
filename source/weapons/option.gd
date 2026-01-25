@@ -111,19 +111,26 @@ func _damage_hold(parent: Node2D, dir: Vector2, delta: float) -> void:
 	# Actualizar el offset lateral de manera cíclica con velocidad variable
 	currLatOffset += moveDir * effectiveSpeed * delta
 	
+	var jumped: bool = false
+	
+	# Cuando llega a un extremo → salta al opuesto (manteniendo la misma dirección)
 	if currLatOffset >= nSideOffset:
-		currLatOffset = nSideOffset
-		moveDir = -1
+		currLatOffset = -nSideOffset + 10
+		jumped = true
 	elif currLatOffset <= -nSideOffset:
-		currLatOffset = -nSideOffset
-		moveDir = 1
+		currLatOffset = nSideOffset - 10
+		jumped = true
 	
 	# === Posición visual desplazada lateralmente
 	var targetPosition = parent.global_position + dir * distance
 	var offsetDir := dir.orthogonal().normalized()
 	targetPosition += offsetDir * currLatOffset
 	
-	global_position = global_position.lerp(targetPosition, followDelay * delta)
+	if jumped:
+		global_position = targetPosition
+	else:
+		global_position = global_position.lerp(targetPosition, followDelay * delta)
+	
 	followDelay = 15
 	
 	if canFire and activeBullets < maxBullets:
@@ -134,7 +141,7 @@ func _classic_hold(dir: Vector2, delta: float) -> void:
 	deviationAngle = 0
 	
 	if targetNode and is_instance_valid(targetNode):
-		var targetPos = targetNode.global_position
+		targetPos = targetNode.global_position
 		var toTarget = targetPos - global_position
 		var distance = toTarget.length()
 		

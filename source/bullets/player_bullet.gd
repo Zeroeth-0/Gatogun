@@ -6,7 +6,7 @@ enum BulletEnum { BOMB, LASER, FOLLOW, BURST, CHARGE }
 # === CONFIGURACIÓN EXPORTADA ===
 @export var BulletType: BulletEnum = BulletEnum.BURST
 @export var speed: float = 2500.0
-@export var damage: float = 1.0
+@export var damage: int = 1
 @export var lifeTime: float = 1.5
 
 # === ESTADO INTERNO ===
@@ -76,6 +76,11 @@ func _get_closest_enemy() -> Node2D:
 func _on_area_entered(area: Node) -> void:
 	if area.is_in_group("Enemy") and BulletType != BulletEnum.BOMB and BulletType != BulletEnum.CHARGE:
 		SCORE.increase_combo(damage)
+		if INPUT.fireHold:
+			SCORE.keep_hot()
+		else:
+			SCORE.increase_hot(damage)
+		
 		queue_free()
 
 func _on_area_exited(area: Node) -> void:
