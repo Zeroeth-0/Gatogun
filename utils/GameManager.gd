@@ -2,7 +2,6 @@ extends Node
 
 # === SOBRE EL JUEGO ===
 const CENTER: Vector2 = Vector2(340, 365)
-@onready var gameOver: PackedScene = preload("res://scenes/UI/game_over.tscn")
 var directions = [Vector2(1, 1), Vector2(-1, 1), Vector2(1, -1), Vector2(-1, -1)]
 var liveCount: int = 2
 
@@ -118,7 +117,7 @@ func store(pos: Vector2 = Vector2(0, 0), continued: bool = false) -> void:
 
 func game_over() -> void:
 	_reset_game_state()
-	get_tree().change_scene_to_packed(gameOver)
+	GLOBAL.change_scene("OVER")
 
 # Apertura del menú de pausa
 func _input(event: InputEvent) -> void:

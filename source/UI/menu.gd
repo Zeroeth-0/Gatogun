@@ -11,12 +11,6 @@ const OPTIONS: Array[String] = [
 ]
 
 @onready var labels: Array[Label] = []
-@export var gameScene: PackedScene                                              # Escena Game Start
-@export var caravanScene: PackedScene                                           # Escena Caravan
-@export var practScene: PackedScene                                             # Escena Practice
-@export var leaderScene: PackedScene                                            # Escena Leaderboards
-@export var galleryScene: PackedScene                                           # Escena Gallery
-@export var settScene: PackedScene                                              # Escena Settings
 
 # === ESTADO INTERNO ===
 var selected: int = 0
@@ -63,6 +57,8 @@ func _process(delta: float) -> void:
 	# Confirmar selección
 	if Input.is_action_just_pressed("C") or Input.is_action_just_pressed("A"):
 		confirm_selection()
+	
+	if Input.is_action_just_pressed("B"): GLOBAL.change_scene("TITLE")
 
 func move_selection(is_down: bool) -> void:
 	if is_down: selected = (selected + 1) % OPTIONS.size()  # ¡WRAP AROUND! Abajo del todo → arriba
@@ -90,22 +86,22 @@ func confirm_selection() -> void:
 
 # ESQUELETO DE FUNCIONES
 func game_start() -> void:
-	if gameScene: GLOBAL.change_scene(gameScene)
+	GLOBAL.change_scene("GAME")
 
 func caravan() -> void:
-	if caravanScene: GLOBAL.change_scene(caravanScene)
+	GLOBAL.change_scene("CARAVAN")
 
 func practice() -> void:
-	if practScene: GLOBAL.change_scene(practScene)
+	GLOBAL.change_scene("PRACTICE")
 
 func leaderboards() -> void:
-	if leaderScene: GLOBAL.change_scene(leaderScene)
+	GLOBAL.change_scene("LEADERBOARDS")
 
 func gallery() -> void:
-	if galleryScene: GLOBAL.change_scene(galleryScene)
+	GLOBAL.change_scene("GALLERY")
 
 func settings() -> void:
-	if settScene: GLOBAL.change_scene(settScene)
+	GLOBAL.change_scene("SETTINGS")
 
 func exit_game() -> void:
 	get_tree().quit()

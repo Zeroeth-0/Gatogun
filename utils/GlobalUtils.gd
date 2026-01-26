@@ -2,6 +2,17 @@ extends Node
 
 @onready var game_viewport = get_tree().root.get_node("Game/GameViewportContainer/GameViewport")
 
+# === ESCENAS DEL JUEGO ===
+@onready var gameOver: PackedScene = preload("res://scenes/game/game_over.tscn")
+@onready var menuScene: PackedScene = preload("res://scenes/game/menu.tscn")
+@onready var titleScene: PackedScene = preload("res://scenes/game/title_screen.tscn")
+@onready var gameScene: PackedScene = preload("res://scenes/game/world.tscn")
+@export var caravanScene: PackedScene                                           # Escena Caravan
+@export var practScene: PackedScene                                             # Escena Practice
+@export var leaderScene: PackedScene                                            # Escena Leaderboards
+@export var galleryScene: PackedScene                                           # Escena Gallery
+@export var settScene: PackedScene                                              # Escena Settings
+
 # Funciones para instanciar
 func add_to_game(node: Node, deferred: bool = false):
 	if deferred:
@@ -23,11 +34,21 @@ func is_paused() -> bool:
 	return get_tree().paused
 
 # Cambiar escena dentro del SubViewport
-func change_scene(packed_scene: PackedScene) -> void:
+func change_scene(packedScene: String) -> void:
 	if game_viewport.get_child(0) == null: return
 	# 1. Eliminar hijos actuales
 	for child in game_viewport.get_children(): child.queue_free()
 	# 2. Instanciar la nueva escena
-	var new_scene = packed_scene.instantiate()
+	var newScene
+	match packedScene:
+		"OVER": newScene = gameOver.instantiate()
+		"MENU": newScene = menuScene.instantiate()
+		"TITLE": newScene = titleScene.instantiate()
+		"GAME": newScene = gameScene.instantiate()
+		"CARAVAN": newScene = caravanScene.instantiate()
+		"PRACTICE": newScene = practScene.instantiate()
+		"LEADERBOARDS": newScene = leaderScene.instantiate()
+		"GALLERY": newScene = galleryScene.instantiate()
+		"SETTINGS": newScene = settScene.instantiate()
 	# 3. Añadirla al contenedor
-	game_viewport.add_child(new_scene)
+	game_viewport.add_child(newScene)

@@ -10,9 +10,6 @@ const OPTIONS := [
 
 @onready var labels: Array[Label] = []
 
-@export var menuScreen: PackedScene   # Título / menú principal
-@export var gameScene: PackedScene    # Escena del juego (restart)
-
 # === Configuración de navegación ===
 var selected: int = 0
 var init_delay: float = 0.20
@@ -33,7 +30,7 @@ func _ready() -> void:
 		var lbl = Label.new()
 		lbl.text = text
 		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		lbl.add_theme_font_size_override("font_size", 32)
+		lbl.add_theme_font_size_override("font_size", 16)
 		vbox.add_child(lbl)
 		labels.append(lbl)
 	
@@ -83,10 +80,10 @@ func update_selection() -> void:
 		var lbl = labels[i]
 		if i == selected:
 			lbl.modulate = Color.YELLOW
-			lbl.add_theme_font_size_override("font_size", 36)
+			lbl.add_theme_font_size_override("font_size", 18)
 		else:
 			lbl.modulate = Color.WHITE
-			lbl.add_theme_font_size_override("font_size", 32)
+			lbl.add_theme_font_size_override("font_size", 16)
 
 func _confirm() -> void:
 	match selected:
@@ -94,12 +91,16 @@ func _confirm() -> void:
 			_resume()
 		1:  # RESTART
 			GLOBAL.resume_game()
+			SCORE.reset()
+			SCORE.reset_game_score()
 			GAME.store(Vector2(10000, 10000), false)
-			if gameScene: GLOBAL.change_scene(gameScene)
+			GLOBAL.change_scene("GAME")
 		2:  # BACK TO TITLE
 			GAME.playing = false
 			GLOBAL.resume_game()
-			if menuScreen: GLOBAL.change_scene(menuScreen)
+			SCORE.reset()
+			SCORE.reset_game_score()
+			GLOBAL.change_scene("MENU")
 		3:  # SETTINGS
 			pass
 		4:  # EXIT

@@ -44,7 +44,7 @@ movie_writer/mix_rate.movie=0
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/BulletUpHell/plugin.cfg")
+enabled=PackedStringArray()
 
 [input]
 
