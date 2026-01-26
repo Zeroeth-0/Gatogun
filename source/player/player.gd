@@ -106,6 +106,6 @@ func _on_hurtbox_area_entered(area: Node) -> void:
 			GAME.store(global_position, false)
 			for b in get_tree().get_nodes_in_group("Enemy Bullet"): b.remove()
 			queue_free()
-	
+
 func _on_hurtbox_area_exited(area: Node) -> void: # Enemy cutoff
 	if area.is_in_group("Ground"): area.get_parent().canShoot = true

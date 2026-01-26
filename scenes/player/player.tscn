@@ -45,6 +45,7 @@ shape = SubResource("RectangleShape2D_klkvo")
 debug_color = Color(0, 1, 0, 0.419608)
 
 [node name="Weapon" parent="." instance=ExtResource("4_g6re5")]
+position = Vector2(0, -1)
 
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
 [connection signal="area_exited" from="Hurtbox" to="." method="_on_hurtbox_area_exited"]

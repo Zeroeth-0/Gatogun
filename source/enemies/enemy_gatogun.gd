@@ -82,6 +82,7 @@ func _check_death() -> void:
 	SCORE.add_score(SCORE.combo)
 	
 	var playerPos = GAME.get_player()
+	if pulseMarked: scoreCount *= 1.1
 	# Devuelve medallas si se mata a bocajarro o si el contador de medallas está activo
 	if !byBomb and (position.distance_to(playerPos) < 250 or SCORE.medalCountdown > 0 or pulseMarked):
 		_spawn_score(scoreCount, medal)

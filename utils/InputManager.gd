@@ -15,6 +15,9 @@ var holdLimit: float = 0.3
 var buffTimer: float = 0.0
 var buffActive: bool = false
 
+func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
+
 func _process(delta: float) -> void:
 	_handle_dpad()
 	_handle_actions(delta)

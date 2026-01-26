@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://c6wny4n5ls3mq"]
+
+[ext_resource type="Script" uid="uid://bwuo88jc35vtp" path="res://source/UI/pause.gd" id="1_tnhvy"]
+[ext_resource type="PackedScene" uid="uid://bxas2efkd5wmv" path="res://scenes/game/menu.tscn" id="2_cho5n"]
+[ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_xr3kq"]
+[ext_resource type="PackedScene" uid="uid://bi7uyv2plo07x" path="res://scenes/game/world.tscn" id="3_cho5n"]
+
+[node name="Pause" type="Control"]
+process_mode = 3
+z_index = 10
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tnhvy")
+menuScreen = ExtResource("2_cho5n")
+gameScene = ExtResource("3_cho5n")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0, 0, 0, 0.415686)
+position = Vector2(340, 365)
+scale = Vector2(6, 6)
+texture = ExtResource("2_xr3kq")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 360.0
+offset_top = 340.0
+offset_right = 360.0
+offset_bottom = 340.0

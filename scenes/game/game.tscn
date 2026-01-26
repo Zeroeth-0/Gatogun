@@ -22,7 +22,7 @@ offset_right = 1208.0
 offset_bottom = 792.0
 scale = Vector2(1.3, 1.3)
 
-[node name="GameViewport" type="SubViewport" parent="GameViewportContainer"]
+[node name="GameViewport" type="SubViewport" parent="GameViewportContainer" groups=["Game"]]
 own_world_3d = true
 handle_input_locally = false
 size = Vector2i(680, 730)
@@ -35,10 +35,10 @@ texture_filter = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 1432.0
-offset_top = 710.0
-offset_right = 1632.0
-offset_bottom = 910.0
+offset_left = 1430.0
+offset_top = 700.0
+offset_right = 1630.0
+offset_bottom = 900.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(1.5, 1.5)
@@ -48,6 +48,7 @@ handle_input_locally = false
 size = Vector2i(200, 200)
 render_target_update_mode = 4
 script = ExtResource("3_0sr1o")
+screenMargin = 70
 
 [node name="TextureRect" type="TextureRect" parent="ZoomViewportContainer/ZoomViewport"]
 anchors_preset = 15
