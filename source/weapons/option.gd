@@ -46,9 +46,9 @@ func _process_option_behavior(delta: float) -> void:
 	prevParentPos = parent.global_position
 	
 	var dir := Vector2.UP
-	var GatoStyle = parent.GatoStyle
-	var StyleEnum = parent.StyleEnum
-
+	var GatoStyle = GAME.GatoStyle
+	var StyleEnum = GAME.GatoEnum
+	
 	if INPUT.fireHold:
 		# ── Comportamiento cuando se mantiene el disparo (sin cambios) ──
 		match GatoStyle:
@@ -58,7 +58,7 @@ func _process_option_behavior(delta: float) -> void:
 		
 		# Reseteamos órbita para que al soltar vuelva a empezar limpio
 		orbit_angle = offSign * PI / 2.0
-
+	
 	else:
 		# ── Comportamiento cuando NO se dispara ──
 		if GatoStyle == StyleEnum.DAMAGE:

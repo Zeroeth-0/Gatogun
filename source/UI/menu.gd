@@ -20,6 +20,8 @@ var deadzone: float = 0.1                                                       
 var repTimer: float = 0.0
 var lastDir: int = 0                                                            # -1=up, 0=none, 1=down
 
+var first_frame: bool = true
+
 func _ready() -> void:
 	var vbox: VBoxContainer = $VBoxContainer
 	for option_text in OPTIONS:
@@ -55,10 +57,11 @@ func _process(delta: float) -> void:
 			repTimer = repDelay
 	
 	# Confirmar selección
-	if Input.is_action_just_pressed("C") or Input.is_action_just_pressed("A"):
-		confirm_selection()
-	
-	if Input.is_action_just_pressed("B"): GLOBAL.change_scene("TITLE")
+	if !first_frame:
+		if Input.is_action_just_pressed("C") or Input.is_action_just_pressed("A"):
+			confirm_selection()
+		if Input.is_action_just_pressed("B"): GLOBAL.change_scene("TITLE")
+	else: first_frame = false
 
 func move_selection(is_down: bool) -> void:
 	if is_down: selected = (selected + 1) % OPTIONS.size()  # ¡WRAP AROUND! Abajo del todo → arriba
@@ -86,7 +89,7 @@ func confirm_selection() -> void:
 
 # ESQUELETO DE FUNCIONES
 func game_start() -> void:
-	GLOBAL.change_scene("GAME")
+	GLOBAL.change_scene("GATO")
 
 func caravan() -> void:
 	GLOBAL.change_scene("CARAVAN")

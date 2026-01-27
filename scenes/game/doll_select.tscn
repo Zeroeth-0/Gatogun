@@ -1,0 +1,68 @@
+[gd_scene load_steps=3 format=3 uid="uid://dukgnwfkfdi2d"]
+
+[ext_resource type="Script" uid="uid://n0d06dpwhy7d" path="res://source/UI/style_select.gd" id="1_rdiiy"]
+[ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_ca08h"]
+
+[node name="Doll Select" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_rdiiy")
+SelectStyle = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 70.0
+offset_top = 250.0
+offset_right = 462.0
+offset_bottom = 432.0
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="FstVBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="FstIcon" type="TextureRect" parent="VBoxContainer/HBoxContainer/FstVBoxContainer"]
+layout_mode = 2
+texture = ExtResource("2_ca08h")
+
+[node name="FstName" type="Label" parent="VBoxContainer/HBoxContainer/FstVBoxContainer"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="SndVBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="SndIcon" type="TextureRect" parent="VBoxContainer/HBoxContainer/SndVBoxContainer"]
+layout_mode = 2
+texture = ExtResource("2_ca08h")
+
+[node name="SndName" type="Label" parent="VBoxContainer/HBoxContainer/SndVBoxContainer"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="TrdVBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="TrdIcon" type="TextureRect" parent="VBoxContainer/HBoxContainer/TrdVBoxContainer"]
+layout_mode = 2
+texture = ExtResource("2_ca08h")
+
+[node name="TrdName" type="Label" parent="VBoxContainer/HBoxContainer/TrdVBoxContainer"]
+layout_mode = 2
+horizontal_alignment = 1

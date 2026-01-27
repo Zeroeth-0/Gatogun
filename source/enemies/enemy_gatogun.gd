@@ -91,7 +91,8 @@ func _check_death() -> void:
 		elif lastBullet and !pulseMarked and !INPUT.fireHold: SCORE.medalCountdown += 0.1
 	# Devuelve balas de venganza si se mata alto en la pantalla
 	if (position.y < 300 or pulseMarked) and !byBomb: _spawn_score(scoreCount, revengeBullet)
-	if typeEnum == EnemyType.MID: _spawn_score(1, powerUp, true)
+	if typeEnum == EnemyType.MID and GAME.DollStyle != GAME.DollEnum.STRONG:
+		_spawn_score(1, powerUp, true)
 	
 	# Enemigos élite cancelan todas las balas
 	if typeEnum == EnemyType.ELITE:

@@ -65,7 +65,7 @@ func _process(delta: float) -> void:
 		_confirm()
 	
 	# Cerrar pausa con Start o B (solo después del primer frame)
-	if not first_frame:
+	if !first_frame:
 		if Input.is_action_just_pressed("Start") or Input.is_action_just_pressed("B"):
 			_resume()
 	else: first_frame = false

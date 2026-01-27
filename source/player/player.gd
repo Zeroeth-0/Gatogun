@@ -1,10 +1,6 @@
 extends CharacterBody2D
 
-# === ESTILOS ===
-enum StyleEnum { SPEED, STRONG, NEWBIE }
-
 # === EXPORTS GENERALES ===
-@export var DollStyle: StyleEnum = StyleEnum.SPEED
 @export var sprite: Sprite2D                                                    # Aspecto del jugador
 @export var bomb: PackedScene                                                   # Bomba
 @export var hitbox: Node2D                                                      # Colisión
@@ -29,15 +25,15 @@ func _ready() -> void:
 	playable = false
 	goPoint = GAME.goPoint
 	
-	match DollStyle:
-		StyleEnum.SPEED:
+	match GAME.DollStyle:
+		GAME.DollEnum.SPEED:
 			maxBombs = 4
 			bombCount = 2
-		StyleEnum.STRONG:
+		GAME.DollEnum.STRONG:
 			WEAPON.lvl_up("MAX")
 			maxBombs = 2
 			bombCount = 1
-		StyleEnum.NEWBIE:
+		GAME.DollEnum.NEWBIE:
 			maxBombs = 6
 			bombCount = 3
 
@@ -47,7 +43,7 @@ func _process(_delta: float) -> void:
 		_handle_movement()
 		_clamp_to_screen(get_viewport().get_visible_rect().size)
 		if Input.is_action_just_pressed("B") and GAME.bombCount > 0 and canDie: _handle_bombing()
-		if DollStyle == StyleEnum.SPEED: speed = 200 if INPUT.fireHold else 350
+		if GAME.DollStyle == GAME.DollEnum.SPEED: speed = 200 if INPUT.fireHold else 350
 		else: speed = 150 if INPUT.fireHold else 300
 	else:
 		# Movimiento automático antes de habilitar control
@@ -100,7 +96,7 @@ func _clamp_to_screen(screenSize: Vector2) -> void:
 # === COLISIONES ===
 func _on_hurtbox_area_entered(area: Node) -> void:
 	if canDie and area.is_in_group("Damage"):
-		if DollStyle == StyleEnum.NEWBIE and GAME.bombCount > 0: _handle_bombing()
+		if GAME.DollStyle == GAME.DollEnum.NEWBIE and GAME.bombCount > 0: _handle_bombing()
 		else:
 			get_parent().lives -= 1
 			GAME.store(global_position, false)

@@ -1,10 +1,6 @@
 extends Node2D
 
-# === ESTILOS ===
-enum StyleEnum { RANGE, DAMAGE, CLASSIC }
-
 # === EXPORTS GENERALES ===
-@export var GatoStyle: StyleEnum = StyleEnum.RANGE
 @export var stdTargetPos: Vector2 = Vector2.ZERO
 @export var dpsTargetPos: Vector2 = Vector2.ZERO
 
@@ -22,8 +18,8 @@ func _ready():
 
 # === AUXILIAR ===
 func formation_handler():
-	match GatoStyle:
-		StyleEnum.CLASSIC:
+	match GAME.GatoStyle:
+		GAME.GatoEnum.CLASSIC:
 			$OptionR.OptionType = $OptionR.OptionEnum.FOLLOW
 			$OptionL.OptionType = $OptionL.OptionEnum.FOLLOW
 		_:
@@ -31,8 +27,8 @@ func formation_handler():
 			$OptionL.OptionType = $OptionL.OptionEnum.SIDES
 
 func shot_type():
-	match GatoStyle:
-		StyleEnum.DAMAGE:
+	match GAME.GatoStyle:
+		GAME.GatoEnum.DAMAGE:
 			$OptionR.targetPos = dpsTargetPos * Vector2($OptionR.offSign, 1)
 			$OptionL.targetPos = dpsTargetPos * Vector2($OptionL.offSign, 1)
 		_:

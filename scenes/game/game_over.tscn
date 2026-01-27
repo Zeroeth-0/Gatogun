@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://do0plaogmk66"]
+[gd_scene load_steps=2 format=3 uid="uid://do0plaogmk66"]
 
 [ext_resource type="Script" uid="uid://ce6rccpqgcq1s" path="res://source/UI/title_gameover.gd" id="1_vop4n"]
-[ext_resource type="PackedScene" uid="uid://dra7yqg0s7urp" path="res://scenes/game/title_screen.tscn" id="2_vop4n"]
 
 [node name="Title Screen" type="Control"]
 layout_mode = 3
@@ -11,7 +10,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_vop4n")
-nextScene = ExtResource("2_vop4n")
 
 [node name="Title" type="Label" parent="."]
 layout_mode = 0
@@ -29,6 +27,6 @@ offset_left = 242.0
 offset_top = 508.0
 offset_right = 449.0
 offset_bottom = 534.0
-text = "PRESS SHOOT BUTTON"
+text = "PUSH SHOOT BUTTON"
 horizontal_alignment = 1
 vertical_alignment = 1

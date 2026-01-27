@@ -7,6 +7,8 @@ extends Node
 @onready var menuScene: PackedScene = preload("res://scenes/game/menu.tscn")
 @onready var titleScene: PackedScene = preload("res://scenes/game/title_screen.tscn")
 @onready var gameScene: PackedScene = preload("res://scenes/game/world.tscn")
+@onready var gatoScene: PackedScene = preload("res://scenes/game/gato_select.tscn")
+@onready var dollScene: PackedScene = preload("res://scenes/game/doll_select.tscn")
 @export var caravanScene: PackedScene                                           # Escena Caravan
 @export var practScene: PackedScene                                             # Escena Practice
 @export var leaderScene: PackedScene                                            # Escena Leaderboards
@@ -15,10 +17,8 @@ extends Node
 
 # Funciones para instanciar
 func add_to_game(node: Node, deferred: bool = false):
-	if deferred:
-		game_viewport.get_child(0).call_deferred("add_child", node)
-	else:
-		game_viewport.get_child(0).add_child(node)
+	if deferred: game_viewport.get_child(0).call_deferred("add_child", node)
+	else: game_viewport.get_child(0).add_child(node)
 
 func get_subtree():
 	return game_viewport.get_child(0)
@@ -36,19 +36,22 @@ func is_paused() -> bool:
 # Cambiar escena dentro del SubViewport
 func change_scene(packedScene: String) -> void:
 	if game_viewport.get_child(0) == null: return
-	# 1. Eliminar hijos actuales
-	for child in game_viewport.get_children(): child.queue_free()
-	# 2. Instanciar la nueva escena
+	
+	# 1. Instanciar la nueva escena
 	var newScene
 	match packedScene:
 		"OVER": newScene = gameOver.instantiate()
 		"MENU": newScene = menuScene.instantiate()
 		"TITLE": newScene = titleScene.instantiate()
 		"GAME": newScene = gameScene.instantiate()
-		"CARAVAN": newScene = caravanScene.instantiate()
-		"PRACTICE": newScene = practScene.instantiate()
-		"LEADERBOARDS": newScene = leaderScene.instantiate()
-		"GALLERY": newScene = galleryScene.instantiate()
-		"SETTINGS": newScene = settScene.instantiate()
-	# 3. Añadirla al contenedor
+		"GATO": newScene = gatoScene.instantiate()
+		"DOLL": newScene = dollScene.instantiate()
+		"CARAVAN": return # newScene = caravanScene.instantiate()
+		"PRACTICE": return # newScene = practScene.instantiate()
+		"LEADERBOARDS": return # newScene = leaderScene.instantiate()
+		"GALLERY": return # newScene = galleryScene.instantiate()
+		"SETTINGS": return # newScene = settScene.instantiate()
+	# 2. Eliminar hijos actuales
+	for child in game_viewport.get_children(): child.queue_free()
+	# 3. Añadir la nueva escena al contenedor
 	game_viewport.add_child(newScene)
