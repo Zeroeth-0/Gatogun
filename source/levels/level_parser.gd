@@ -22,6 +22,7 @@ var pattern_definitions := {
 }
 
 func _ready() -> void:
+	DRNG.reset_rng(2004, false)
 	_load_markers()
 	await _load_wave_data(waveFile)
 	GAME.spawn()

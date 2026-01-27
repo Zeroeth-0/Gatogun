@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://bi7uyv2plo07x"]
+[gd_scene load_steps=22 format=3 uid="uid://bi7uyv2plo07x"]
 
 [ext_resource type="Script" uid="uid://hrxsyfgjv1kg" path="res://source/levels/level_parser.gd" id="1_g3wwy"]
 [ext_resource type="PackedScene" uid="uid://60qb43njmjls" path="res://scenes/enemies/mid/air/blammo.tscn" id="2_ssxqg"]
@@ -21,7 +21,6 @@
 [ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="19_01lr2"]
 [ext_resource type="PackedScene" uid="uid://cgts6rg8xrau" path="res://scenes/levels/playzone.tscn" id="20_g0bee"]
 [ext_resource type="PackedScene" uid="uid://duam5mtyrxv5l" path="res://scenes/UI/hud.tscn" id="21_kc3r2"]
-[ext_resource type="PackedScene" uid="uid://dog0k55xaa2s" path="res://scenes/items/max_power_up.tscn" id="22_3qeyn"]
 
 [node name="World" type="Node2D" groups=["Level"]]
 script = ExtResource("1_g3wwy")
@@ -130,6 +129,3 @@ waveFile = "res://source/levels/test_ground.txt"
 [node name="Playzone" parent="." instance=ExtResource("20_g0bee")]
 
 [node name="HUD" parent="." instance=ExtResource("21_kc3r2")]
-
-[node name="Item" parent="." instance=ExtResource("22_3qeyn")]
-position = Vector2(363, 162)

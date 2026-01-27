@@ -85,7 +85,7 @@ func _update_direction(delta: float) -> void:
 		DirectionType.LEFT: direction = direction.rotated(deg_to_rad(deviationAngle) * delta)
 		DirectionType.RIGHT: direction = direction.rotated(deg_to_rad(-deviationAngle) * delta)
 		DirectionType.RANDOM:
-			var angle = randf_range(-deviationAngle, deviationAngle)
+			var angle = DRNG.drandf_range(-deviationAngle, deviationAngle)
 			direction = direction.rotated(deg_to_rad(angle) * delta)
 
 # Aplica las fases de velocidad si están activas

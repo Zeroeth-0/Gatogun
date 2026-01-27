@@ -81,7 +81,6 @@ enum SpeedVar { BULLET, ARM }
 @export var keepSpeed: bool = false                                             # Mantener velocidad entre repeticiones
 
 # === ESTADO INTERNO ===
-var rng = RandomNumberGenerator.new()
 var rotationDirection := 1
 var stopRotation := false
 var playerPos: Vector2 = Vector2.ZERO
@@ -210,21 +209,21 @@ func fire(currentSpeed: float) -> void:
 			if aimAtPlayer: shootDir = (playerPos - shootPos).normalized()
 			
 			if parallel:
-				var offset = (i - armsToUse / 2.0) * spreadStep + rng.randf_range(-randomOffset, randomOffset)
+				var offset = (i - armsToUse / 2.0) * spreadStep + DRNG.drandf_range(-randomOffset, randomOffset)
 				var steepFactor = abs(i - (armsToUse - 1) / 2.0) * steepness
 				
 				shootPos += shootDir * steepFactor
 				shootDir = shootDir.rotated(deg_to_rad(steepFactor * 0.01))
 				shootPos += shootDir.orthogonal() * (offset + offsetCorrection)
 			else:
-				var angleOffset = angleStep * i - spreadAngle / 2.0 + rng.randf_range(-randomAngle, randomAngle)
+				var angleOffset = angleStep * i - spreadAngle / 2.0 + DRNG.drandf_range(-randomAngle, randomAngle)
 				if armsToUse != 1: shootDir = shootDir.rotated(deg_to_rad(angleOffset))
 				if spreadAngle == 360: shootDir *= -1
 			
 			for j in armWidth:
 				var armOffset = (j - (armWidth - 1) / 2.0) * spreadStep * armSpacingFactor
 				var finalPos = shootPos + shootDir.orthogonal() * armOffset
-				var finalSpeed = currentSpeed * rng.randf_range(1 - randomSpeed, 1 + randomSpeed)
+				var finalSpeed = currentSpeed * DRNG.drandf_range(1 - randomSpeed, 1 + randomSpeed)
 				
 				if not useSymmetry: _shoot_bullet(shootDir, finalPos, finalSpeed)
 				else:

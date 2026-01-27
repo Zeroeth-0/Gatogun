@@ -21,9 +21,9 @@ const ITEM_HALF_SIZE: float = 16
 
 func _ready() -> void:
 	# Lanzamiento inicial con fuerza aleatoria hacia arriba
-	velocity = Vector2(0, randf_range(-launchForce * 0.5, -launchForce * 2))
+	velocity = Vector2(0, DRNG.drandf_range(-launchForce * 0.5, -launchForce * 2))
 	
-	randSign = -1 if randf() > 0.5 else 1
+	randSign = -1 if DRNG.drandf() > 0.5 else 1
 	
 	# Esperar antes de activar seguimiento
 	await get_tree().create_timer(delayBeforeFollow, false).timeout

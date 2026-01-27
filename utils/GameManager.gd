@@ -88,7 +88,7 @@ func _spawn_missing_powerups() -> void:
 func _spawn_powerup(node: PackedScene) -> void:
 	var item = node.instantiate()
 	GLOBAL.add_to_game(item, true)
-	var spawnOffset = Vector2(randf_range(-128, 128), 0)
+	var spawnOffset = Vector2(DRNG.drandf_range(-128, 128), 0)
 	item.position = spawnPos + spawnOffset
 
 func _reset_game_state() -> void:

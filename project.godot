@@ -25,6 +25,7 @@ GAME="*res://utils/GameManager.gd"
 WEAPON="*res://utils/WeaponManager.gd"
 GLOBAL="*res://utils/GlobalUtils.gd"
 Spawning="*res://addons/BulletUpHell/Spawning.tscn"
+DRNG="*res://utils/RNGManager.gd"
 
 [display]
 

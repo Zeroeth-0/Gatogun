@@ -57,7 +57,7 @@ func _ready() -> void:
 	direction = DIRECTION_MAP.get(directionEnum, Vector2.DOWN)
 	currentDirection = direction
 	stageTimer = 0.0
-	randSide = -1 if randi() % 2 == 0 else 1
+	randSide = -1 if DRNG.drandi() % 2 == 0 else 1
 
 func _change_stage(nextStage: String, shouldInvert: bool) -> void:
 	currentStage = nextStage
