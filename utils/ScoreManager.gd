@@ -12,7 +12,7 @@ const POINT_FIVE: float = 0.5
 const HOT_DRAIN_RATE: float = 50.0
 const HOT_SIZE: float = 100.0
 const COMBO_LIMIT: float = 0.001
-const MULT_DRAIN_LIMIT: float = 0.03
+const MULT_DRAIN_LIMIT: float = 0.01
 const MAX_MEDAL_COUNTDOWN: float = 2.0
 
 # === ESTADO DE PUNTUACIÓN ===
@@ -33,7 +33,6 @@ var hotDrainRate: float = HOT_DRAIN_RATE
 var hotSize: float = HOT_SIZE
 var comboLimit: float = COMBO_LIMIT
 var multDrainLimit: float = MULT_DRAIN_LIMIT
-var rank = 1
 
 # === REFERENCIAS UI ===
 var HUD: Control = null
@@ -71,7 +70,7 @@ func _update_mult(delta: float) -> void:
 	var needWait: bool = true
 	if hot <= 0 and mult > 1:
 		if needWait:
-			await get_tree().create_timer(3.0).timeout
+			await get_tree().create_timer(0.5).timeout
 			needWait = false
 		multDrainTime += delta
 		while multDrainTime >= multDrainLimit:
@@ -119,7 +118,6 @@ func increase_mult() -> void:
 	mult += 1
 
 func reset() -> void:
-	if rank > 1: rank -= 1
 	hot = 0
 	combo = 0
 	mult = 1
@@ -133,7 +131,6 @@ func add_score(score: int) -> void:
 
 func reset_game_score() -> void:
 	GeneralGameScore = 0
-	rank = 1
 
 func _get_hud() -> Control:
 	if HUD and HUD.get_parent(): return HUD

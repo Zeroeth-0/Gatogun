@@ -26,6 +26,7 @@ WEAPON="*res://utils/WeaponManager.gd"
 GLOBAL="*res://utils/GlobalUtils.gd"
 Spawning="*res://addons/BulletUpHell/Spawning.tscn"
 DRNG="*res://utils/RNGManager.gd"
+RANK="*res://utils/RankManager.gd"
 
 [display]
 

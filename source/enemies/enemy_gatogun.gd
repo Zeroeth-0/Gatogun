@@ -80,6 +80,7 @@ func _process(delta: float) -> void:
 func _check_death() -> void:
 	if health > 0: return
 	SCORE.add_score(SCORE.combo)
+	scoreCount += RANK.rank
 	
 	var playerPos = GAME.get_player()
 	if pulseMarked: scoreCount *= 1.1

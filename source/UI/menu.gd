@@ -89,7 +89,7 @@ func confirm_selection() -> void:
 
 # ESQUELETO DE FUNCIONES
 func game_start() -> void:
-	GLOBAL.change_scene("GATO")
+	GLOBAL.change_scene("MODE")
 
 func caravan() -> void:
 	GLOBAL.change_scene("CARAVAN")

@@ -87,7 +87,7 @@ var playerPos: Vector2 = Vector2.ZERO
 var speed: float
 var canShoot: bool = true
 var usableArms: int
-var rank := float(SCORE.rank)
+var rank := float(RANK.rank)
 var bRound: int = 0
 var totalRounds: int = 0
 

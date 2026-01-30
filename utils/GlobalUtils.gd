@@ -7,6 +7,7 @@ extends Node
 @onready var menuScene: PackedScene = preload("res://scenes/game/menu.tscn")
 @onready var titleScene: PackedScene = preload("res://scenes/game/title_screen.tscn")
 @onready var gameScene: PackedScene = preload("res://scenes/game/world.tscn")
+@onready var modeScene: PackedScene = preload("res://scenes/game/difficulty_select.tscn")
 @onready var gatoScene: PackedScene = preload("res://scenes/game/gato_select.tscn")
 @onready var dollScene: PackedScene = preload("res://scenes/game/doll_select.tscn")
 @export var caravanScene: PackedScene                                           # Escena Caravan
@@ -44,6 +45,7 @@ func change_scene(packedScene: String) -> void:
 		"MENU": newScene = menuScene.instantiate()
 		"TITLE": newScene = titleScene.instantiate()
 		"GAME": newScene = gameScene.instantiate()
+		"MODE": newScene = modeScene.instantiate()
 		"GATO": newScene = gatoScene.instantiate()
 		"DOLL": newScene = dollScene.instantiate()
 		"CARAVAN": return # newScene = caravanScene.instantiate()

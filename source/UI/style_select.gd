@@ -16,18 +16,18 @@ enum SelectEnum { GATO, DOLL }
 @export var SelectStyle: SelectEnum = SelectEnum.GATO
 
 # === NODOS ===
-@onready var icons: Array[TextureRect] = []     # los TextureRect de los iconos (ya en escena)
-@onready var names: Array[Label] = []           # los Label de los nombres (ya en escena)
-@onready var slots: Array[VBoxContainer] = []   # los VBoxContainer de cada slot (para escalar centrado)
-@onready var desc_label: Label = $VBoxContainer/Label  # preview del seleccionado
+@onready var icons: Array[TextureRect] = []
+@onready var names: Array[Label] = []
+@onready var slots: Array[VBoxContainer] = []
+@onready var desc_label: Label = $VBoxContainer/Label
 
 # === ESTADO ===
-var selected: int = 1  # ← CAMBIO: Empieza en el centro (DAMAGE, índice 1)
+var selected: int = 1
 var initDelay: float = 0.20
 var repDelay: float = 0.10
 var deadzone: float = 0.1
 var repTimer: float = 0.0
-var lastDir: int = 0   # -1 = izquierda, 0 = none, 1 = derecha
+var lastDir: int = 0
 
 var first_frame: bool = true
 
@@ -51,8 +51,8 @@ func _deferred_setup() -> void:
 		
 		# Config iconos para visibilidad y scaling
 		icons[i].stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		icons[i].expand_mode = TextureRect.EXPAND_KEEP_SIZE  # ← CAMBIO: Mantiene size mínimo, permite scaling
-		icons[i].custom_minimum_size = Vector2(180, 180)     # ← Asegura tamaño visible inicial (ajusta a tus iconos)
+		icons[i].expand_mode = TextureRect.EXPAND_KEEP_SIZE
+		icons[i].custom_minimum_size = Vector2(180, 180)
 	
 	# Setea pivots al centro
 	for slot in slots:
@@ -63,7 +63,7 @@ func _deferred_setup() -> void:
 	
 	# Descripción inicial
 	if desc_label:
-		desc_label.text = STYLES[selected].name
+		desc_label.text = STYLES[selected].name + " STYLE"
 
 func _process(delta: float) -> void:
 	var xAxis := INPUT.xAxis
@@ -91,7 +91,7 @@ func _process(delta: float) -> void:
 			confirm_selection()
 		if Input.is_action_just_pressed("B"):
 			match SelectStyle:
-				SelectEnum.GATO: GLOBAL.change_scene("MENU")
+				SelectEnum.GATO: GLOBAL.change_scene("MODE")
 				SelectEnum.DOLL: GLOBAL.change_scene("GATO")
 	else: first_frame = false
 
@@ -118,7 +118,7 @@ func update_selection() -> void:
 			names[i].add_theme_font_size_override("font_size", 28)
 	
 	if desc_label:
-		desc_label.text = STYLES[selected].name
+		desc_label.text = STYLES[selected].name + " STYLE"
 
 func confirm_selection() -> void:
 	var chosenStyle = STYLES[selected].style

@@ -24,8 +24,8 @@ func _on_area_entered(area: Node) -> void:
 		isCollected = true  # Bloquea múltiples ejecuciones
 		match itemEnum:
 			ItemType.MEDAL:
-				GAME.innerMedalChain += 1
 				SCORE.increase_mult()
+				RANK.increase_combo()
 			ItemType.POWERUP: WEAPON.lvl_up("ALL")
 			ItemType.MAXPOWERUP: WEAPON.lvl_up("MAX")
 			ItemType.BOMB:

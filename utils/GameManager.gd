@@ -22,7 +22,6 @@ var DollStyle: DollEnum = DollEnum.SPEED
 var spawnPoint: Vector2 = Vector2(150, 830)
 var goPoint: Vector2 = Vector2(150, 600)
 var lives: float = 2
-var innerMedalChain: int = 0
 var medalLevel: int = 0
 var maxBombs: int = 4
 var bombCount: int = 2
@@ -62,7 +61,9 @@ func spawn() -> void:
 	if not cat: return
 	
 	if lives >= 0: _respawn_player()
-	else: _show_continue()
+	else:
+		RANK.reset_all()
+		_show_continue()
 
 func _respawn_player() -> void:
 	dead = false

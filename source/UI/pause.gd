@@ -91,6 +91,7 @@ func _confirm() -> void:
 			_resume()
 		1:  # RESTART
 			GLOBAL.resume_game()
+			RANK.reset_all()
 			SCORE.reset()
 			SCORE.reset_game_score()
 			GAME.store(Vector2(10000, 10000), false)
