@@ -43,5 +43,5 @@ func decrease_rank():
 
 func reset_all():
 	reset_combo()
-	print(baseRank)
-	rank = baseRank
+	DifficultyStyle = DifficultyEnum.RANKED
+	rank = 1

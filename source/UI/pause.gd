@@ -99,6 +99,7 @@ func _confirm() -> void:
 		2:  # BACK TO TITLE
 			GAME.playing = false
 			GLOBAL.resume_game()
+			RANK.reset_all()
 			SCORE.reset()
 			SCORE.reset_game_score()
 			GLOBAL.change_scene("MENU")
