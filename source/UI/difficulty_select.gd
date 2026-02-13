@@ -21,6 +21,8 @@ var first_frame: bool = true
 func _ready() -> void:
 	var vbox = $VBoxContainer
 	
+	RANK.reset_all()
+	
 	for text in OPTIONS:
 		var label = Label.new()
 		label.text = text
@@ -58,7 +60,7 @@ func _process(delta: float) -> void:
 	if not first_frame:
 		if Input.is_action_just_pressed("C") or Input.is_action_just_pressed("A"):
 			confirm_selection()
-		if Input.is_action_just_pressed("B"): GLOBAL.change_scene("MENU")
+		if Input.is_action_just_pressed("B"): GLOBAL.raw_change_scene("MENU")
 	else:
 		first_frame = false
 
@@ -88,4 +90,4 @@ func confirm_selection() -> void:
 		2:  # MANIAC
 			RANK.DifficultyStyle = RANK.DifficultyEnum.MANIAC
 	
-	GLOBAL.change_scene("GATO")
+	GLOBAL.raw_change_scene("GATO")

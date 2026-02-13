@@ -15,7 +15,7 @@ z_index = 3
 script = ExtResource("1_fxs2u")
 comboLabel = NodePath("EnemyCombo")
 size = 40
-scoreCount = 5
+scoreCount = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 0, 1, 1)

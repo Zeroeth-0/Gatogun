@@ -2,9 +2,9 @@ extends Control
 
 # === CONFIGURACIÓN ===
 const GATOS: Array[Dictionary] = [
-	{"name": "DAMAGE",  "style": "DAMAGE"},
-	{"name": "RANGE",   "style": "RANGE"},
-	{"name": "CLASSIC", "style": "CLASSIC"},
+	{"name": "ZEBE",  "style": "DAMAGE"},
+	{"name": "FUKU",   "style": "RANGE"},
+	{"name": "SERGIO", "style": "CLASSIC"},
 ]
 const DOLLS: Array[Dictionary] = [
 	{"name": "STRONG",  "style": "STRONG"},
@@ -63,7 +63,7 @@ func _deferred_setup() -> void:
 	
 	# Descripción inicial
 	if desc_label:
-		desc_label.text = STYLES[selected].name + " STYLE"
+		desc_label.text = STYLES[selected].style + " STYLE"
 
 func _process(delta: float) -> void:
 	var xAxis := INPUT.xAxis
@@ -91,8 +91,8 @@ func _process(delta: float) -> void:
 			confirm_selection()
 		if Input.is_action_just_pressed("B"):
 			match SelectStyle:
-				SelectEnum.GATO: GLOBAL.change_scene("MODE")
-				SelectEnum.DOLL: GLOBAL.change_scene("GATO")
+				SelectEnum.GATO: GLOBAL.raw_change_scene("MODE")
+				SelectEnum.DOLL: GLOBAL.raw_change_scene("GATO")
 	else: first_frame = false
 
 func move_selection(is_right: bool) -> void:
@@ -118,14 +118,14 @@ func update_selection() -> void:
 			names[i].add_theme_font_size_override("font_size", 28)
 	
 	if desc_label:
-		desc_label.text = STYLES[selected].name + " STYLE"
+		desc_label.text = STYLES[selected].style + " STYLE"
 
 func confirm_selection() -> void:
 	var chosenStyle = STYLES[selected].style
 	match SelectStyle:
 		SelectEnum.GATO:
 			GAME.set_gato(chosenStyle)
-			GLOBAL.change_scene("DOLL")
+			GLOBAL.raw_change_scene("DOLL")
 		SelectEnum.DOLL:
 			GAME.set_doll(chosenStyle)
 			GLOBAL.change_scene("GAME")

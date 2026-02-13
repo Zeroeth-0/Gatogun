@@ -4,6 +4,7 @@ extends Node
 const CENTER: Vector2 = Vector2(340, 365)
 var directions = [Vector2(1, 1), Vector2(-1, 1), Vector2(1, -1), Vector2(-1, -1)]
 var liveCount: int = 2
+var inGame: bool = false
 
 # === ESCENAS DISPONIBLES ===
 @onready var cat: PackedScene = preload("res://scenes/player/player.tscn")
@@ -33,13 +34,14 @@ var playing: bool = false
 var dead: bool = false
 
 func _process(_delta: float) -> void:
+	# print(str(Engine.get_frames_per_second()))
 	if get_tree().get_nodes_in_group("Level").size() >= 1:
 		var world = get_tree().get_first_node_in_group("Level")
 		lives = world.lives
 		playing = world.playing
 	
 	# Respawn automático si no hay jugador y el juego está activo
-	if get_tree().get_nodes_in_group("Player").size() <= 0 and playing:
+	if get_tree().get_nodes_in_group("Player").size() <= 0 and playing and inGame:
 		spawn()
 	
 	# Actualizar referencias al jugador
@@ -62,7 +64,7 @@ func spawn() -> void:
 	
 	if lives >= 0: _respawn_player()
 	else:
-		RANK.reset_all()
+		RANK.reset_soft()
 		_show_continue()
 
 func _respawn_player() -> void:
@@ -124,7 +126,7 @@ func store(pos: Vector2 = Vector2(0, 0), continued: bool = false) -> void:
 
 func game_over() -> void:
 	_reset_game_state()
-	GLOBAL.change_scene("OVER")
+	GLOBAL.raw_change_scene("OVER")
 
 # Apertura del menú de pausa
 func _input(event: InputEvent) -> void:

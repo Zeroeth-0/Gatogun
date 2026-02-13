@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://by8w0yiimfkum" path="res://source/bullets/bullet_gatogun.gd" id="1_5f1na"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_kn77k"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ynv2f"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_5f1na"]
 
 [node name="Bullet" type="Area2D" groups=["Damage", "Enemy Bullet"]]
 z_index = 5
@@ -12,7 +12,7 @@ script = ExtResource("1_5f1na")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["Damage"]]
 z_index = 4
 scale = Vector2(0.3, 0.3)
-shape = SubResource("RectangleShape2D_ynv2f")
+shape = SubResource("CircleShape2D_5f1na")
 debug_color = Color(1, 0, 0, 0.419608)
 
 [node name="Sprite2D" type="Sprite2D" parent="." groups=["Damage"]]

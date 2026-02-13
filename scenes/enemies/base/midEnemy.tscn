@@ -6,7 +6,7 @@
 scale = Vector2(2, 2)
 typeEnum = 1
 size = 80
-scoreCount = 10
+scoreCount = 5
 
 [node name="Sprite2D" parent="." index="0"]
 position = Vector2(0, -10)

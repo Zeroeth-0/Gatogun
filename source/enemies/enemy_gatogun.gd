@@ -4,8 +4,9 @@ extends "res://source/enemies/enemy.gd"
 @export var medal: PackedScene = preload("res://scenes/items/medal.tscn")                           # Medalla que recompensa
 @export var revengeBullet: PackedScene = preload("res://scenes/bullets/revenge_bullet.tscn")        # Balas que devuelve
 @export var powerUp: PackedScene = preload("res://scenes/items/power_up.tscn")                      # Potenciador que recompensa
-@export var comboLabel: RichTextLabel                                           # Etiqueta de pts
-@export var cutoff: float = 450.0                                               # Zona libre de balas
+@export var explosion: PackedScene = preload("res://scenes/vfx/explosion.tscn")                     # Efecto explosión
+@export var comboLabel: RichTextLabel                                                               # Etiqueta de pts
+@export var cutoff: float = 450.0                                                                   # Zona libre de balas
 
 # === ESTADO INTERNO ===
 var canDie := false
@@ -17,6 +18,7 @@ var byBomb := false
 var halvedHealth := false
 var emitter: Node2D = null
 var enemType: String
+var explScale: float
 
 # === FLUJO DE COMPORTAMIENTO ===
 func _ready() -> void:
@@ -25,12 +27,15 @@ func _ready() -> void:
 		EnemyType.STD:
 			health = 16
 			enemType = "STD"
+			explScale = 1.25
 		EnemyType.MID:
 			health = 100
 			enemType = "MID"
+			explScale = 1.75
 		EnemyType.ELITE:
 			health = 160
 			enemType = "ELITE"
+			explScale = 2.5
 	
 	if isGround: $Hurtbox.add_to_group("Ground")
 	else: $Hitbox.add_to_group("Damage")
@@ -79,6 +84,14 @@ func _process(delta: float) -> void:
 # === MUERTE Y RECOMPENSAS ===
 func _check_death() -> void:
 	if health > 0: return
+	
+	# Efecto explosión
+	#var explInstance = explosion.instantiate()
+	#explInstance.global_position = global_position
+	#explInstance.scale *= explScale
+	#GLOBAL.add_to_game(explInstance)
+	_spawn_score(scoreCount, explosion)
+	
 	SCORE.add_score(SCORE.combo)
 	scoreCount += RANK.rank
 	

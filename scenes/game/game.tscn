@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://cejse351xo6ye"]
+[gd_scene load_steps=7 format=3 uid="uid://cejse351xo6ye"]
 
 [ext_resource type="Texture2D" uid="uid://chijma6mb38wf" path="res://background_cats.png" id="1_7h61r"]
 [ext_resource type="PackedScene" uid="uid://dra7yqg0s7urp" path="res://scenes/game/title_screen.tscn" id="2_7h61r"]
-[ext_resource type="Script" uid="uid://dtbsevhrfaxw" path="res://scenes/UI/zoom_viewport.gd" id="3_0sr1o"]
+[ext_resource type="PackedScene" uid="uid://dlf8gh1jelgi8" path="res://scenes/UI/curtain.tscn" id="2_lfrn8"]
+[ext_resource type="Script" uid="uid://dtbsevhrfaxw" path="res://source/UI/zoom_viewport.gd" id="3_0sr1o"]
 [ext_resource type="Script" uid="uid://dx8axnljtpnp1" path="res://source/UI/rank_debug.gd" id="4_kelw5"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_0sr1o"]
@@ -29,6 +30,8 @@ handle_input_locally = false
 size = Vector2i(680, 730)
 render_target_update_mode = 4
 
+[node name="Curtain" parent="GameViewportContainer/GameViewport" instance=ExtResource("2_lfrn8")]
+
 [node name="Title Screen" parent="GameViewportContainer/GameViewport" instance=ExtResource("2_7h61r")]
 
 [node name="ZoomViewportContainer" type="SubViewportContainer" parent="."]
@@ -37,9 +40,9 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 1430.0
-offset_top = 700.0
+offset_top = 711.0
 offset_right = 1630.0
-offset_bottom = 900.0
+offset_bottom = 911.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(1.5, 1.5)
@@ -66,9 +69,9 @@ zoom = Vector2(1.5, 1.5)
 
 [node name="Rank Debug" type="Label" parent="."]
 offset_left = 1438.0
-offset_top = 954.0
+offset_top = 965.0
 offset_right = 1495.0
-offset_bottom = 977.0
+offset_bottom = 988.0
 scale = Vector2(2, 2)
 text = "Rank: 1"
 script = ExtResource("4_kelw5")
