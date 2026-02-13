@@ -34,7 +34,7 @@ var playing: bool = false
 var dead: bool = false
 
 func _process(_delta: float) -> void:
-	# print(str(Engine.get_frames_per_second()))
+	print(str(Engine.get_frames_per_second()))
 	if get_tree().get_nodes_in_group("Level").size() >= 1:
 		var world = get_tree().get_first_node_in_group("Level")
 		lives = world.lives

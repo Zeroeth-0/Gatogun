@@ -17,48 +17,45 @@ uniform float size : hint_range(0.1, 50.0, 0.1) = 5.;
 uniform float disperse : hint_range(0.1, 10.0, 0.1) = 1.;
 uniform float duration : hint_range(0.1, 10.0, 0.1) = 1.0;
 
-float hash13(vec3 p3) {
-    p3 = fract(p3 * vec3(0.1031, 0.1030, 0.0973) + seed * 0.001);
-    p3 += dot(p3, p3.yzx + 33.33);
-    return fract((p3.x + p3.y) * p3.z);
+// Hash optimizado pero funcional
+float hash12(vec2 p) {
+    p = fract(p * vec2(0.1031, 0.1030) + seed * 0.001);
+    p += dot(p, p + 33.33);
+    return fract(p.x * p.y);
 }
 
-vec3 hash33(vec3 p3) {
-    p3 = fract(p3 * vec3(0.1031, 0.1030, 0.0973) + seed * 0.001);
-    p3 += dot(p3, p3.yxz + 33.33);
-    return fract((p3.xxy + p3.yxx) * p3.zyx);
+vec2 hash22(vec2 p) {
+    p = fract(p * vec2(0.1031, 0.1030) + seed * 0.001);
+    p += dot(p, p.yx + 33.33);
+    return fract((p.xx + p.yy) * p.yx);
 }
 
-float noise(vec3 p) {
-    vec3 i = floor(p);
-    vec3 f = fract(p);
-    vec3 u = f * f * (3.0 - 2.0 * f);
+// Noise 2D en vez de 3D - misma calidad visual, mucho más rápido
+float noise(vec2 p) {
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    vec2 u = f * f * (3.0 - 2.0 * f);
     
-    return mix(mix(mix(hash13(i + vec3(0,0,0)), 
-                       hash13(i + vec3(1,0,0)), u.x),
-                   mix(hash13(i + vec3(0,1,0)), 
-                       hash13(i + vec3(1,1,0)), u.x), u.y),
-               mix(mix(hash13(i + vec3(0,0,1)), 
-                       hash13(i + vec3(1,0,1)), u.x),
-                   mix(hash13(i + vec3(0,1,1)), 
-                       hash13(i + vec3(1,1,1)), u.x), u.y), u.z) * 2.0 - 1.0;
+    return mix(mix(hash12(i + vec2(0,0)), 
+                   hash12(i + vec2(1,0)), u.x),
+               mix(hash12(i + vec2(0,1)), 
+                   hash12(i + vec2(1,1)), u.x), u.y) * 2.0 - 1.0;
 }
 
-float worley(vec3 p, float t) {
-    vec3 i = floor(p);
-    vec3 f = fract(p);
+// Worley 2D en vez de 3D - de 27 a 9 iteraciones
+float worley(vec2 p, float t) {
+    vec2 i = floor(p);
+    vec2 f = fract(p);
     
     float min_dist = 1.0;
     
-    for(int z = -1; z <= 1; z++) {
-        for(int y = -1; y <= 1; y++) {
-            for(int x = -1; x <= 1; x++) {
-                vec3 offset = vec3(float(x), float(y), float(z));
-                vec3 h = hash33(i + offset);
-                h = 0.5 + 0.5 * sin(disperse * t + 6.2831 * h);
-                vec3 r = offset + h - f;
-                min_dist = min(min_dist, dot(r, r));
-            }
+    for(int y = -1; y <= 1; y++) {
+        for(int x = -1; x <= 1; x++) {
+            vec2 offset = vec2(float(x), float(y));
+            vec2 h = hash22(i + offset);
+            h = 0.5 + 0.5 * sin(disperse * t + 6.2831 * h);
+            vec2 r = offset + h - f;
+            min_dist = min(min_dist, dot(r, r));
         }
     }
     
@@ -70,10 +67,10 @@ float boom(vec2 p, float t)
     float progress = clamp(t / duration, 0.0, 1.0);
     float repeat = progress * 2.0;
     
-    float shape = 1.0 - pow(distance(vec3(p, 0.0), vec3(0.0)), 2.0) / (repeat * 12.0) - repeat * 2.0;
+    float shape = 1.0 - pow(length(p), 2.0) / (repeat * 12.0) - repeat * 2.0;
     
-    float distortion = noise(vec3(p * 0.5, t * 0.5));
-    float bubbles = 0.5 - pow(worley(vec3(p * 1.2, t * 2.0), t), 3.0);
+    float distortion = noise(p * 0.5 + t * 0.5);
+    float bubbles = 0.5 - pow(worley(p * 1.2 + t * 2.0, t), 3.0);
     float bw = 0.5;
     float effects = (bw * bubbles + (1.0 - bw) * distortion);
 
@@ -86,11 +83,12 @@ float smoke(vec2 p, float t)
     float repeat = progress * 2.0;
     
     vec2 smoke_offset = vec2(0, -0.6) * pow(repeat / 1.45, 2.0) * 1.5;
+    vec2 sp = p - smoke_offset;
     
-    float shape = 1.0 - pow(distance(vec3(p - smoke_offset, 0.0), vec3(0.0)), 2.0) / (repeat * 16.0) - pow(repeat * 1.5, 0.5);
+    float shape = 1.0 - pow(length(sp), 2.0) / (repeat * 16.0) - pow(repeat * 1.5, 0.5);
     
-    float distortion = noise(vec3(p * 1.5 - smoke_offset, t * 0.1));
-    float bubbles = 0.5 - pow(worley(vec3((p / pow(repeat, 0.35)) - smoke_offset, t * 0.1), t), 2.0);
+    float distortion = noise(sp * 1.5 + t * 0.1);
+    float bubbles = 0.5 - pow(worley((p / pow(repeat, 0.35)) - smoke_offset + t * 0.1, t), 2.0);
     float bw = 0.75;
     float effects = (bw * bubbles + (1.0 - bw) * distortion);
 
@@ -103,9 +101,10 @@ float f(vec2 p, float t) {
     return b > s ? b : s;
 }
 
+// Gradiente simplificado - menos preciso pero mucho más rápido
 vec2 grad(vec2 x, float t)
 {
-    float h = 0.02;
+    float h = 0.05; // h más grande = menos cálculos
     return vec2(f(x + vec2(h, 0), t) - f(x - vec2(h, 0), t),
                 f(x + vec2(0, h), t) - f(x - vec2(0, h), t)) / (2.0 * h);
 }
@@ -150,14 +149,12 @@ void fragment()
     float boom_val = boom(pos, custom_time);
     float smoke_val = smoke(pos, custom_time);
     
-    // El boom domina (smoke vale solo 40%)
     bool is_boom = boom_val > (smoke_val * 0.4);
     float main_val = is_boom ? boom_val : smoke_val;
     float alpha = step(0.0, main_val);
     
     vec3 color;
     
-    // Centro blanco más pequeño
     if (main_val > 0.75) {
         color = vec3(1.0);
     } else if (is_boom) {

@@ -10,6 +10,7 @@
 viewport_path = NodePath("GameViewportContainer/GameViewport")
 
 [node name="Game" type="Node2D"]
+texture_filter = 2
 
 [node name="BackgroundCats" type="Sprite2D" parent="."]
 position = Vector2(961.25, 538)
@@ -17,22 +18,26 @@ scale = Vector2(3.3626087, 2.5534883)
 texture = ExtResource("1_7h61r")
 
 [node name="GameViewportContainer" type="SubViewportContainer" parent="."]
-texture_filter = 1
-offset_left = 528.0
-offset_top = 62.0
-offset_right = 1208.0
-offset_bottom = 792.0
-scale = Vector2(1.3, 1.3)
+texture_filter = 2
+offset_left = 485.0
+offset_top = 26.000002
+offset_right = 2525.0
+offset_bottom = 2216.0
+scale = Vector2(0.45, 0.45)
 
 [node name="GameViewport" type="SubViewport" parent="GameViewportContainer" groups=["Game"]]
 own_world_3d = true
 handle_input_locally = false
-size = Vector2i(680, 730)
+size = Vector2i(2040, 2190)
+size_2d_override = Vector2i(680, 730)
+size_2d_override_stretch = true
 render_target_update_mode = 4
 
 [node name="Curtain" parent="GameViewportContainer/GameViewport" instance=ExtResource("2_lfrn8")]
 
 [node name="Title Screen" parent="GameViewportContainer/GameViewport" instance=ExtResource("2_7h61r")]
+offset_top = 1.0
+offset_bottom = 1.0
 
 [node name="ZoomViewportContainer" type="SubViewportContainer" parent="."]
 texture_filter = 1

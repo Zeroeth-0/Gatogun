@@ -4,7 +4,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hewb7"]
 shader = ExtResource("1_dty6y")
-shader_parameter/spacing = 75.0
+shader_parameter/spacing = 150.0
 shader_parameter/animation_progress = 0.0
 shader_parameter/dot_size = 1.0000000475
 shader_parameter/dot_color = Color(0, 0, 0, 1)

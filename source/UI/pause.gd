@@ -5,110 +5,217 @@ const OPTIONS := [
 	"RESTART",
 	"BACK TO TITLE",
 	"SETTINGS",
-    "EXIT"
+	"EXIT"
 ]
 
-@onready var labels: Array[Label] = []
+@onready var labels: Array[RichTextLabel] = []
+var vbox: VBoxContainer
 
-# === Configuración de navegación ===
+# === ESTADO INTERNO ===
 var selected: int = 0
-var init_delay: float = 0.20
-var repeat_delay: float = 0.10
+var initDelay: float = 0.20
+var repDelay: float = 0.10
 var deadzone: float = 0.1
-
-var repeat_timer: float = 0.0
-var last_direction: int = 0
-
+var repTimer: float = 0.0
+var lastDir: int = 0
 var first_frame: bool = true
+
+# === ANIMACIONES ===
+var can_interact: bool = false
+var active_tweens: Array[Tween] = []
+var original_positions: Array[float] = []
+
+# === CONFIGURACIÓN DIAGONAL ===
+@export var diagonal_offset: float = 0.0
 
 func _ready() -> void:
 	GLOBAL.pause_game()
 	
-	# Crear las opciones
-	var vbox = $VBoxContainer
-	for text in OPTIONS:
-		var lbl = Label.new()
-		lbl.text = text
-		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		lbl.add_theme_font_size_override("font_size", 16)
-		vbox.add_child(lbl)
-		labels.append(lbl)
+	vbox = $VBoxContainer
+	vbox.clip_contents = false
+	
+	# Cargar la fuente
+	var font := load("res://fonts/Super Malibu.ttf")
+	font.antialiasing = TextServer.FONT_ANTIALIASING_NONE
+	
+	for option_text in OPTIONS:
+		var label := RichTextLabel.new()
+		label.bbcode_enabled = true
+		label.fit_content = true
+		label.scroll_active = false
+		label.autowrap_mode = TextServer.AUTOWRAP_OFF
+		label.custom_minimum_size = Vector2(400, 30)
+		label.clip_contents = false
+		
+		label.add_theme_font_override("normal_font", font)
+		label.add_theme_font_size_override("normal_font_size", 20)
+		
+		# Outline negro
+		label.add_theme_constant_override("outline_size", 13)
+		label.add_theme_color_override("outline_color", Color.BLACK)
+		
+		label.text = option_text
+		
+		vbox.modulate.a = 0
+		vbox.add_child(label)
+		labels.append(label)
 	
 	update_selection()
 	
 	mouse_filter = MOUSE_FILTER_STOP
+	
+	await get_tree().process_frame
+	await get_tree().process_frame
+	animate_entry()
+
+func animate_entry() -> void:
+	can_interact = true
+	var screen_width := get_viewport_rect().size.x
+	
+	vbox.modulate.a = 1
+	await get_tree().process_frame
+	
+	# Guardar posiciones originales con offset diagonal
+	original_positions.clear()
+	for i in labels.size():
+		var base_x := labels[i].position.x
+		var diagonal_x := base_x + (i * diagonal_offset)
+		original_positions.append(diagonal_x)
+	
+	# Animar entrada
+	for i in labels.size():
+		var label := labels[i]
+		label.position.x = screen_width + 100
+		
+		var tween := create_tween()
+		tween.set_ease(Tween.EASE_OUT)
+		tween.set_trans(Tween.TRANS_CUBIC)
+		tween.tween_property(label, "position:x", original_positions[i], 0.35).set_delay(i * 0.05)
+		active_tweens.append(tween)
+
+func animate_exit(callback: Callable) -> void:
+	can_interact = false
+	
+	# Matar todos los tweens activos
+	for tween in active_tweens:
+		if tween and tween.is_valid():
+			tween.kill()
+	active_tweens.clear()
+	
+	var screen_width := get_viewport_rect().size.x
+	
+	# Animar salida
+	for i in labels.size():
+		var tween := create_tween()
+		tween.set_ease(Tween.EASE_IN)
+		tween.set_trans(Tween.TRANS_CUBIC)
+		tween.tween_property(labels[i], "position:x", screen_width + 100, 0.25).set_delay((labels.size() - 1 - i) * 0.04)
+	
+	await get_tree().create_timer((labels.size() - 1) * 0.04 + 0.25).timeout
+	callback.call()
 
 func _process(delta: float) -> void:
+	if not can_interact:
+		return
+	
 	# Navegación vertical
-	var y_axis = INPUT.yAxis
+	var yAxis := INPUT.yAxis
 	var direction: int = 0
 	
-	if y_axis > deadzone:      direction = 1
-	elif y_axis < -deadzone:   direction = -1
+	if yAxis > deadzone: direction = 1
+	elif yAxis < -deadzone: direction = -1
 	
-	if direction != last_direction:
+	if direction != lastDir:
 		if direction != 0:
-			_move_selection(direction == 1)
-			repeat_timer = init_delay
+			move_selection(direction == 1)
+			repTimer = initDelay
 		else:
-			repeat_timer = 0.0
-		last_direction = direction
+			repTimer = 0.0
+		lastDir = direction
 	
-	if direction != 0 and repeat_timer > 0:
-		repeat_timer -= delta
-		if repeat_timer <= 0:
-			_move_selection(direction == 1)
-			repeat_timer = repeat_delay
+	if direction != 0 and repTimer > 0:
+		repTimer -= delta
+		if repTimer <= 0:
+			move_selection(direction == 1)
+			repTimer = repDelay
 	
 	# Confirmar selección
 	if Input.is_action_just_pressed("A") or Input.is_action_just_pressed("C"):
-		_confirm()
+		confirm_selection()
 	
 	# Cerrar pausa con Start o B (solo después del primer frame)
 	if !first_frame:
 		if Input.is_action_just_pressed("Start") or Input.is_action_just_pressed("B"):
 			_resume()
-	else: first_frame = false
+	else:
+		first_frame = false
 
-func _move_selection(down: bool) -> void:
-	if down: selected = (selected + 1) % OPTIONS.size()
+func move_selection(is_down: bool) -> void:
+	if is_down: selected = (selected + 1) % OPTIONS.size()
 	else: selected = (selected - 1 + OPTIONS.size()) % OPTIONS.size()
 	update_selection()
 
 func update_selection() -> void:
 	for i in labels.size():
-		var lbl = labels[i]
 		if i == selected:
-			lbl.modulate = Color.YELLOW
-			lbl.add_theme_font_size_override("font_size", 18)
+			labels[i].modulate = Color.WHITE  # Seleccionada = blanca brillante
+			shake_label(labels[i])
 		else:
-			lbl.modulate = Color.WHITE
-			lbl.add_theme_font_size_override("font_size", 16)
+			labels[i].modulate = Color(0.2, 0.2, 0.2, 1.0)  # No seleccionadas = oscurecidas
 
-func _confirm() -> void:
+func shake_label(label: RichTextLabel) -> void:
+	# Solo hacer shake si hay posiciones guardadas
+	if original_positions.is_empty():
+		return
+	
+	var label_index := labels.find(label)
+	if label_index == -1:
+		return
+	
+	var shake_tween := create_tween()
+	shake_tween.set_ease(Tween.EASE_IN_OUT)
+	shake_tween.set_trans(Tween.TRANS_SINE)
+	
+	var original_x := original_positions[label_index]  # Usar posición guardada
+	var shake_amount := 4.0
+	
+	shake_tween.tween_property(label, "position:x", original_x + shake_amount, 0.04)
+	shake_tween.tween_property(label, "position:x", original_x - shake_amount, 0.04)
+	shake_tween.tween_property(label, "position:x", original_x + shake_amount, 0.04)
+	shake_tween.tween_property(label, "position:x", original_x, 0.04)
+
+func confirm_selection() -> void:
 	match selected:
 		0:  # RESUME
 			_resume()
 		1:  # RESTART
-			GLOBAL.resume_game()
-			RANK.reset_all()
-			SCORE.reset()
-			SCORE.reset_game_score()
-			GAME.store(Vector2(10000, 10000), false)
-			GLOBAL.change_scene("GAME")
+			animate_exit(func():
+				GLOBAL.resume_game()
+				RANK.reset_all()
+				SCORE.reset()
+				SCORE.reset_game_score()
+				GAME.store(Vector2(10000, 10000), false)
+				GLOBAL.change_scene("GAME")
+			)
 		2:  # BACK TO TITLE
-			GAME.playing = false
-			GLOBAL.resume_game()
-			RANK.reset_all()
-			SCORE.reset()
-			SCORE.reset_game_score()
-			GLOBAL.change_scene("MENU")
+			animate_exit(func():
+				GAME.playing = false
+				GLOBAL.resume_game()
+				RANK.reset_all()
+				SCORE.reset()
+				SCORE.reset_game_score()
+				GLOBAL.change_scene("MENU")
+			)
 		3:  # SETTINGS
 			pass
 		4:  # EXIT
-			GLOBAL.resume_game()
-			get_tree().quit()
+			animate_exit(func():
+				GLOBAL.resume_game()
+				get_tree().quit()
+			)
 
 func _resume() -> void:
-	GLOBAL.resume_game()
-	queue_free()
+	animate_exit(func():
+		GLOBAL.resume_game()
+		queue_free()
+	)

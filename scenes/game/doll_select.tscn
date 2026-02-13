@@ -13,56 +13,60 @@ grow_vertical = 2
 script = ExtResource("1_rdiiy")
 SelectStyle = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="Label" type="Label" parent="."]
 layout_mode = 0
 offset_left = 70.0
 offset_top = 250.0
 offset_right = 462.0
-offset_bottom = 432.0
+offset_bottom = 273.0
 
-[node name="Label" type="Label" parent="VBoxContainer"]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
+[node name="FstVBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 70.0
+offset_top = 250.0
+offset_right = 198.0
+offset_bottom = 405.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="FstVBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="FstIcon" type="TextureRect" parent="VBoxContainer/HBoxContainer/FstVBoxContainer"]
+[node name="FstIcon" type="TextureRect" parent="FstVBoxContainer"]
 layout_mode = 2
 texture = ExtResource("2_ca08h")
 
-[node name="FstName" type="Label" parent="VBoxContainer/HBoxContainer/FstVBoxContainer"]
+[node name="FstName" type="Label" parent="FstVBoxContainer"]
 layout_mode = 2
 horizontal_alignment = 1
 
-[node name="SndVBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
-layout_mode = 2
+[node name="SndVBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 136.0
+offset_top = 250.0
+offset_right = 264.0
+offset_bottom = 405.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="SndIcon" type="TextureRect" parent="VBoxContainer/HBoxContainer/SndVBoxContainer"]
+[node name="SndIcon" type="TextureRect" parent="SndVBoxContainer"]
 layout_mode = 2
 texture = ExtResource("2_ca08h")
 
-[node name="SndName" type="Label" parent="VBoxContainer/HBoxContainer/SndVBoxContainer"]
+[node name="SndName" type="Label" parent="SndVBoxContainer"]
 layout_mode = 2
 horizontal_alignment = 1
 
-[node name="TrdVBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
-layout_mode = 2
+[node name="TrdVBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 202.0
+offset_top = 250.0
+offset_right = 330.0
+offset_bottom = 405.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="TrdIcon" type="TextureRect" parent="VBoxContainer/HBoxContainer/TrdVBoxContainer"]
+[node name="TrdIcon" type="TextureRect" parent="TrdVBoxContainer"]
 layout_mode = 2
 texture = ExtResource("2_ca08h")
 
-[node name="TrdName" type="Label" parent="VBoxContainer/HBoxContainer/TrdVBoxContainer"]
+[node name="TrdName" type="Label" parent="TrdVBoxContainer"]
 layout_mode = 2
 horizontal_alignment = 1

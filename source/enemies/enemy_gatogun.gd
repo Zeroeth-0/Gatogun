@@ -86,11 +86,10 @@ func _check_death() -> void:
 	if health > 0: return
 	
 	# Efecto explosión
-	#var explInstance = explosion.instantiate()
-	#explInstance.global_position = global_position
-	#explInstance.scale *= explScale
-	#GLOBAL.add_to_game(explInstance)
-	_spawn_score(scoreCount, explosion)
+	var explInstance = explosion.instantiate()
+	explInstance.global_position = global_position
+	explInstance.scale *= explScale
+	GLOBAL.add_to_game(explInstance)
 	
 	SCORE.add_score(SCORE.combo)
 	scoreCount += RANK.rank
