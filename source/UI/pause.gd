@@ -28,13 +28,17 @@ var original_positions: Array[float] = []
 # === CONFIGURACIÓN DIAGONAL ===
 @export var diagonal_offset: float = 0.0
 
+# === CONFIGURACIÓN DE SELECCIÓN ===
+@export var unselected_alpha: float = 0.75
+@export var blink_count: int = 3
+@export var blink_speed: float = 0.07
+
 func _ready() -> void:
 	GLOBAL.pause_game()
 	
 	vbox = $VBoxContainer
 	vbox.clip_contents = false
 	
-	# Cargar la fuente
 	var font := load("res://fonts/Super Malibu.ttf")
 	font.antialiasing = TextServer.FONT_ANTIALIASING_NONE
 	
@@ -49,8 +53,6 @@ func _ready() -> void:
 		
 		label.add_theme_font_override("normal_font", font)
 		label.add_theme_font_size_override("normal_font_size", 20)
-		
-		# Outline negro
 		label.add_theme_constant_override("outline_size", 13)
 		label.add_theme_color_override("outline_color", Color.BLACK)
 		
@@ -72,17 +74,16 @@ func animate_entry() -> void:
 	can_interact = true
 	var screen_width := get_viewport_rect().size.x
 	
-	vbox.modulate.a = 1
 	await get_tree().process_frame
 	
-	# Guardar posiciones originales con offset diagonal
 	original_positions.clear()
 	for i in labels.size():
 		var base_x := labels[i].position.x
 		var diagonal_x := base_x + (i * diagonal_offset)
 		original_positions.append(diagonal_x)
 	
-	# Animar entrada
+	vbox.modulate.a = 1
+	
 	for i in labels.size():
 		var label := labels[i]
 		label.position.x = screen_width + 100
@@ -96,7 +97,6 @@ func animate_entry() -> void:
 func animate_exit(callback: Callable) -> void:
 	can_interact = false
 	
-	# Matar todos los tweens activos
 	for tween in active_tweens:
 		if tween and tween.is_valid():
 			tween.kill()
@@ -104,7 +104,6 @@ func animate_exit(callback: Callable) -> void:
 	
 	var screen_width := get_viewport_rect().size.x
 	
-	# Animar salida
 	for i in labels.size():
 		var tween := create_tween()
 		tween.set_ease(Tween.EASE_IN)
@@ -118,7 +117,6 @@ func _process(delta: float) -> void:
 	if not can_interact:
 		return
 	
-	# Navegación vertical
 	var yAxis := INPUT.yAxis
 	var direction: int = 0
 	
@@ -139,11 +137,9 @@ func _process(delta: float) -> void:
 			move_selection(direction == 1)
 			repTimer = repDelay
 	
-	# Confirmar selección
 	if Input.is_action_just_pressed("A") or Input.is_action_just_pressed("C"):
 		confirm_selection()
 	
-	# Cerrar pausa con Start o B (solo después del primer frame)
 	if !first_frame:
 		if Input.is_action_just_pressed("Start") or Input.is_action_just_pressed("B"):
 			_resume()
@@ -158,13 +154,12 @@ func move_selection(is_down: bool) -> void:
 func update_selection() -> void:
 	for i in labels.size():
 		if i == selected:
-			labels[i].modulate = Color.WHITE  # Seleccionada = blanca brillante
+			labels[i].modulate = Color.WHITE
 			shake_label(labels[i])
 		else:
-			labels[i].modulate = Color(0.2, 0.2, 0.2, 1.0)  # No seleccionadas = oscurecidas
+			labels[i].modulate = Color(0.25, 0.25, 0.25, unselected_alpha)
 
 func shake_label(label: RichTextLabel) -> void:
-	# Solo hacer shake si hay posiciones guardadas
 	if original_positions.is_empty():
 		return
 	
@@ -176,7 +171,7 @@ func shake_label(label: RichTextLabel) -> void:
 	shake_tween.set_ease(Tween.EASE_IN_OUT)
 	shake_tween.set_trans(Tween.TRANS_SINE)
 	
-	var original_x := original_positions[label_index]  # Usar posición guardada
+	var original_x := original_positions[label_index]
 	var shake_amount := 4.0
 	
 	shake_tween.tween_property(label, "position:x", original_x + shake_amount, 0.04)
@@ -184,34 +179,52 @@ func shake_label(label: RichTextLabel) -> void:
 	shake_tween.tween_property(label, "position:x", original_x + shake_amount, 0.04)
 	shake_tween.tween_property(label, "position:x", original_x, 0.04)
 
+func blink_and_confirm(callback: Callable) -> void:
+	can_interact = false
+	var label := labels[selected]
+	
+	for i in blink_count:
+		label.modulate = Color(1.0, 1.0, 1.0, 0.0)
+		await get_tree().create_timer(blink_speed).timeout
+		label.modulate = Color.WHITE
+		await get_tree().create_timer(blink_speed).timeout
+	
+	callback.call()
+
 func confirm_selection() -> void:
 	match selected:
 		0:  # RESUME
-			_resume()
+			blink_and_confirm(_resume)
 		1:  # RESTART
-			animate_exit(func():
-				GLOBAL.resume_game()
-				RANK.reset_all()
-				SCORE.reset()
-				SCORE.reset_game_score()
-				GAME.store(Vector2(10000, 10000), false)
-				GLOBAL.change_scene("GAME")
+			blink_and_confirm(func():
+				animate_exit(func():
+					GLOBAL.resume_game()
+					RANK.reset_all()
+					SCORE.reset()
+					SCORE.reset_game_score()
+					GAME.store(Vector2(10000, 10000), false)
+					GLOBAL.change_scene("GAME")
+				)
 			)
 		2:  # BACK TO TITLE
-			animate_exit(func():
-				GAME.playing = false
-				GLOBAL.resume_game()
-				RANK.reset_all()
-				SCORE.reset()
-				SCORE.reset_game_score()
-				GLOBAL.change_scene("MENU")
+			blink_and_confirm(func():
+				animate_exit(func():
+					GAME.playing = false
+					GLOBAL.resume_game()
+					RANK.reset_all()
+					SCORE.reset()
+					SCORE.reset_game_score()
+					GLOBAL.change_scene("MENU")
+				)
 			)
 		3:  # SETTINGS
 			pass
 		4:  # EXIT
-			animate_exit(func():
-				GLOBAL.resume_game()
-				get_tree().quit()
+			blink_and_confirm(func():
+				animate_exit(func():
+					GLOBAL.resume_game()
+					get_tree().quit()
+				)
 			)
 
 func _resume() -> void:
