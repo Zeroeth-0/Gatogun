@@ -22,8 +22,8 @@ enum SelectEnum { GATO, DOLL }
 
 # === ESTADO ===
 var selected: int = 1
-var initDelay: float = 0.15
-var repDelay: float = 0.08
+var initDelay: float = 0.30
+var repDelay: float = 0.15
 var deadzone: float = 0.1
 var repTimer: float = 0.0
 var lastDir: int = 0
@@ -38,6 +38,8 @@ var lastDir: int = 0
 
 # === CONFIGURACIÓN DE SELECCIÓN ===
 @export var unselected_alpha: float = 0.75
+var blink_count: int = 4
+var blink_speed: float = 0.08
 
 # === ANIMACIONES ===
 var active_tweens: Array[Tween] = []
@@ -75,6 +77,9 @@ func _ready() -> void:
 
 	update_selection(false)
 
+	if desc_label:
+		desc_label.text = STYLES[selected].style + " STYLE"
+
 	var final_positions: Array[Vector2] = []
 	for card in cards:
 		final_positions.append(card.position)
@@ -89,13 +94,15 @@ func _ready() -> void:
 		tween.tween_property(card, "position:x", final_positions[i].x, 0.4).set_delay(i * 0.1)
 		tween.tween_property(card, "modulate:a", 1.0, 0.3).set_delay(i * 0.1)
 
-	if desc_label:
-		desc_label.text = STYLES[selected].style + " STYLE"
-
-	# Interacción disponible desde el primer frame, sin esperar la entrada
+	await get_tree().create_timer((cards.size() - 1) * 0.1 + 0.4).timeout
 	can_interact = true
 
 func _process(delta: float) -> void:
+	if Input.is_action_just_pressed("C") or Input.is_action_just_pressed("A"):
+		confirm_selection()
+	if Input.is_action_just_pressed("B"):
+		go_back()
+
 	if not can_interact:
 		return
 
@@ -118,12 +125,6 @@ func _process(delta: float) -> void:
 		if repTimer <= 0:
 			move_selection(direction == 1)
 			repTimer = repDelay
-
-	if Input.is_action_just_pressed("C") or Input.is_action_just_pressed("A"):
-		confirm_selection()
-
-	if Input.is_action_just_pressed("B"):
-		go_back()
 
 func move_selection(is_right: bool) -> void:
 	if is_right:
@@ -190,6 +191,22 @@ func update_selection(animate: bool = true) -> void:
 	if desc_label:
 		desc_label.text = STYLES[selected].style + " STYLE"
 
+func blink_and_confirm(callback: Callable) -> void:
+	can_interact = false
+	var card := cards[selected]
+	var icon: TextureRect = card.get_child(0)
+	var name_label: Label = card.get_child(1)
+
+	for i in blink_count:
+		icon.modulate = Color(1.0, 1.0, 1.0, 0.0)
+		name_label.modulate = Color(1.0, 1.0, 1.0, 0.0)
+		await get_tree().create_timer(blink_speed).timeout
+		icon.modulate = Color.WHITE
+		name_label.modulate = Color.WHITE
+		await get_tree().create_timer(blink_speed).timeout
+
+	callback.call()
+
 func animate_exit(callback: Callable) -> void:
 	can_interact = false
 	kill_active_tweens()
@@ -207,14 +224,16 @@ func animate_exit(callback: Callable) -> void:
 
 func confirm_selection() -> void:
 	var chosenStyle = STYLES[selected].style
-	animate_exit(func():
-		match SelectStyle:
-			SelectEnum.GATO:
-				GAME.set_gato(chosenStyle)
-				GLOBAL.raw_change_scene("DOLL")
-			SelectEnum.DOLL:
-				GAME.set_doll(chosenStyle)
-				GLOBAL.change_scene("GAME")
+	blink_and_confirm(func():
+		animate_exit(func():
+			match SelectStyle:
+				SelectEnum.GATO:
+					GAME.set_gato(chosenStyle)
+					GLOBAL.raw_change_scene("DOLL")
+				SelectEnum.DOLL:
+					GAME.set_doll(chosenStyle)
+					GLOBAL.change_scene("GAME")
+		)
 	)
 
 func go_back() -> void:

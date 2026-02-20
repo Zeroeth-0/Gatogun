@@ -37,8 +37,8 @@ render_target_update_mode = 4
 [node name="Curtain" parent="GameViewportContainer/GameViewport" instance=ExtResource("2_lfrn8")]
 
 [node name="Title Screen" parent="GameViewportContainer/GameViewport" instance=ExtResource("2_7h61r")]
-offset_top = 1.0
-offset_bottom = 1.0
+offset_top = 0.740739
+offset_bottom = 0.74072266
 
 [node name="ZoomViewportContainer" type="SubViewportContainer" parent="."]
 texture_filter = 1
@@ -58,20 +58,23 @@ handle_input_locally = false
 size = Vector2i(200, 200)
 render_target_update_mode = 4
 script = ExtResource("3_0sr1o")
-screenMargin = 70
 
 [node name="TextureRect" type="TextureRect" parent="ZoomViewportContainer/ZoomViewport"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 480.0
-offset_bottom = 530.0
+offset_left = -680.0
+offset_top = -730.0
+offset_right = 1160.0
+offset_bottom = 1260.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("ViewportTexture_0sr1o")
+stretch_mode = 2
 
 [node name="PlayerCamera" type="Camera2D" parent="ZoomViewportContainer/ZoomViewport"]
-zoom = Vector2(0.5, 0.5)
+zoom = Vector2(0.4, 0.4)
+limit_enabled = false
 
 [node name="Rank Debug" type="Label" parent="."]
 offset_left = 1438.0
