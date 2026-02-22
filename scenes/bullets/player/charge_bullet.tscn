@@ -3,7 +3,8 @@
 [ext_resource type="Script" uid="uid://d1bosw6cv4bjk" path="res://source/bullets/player_bullet.gd" id="1_qwrgv"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_76n17"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ex51n"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_qwrgv"]
+radius = 12.0
 
 [node name="ChargeBullet" type="Area2D" groups=["Charge"]]
 scale = Vector2(3.5, 3.5)
@@ -20,7 +21,7 @@ texture = ExtResource("2_76n17")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 z_index = 1
 scale = Vector2(4.5, 4.5)
-shape = SubResource("RectangleShape2D_ex51n")
+shape = SubResource("CircleShape2D_qwrgv")
 debug_color = Color(1, 1, 0, 0.419608)
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]

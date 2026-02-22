@@ -172,3 +172,10 @@ func move_diagonal():
 func move_still():
 	extraVel = Vector2.ZERO
 	move_and_slide()
+
+# Compensación movimiento cámara
+func _enter_tree():
+	CAMERA.tracked_nodes.append(self)
+
+func _exit_tree():
+	CAMERA.tracked_nodes.erase(self)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://bi7uyv2plo07x"]
+[gd_scene load_steps=25 format=3 uid="uid://bi7uyv2plo07x"]
 
 [ext_resource type="Script" uid="uid://hrxsyfgjv1kg" path="res://source/levels/level_parser.gd" id="1_g3wwy"]
 [ext_resource type="PackedScene" uid="uid://60qb43njmjls" path="res://scenes/enemies/mid/air/blammo.tscn" id="2_ssxqg"]
@@ -17,8 +17,11 @@
 [ext_resource type="PackedScene" uid="uid://clxkeo672dm54" path="res://scenes/enemies/popcorn/tank/sukki_s.tscn" id="15_pyypn"]
 [ext_resource type="PackedScene" uid="uid://gpd1ntke4nv1" path="res://scenes/enemies/popcorn/turret/pikko.tscn" id="16_o7v5e"]
 [ext_resource type="PackedScene" uid="uid://bvtnw342e8xsy" path="res://scenes/enemies/popcorn/turret/yukko.tscn" id="17_si4k2"]
+[ext_resource type="Texture2D" uid="uid://chijma6mb38wf" path="res://background_cats.png" id="18_g3wwy"]
 [ext_resource type="PackedScene" uid="uid://4y26tmtqbxdx" path="res://scenes/levels/ground.tscn" id="18_gy7ni"]
 [ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="19_01lr2"]
+[ext_resource type="Script" uid="uid://582anxy540je" path="res://source/levels/background.gd" id="19_ssxqg"]
+[ext_resource type="Script" uid="uid://camgd3kf5nap7" path="res://source/levels/lane.gd" id="20_8tx05"]
 [ext_resource type="PackedScene" uid="uid://cgts6rg8xrau" path="res://scenes/levels/playzone.tscn" id="20_g0bee"]
 [ext_resource type="PackedScene" uid="uid://duam5mtyrxv5l" path="res://scenes/UI/hud.tscn" id="21_kc3r2"]
 
@@ -27,8 +30,16 @@ script = ExtResource("1_g3wwy")
 waveFile = "res://source/levels/test.txt"
 enemyScenes = Array[PackedScene]([ExtResource("2_ssxqg"), ExtResource("3_8tx05"), ExtResource("4_kkypk"), ExtResource("5_aa8ij"), ExtResource("6_xjrwe"), ExtResource("7_3y1yf"), ExtResource("8_cqqua"), ExtResource("9_vsddf"), ExtResource("10_dius1"), ExtResource("11_xe6ae"), ExtResource("12_nsaos"), ExtResource("13_51ibf"), ExtResource("14_exrju"), ExtResource("15_pyypn"), ExtResource("16_o7v5e"), ExtResource("17_si4k2")])
 
+[node name="BackgroundCats" type="Sprite2D" parent="."]
+modulate = Color(0.18717614, 0.18717614, 0.18717614, 1)
+position = Vector2(340, 365)
+scale = Vector2(2, 2)
+texture = ExtResource("18_g3wwy")
+script = ExtResource("19_ssxqg")
+
 [node name="North Lane" type="Node2D" parent="."]
 position = Vector2(340, -100)
+script = ExtResource("20_8tx05")
 
 [node name="Zero" type="Marker2D" parent="North Lane"]
 position = Vector2(-261, 0)
@@ -51,8 +62,9 @@ position = Vector2(174, 0)
 position = Vector2(261, 0)
 
 [node name="West Lane" type="Node2D" parent="."]
-position = Vector2(-100, 250)
+position = Vector2(-200, 250)
 rotation = 1.5708
+script = ExtResource("20_8tx05")
 
 [node name="Zero" type="Marker2D" parent="West Lane"]
 position = Vector2(-261, 0)
@@ -75,8 +87,9 @@ position = Vector2(174, 0)
 position = Vector2(261, 0)
 
 [node name="East Lane" type="Node2D" parent="."]
-position = Vector2(780, 250)
+position = Vector2(880, 250)
 rotation = 1.5708
+script = ExtResource("20_8tx05")
 
 [node name="Zero" type="Marker2D" parent="East Lane"]
 position = Vector2(-261, 0)
@@ -100,6 +113,7 @@ position = Vector2(261, 0)
 
 [node name="South Lane" type="Node2D" parent="."]
 position = Vector2(340, 830)
+script = ExtResource("20_8tx05")
 
 [node name="Zero" type="Marker2D" parent="South Lane"]
 position = Vector2(-261, 0)

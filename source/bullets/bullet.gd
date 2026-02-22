@@ -92,3 +92,10 @@ func _update_direction(delta: float) -> void:
 func _update_speed() -> void:
 	if elapsedTime >= fstStartTime and elapsedTime <= sndStartTime: speed = fstNewSpeed
 	elif elapsedTime >= sndStartTime: speed = sndNewSpeed
+
+# Compensación movimiento cámara
+func _enter_tree():
+	CAMERA.tracked_nodes.append(self)
+
+func _exit_tree():
+	CAMERA.tracked_nodes.erase(self)

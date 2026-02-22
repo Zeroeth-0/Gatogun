@@ -20,8 +20,8 @@ var GatoStyle: GatoEnum = GatoEnum.RANGE
 var DollStyle: DollEnum = DollEnum.SPEED
 
 # === ESTADO GLOBAL DEL JUGADOR ===
-var spawnPoint: Vector2 = Vector2(150, 830)
-var goPoint: Vector2 = Vector2(150, 600)
+var spawnPoint: Vector2 = Vector2(340, 830)
+var goPoint: Vector2 = Vector2(340, 600)
 var lives: float = 2
 var medalLevel: int = 0
 var maxBombs: int = 4

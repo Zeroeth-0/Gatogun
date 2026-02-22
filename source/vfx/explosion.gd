@@ -29,3 +29,10 @@ func _process(delta):
 				get_parent().queue_free()
 			else:
 				queue_free()
+
+# Compensación movimiento cámara
+func _enter_tree():
+	CAMERA.tracked_nodes.append(self)
+
+func _exit_tree():
+	CAMERA.tracked_nodes.erase(self)

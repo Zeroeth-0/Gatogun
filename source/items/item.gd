@@ -56,3 +56,10 @@ func _move_towards_player(delta: float) -> void:
 #	if area.is_in_group("Collect"):
 #		isCollected = true  # Bloquea múltiples ejecuciones
 #		queue_free()
+
+# Compensación movimiento cámara
+func _enter_tree():
+	CAMERA.tracked_nodes.append(self)
+
+func _exit_tree():
+	CAMERA.tracked_nodes.erase(self)

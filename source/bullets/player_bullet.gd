@@ -86,3 +86,10 @@ func _on_area_entered(area: Node) -> void:
 func _on_area_exited(area: Node) -> void:
 	if area.is_in_group("Free"):
 		queue_free()
+
+# Compensación movimiento cámara
+func _enter_tree():
+	CAMERA.tracked_nodes.append(self)
+
+func _exit_tree():
+	CAMERA.tracked_nodes.erase(self)
