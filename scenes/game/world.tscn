@@ -31,7 +31,7 @@ waveFile = "res://source/levels/test.txt"
 enemyScenes = Array[PackedScene]([ExtResource("2_ssxqg"), ExtResource("3_8tx05"), ExtResource("4_kkypk"), ExtResource("5_aa8ij"), ExtResource("6_xjrwe"), ExtResource("7_3y1yf"), ExtResource("8_cqqua"), ExtResource("9_vsddf"), ExtResource("10_dius1"), ExtResource("11_xe6ae"), ExtResource("12_nsaos"), ExtResource("13_51ibf"), ExtResource("14_exrju"), ExtResource("15_pyypn"), ExtResource("16_o7v5e"), ExtResource("17_si4k2")])
 
 [node name="BackgroundCats" type="Sprite2D" parent="."]
-modulate = Color(0.18717614, 0.18717614, 0.18717614, 1)
+modulate = Color(0.1882353, 0.1882353, 0.1882353, 0.2627451)
 position = Vector2(340, 365)
 scale = Vector2(2, 2)
 texture = ExtResource("18_g3wwy")

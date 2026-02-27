@@ -1,7 +1,21 @@
-[gd_scene load_steps=3 format=3 uid="uid://duam5mtyrxv5l"]
+[gd_scene load_steps=5 format=3 uid="uid://duam5mtyrxv5l"]
 
 [ext_resource type="Script" uid="uid://ccmb0til07tbv" path="res://source/UI/hud.gd" id="1_rd3kb"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_y5tme"]
+[ext_resource type="Shader" uid="uid://5sgorh56i7op" path="res://shaders/intensity_gauge.gdshader" id="3_y5tme"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_18exe"]
+shader = ExtResource("3_y5tme")
+shader_parameter/backFillColour = Color(0.7572553, 0.7854865, 0.8374096, 1)
+shader_parameter/frontFillInnerColour = Color(1, 1, 1, 1)
+shader_parameter/frontFillOuterColour = Color(1, 1, 1, 1)
+shader_parameter/ringColour = Color(0.21176471, 0.23921569, 0.2901961, 1)
+shader_parameter/fresnelColour = Color(1, 1, 1, 1)
+shader_parameter/innerRingGlowColour = Color(1, 1, 1, 1)
+shader_parameter/fillcolour = Color(1, 1, 1, 1)
+shader_parameter/ringWidth = 0.15
+shader_parameter/innerCircleRadiusOffset = 0.0
+shader_parameter/fill_value = 4.7499999933364734e-08
 
 [node name="HUD" type="Control" node_paths=PackedStringArray("gameScore", "highScore", "comboLabel", "multLabel", "hotBar", "medalCountdown", "heartContainer", "currBombContainer", "maxBombContainer") groups=["HUD"]]
 z_index = 100
@@ -49,6 +63,7 @@ text = "x999"
 
 [node name="HotBar" type="TextureProgressBar" parent="."]
 z_index = 10
+material = SubResource("ShaderMaterial_18exe")
 layout_mode = 0
 offset_left = 25.0
 offset_top = 120.0
@@ -58,7 +73,6 @@ scale = Vector2(0.6, 0.6)
 fill_mode = 3
 texture_under = ExtResource("2_y5tme")
 texture_progress = ExtResource("2_y5tme")
-tint_under = Color(0.39308554, 0.3930855, 0.39308548, 1)
 
 [node name="MedalCountdown" type="TextureProgressBar" parent="."]
 z_index = 10

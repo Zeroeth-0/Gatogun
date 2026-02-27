@@ -15,10 +15,10 @@ lifeTime = 3.0
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 0.627451, 0, 1)
 z_index = 1
-scale = Vector2(0.8, 0.8)
 texture = ExtResource("2_lojgi")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 z_index = 1
 scale = Vector2(4.5, 4.5)
 shape = SubResource("RectangleShape2D_ex51n")

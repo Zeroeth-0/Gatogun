@@ -1,11 +1,47 @@
-[gd_scene load_steps=7 format=3 uid="uid://cjhkionj3a6h3"]
+[gd_scene load_steps=9 format=3 uid="uid://cjhkionj3a6h3"]
 
 [ext_resource type="Script" uid="uid://cwqfgmqokmuta" path="res://source/weapons/option_manager.gd" id="1_3ropm"]
 [ext_resource type="PackedScene" uid="uid://dhpo7sa5v3t30" path="res://scenes/weapons/player/laser.tscn" id="2_7ca01"]
 [ext_resource type="PackedScene" uid="uid://bm7txdh8pkm75" path="res://scenes/weapons/player/burst.tscn" id="3_ae5gp"]
 [ext_resource type="PackedScene" uid="uid://d1f0btwlnwl27" path="res://scenes/weapons/player/option.tscn" id="4_etdfv"]
 [ext_resource type="PackedScene" uid="uid://1p0g651xshsv" path="res://scenes/weapons/player/charge.tscn" id="5_yrtdw"]
+[ext_resource type="Shader" uid="uid://dchur41q3taw6" path="res://shaders/charging_charge.gdshader" id="6_7ca01"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="6_yip46"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ae5gp"]
+shader = ExtResource("6_7ca01")
+shader_parameter/charge = 1.0
+shader_parameter/pulse_frequency = 2.99999993666932
+shader_parameter/pulse_sharpness = 1.0
+shader_parameter/pulse_strength = 0.14
+shader_parameter/pulse_glow_boost = 3.87999991327424
+shader_parameter/flash_white = 0.999999977648
+shader_parameter/max_radius = 0.59999998845146
+shader_parameter/edge_softness = 0.07
+shader_parameter/glow_falloff = 2.20000001788144
+shader_parameter/edge_turbulence = 0.0330000015675
+shader_parameter/turbulence_speed = 0.6999999843536
+shader_parameter/posterize_str = 0.999999977648
+shader_parameter/posterize_bands = 4
+shader_parameter/star4_radius = 0.51999999210228
+shader_parameter/star4_inner_ratio = 0.15
+shader_parameter/star4_softness = 0.0
+shader_parameter/star4_darkness = 0.86999998055376
+shader_parameter/star4_pulse_amount = 0.6
+shader_parameter/star4_rot_speed = -0.3500000592328001
+shader_parameter/star4_ready_scale = 1.55
+shader_parameter/ray_amount = 6.0
+shader_parameter/ray_rotation_speed = 1.999999821184
+shader_parameter/ray_half_width = 0.22
+shader_parameter/ray_softness = 0.15300000656898
+shader_parameter/ray_reach = 0.99999999254926
+shader_parameter/ray_screw_factor = 1.2
+shader_parameter/ray_base_intensity = 0.75
+shader_parameter/ray_color = Color(1, 0.88, 0.4, 1)
+shader_parameter/core_color = Color(1, 1, 1, 1)
+shader_parameter/mid_color = Color(1, 0.75, 0.1, 1)
+shader_parameter/edge_color = Color(1, 0.3, 0, 1)
+shader_parameter/rim_color = Color(0.7650495, 0.0628184, 9.62615e-08, 1)
 
 [node name="Weapon" type="Node2D"]
 script = ExtResource("1_3ropm")
@@ -32,6 +68,7 @@ deviationAngle = 10.0
 sprite = NodePath("../Icon")
 
 [node name="Icon" type="Sprite2D" parent="."]
-position = Vector2(0, -50)
-scale = Vector2(0.3, 0.3)
+material = SubResource("ShaderMaterial_ae5gp")
+position = Vector2(0, -65)
+scale = Vector2(0.7, 0.7)
 texture = ExtResource("6_yip46")

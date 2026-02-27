@@ -1,8 +1,17 @@
-[gd_scene load_steps=7 format=3 uid="uid://45jy2ekapnll"]
+[gd_scene load_steps=9 format=3 uid="uid://45jy2ekapnll"]
 
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="1_ff2ik"]
 [ext_resource type="Script" uid="uid://dyfpfscqr447d" path="res://source/enemies/enemy_gatogun.gd" id="1_fxs2u"]
+[ext_resource type="Shader" uid="uid://ynex463g0i6x" path="res://shaders/enemy_hit.gdshader" id="1_mft1c"]
 [ext_resource type="PackedScene" uid="uid://cnkhwx8t1jwmf" path="res://scenes/UI/enemy_combo.tscn" id="3_38ino"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mft1c"]
+shader = ExtResource("1_mft1c")
+shader_parameter/hit_effect = 0.0
+shader_parameter/shake_intensity = 5.0
+shader_parameter/flash_speed = 30.0
+shader_parameter/time_offset = 0.0
+shader_parameter/flash_color = Color(0.10779586, 0.34480074, 1, 1)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jtchi"]
 
@@ -20,6 +29,7 @@ scoreCount = 2
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(1, 0, 1, 1)
 z_index = 1
+material = SubResource("ShaderMaterial_mft1c")
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("1_ff2ik")
 
