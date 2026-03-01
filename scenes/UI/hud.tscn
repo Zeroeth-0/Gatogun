@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://duam5mtyrxv5l"]
+[gd_scene format=3 uid="uid://duam5mtyrxv5l"]
 
 [ext_resource type="Script" uid="uid://ccmb0til07tbv" path="res://source/UI/hud.gd" id="1_rd3kb"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_y5tme"]
@@ -17,7 +17,7 @@ shader_parameter/ringWidth = 0.15
 shader_parameter/innerCircleRadiusOffset = 0.0
 shader_parameter/fill_value = 4.7499999933364734e-08
 
-[node name="HUD" type="Control" node_paths=PackedStringArray("gameScore", "highScore", "comboLabel", "multLabel", "hotBar", "medalCountdown", "heartContainer", "currBombContainer", "maxBombContainer") groups=["HUD"]]
+[node name="HUD" type="Control" unique_id=1100591291 node_paths=PackedStringArray("gameScore", "highScore", "comboLabel", "multLabel", "hotBar", "medalCountdown", "heartContainer", "currBombContainer", "maxBombContainer") groups=["HUD"]]
 z_index = 100
 layout_mode = 3
 anchors_preset = 15
@@ -41,7 +41,7 @@ currBombContainer = NodePath("BombContainer/CurrBombContainer")
 maxBombContainer = NodePath("BombContainer/MaxBombContainer")
 resource_texture = ExtResource("2_y5tme")
 
-[node name="ComboLabel" type="RichTextLabel" parent="."]
+[node name="ComboLabel" type="RichTextLabel" parent="." unique_id=1357965203]
 top_level = true
 z_index = 10
 layout_mode = 0
@@ -51,7 +51,7 @@ offset_right = 8.0
 offset_bottom = 300.0
 text = "+9999"
 
-[node name="MultLabel" type="RichTextLabel" parent="."]
+[node name="MultLabel" type="RichTextLabel" parent="." unique_id=2039826531]
 top_level = true
 z_index = 10
 layout_mode = 0
@@ -61,7 +61,7 @@ offset_right = 650.0
 offset_bottom = 170.0
 text = "x999"
 
-[node name="HotBar" type="TextureProgressBar" parent="."]
+[node name="HotBar" type="TextureProgressBar" parent="." unique_id=578532251 groups=["ShaderHolder"]]
 z_index = 10
 material = SubResource("ShaderMaterial_18exe")
 layout_mode = 0
@@ -74,7 +74,7 @@ fill_mode = 3
 texture_under = ExtResource("2_y5tme")
 texture_progress = ExtResource("2_y5tme")
 
-[node name="MedalCountdown" type="TextureProgressBar" parent="."]
+[node name="MedalCountdown" type="TextureProgressBar" parent="." unique_id=1201068013]
 z_index = 10
 layout_mode = 0
 offset_left = 120.0
@@ -87,7 +87,7 @@ step = 0.01
 fill_mode = 4
 texture_progress = ExtResource("2_y5tme")
 
-[node name="HeartContainer" type="HBoxContainer" parent="."]
+[node name="HeartContainer" type="HBoxContainer" parent="." unique_id=1117405624]
 z_index = 10
 layout_mode = 0
 offset_left = 25.0
@@ -96,55 +96,55 @@ offset_right = 65.00006
 offset_bottom = 110.0
 scale = Vector2(0.25, 0.25)
 
-[node name="ScoreContainer" type="HBoxContainer" parent="."]
+[node name="ScoreContainer" type="HBoxContainer" parent="." unique_id=403505537]
 layout_mode = 0
 offset_top = 10.0
 offset_right = 340.0
 offset_bottom = 60.0
 theme_override_constants/separation = 0
 
-[node name="GameContainer" type="VBoxContainer" parent="ScoreContainer"]
+[node name="GameContainer" type="VBoxContainer" parent="ScoreContainer" unique_id=244395829]
 custom_minimum_size = Vector2(340, 46)
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="GameName" type="RichTextLabel" parent="ScoreContainer/GameContainer"]
+[node name="GameName" type="RichTextLabel" parent="ScoreContainer/GameContainer" unique_id=797841792]
 custom_minimum_size = Vector2(340, 23)
 layout_mode = 2
 text = "PLAYER-SCORE"
 horizontal_alignment = 1
 
-[node name="GameScore" type="RichTextLabel" parent="ScoreContainer/GameContainer"]
+[node name="GameScore" type="RichTextLabel" parent="ScoreContainer/GameContainer" unique_id=1689133802]
 custom_minimum_size = Vector2(340, 23)
 layout_mode = 2
 text = "999999999999999999999"
 horizontal_alignment = 1
 
-[node name="HighContainer" type="VBoxContainer" parent="ScoreContainer"]
+[node name="HighContainer" type="VBoxContainer" parent="ScoreContainer" unique_id=455931404]
 custom_minimum_size = Vector2(340, 46)
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="HighName" type="RichTextLabel" parent="ScoreContainer/HighContainer"]
+[node name="HighName" type="RichTextLabel" parent="ScoreContainer/HighContainer" unique_id=1776930001]
 custom_minimum_size = Vector2(340, 23)
 layout_mode = 2
 text = "HIGH-SCORE"
 horizontal_alignment = 1
 
-[node name="HighScore" type="RichTextLabel" parent="ScoreContainer/HighContainer"]
+[node name="HighScore" type="RichTextLabel" parent="ScoreContainer/HighContainer" unique_id=652332015]
 custom_minimum_size = Vector2(340, 23)
 layout_mode = 2
 text = "999999999999999999999"
 horizontal_alignment = 1
 
-[node name="BombContainer" type="Control" parent="."]
+[node name="BombContainer" type="Control" parent="." unique_id=681300541]
 anchors_preset = 0
 offset_left = 25.0
 offset_top = 680.0
 offset_right = 65.0
 offset_bottom = 720.0
 
-[node name="MaxBombContainer" type="HBoxContainer" parent="BombContainer"]
+[node name="MaxBombContainer" type="HBoxContainer" parent="BombContainer" unique_id=2133660391]
 modulate = Color(0.39308554, 0.3930855, 0.39308548, 1)
 z_index = 10
 layout_mode = 0
@@ -152,7 +152,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 scale = Vector2(0.25, 0.25)
 
-[node name="CurrBombContainer" type="HBoxContainer" parent="BombContainer"]
+[node name="CurrBombContainer" type="HBoxContainer" parent="BombContainer" unique_id=671075228]
 modulate = Color(0, 0, 1, 1)
 z_index = 10
 layout_mode = 0

@@ -1,26 +1,55 @@
-[gd_scene load_steps=4 format=3 uid="uid://ce3l7flachspf"]
+[gd_scene format=3 uid="uid://ce3l7flachspf"]
 
 [ext_resource type="Script" uid="uid://by8w0yiimfkum" path="res://source/bullets/bullet_gatogun.gd" id="1_q4abf"]
+[ext_resource type="Shader" uid="uid://o5gse6ylu2o1" path="res://shaders/danmaku_bullet.gdshader" id="2_15svb"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_juyxv"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_q4abf"]
 
-[node name="Bullet" type="Area2D" groups=["Damage", "Enemy Bullet"]]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iy0kc"]
+shader = ExtResource("2_15svb")
+shader_parameter/bullet_type = 0
+shader_parameter/bullet_subtype = 0
+shader_parameter/bullet_color = Color(0, 0.38039216, 1, 1)
+shader_parameter/rim_color = Color(0, 0, 0.47058824, 1)
+shader_parameter/core_color = Color(1, 1, 1, 1)
+shader_parameter/invert_colors = false
+shader_parameter/core_radius = 0.2
+shader_parameter/rim_start = 0.25
+shader_parameter/edge_softness = 0.025
+shader_parameter/brightness = 2.0
+shader_parameter/pulse_enabled = true
+shader_parameter/pulse_speed = 5.0
+shader_parameter/pulse_amount = 0.035
+shader_parameter/kunai_length = 2.0
+shader_parameter/kunai_tip_top = 1.8
+shader_parameter/kunai_tip_bottom = 1.8
+shader_parameter/box_aspect = 1.0
+shader_parameter/box_round = 0.1
+shader_parameter/box_bulge = 0.0
+shader_parameter/star_inner = 0.45
+shader_parameter/reach = 0.85
+shader_parameter/thickness = 0.3
+shader_parameter/count = 4
+shader_parameter/spin = 2.0
+
+[node name="Bullet" type="Area2D" unique_id=458657033 groups=["Damage", "Enemy Bullet"]]
 z_index = 5
 script = ExtResource("1_q4abf")
 revenge = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["Damage"]]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=96439797 groups=["Damage"]]
 z_index = 4
 scale = Vector2(0.3, 0.3)
 shape = SubResource("CircleShape2D_q4abf")
 debug_color = Color(1, 0, 0, 0.419608)
 
-[node name="Sprite2D" type="Sprite2D" parent="." groups=["Damage"]]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=652037282 groups=["Damage", "ShaderHolder"]]
 modulate = Color(0, 1, 1, 1)
 z_index = 3
+material = SubResource("ShaderMaterial_iy0kc")
 position = Vector2(2.98023e-07, 2.98023e-07)
-scale = Vector2(0.25, 0.25)
+scale = Vector2(0.7, 0.7)
 texture = ExtResource("2_juyxv")
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]

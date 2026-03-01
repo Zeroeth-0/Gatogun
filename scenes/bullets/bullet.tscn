@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://dha3ds2h57s2b"]
+[gd_scene format=3 uid="uid://dha3ds2h57s2b"]
 
 [ext_resource type="Script" uid="uid://by8w0yiimfkum" path="res://source/bullets/bullet_gatogun.gd" id="1_5f1na"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_kn77k"]
@@ -8,46 +8,49 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_tocqt"]
 shader = ExtResource("2_lj7gv")
-shader_parameter/shape = 0
-shader_parameter/capsule_stretch = 2.0
-shader_parameter/ring_hole = 0.5
-shader_parameter/star_n = 5
-shader_parameter/star_inner = 0.42
-shader_parameter/bullet_color = Color(0.9, 0.15, 0.85, 1)
-shader_parameter/border_frac = 0.18
-shader_parameter/core_frac = 0.28
-shader_parameter/core_bright = 3.10000003129252
-shader_parameter/glow_frac = 0.3
-shader_parameter/glow_int = 0.8
-shader_parameter/glow_power = 2.0
+shader_parameter/bullet_type = 0
+shader_parameter/bullet_subtype = 0
+shader_parameter/bullet_color = Color(1, 0, 0.85, 1)
+shader_parameter/rim_color = Color(0.45, 0, 0.4, 1)
+shader_parameter/core_color = Color(1, 1, 1, 1)
+shader_parameter/invert_colors = false
+shader_parameter/core_radius = 0.2
+shader_parameter/rim_start = 0.25
+shader_parameter/edge_softness = 0.025
+shader_parameter/brightness = 2.0
+shader_parameter/custom_time = 0.0
+shader_parameter/time_offset = 0.0
+shader_parameter/pulse_enabled = true
 shader_parameter/pulse_speed = 5.0
-shader_parameter/pulse_amount = 0.12
-shader_parameter/ripple_speed = 4.0
-shader_parameter/ripple_bands = 4.0
-shader_parameter/ripple_amount = 0.22
-shader_parameter/shimmer_speed = 2.5
-shader_parameter/shimmer_amount = 0.2
-shader_parameter/wobble_speed = 2.5
-shader_parameter/wobble_freq = 3.0
-shader_parameter/wobble_amount = 0.035
-shader_parameter/hue_speed = 0.0
+shader_parameter/pulse_amount = 0.035
+shader_parameter/kunai_length = 2.0
+shader_parameter/kunai_tip_top = 1.8
+shader_parameter/kunai_tip_bottom = 1.8
+shader_parameter/box_aspect = 1.0
+shader_parameter/box_round = 0.1
+shader_parameter/box_bulge = 0.0
+shader_parameter/star_inner = 0.45
+shader_parameter/reach = 0.85
+shader_parameter/thickness = 0.3
+shader_parameter/count = 4
+shader_parameter/spin = 2.000000569999999
 
-[node name="Bullet" type="Area2D" groups=["Damage", "Enemy Bullet"]]
+[node name="Bullet" type="Area2D" unique_id=1102560457 groups=["Damage", "Enemy Bullet"]]
 z_index = 5
 script = ExtResource("1_5f1na")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["Damage"]]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=347967264 groups=["Damage"]]
 z_index = 4
 scale = Vector2(0.3, 0.3)
 shape = SubResource("CircleShape2D_5f1na")
 debug_color = Color(1, 0, 0, 0.419608)
 
-[node name="Sprite2D" type="Sprite2D" parent="." groups=["Damage"]]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2049356027 groups=["Damage", "ShaderHolder"]]
 modulate = Color(1, 0, 0, 1)
 z_index = 3
 material = SubResource("ShaderMaterial_tocqt")
-position = Vector2(2.98023e-07, 2.98023e-07)
-scale = Vector2(0.25, 0.25)
+position = Vector2(2.842171e-14, 2.842171e-14)
+scale = Vector2(0.7, 0.7)
 texture = ExtResource("2_kn77k")
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]

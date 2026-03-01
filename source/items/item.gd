@@ -1,7 +1,7 @@
 extends Area2D
 
 # === EXPORTABLES CONFIGURABLES ===
-@export var speed: float = 200.0                                                # Velocidad hacia jugador
+@export var speed: float = 500.0                                                # Velocidad hacia jugador
 @export var grav: float = 800.0                                                 # Gravedad
 @export var launchForce: float = 200.0                                          # Fuerza de lanzamiento inicial
 @export var delayBeforeFollow: float = 0.7                                      # Tiempo hasta ir a jugador

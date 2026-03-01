@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://3axj6btm7n4j"]
+[gd_scene format=3 uid="uid://3axj6btm7n4j"]
 
 [ext_resource type="Script" uid="uid://d1bosw6cv4bjk" path="res://source/bullets/player_bullet.gd" id="1_qwrgv"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_76n17"]
@@ -21,13 +21,13 @@ shader_parameter/core_radius = 0.400000019
 shader_parameter/outer_radius = 0.7250000344375
 shader_parameter/edge_softness = 0.10000000475
 shader_parameter/glow_falloff = 0.5
-shader_parameter/edge_turbulence = 0.002000000095
+shader_parameter/edge_turbulence = 0.01
 shader_parameter/turbulence_speed = 7.999999821184
 shader_parameter/posterize_str = 0.55
 shader_parameter/posterize_bands = 4
 shader_parameter/star_enabled = true
 shader_parameter/star_radius = 0.79999998584372
-shader_parameter/star_inner_ratio = 0.39999999478452003
+shader_parameter/star_inner_ratio = 0.39999999478452
 shader_parameter/star_softness = 0.010000000475
 shader_parameter/star_darkness = 0.0
 shader_parameter/star_pulse_amount = 0.1999999955296
@@ -40,20 +40,20 @@ shader_parameter/ray_color = Color(1, 0.88, 0.55, 1)
 [sub_resource type="CircleShape2D" id="CircleShape2D_qwrgv"]
 radius = 15.0
 
-[node name="ChargeBullet" type="Area2D" groups=["Charge"]]
+[node name="ChargeBullet" type="Area2D" unique_id=309589513 groups=["Charge"]]
 scale = Vector2(3.5, 3.5)
 script = ExtResource("1_qwrgv")
 BulletType = 4
 speed = 0.0
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1338373292 groups=["ShaderHolder"]]
 modulate = Color(1, 0.627451, 0, 1)
 z_index = 1
 material = SubResource("ShaderMaterial_rib06")
 scale = Vector2(1.1, 1.1)
 texture = ExtResource("2_76n17")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=806283284]
 visible = false
 z_index = 1
 scale = Vector2(4.5, 4.5)

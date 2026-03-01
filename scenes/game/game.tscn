@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cejse351xo6ye"]
+[gd_scene format=3 uid="uid://cejse351xo6ye"]
 
 [ext_resource type="Texture2D" uid="uid://chijma6mb38wf" path="res://background_cats.png" id="1_7h61r"]
 [ext_resource type="PackedScene" uid="uid://dra7yqg0s7urp" path="res://scenes/game/title_screen.tscn" id="2_7h61r"]
@@ -10,15 +10,15 @@
 [sub_resource type="ViewportTexture" id="ViewportTexture_0sr1o"]
 viewport_path = NodePath("GameViewportContainer/GameViewport")
 
-[node name="Game" type="Node2D"]
+[node name="Game" type="Node2D" unique_id=145768037]
 texture_filter = 2
 
-[node name="BackgroundCats" type="Sprite2D" parent="."]
+[node name="BackgroundCats" type="Sprite2D" parent="." unique_id=243007683]
 position = Vector2(961.25, 538)
 scale = Vector2(3.3626087, 2.5534883)
 texture = ExtResource("1_7h61r")
 
-[node name="GameViewportContainer" type="SubViewportContainer" parent="."]
+[node name="GameViewportContainer" type="SubViewportContainer" parent="." unique_id=624464330]
 texture_filter = 2
 offset_left = 485.0
 offset_top = 26.000002
@@ -26,7 +26,7 @@ offset_right = 2525.0
 offset_bottom = 2216.0
 scale = Vector2(0.45, 0.45)
 
-[node name="GameViewport" type="SubViewport" parent="GameViewportContainer" groups=["Game"]]
+[node name="GameViewport" type="SubViewport" parent="GameViewportContainer" unique_id=1713690111 groups=["Game"]]
 own_world_3d = true
 handle_input_locally = false
 size = Vector2i(2040, 2190)
@@ -34,13 +34,13 @@ size_2d_override = Vector2i(680, 730)
 size_2d_override_stretch = true
 render_target_update_mode = 4
 
-[node name="Curtain" parent="GameViewportContainer/GameViewport" instance=ExtResource("2_lfrn8")]
+[node name="Curtain" parent="GameViewportContainer/GameViewport" unique_id=864283741 instance=ExtResource("2_lfrn8")]
 
-[node name="Title Screen" parent="GameViewportContainer/GameViewport" instance=ExtResource("2_7h61r")]
+[node name="Title Screen" parent="GameViewportContainer/GameViewport" unique_id=1368644560 instance=ExtResource("2_7h61r")]
 offset_top = 0.740739
 offset_bottom = 0.74072266
 
-[node name="ZoomViewportContainer" type="SubViewportContainer" parent="."]
+[node name="ZoomViewportContainer" type="SubViewportContainer" parent="." unique_id=635251099]
 texture_filter = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -53,13 +53,13 @@ grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(1.5, 1.5)
 
-[node name="ZoomViewport" type="SubViewport" parent="ZoomViewportContainer"]
+[node name="ZoomViewport" type="SubViewport" parent="ZoomViewportContainer" unique_id=32339368]
 handle_input_locally = false
 size = Vector2i(200, 200)
 render_target_update_mode = 4
 script = ExtResource("3_0sr1o")
 
-[node name="TextureRect" type="TextureRect" parent="ZoomViewportContainer/ZoomViewport"]
+[node name="TextureRect" type="TextureRect" parent="ZoomViewportContainer/ZoomViewport" unique_id=1277239892]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -72,11 +72,11 @@ grow_vertical = 2
 texture = SubResource("ViewportTexture_0sr1o")
 stretch_mode = 2
 
-[node name="PlayerCamera" type="Camera2D" parent="ZoomViewportContainer/ZoomViewport"]
+[node name="PlayerCamera" type="Camera2D" parent="ZoomViewportContainer/ZoomViewport" unique_id=231495239]
 zoom = Vector2(0.4, 0.4)
 limit_enabled = false
 
-[node name="Rank Debug" type="Label" parent="."]
+[node name="Rank Debug" type="Label" parent="." unique_id=164121359]
 offset_left = 1438.0
 offset_top = 712.0
 offset_right = 1495.0
@@ -85,7 +85,7 @@ scale = Vector2(2, 2)
 text = "Rank: 1"
 script = ExtResource("4_kelw5")
 
-[node name="fps Debug" type="Label" parent="."]
+[node name="fps Debug" type="Label" parent="." unique_id=1113711491]
 offset_left = 1438.0
 offset_top = 965.0
 offset_right = 1495.0

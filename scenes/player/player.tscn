@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://dnm46gsra70ug"]
+[gd_scene format=3 uid="uid://dnm46gsra70ug"]
 
 [ext_resource type="Script" uid="uid://dtihhbg6wigvr" path="res://source/player/player.gd" id="1_7pfs0"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_86ini"]
@@ -7,7 +7,7 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_klkvo"]
 
-[node name="CatPlayer" type="CharacterBody2D" node_paths=PackedStringArray("sprite", "hitbox") groups=["Player"]]
+[node name="CatPlayer" type="CharacterBody2D" unique_id=1691754433 node_paths=PackedStringArray("sprite", "hitbox") groups=["Player"]]
 z_index = 4
 script = ExtResource("1_7pfs0")
 sprite = NodePath("Icon")
@@ -16,35 +16,35 @@ hitbox = NodePath("Denialzone")
 speed = 300
 screenMargin = 50
 
-[node name="Hurtbox" type="Area2D" parent="." groups=["Collect", "Player"]]
+[node name="Hurtbox" type="Area2D" parent="." unique_id=1185478358 groups=["Collect", "Player"]]
 z_index = 5
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=1541289978]
 scale = Vector2(0.3, 0.3)
 shape = SubResource("RectangleShape2D_klkvo")
 debug_color = Color(0, 1, 0, 0.419608)
 
-[node name="Icon" type="Sprite2D" parent="."]
+[node name="Icon" type="Sprite2D" parent="." unique_id=712924624]
 modulate = Color(0, 1, 0, 1)
 z_index = 4
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_86ini")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=993576940]
 scale = Vector2(0.3, 0.3)
 shape = SubResource("RectangleShape2D_klkvo")
 disabled = true
 debug_color = Color(0, 1, 0, 0.419608)
 
-[node name="Denialzone" type="Area2D" parent="." groups=["Player"]]
+[node name="Denialzone" type="Area2D" parent="." unique_id=458765405 groups=["Player"]]
 scale = Vector2(1.7, 1.7)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Denialzone"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Denialzone" unique_id=773695337]
 scale = Vector2(4, 4)
 shape = SubResource("RectangleShape2D_klkvo")
 debug_color = Color(0, 1, 0, 0.419608)
 
-[node name="Weapon" parent="." instance=ExtResource("4_g6re5")]
+[node name="Weapon" parent="." unique_id=2043432693 instance=ExtResource("4_g6re5")]
 position = Vector2(0, -1)
 
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]

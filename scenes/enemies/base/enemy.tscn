@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://45jy2ekapnll"]
+[gd_scene format=3 uid="uid://45jy2ekapnll"]
 
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="1_ff2ik"]
 [ext_resource type="Script" uid="uid://dyfpfscqr447d" path="res://source/enemies/enemy_gatogun.gd" id="1_fxs2u"]
@@ -19,41 +19,41 @@ shader_parameter/flash_color = Color(0.10779586, 0.34480074, 1, 1)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_divk0"]
 
-[node name="Enemy" type="CharacterBody2D" node_paths=PackedStringArray("comboLabel")]
+[node name="Enemy" type="CharacterBody2D" unique_id=177661500 node_paths=PackedStringArray("comboLabel")]
 z_index = 3
 script = ExtResource("1_fxs2u")
 comboLabel = NodePath("EnemyCombo")
 size = 40
 scoreCount = 2
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=444427917 groups=["ShaderHolder"]]
 modulate = Color(1, 0, 1, 1)
 z_index = 1
 material = SubResource("ShaderMaterial_mft1c")
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("1_ff2ik")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1503006985]
 shape = SubResource("RectangleShape2D_jtchi")
 disabled = true
 debug_color = Color(1, 0, 0, 0.419608)
 
-[node name="Hitbox" type="Area2D" parent="."]
+[node name="Hitbox" type="Area2D" parent="." unique_id=329283421]
 scale = Vector2(0.8, 0.8)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=1466043087]
 shape = SubResource("RectangleShape2D_vwy2o")
 debug_color = Color(1, 0, 0, 0.419608)
 
-[node name="Hurtbox" type="Area2D" parent="." groups=["Enemy"]]
+[node name="Hurtbox" type="Area2D" parent="." unique_id=779846352 groups=["Enemy"]]
 scale = Vector2(0.8, 0.8)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=1834027415]
 scale = Vector2(5, 5)
 shape = SubResource("RectangleShape2D_divk0")
 debug_color = Color(0, 1, 0, 0.419608)
 
-[node name="EnemyCombo" parent="." instance=ExtResource("3_38ino")]
+[node name="EnemyCombo" parent="." unique_id=456917589 instance=ExtResource("3_38ino")]
 offset_top = 10.0
 offset_bottom = 50.0
 

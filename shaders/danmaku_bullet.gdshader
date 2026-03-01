@@ -1,289 +1,226 @@
 shader_type canvas_item;
 
-// ┌─────────────────────────────────────────────────────────────────────────┐
-// │  DANMAKU BULLET SHADER — Godot 4                                       │
-// │                                                                         │
-// │  Uso: Sprite2D con textura blanca sólida.                              │
-// │  • Circle / Ring / Star: textura CUADRADA (ej. 64×64)                 │
-// │  • Capsule stretch=2: textura 1:2 (ej. 32×64) — ajusta el             │
-// │    aspect ratio del Sprite2D al valor de capsule_stretch               │
-// │  • Rotar el nodo Sprite2D desde código para la dirección               │
-// │  • render_mode blend_add en el material = glow aditivo acumulativo     │
-// └─────────────────────────────────────────────────────────────────────────┘
+uniform int bullet_type    : hint_range(0, 3) = 0;
+uniform int bullet_subtype : hint_range(0, 4) = 0;
 
-// ══════════════════════════════════════════════════════════════════════
-//  FORMA
-// ══════════════════════════════════════════════════════════════════════
-uniform int shape : hint_range(0, 3) = 0;
-// 0 Círculo   1 Cápsula   2 Aro   3 Estrella
+uniform vec4 bullet_color : source_color = vec4(1.0,  0.0,  0.85, 1.0);
+uniform vec4 rim_color    : source_color = vec4(0.45, 0.0,  0.40, 1.0);
+uniform vec4 core_color   : source_color = vec4(1.0,  1.0,  1.0,  1.0);
+uniform bool invert_colors                = false;
 
-uniform float capsule_stretch : hint_range(1.0, 5.0, 0.05) = 2.0;
-// Cápsula: 1.0=esfera  2.0=píldora/arroz  4.0=aguja/daga
-// Usa una textura con ese mismo ratio de aspecto para que no se corte.
+uniform float core_radius   : hint_range(0.01, 0.49) = 0.20;
+uniform float rim_start     : hint_range(0.01, 0.49) = 0.25;
+uniform float edge_softness : hint_range(0.001, 0.1) = 0.025;
+uniform float brightness    : hint_range(1.0,   6.0) = 2.0;
 
-uniform float ring_hole : hint_range(0.15, 0.80, 0.01) = 0.50;
-// Aro: tamaño del hueco interior (fracción del radio exterior).
-// 0.50 = aro clásico  0.75 = aro muy fino
+// === TIEMPO ===
+uniform float custom_time : hint_range(0.0, 1000.0) = 0.0;
+uniform float time_offset : hint_range(0.0, 100.0)  = 0.0;
 
-uniform int   star_n      : hint_range(3, 8) = 5;
-uniform float star_inner  : hint_range(0.10, 0.75, 0.01) = 0.42;
-// Estrella: N puntas.  star_inner < 0.25 = kunai/shuriken afilado.
+uniform bool  pulse_enabled                        = true;
+uniform float pulse_speed  : hint_range(0.0, 20.0) = 5.0;
+uniform float pulse_amount : hint_range(0.0, 0.12) = 0.035;
 
-// ══════════════════════════════════════════════════════════════════════
-//  COLOR  — borde oscuro y núcleo sobreexpuesto se derivan automáticamente
-// ══════════════════════════════════════════════════════════════════════
-uniform vec4  bullet_color : source_color = vec4(0.88, 0.10, 0.88, 1.0);
+uniform float kunai_length     : hint_range(1.0, 6.0) = 2.0;
+uniform float kunai_tip_top    : hint_range(0.3, 4.0) = 1.8;
+uniform float kunai_tip_bottom : hint_range(0.3, 4.0) = 1.8;
 
-uniform float border_frac  : hint_range(0.04, 0.40, 0.01) = 0.18;
-// Grosor del borde oscuro (fracción de la profundidad efectiva del shape).
-// Círculo: 0.18 = 18% del radio.  Anilla/estrella: se escala automáticamente.
+uniform float box_aspect : hint_range(0.2,  1.5)    = 1.0;
+uniform float box_round  : hint_range(0.0,  1.0)    = 0.1;
+uniform float box_bulge  : hint_range(-0.25, 0.25)  = 0.0;
 
-uniform float core_frac    : hint_range(0.05, 0.55, 0.01) = 0.28;
-// Radio del núcleo brillante (fracción de R). Siempre circular.
+uniform float star_inner : hint_range(0.1, 0.9) = 0.45;
 
-uniform float core_bright  : hint_range(1.0, 5.0, 0.05) = 2.80;
-// Sobreexposición del núcleo: 1.0=color plano  2.8=blanco caliente clásico
+uniform float reach     : hint_range(0.0,   1.0)  = 0.85;
+uniform float thickness : hint_range(0.01,  1.0)  = 0.30;
+uniform int   count     : hint_range(1,    12)    = 4;
+uniform float spin      : hint_range(-10.0, 10.0) = 2.0;
 
-// ══════════════════════════════════════════════════════════════════════
-//  GLOW EXTERIOR
-// ══════════════════════════════════════════════════════════════════════
-uniform float glow_frac    : hint_range(0.0, 1.0, 0.01) = 0.30;
-// Radio del halo exterior (fracción de R). 0 = sin glow.
+vec4 eff_core()   { return invert_colors ? bullet_color : core_color;   }
+vec4 eff_bullet() { return invert_colors ? core_color   : bullet_color; }
+float T()         { return custom_time + time_offset; }
 
-uniform float glow_int     : hint_range(0.0, 3.0, 0.05) = 0.80;
-uniform float glow_power   : hint_range(1.0, 6.0, 0.10) = 2.00;
-// Mayor power = halo más apretado al borde.
-
-// ══════════════════════════════════════════════════════════════════════
-//  ANIMACIONES
-// ══════════════════════════════════════════════════════════════════════
-
-// Pulso: el núcleo respira
-uniform float pulse_speed  : hint_range(0.0, 12.0, 0.10)  = 5.0;
-uniform float pulse_amount : hint_range(0.0, 0.30, 0.005) = 0.08;
-
-// Ripple: anillos concéntricos que emanan desde el núcleo (estilo CAVE)
-uniform float ripple_speed  : hint_range(0.0, 12.0, 0.10) = 3.5;
-uniform float ripple_bands  : hint_range(1.0, 12.0, 0.50) = 4.0;
-uniform float ripple_amount : hint_range(0.0, 0.60, 0.01) = 0.18;
-
-// Shimmer: destello especular que barre la superficie
-uniform float shimmer_speed  : hint_range(0.0, 8.0, 0.10) = 2.0;
-uniform float shimmer_amount : hint_range(0.0, 0.60, 0.01) = 0.12;
-
-// Wobble: deformación orgánica del borde (estilo CAVE)  0 = desactivado
-uniform float wobble_speed  : hint_range(0.0, 6.0,  0.10)  = 2.0;
-uniform float wobble_freq   : hint_range(2.0, 10.0, 0.50)  = 4.0;
-uniform float wobble_amount : hint_range(0.0, 0.06, 0.001) = 0.0;
-
-// Ciclo de tono automático  0 = desactivado
-uniform float hue_speed : hint_range(0.0, 2.0, 0.01) = 0.0;
-
-// ══════════════════════════════════════════════════════════════════════
-
-const float R  = 0.70;   // Radio del bullet en espacio UV [-1,1].
-const float AA = 0.022;  // Semiancho de suavizado de bordes.
-
-// ─────────────────────────────────────────────────────────────────────
-// Helpers HSV
-// ─────────────────────────────────────────────────────────────────────
-vec3 rgb2hsv(vec3 c) {
-    vec4 K = vec4(0., -1./3., 2./3., -1.);
-    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
-    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
-    float d = q.x - min(q.w, q.y);
-    return vec3(abs(q.z + (q.w - q.y)/(6.*d + 1e-10)),
-                d / (q.x + 1e-10),
-                q.x);
-}
-vec3 hsv2rgb(vec3 c) {
-    vec4 K = vec4(1., 2./3., 1./3., 3.);
-    vec3 p = abs(fract(c.xxx + K.xyz) * 6. - K.www);
-    return c.z * mix(K.xxx, clamp(p - K.xxx, 0., 1.), c.y);
+float core_r() {
+    float r = core_radius;
+    if (pulse_enabled) r += sin(T() * pulse_speed) * pulse_amount;
+    return r;
 }
 
-// ─────────────────────────────────────────────────────────────────────
-// SDFs — negativo=dentro, 0=borde, positivo=fuera
-// ─────────────────────────────────────────────────────────────────────
-
-float sdf_circle(vec2 p) {
-    return length(p) - R;
-    // Centro → -R ✓
+vec4 base_gradient(float d) {
+    float cr  = core_r();
+    vec4  lit = vec4(eff_bullet().rgb * brightness, 1.0);
+    vec4  a   = mix(eff_core(), lit,       smoothstep(cr,        rim_start,           d));
+    vec4  b   = mix(a,          rim_color, smoothstep(rim_start, 0.5 - edge_softness, d));
+    return b;
 }
 
-float sdf_capsule(vec2 p) {
-    // Cápsula vertical con radio R y sección recta de semilongitud h.
-    // El borde tiene grosor constante en todos los puntos — clave para que
-    // las bandas de color sean uniformes en toda la píldora.
-    float h = R * max(0.0, capsule_stretch - 1.0);
-    return length(vec2(p.x, p.y - clamp(p.y, -h, h))) - R;
-    // Centro (0,0) → -R ✓   Punta (0, h+R) → 0 ✓   Ecuador (R,0) → 0 ✓
+float circle_alpha(float d) {
+    return 1.0 - smoothstep(0.5 - edge_softness, 0.5, d);
 }
 
-float sdf_ring(vec2 p) {
-    float mid  = R * (1.0 + ring_hole) * 0.5;   // radio medio de la pared
-    float half = R * (1.0 - ring_hole) * 0.5;   // semiancho de la pared
-    return abs(length(p) - mid) - half;
-    // Borde exterior → 0 ✓   Borde interior → 0 ✓   Centro de la pared → -half ✓
+vec2 rot2D(vec2 v, float a) {
+    float c = cos(a), s = sin(a);
+    return vec2(c * v.x - s * v.y, s * v.x + c * v.y);
 }
 
-float sdf_star(vec2 p) {
-    // Estrella de N puntas por plegado de sector.
-    // La primera punta apunta en la dirección +Y del sprite
-    // (que será la dirección de movimiento si el nodo está sin rotar).
-    float sa = PI / float(star_n);
-    float a  = atan(p.x, p.y);          // ángulo desde eje +Y
-    a = mod(a + sa, 2.0 * sa) - sa;     // plegar al sector [-sa, sa]
-    vec2  q     = length(p) * vec2(sin(a), cos(a));
-    vec2  tip   = vec2(0.0, R);
-    vec2  notch = R * star_inner * vec2(sin(sa), cos(sa));
-    vec2  ba    = notch - tip;
-    vec2  pa    = q - tip;
-    float h     = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
-    float dist  = length(pa - ba * h);
-    // IMPORTANTE: negamos el signo para que interior = negativo.
-    // Sin esta negación el centro daría valor positivo (SDF invertido).
-    return dist * (-sign(pa.x * ba.y - pa.y * ba.x));
+vec4 apply_pattern(vec4 body, vec4 pcol, float mask) {
+    float sharpened = smoothstep(1.0 - thickness, 1.0, mask);
+    return mix(body, pcol, sharpened);
 }
 
-// ─────────────────────────────────────────────────────────────────────
+vec4 draw_ball_base(vec2 uv) {
+    float pulse = pulse_enabled ? sin(T() * pulse_speed) * pulse_amount : 0.0;
+    float scale = 1.0 / (1.0 + pulse * 4.0);
+    float d     = length(uv * scale);
+    return vec4(base_gradient(d).rgb, circle_alpha(d));
+}
+
+vec4 draw_kunai(vec2 uv) {
+    float half_w = mix(0.08, 0.48, thickness);
+    float nx     = uv.x / half_w;
+    float ny     = uv.y / (half_w * kunai_length);
+    float sharp  = uv.y < 0.0 ? kunai_tip_top : kunai_tip_bottom;
+    float blade  = pow(abs(nx) * 0.92, sharp) + pow(abs(ny) * 0.92, sharp);
+    float pulse  = pulse_enabled ? sin(T() * pulse_speed) * pulse_amount : 0.0;
+    float edge   = 0.88 - pulse * 3.0;
+    float alpha  = 1.0 - smoothstep(edge - edge_softness, edge + edge_softness, blade);
+    float d      = clamp(blade / edge, 0.0, 1.0) * 0.5;
+    float reflex   = 1.0 - smoothstep(0.0, 0.08, abs(uv.x));
+    float reflex_v = 1.0 - smoothstep(0.0, 0.55, abs(ny));
+    reflex *= reflex_v;
+    vec4 col = base_gradient(d);
+    col = mix(col, eff_core(), reflex * 0.70 * (1.0 - d * 2.0 * 0.6));
+    return vec4(col.rgb, alpha);
+}
+
+vec4 draw_box(vec2 uv) {
+    float pulse  = pulse_enabled ? sin(T() * pulse_speed) * pulse_amount : 0.0;
+    float size   = mix(0.15, 0.48, thickness) * (1.0 + pulse * 4.0);
+    vec2  half_e = vec2(size * box_aspect, size);
+    float t_y    = clamp(abs(uv.y) / half_e.y, 0.0, 1.0);
+    float t_x    = clamp(abs(uv.x) / half_e.x, 0.0, 1.0);
+    float bow_y  = box_bulge * size * (1.0 - t_y * t_y);
+    float bow_x  = box_bulge * size * (1.0 - t_x * t_x);
+    vec2 uv_b;
+    uv_b.x = uv.x - sign(uv.x) * bow_y;
+    uv_b.y = uv.y - sign(uv.y) * bow_x;
+    float r   = box_round * size;
+    vec2  q   = abs(uv_b) - half_e + r;
+    float sdf = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r;
+    float alpha     = 1.0 - smoothstep(-edge_softness, edge_softness, sdf);
+    float max_inner = min(half_e.x, half_e.y);
+    float d         = (1.0 - clamp((-sdf) / max_inner, 0.0, 1.0)) * 0.5;
+    vec2  pn     = uv / max(half_e, vec2(0.001));
+    float reflex = (1.0 - smoothstep(0.0, 0.30, abs(pn.x + pn.y) * 0.5))
+                 * smoothstep(0.0, 0.5, 1.0 - d * 2.0);
+    vec4 col = base_gradient(d);
+    col = mix(col, eff_core(), reflex * 0.40 * (1.0 - d * 2.0));
+    return vec4(col.rgb, alpha);
+}
+
+vec4 draw_star(vec2 uv) {
+    float pulse = pulse_enabled ? sin(T() * pulse_speed) * pulse_amount : 0.0;
+    float sz    = mix(0.08, 0.92, thickness) * (1.0 + pulse * 4.0);
+    float an    = PI / float(count);
+    vec2  p     = rot2D(uv / sz, -PI * 0.5);
+    float bn    = mod(atan(p.y, p.x), 2.0 * an) - an;
+    p           = length(p) * vec2(cos(bn), abs(sin(bn)));
+    vec2  ab      = vec2(star_inner * cos(an) - 1.0, star_inner * sin(an));
+    float tt      = clamp(dot(p - vec2(1.0, 0.0), ab) / dot(ab, ab), 0.0, 1.0);
+    vec2  closest = vec2(1.0, 0.0) + ab * tt;
+    float sgn     = sign(ab.x * (p.y - closest.y) - ab.y * (p.x - closest.x));
+    float sdf_n   = length(p - closest) * -sgn;
+    float alpha   = 1.0 - smoothstep(-edge_softness, edge_softness, sdf_n);
+    float d       = clamp((1.0 + sdf_n) * 0.5, 0.0, 0.5);
+    return vec4(base_gradient(d).rgb, alpha);
+}
+
+vec4 apply_spiral(vec2 uv, vec4 body) {
+    float d     = length(uv);
+    float cr    = core_r();
+    float outer = mix(cr + 0.04, 0.50, reach);
+    float angle = atan(uv.y, uv.x);
+    float sc    = angle * float(count) - 6.0 * TAU * d + T() * spin;
+    float threshold = 1.0 - 2.0 * clamp(thickness, 0.01, 1.0);
+    float arm_raw   = clamp((cos(sc) - threshold) / (1.0 - threshold), 0.0, 1.0);
+    float fade = smoothstep(cr * 0.4, cr + 0.06, d)
+               * (1.0 - smoothstep(outer * 0.92, outer, d));
+    return apply_pattern(body, eff_core(), arm_raw * fade);
+}
+
+vec4 apply_cross(vec2 uv, vec4 body) {
+    float d   = length(uv);
+    float cr  = core_r();
+    vec2  ruv = rot2D(uv, T() * spin * 0.12);
+    float arm_reach = mix(cr + 0.04, 0.50, reach);
+    float arm_w     = mix(0.01, 0.22, thickness * thickness);
+    float angle  = atan(ruv.y, ruv.x);
+    float sector = TAU / float(count);
+    float folded = mod(angle + sector * 0.5, sector) - sector * 0.5;
+    float perp   = abs(d * sin(folded));
+    float arm_mask = 1.0 - smoothstep(0.0, arm_w,       perp);
+    float arm_glow = 1.0 - smoothstep(0.0, arm_w * 2.5, perp);
+    float rfade = smoothstep(cr * 0.2, cr * 0.75, d)
+                * (1.0 - smoothstep(arm_reach * 0.88, arm_reach, d));
+    vec4 lit      = vec4(eff_bullet().rgb * brightness, 1.0);
+    vec4 glow_col = mix(lit, eff_core(), 0.5);
+    vec4 result   = body;
+    result = mix(result, glow_col,   arm_glow * rfade * 0.7);
+    result = mix(result, eff_core(), arm_mask * rfade);
+    return result;
+}
+
+vec4 apply_rings(vec2 uv, vec4 body) {
+    float d      = length(uv);
+    float cr     = core_r();
+    float outer  = mix(cr + 0.04, 0.50, reach);
+    float zone   = max(outer - cr, 0.001);
+    float ring_t = clamp((d - cr) / zone, 0.0, 1.0);
+    float duty     = mix(0.04, 0.96, thickness);
+    float phase    = ring_t * float(count) * TAU - T() * spin;
+    float wave_raw = cos(phase);
+    float thr      = cos(duty * PI);
+    float wave     = clamp((wave_raw - thr) / (1.0 - thr), 0.0, 1.0);
+    float fade = smoothstep(0.0, cr * 0.5, d)
+               * (1.0 - smoothstep(outer * 0.93, outer, d));
+    return apply_pattern(body, eff_core(), wave * fade);
+}
+
+vec4 apply_star(vec2 uv, vec4 body) {
+    float d   = length(uv);
+    vec2  ruv = rot2D(uv, T() * spin * 0.18);
+    float r_outer = mix(0.10, 0.48, reach);
+    float r_inner = r_outer * mix(0.04, 0.82, thickness);
+    float angle    = atan(ruv.y, ruv.x);
+    float sector   = TAU / float(count);
+    float half_sec = sector * 0.5;
+    float folded   = mod(angle + half_sec, sector) - half_sec;
+    float spoke_r  = mix(r_outer, r_inner, abs(folded) / half_sec);
+    float sdf       = d - spoke_r;
+    float star_fill = 1.0 - smoothstep(-0.010, 0.018, sdf);
+    float star_glow = 1.0 - smoothstep(-0.08,  0.06,  sdf);
+    vec4 lit = vec4(eff_bullet().rgb * brightness, 1.0);
+    vec4 b   = mix(body, lit,        star_glow * 0.6);
+         b   = mix(b,    eff_core(), star_fill);
+    return b;
+}
+
 void fragment() {
-    // Corrección de aspecto: TEXTURE_PIXEL_SIZE = (1/W, 1/H)
-    // tex_ar = H/W. Para una textura 32×64 (alta): tex_ar = 2.0
-    // Así p.x=1 y p.y=1 representan la misma distancia en píxeles.
-    float tex_ar = TEXTURE_PIXEL_SIZE.x / TEXTURE_PIXEL_SIZE.y;
-    vec2  p      = (UV * 2.0 - 1.0) * vec2(1.0, tex_ar);
-    float r      = length(p);
-    float ang    = atan(p.y, p.x);
-
-    // ── Ciclo de tono ──────────────────────────────────────────────
-    vec3 base = bullet_color.rgb;
-    if (hue_speed > 0.001) {
-        vec3 h = rgb2hsv(base);
-        h.x = fract(h.x + TIME * hue_speed * 0.2);
-        base = hsv2rgb(h);
-    }
-
-    // ── Wobble: deformación radial del borde ───────────────────────
-    // Desplaza el punto de muestreo radialmente según la dirección angular,
-    // dando al borde una forma orgánica y temblorosa.
-    if (wobble_amount > 0.001) {
-        float wb = sin(ang * wobble_freq + TIME * wobble_speed) * wobble_amount;
-        p *= (1.0 - wb);   // contrae/expande el punto hacia el centro
-        r  = length(p);
-    }
-
-    // ── SDF ────────────────────────────────────────────────────────
-    float d;
-    if      (shape == 1) d = sdf_capsule(p);
-    else if (shape == 2) d = sdf_ring(p);
-    else if (shape == 3) d = sdf_star(p);
-    else                 d = sdf_circle(p);
-
-    // Descartar todo lo que quede fuera del área de glow
-    float glow_r = R * glow_frac;
-    if (d > glow_r + AA) discard;
-
-    // ── MÁSCARAS BASE ──────────────────────────────────────────────
-
-    // Suavizado del borde exterior (anti-alias)
-    float inside = smoothstep(AA, -AA, d);
-
-    // abs_d: distancia hacia el interior desde el borde (0 en el borde)
-    float abs_d = max(-d, 0.0);
-
-    // Profundidad efectiva del shape (máxima abs_d alcanzable):
-    // Cápsula y círculo: R. Aro: semiancho de la pared. Estrella: radio interior.
-    float eff_depth;
-    if      (shape == 2) eff_depth = R * (1.0 - ring_hole) * 0.5;
-    else if (shape == 3) eff_depth = R * star_inner;
-    else                 eff_depth = R;
-
-    // Grosor absoluto del borde oscuro
-    float bw = eff_depth * border_frac;
-
-    // Máscara del borde: 1 en zona de borde, 0 más hacia adentro
-    float t_border = inside * (1.0 - smoothstep(bw - AA, bw + AA, abs_d));
-
-    // ── NÚCLEO ─────────────────────────────────────────────────────
-    // El núcleo ES SIEMPRE CIRCULAR (basado en r, distancia al centro).
-    // Esto replica el look de las referencias donde incluso las cápsulas
-    // y estrellas tienen un destello redondo en el centro.
-    float pf = sin(TIME * pulse_speed) * 0.5 + 0.5;
-
-    float t_core;
-    if (shape == 2) {
-        // Aro: núcleo en el centro de la pared del aro
-        float ring_mid  = R * (1.0 + ring_hole) * 0.5;
-        float ring_half = R * (1.0 - ring_hole) * 0.5;
-        float wd = abs(length(p) - ring_mid);   // 0 en el centro de la pared
-        float cr = ring_half * core_frac * (1.0 + pf * pulse_amount);
-        // smoothstep invertido: 1 cerca del centro de pared, 0 cerca del borde
-        t_core = inside * smoothstep(cr + AA, cr - AA, wd);
+    vec2  uv        = (UV - 0.5) * 2.0;
+    float tex_alpha = texture(TEXTURE, UV).a;
+    vec4 result;
+    if (bullet_type == 1) {
+        result = draw_kunai(uv);
+    } else if (bullet_type == 2) {
+        result = draw_box(uv);
+    } else if (bullet_type == 3) {
+        result = draw_star(uv);
     } else {
-        float cr = R * core_frac * (1.0 + pf * pulse_amount);
-        t_core = inside * smoothstep(cr + AA, cr - AA, r);
+        result = draw_ball_base(uv);
+        if      (bullet_subtype == 1) result = apply_spiral(uv, result);
+        else if (bullet_subtype == 2) result = apply_cross(uv,  result);
+        else if (bullet_subtype == 3) result = apply_rings(uv,  result);
+        else if (bullet_subtype == 4) result = apply_star(uv,   result);
     }
-    t_core = pow(max(t_core, 0.0), 1.5);   // cuadrático → borde del núcleo más definido
-
-    // ── ANIMACIONES ────────────────────────────────────────────────
-
-    // Ripple: bandas concéntricas desde el núcleo hacia afuera
-    float rip_n;
-    if (shape == 2) {
-        float ring_mid  = R * (1.0 + ring_hole) * 0.5;
-        float ring_half = R * (1.0 - ring_hole) * 0.5;
-        rip_n = abs(length(p) - ring_mid) / max(ring_half, 0.001);
-    } else {
-        rip_n = r / R;
-    }
-    float rip = (sin(rip_n * ripple_bands * TAU - TIME * ripple_speed) * 0.5 + 0.5)
-               * ripple_amount * inside * (1.0 - t_core);
-
-    // Shimmer: haz especular que barre
-    float shim = pow(max(0.0, sin(ang + TIME * shimmer_speed)), 8.0)
-                * shimmer_amount * inside * (1.0 - t_core);
-
-    // ── COLORES ────────────────────────────────────────────────────
-    vec3 hsv = rgb2hsv(base);
-
-    // Borde: mismo tono, muy oscuro y ligeramente desaturado.
-    // El contraste borde oscuro / cuerpo brillante es la CLAVE de la
-    // visibilidad en danmaku (principio valor-alto junto a valor-bajo).
-    vec3 c_border = hsv2rgb(vec3(hsv.x, hsv.y * 0.50, hsv.z * 0.12));
-
-    // Cuerpo: color pleno + modulación de animaciones
-    vec3 c_body = base * (1.0 + rip * 0.55 + shim * 0.70);
-
-    // Rim: línea brillante muy fina en la transición borde→cuerpo.
-    // Característica visual distintiva de los bullets de CAVE
-    // (Junction Butter en la terminología del diseño de sprites).
-    float rim_t = inside
-                * smoothstep(bw * 0.35, bw,        abs_d)   // se enciende al salir del borde
-                * (1.0 - smoothstep(bw, bw * 1.75, abs_d)); // se apaga al entrar al cuerpo
-    vec3 c_rim = mix(vec3(1.4), base * 2.1, 0.22);   // blanco con tinte del color base
-
-    // Núcleo: gradiente desde color sobreexpuesto → blanco caliente en el centro
-    float core_grad = (shape == 2) ? 0.5 : smoothstep(R * core_frac, 0.0, r);
-    vec3  c_core    = mix(base * core_bright,               // borde del núcleo: color×bright
-                          vec3(core_bright * 0.88),          // centro: casi blanco
-                          core_grad * 0.70);
-
-    // ── COMPOSICIÓN ────────────────────────────────────────────────
-    // Orden de capas (de atrás a adelante):
-    // cuerpo → borde oscuro → línea rim → núcleo brillante
-    vec3 col = c_body;
-    col = mix(col, c_border, t_border);
-    col = mix(col, c_rim,    rim_t * (1.0 - t_border) * 0.75);
-    col = mix(col, c_core,   t_core);
-
-    // ── GLOW EXTERIOR ──────────────────────────────────────────────
-    float gd  = max(d, 0.0);
-    float gt  = pow(1.0 - smoothstep(0.0, max(glow_r, 0.001), gd), glow_power) * glow_int;
-
-    // Mezcla final: dentro del shape = col, fuera = solo glow
-    col   = mix(base * gt, col, inside);
-    float alpha = max(inside, gt * (1.0 - inside) * 0.85);
-
-    COLOR = vec4(col, alpha * bullet_color.a);
+    COLOR = vec4(result.rgb, result.a * tex_alpha);
 }
