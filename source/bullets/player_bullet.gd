@@ -1,22 +1,20 @@
 extends Area2D
-
 enum BulletEnum { BOMB, LASER, FOLLOW, BURST, CHARGE }
-
 @export var BulletType: BulletEnum = BulletEnum.BURST
 @export var speed: float = 2500.0
 @export var damage: int = 1
 @export var lifeTime: float = 1.5
-
 var direction: Vector2 = Vector2.UP
 var deviationAngle: float = 0.0
 var deviationRadians: float = 0.0
+var shader_bullet_type: int = -1
 
 func _ready() -> void:
 	match BulletType:
 		BulletEnum.LASER:
 			var lvl := clampi(WEAPON.laserLvl, 1, 4)
-			scale = Vector2.ONE * (0.5 + lvl * 0.25)
-			lifeTime = 0.3
+			scale = Vector2.ONE * (0.5 + lvl * 0.3)
+			lifeTime = 0.15
 		BulletEnum.BOMB:
 			lifeTime = 3.0
 			damage = 200
@@ -26,17 +24,21 @@ func _ready() -> void:
 		BulletEnum.BURST:
 			lifeTime = 1.5
 
+	if shader_bullet_type != -1:
+		var sprite := get_node_or_null("Sprite2D")
+		if sprite and sprite.material:
+			sprite.material = sprite.material.duplicate()
+			sprite.material.set_shader_parameter("bullet_type", shader_bullet_type)
+
 func _process(delta: float) -> void:
 	if BulletType == BulletEnum.FOLLOW:
 		_update_follow_direction(delta)
 	if BulletType != BulletEnum.CHARGE:
 		position += direction * speed * delta
-
 	lifeTime -= delta
 	if lifeTime <= 0:
 		queue_free()
 		return
-
 	if BulletType == BulletEnum.BOMB:
 		for bullet in get_tree().get_nodes_in_group("Enemy Bullet"):
 			if bullet.has_method("remove"):

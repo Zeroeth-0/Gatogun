@@ -21,7 +21,7 @@ shader_parameter/glow_strength = 1.0
 shader_parameter/flash_speed = 1.0
 shader_parameter/flash_duty = 0.00999999977648
 shader_parameter/tail_round = 0.1970000093575
-shader_parameter/opacity = 0.750000035625
+shader_parameter/opacity = 1.0
 shader_parameter/custom_time = 0.0
 
 [node name="Burst Bullet" type="Area2D" unique_id=990931563 groups=["BulletCount", "Fire"]]

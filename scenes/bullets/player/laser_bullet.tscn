@@ -4,39 +4,45 @@
 [ext_resource type="Shader" uid="uid://clfbm4renhtki" path="res://shaders/laser_bullet.gdshader" id="2_i2my0"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_mmli5"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ex51n"]
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ud35j"]
 shader = ExtResource("2_i2my0")
 shader_parameter/core_color = Color(1, 1, 0.9, 1)
 shader_parameter/inner_color = Color(1, 0.92970353, 0.8679734, 1)
 shader_parameter/outer_color = Color(1, 0.39215687, 0, 0.8)
-shader_parameter/core_radius = 0.35300001606898
+shader_parameter/core_radius = 0.30000001355148
 shader_parameter/bullet_radius = 0.47999998927116
 shader_parameter/body_sharpness = 0.0010000000475
+shader_parameter/tip_front = 1.72600007965593
+shader_parameter/tip_back = 0.62700002745343
+shader_parameter/center_offset = 0.31800002814454004
 shader_parameter/core_focus = 10.0
 shader_parameter/bullet_type = 3
-shader_parameter/lifetime_ratio = 0.750000035625
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ex51n"]
+shader_parameter/lifetime_ratio = 1.0
 
 [node name="Heavy Bullet" type="Area2D" unique_id=731412008 groups=["Fire"]]
 z_index = 1
 scale = Vector2(1.1, 1.1)
 script = ExtResource("1_xyv0w")
 BulletType = 1
-speed = 1100.0
+speed = 2000.0
+damage = 2
 lifeTime = 0.3
-
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=173395998]
-modulate = Color(1, 0.627451, 0, 1)
-z_index = 1
-material = SubResource("ShaderMaterial_ud35j")
-scale = Vector2(0.6, 0.6)
-texture = ExtResource("2_mmli5")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=565531003]
 scale = Vector2(4.6, 4.6)
 shape = SubResource("RectangleShape2D_ex51n")
 debug_color = Color(1, 1, 0, 0.419608)
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=173395998]
+modulate = Color(1, 0.627451, 0, 1)
+z_index = 1
+material = SubResource("ShaderMaterial_ud35j")
+position = Vector2(-2.842171e-14, -9.536743e-07)
+rotation = 1.5707964
+scale = Vector2(0.5877467, 0.7)
+texture = ExtResource("2_mmli5")
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
 [connection signal="area_exited" from="." to="." method="_on_area_exited"]
