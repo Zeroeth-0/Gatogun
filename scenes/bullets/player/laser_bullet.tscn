@@ -14,7 +14,7 @@ shader_parameter/bullet_radius = 0.47999998927116
 shader_parameter/body_sharpness = 0.0010000000475
 shader_parameter/core_focus = 10.0
 shader_parameter/bullet_type = 3
-shader_parameter/lifetime_ratio = 1.0
+shader_parameter/lifetime_ratio = 0.750000035625
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ex51n"]
 
