@@ -1,25 +1,46 @@
-[gd_scene load_steps=4 format=3 uid="uid://k3dc4e2ha3m1"]
+[gd_scene format=3 uid="uid://k3dc4e2ha3m1"]
 
 [ext_resource type="Script" uid="uid://d1bosw6cv4bjk" path="res://source/bullets/player_bullet.gd" id="1_08ob5"]
+[ext_resource type="Shader" uid="uid://nlvrk7qmw6xq" path="res://shaders/burst_bullet.gdshader" id="2_4kfrg"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_5kdky"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ex51n"]
 
-[node name="Burst Bullet" type="Area2D" groups=["BulletCount", "Fire"]]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jwfqj"]
+shader = ExtResource("2_4kfrg")
+shader_parameter/core_color = Color(1, 0.37254903, 0.043137256, 1)
+shader_parameter/body_color = Color(1, 0.5, 0, 1)
+shader_parameter/glow_color = Color(1, 0.3, 0, 1)
+shader_parameter/flash_color = Color(1, 0.5, 0, 1)
+shader_parameter/bullet_gap = 0.0
+shader_parameter/bullet_length = 0.94999998807907
+shader_parameter/bullet_width = 0.38200001674797
+shader_parameter/tip_sharpness = 3.4370001157575
+shader_parameter/glow_radius = 0.30000001192093
+shader_parameter/glow_strength = 1.0
+shader_parameter/flash_speed = 1.0
+shader_parameter/flash_duty = 0.00999999977648
+shader_parameter/tail_round = 0.1970000093575
+shader_parameter/opacity = 0.750000035625
+shader_parameter/custom_time = 0.0
+
+[node name="Burst Bullet" type="Area2D" unique_id=990931563 groups=["BulletCount", "Fire"]]
 z_index = 1
 scale = Vector2(2, 1)
 script = ExtResource("1_08ob5")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(1, 0.627451, 0, 1)
-z_index = 1
-scale = Vector2(0.3, 0.2)
-texture = ExtResource("2_5kdky")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1080969001]
 scale = Vector2(2.5, 2.5)
 shape = SubResource("RectangleShape2D_ex51n")
 debug_color = Color(1, 1, 0, 0.419608)
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1843360994 groups=["ShaderHolder"]]
+modulate = Color(1, 0.627451, 0, 1)
+z_index = 1
+material = SubResource("ShaderMaterial_jwfqj")
+position = Vector2(12.5, -1.6155871e-27)
+scale = Vector2(0.35937497, 0.39062497)
+texture = ExtResource("2_5kdky")
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
 [connection signal="area_exited" from="." to="." method="_on_area_exited"]

@@ -5,16 +5,13 @@
 [ext_resource type="Script" uid="uid://2gktgvlahed3" path="res://source/vfx/medal_shine.gd" id="4_eqbui"]
 [ext_resource type="Texture2D" uid="uid://yh7endpfa77a" path="res://sprites/medal_spritesheet.png" id="5_tyq56"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_eqbui"]
-radius = 12.0
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_tyq56"]
 shader = ExtResource("2_h0x48")
 shader_parameter/shine_color = Color(1, 1, 1, 1)
 shader_parameter/shine_angle = -45.0
 shader_parameter/shine_duration = 1.0
 shader_parameter/shine_speed = 500.0
-shader_parameter/shine_width = 30.0
+shader_parameter/shine_width = 20.0
 shader_parameter/shine_scale = 6.000000281740119
 shader_parameter/time_offset = 0.0
 shader_parameter/custom_time = 0.0
@@ -111,24 +108,26 @@ animations = [{
 "speed": 30.0
 }]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_eqbui"]
+radius = 12.0
+
 [node name="Medal" type="Area2D" unique_id=841883223]
 z_index = 2
 script = ExtResource("1_8fdno")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=856237854 groups=["ShaderHolder"]]
+z_index = 2
+material = SubResource("ShaderMaterial_tyq56")
+scale = Vector2(0.25, 0.25)
+sprite_frames = SubResource("SpriteFrames_yc2ob")
+animation = &"jingle"
+autoplay = "jingle"
+frame_progress = 0.6071466
+script = ExtResource("4_eqbui")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2121205495]
 z_index = 2
 shape = SubResource("CircleShape2D_eqbui")
 debug_color = Color(1, 1, 0, 0.419608)
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=856237854 groups=["ShaderHolder"]]
-z_index = 2
-material = SubResource("ShaderMaterial_tyq56")
-position = Vector2(-2, 0)
-scale = Vector2(0.2, 0.2)
-sprite_frames = SubResource("SpriteFrames_yc2ob")
-animation = &"jingle"
-autoplay = "jingle"
-frame_progress = 0.5621593
-script = ExtResource("4_eqbui")
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
