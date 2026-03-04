@@ -14,7 +14,7 @@ func _ready() -> void:
 		BulletEnum.LASER:
 			var lvl := clampi(WEAPON.laserLvl, 1, 4)
 			scale = Vector2.ONE * (0.5 + lvl * 0.3)
-			lifeTime = 0.15
+			lifeTime = 0.2
 		BulletEnum.BOMB:
 			lifeTime = 3.0
 			damage = 200

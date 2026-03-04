@@ -28,7 +28,7 @@ script = ExtResource("1_xyv0w")
 BulletType = 1
 speed = 2000.0
 damage = 2
-lifeTime = 0.3
+lifeTime = 0.2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=565531003]
 scale = Vector2(4.6, 4.6)
@@ -39,7 +39,7 @@ debug_color = Color(1, 1, 0, 0.419608)
 modulate = Color(1, 0.627451, 0, 1)
 z_index = 1
 material = SubResource("ShaderMaterial_ud35j")
-position = Vector2(-2.842171e-14, -9.536743e-07)
+position = Vector2(15, 0)
 rotation = 1.5707964
 scale = Vector2(0.5877467, 0.7)
 texture = ExtResource("2_mmli5")

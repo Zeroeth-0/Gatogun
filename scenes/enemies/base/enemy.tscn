@@ -12,6 +12,7 @@ shader_parameter/shake_intensity = 5.0
 shader_parameter/flash_speed = 30.0
 shader_parameter/time_offset = 0.0
 shader_parameter/flash_color = Color(0.10779586, 0.34480074, 1, 1)
+shader_parameter/custom_time = 0.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jtchi"]
 

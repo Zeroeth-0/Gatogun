@@ -44,7 +44,7 @@ func decrease_rank():
 func reset_all():
 	reset_combo()
 	DifficultyStyle = DifficultyEnum.RANKED
-	rank = baseRank
+	rank = 1
 
 func reset_soft():
 	reset_combo()

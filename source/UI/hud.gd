@@ -20,15 +20,26 @@ var currentBombs
 var currMaxBombs
 # === VARIABLES SHADER ===
 var hot_shader_material: ShaderMaterial
-# === VARIABLES ANIMACIONES ===
+# === VARIABLES ANIMACIONES COMBO ===
 @export var moveDuration: float = 1.0
 var tween: Tween
+# === CONSTANTES ESCALA HOT BAR ===
+const HOT_BASE_SCALE  := Vector2(0.6, 0.6)
+const HOT_PULSE_SCALE := Vector2(0.7, 0.7)
+const HOT_PULSE_IN_DURATION  : float = 0.08
+const HOT_PULSE_OUT_DURATION : float = 0.18
+const HOT_ACTIVE_HOLD        : float = 0.15
+# === VARIABLES HOT BAR ANIMATION ===
+var hot_pulse_tween: Tween
+var hot_active_timer: float = 0.0
+var hot_at_base: bool = true
+var hot_pulsing: bool = false
 
 func _ready():
 	set_bar_vals(hotBar, maxHot)
 	set_bar_vals(medalCountdown, maxMedalCountdown)
-	# Guardar referencia al ShaderMaterial del hotBar
 	hot_shader_material = hotBar.material as ShaderMaterial
+	hotBar.scale = HOT_BASE_SCALE
 
 func _process(_delta):
 	# Contadores
@@ -59,16 +70,51 @@ func _process(_delta):
 	print_container(heartContainer, currentLives)
 	print_container(currBombContainer, currentBombs)
 	print_container(maxBombContainer, currMaxBombs)
+	
+	# Timer inactividad hot bar
+	if hot_active_timer > 0.0:
+		hot_active_timer -= _delta
+		if hot_active_timer <= 0.0:
+			_hot_return_to_base()
 
 # === SHADER HOT BAR ===
 func _update_hot_shader() -> void:
 	if hot_shader_material == null:
 		return
-	# Mapea SCORE.hot de [0, maxHot] → [-1, 1]
-	# 0       → -1.0 (esfera vacía)
-	# maxHot  →  1.0 (esfera llena)
 	var normalized: float = (SCORE.hot / maxHot) * 2.0 - 1.0
 	hot_shader_material.set_shader_parameter("fill_value", normalized)
+
+# === ANIMACIONES HOT BAR ===
+func pulse_hot_bar() -> void:
+	if hot_pulsing: return
+	hot_pulsing = true
+	hot_at_base = false
+	if hot_pulse_tween: hot_pulse_tween.kill()
+	hot_pulse_tween = create_tween()
+	hot_pulse_tween.tween_property(hotBar, "scale", HOT_PULSE_SCALE, HOT_PULSE_IN_DURATION)\
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	hot_pulse_tween.tween_property(hotBar, "scale", HOT_BASE_SCALE, HOT_PULSE_OUT_DURATION)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	hot_pulse_tween.tween_callback(func():
+		hot_pulsing = false
+		hot_at_base = true
+	)
+
+func keep_hot_bar() -> void:
+	hot_active_timer = HOT_ACTIVE_HOLD
+	hot_at_base = false
+	hot_pulsing = false
+	if hot_pulse_tween: hot_pulse_tween.kill()
+	hotBar.scale = HOT_PULSE_SCALE
+
+func _hot_return_to_base() -> void:
+	if hot_at_base: return
+	hot_at_base = true
+	hot_pulsing = false
+	if hot_pulse_tween: hot_pulse_tween.kill()
+	hot_pulse_tween = create_tween()
+	hot_pulse_tween.tween_property(hotBar, "scale", HOT_BASE_SCALE, HOT_PULSE_OUT_DURATION)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 
 # === IMPRIMIR CONTENEDORES ===
 func print_container(container, printCount):
@@ -89,7 +135,7 @@ func _update_label_scale(label, value: int, factor) -> void:
 	var scaleValue = clamp(1.0 + value * factor, 1.0, 2.5)
 	label.scale = Vector2(scaleValue, scaleValue)
 
-# === ANIMACIONES ===
+# === ANIMACIONES COMBO ===
 func label_in() -> void:
 	_start_tween(Vector2(35, 200))
 

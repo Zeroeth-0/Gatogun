@@ -199,7 +199,7 @@ func confirm_selection() -> void:
 			blink_and_confirm(func():
 				animate_exit(func():
 					GLOBAL.resume_game()
-					RANK.reset_all()
+					RANK.reset_soft()
 					SCORE.reset()
 					SCORE.reset_game_score()
 					GAME.store(Vector2(10000, 10000), false)
