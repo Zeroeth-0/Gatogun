@@ -39,7 +39,7 @@ func _ready() -> void:
 	vbox = $VBoxContainer
 	vbox.clip_contents = false
 	
-	var font := load("res://fonts/Super Malibu.ttf")
+	var font := load("res://fonts/LuckiestGuy.ttf")
 	font.antialiasing = TextServer.FONT_ANTIALIASING_NONE
 	
 	for option_text in OPTIONS:

@@ -18,7 +18,7 @@ shader_parameter/innerCircleRadiusOffset = 0.0
 shader_parameter/fill_value = 4.7499999933364734e-08
 shader_parameter/custom_time = 0.0
 
-[node name="HUD" type="Control" unique_id=1100591291 node_paths=PackedStringArray("gameScore", "highScore", "comboLabel", "multLabel", "hotBar", "medalCountdown", "heartContainer", "currBombContainer", "maxBombContainer") groups=["HUD"]]
+[node name="HUD" type="Control" unique_id=1100591291 node_paths=PackedStringArray("gameScore", "highScore", "comboLabel", "multLabel", "gameName", "highName", "hotBar", "medalCountdown", "heartContainer", "currBombContainer", "maxBombContainer") groups=["HUD"]]
 z_index = 100
 layout_mode = 3
 anchors_preset = 15
@@ -35,6 +35,8 @@ gameScore = NodePath("ScoreContainer/GameContainer/GameScore")
 highScore = NodePath("ScoreContainer/HighContainer/HighScore")
 comboLabel = NodePath("ComboLabel")
 multLabel = NodePath("MultLabel")
+gameName = NodePath("ScoreContainer/GameContainer/GameName")
+highName = NodePath("ScoreContainer/HighContainer/HighName")
 hotBar = NodePath("HotBar")
 medalCountdown = NodePath("MedalCountdown")
 heartContainer = NodePath("HeartContainer")
@@ -47,9 +49,9 @@ top_level = true
 z_index = 10
 layout_mode = 0
 offset_left = -165.0
-offset_top = 228.0
+offset_top = 250.0
 offset_right = 8.0
-offset_bottom = 300.0
+offset_bottom = 322.0
 text = "+9999"
 
 [node name="MultLabel" type="RichTextLabel" parent="." unique_id=2039826531]
@@ -101,41 +103,41 @@ scale = Vector2(0.25, 0.25)
 
 [node name="ScoreContainer" type="HBoxContainer" parent="." unique_id=403505537]
 layout_mode = 0
+offset_left = 40.0
 offset_top = 10.0
-offset_right = 340.0
-offset_bottom = 60.0
+offset_right = 640.0
+offset_bottom = 70.0
 theme_override_constants/separation = 0
 
 [node name="GameContainer" type="VBoxContainer" parent="ScoreContainer" unique_id=244395829]
-custom_minimum_size = Vector2(340, 46)
+custom_minimum_size = Vector2(300, 60)
 layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="GameName" type="RichTextLabel" parent="ScoreContainer/GameContainer" unique_id=797841792]
-custom_minimum_size = Vector2(340, 23)
+custom_minimum_size = Vector2(300, 30)
 layout_mode = 2
 text = "PLAYER-SCORE"
-horizontal_alignment = 1
 
 [node name="GameScore" type="RichTextLabel" parent="ScoreContainer/GameContainer" unique_id=1689133802]
-custom_minimum_size = Vector2(340, 23)
+custom_minimum_size = Vector2(300, 30)
 layout_mode = 2
 text = "999999999999999999999"
 horizontal_alignment = 1
+justification_flags = 161
 
 [node name="HighContainer" type="VBoxContainer" parent="ScoreContainer" unique_id=455931404]
-custom_minimum_size = Vector2(340, 46)
+custom_minimum_size = Vector2(300, 60)
 layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="HighName" type="RichTextLabel" parent="ScoreContainer/HighContainer" unique_id=1776930001]
-custom_minimum_size = Vector2(340, 23)
+custom_minimum_size = Vector2(300, 30)
 layout_mode = 2
 text = "HIGH-SCORE"
-horizontal_alignment = 1
 
 [node name="HighScore" type="RichTextLabel" parent="ScoreContainer/HighContainer" unique_id=652332015]
-custom_minimum_size = Vector2(340, 23)
+custom_minimum_size = Vector2(300, 30)
 layout_mode = 2
 text = "999999999999999999999"
 horizontal_alignment = 1

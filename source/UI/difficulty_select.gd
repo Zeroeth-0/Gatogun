@@ -40,7 +40,7 @@ func _ready() -> void:
 	
 	RANK.reset_all()
 	
-	var font := load("res://fonts/Super Malibu.ttf")
+	var font := load("res://fonts/LuckiestGuy.ttf")
 	font.antialiasing = TextServer.FONT_ANTIALIASING_NONE
 	
 	for option_text in OPTIONS:

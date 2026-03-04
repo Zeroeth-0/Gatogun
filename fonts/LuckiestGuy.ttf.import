@@ -2,19 +2,19 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://c0f7f57dwefls"
-path="res://.godot/imported/Super Malibu.ttf-3a7874a24a721c214fa49d6ddb1d8358.fontdata"
+uid="uid://dgm5co41rvd8i"
+path="res://.godot/imported/LuckiestGuy.ttf-4cf379816601d29014a5c92b0c75bed9.fontdata"
 
 [deps]
 
-source_file="res://fonts/Super Malibu.ttf"
-dest_files=["res://.godot/imported/Super Malibu.ttf-3a7874a24a721c214fa49d6ddb1d8358.fontdata"]
+source_file="res://fonts/LuckiestGuy.ttf"
+dest_files=["res://.godot/imported/LuckiestGuy.ttf-4cf379816601d29014a5c92b0c75bed9.fontdata"]
 
 [params]
 
 Rendering=null
-antialiasing=2
-generate_mipmaps=true
+antialiasing=1
+generate_mipmaps=false
 disable_embedded_bitmaps=true
 multichannel_signed_distance_field=false
 msdf_pixel_range=8
@@ -30,13 +30,7 @@ Fallbacks=null
 fallbacks=[]
 Compress=null
 compress=true
-preload=[{
-"chars": [],
-"glyphs": [],
-"name": "New Configuration",
-"size": Vector2i(16, 0),
-&"variation_embolden": 0.0
-}]
+preload=[]
 language_support={}
 script_support={}
 opentype_features={}

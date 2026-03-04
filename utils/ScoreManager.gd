@@ -120,6 +120,7 @@ func reset() -> void:
 	mult = 1
 	multDrainTime = 0.0
 	medalCountdown = 0.0
+	comboAvailable = true  # <- añadir esto
 	var hud = _get_hud()
 	if hud: hud.label_out()
 

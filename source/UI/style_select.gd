@@ -50,7 +50,7 @@ func _ready() -> void:
 		SelectEnum.GATO: STYLES = GATOS
 		SelectEnum.DOLL: STYLES = DOLLS
 
-	var font := load("res://fonts/Super Malibu.ttf")
+	var font := load("res://fonts/LuckiestGuy.ttf")
 	font.antialiasing = TextServer.FONT_ANTIALIASING_NONE
 
 	for i in range(3):

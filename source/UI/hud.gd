@@ -4,6 +4,8 @@ extends Control
 @export var highScore: RichTextLabel
 @export var comboLabel: RichTextLabel
 @export var multLabel: RichTextLabel
+@export var gameName: RichTextLabel
+@export var highName: RichTextLabel
 # === BARRAS ===
 @export var hotBar: TextureProgressBar
 @export var medalCountdown: TextureProgressBar
@@ -11,35 +13,63 @@ extends Control
 @export var heartContainer: HBoxContainer
 @export var currBombContainer: HBoxContainer
 @export var maxBombContainer: HBoxContainer
-@export var resource_texture: Texture2D                                         # Textura contenedor
+@export var resource_texture: Texture2D
 # === VALORES INTERNOS ===
 var maxHot: float = SCORE.hotSize
 var maxMedalCountdown: float = SCORE.MAX_MEDAL_COUNTDOWN
 var currentLives
 var currentBombs
 var currMaxBombs
+var _prevCombo: int = 0
 # === VARIABLES SHADER ===
 var hot_shader_material: ShaderMaterial
 # === VARIABLES ANIMACIONES COMBO ===
 @export var moveDuration: float = 1.0
+@export var comboPosIn: Vector2  = Vector2(35, 250)
+@export var comboPosOut: Vector2 = Vector2(-165, 250)
 var tween: Tween
 # === CONSTANTES ESCALA HOT BAR ===
-const HOT_BASE_SCALE  := Vector2(0.6, 0.6)
-const HOT_PULSE_SCALE := Vector2(0.7, 0.7)
-const HOT_PULSE_IN_DURATION  : float = 0.08
-const HOT_PULSE_OUT_DURATION : float = 0.18
+const HOT_BASE_SCALE         := Vector2(0.6, 0.6)
+const HOT_PULSE_SCALE        := Vector2(0.7, 0.7)
+const HOT_PULSE_IN_DURATION  : float = 0.12
+const HOT_PULSE_OUT_DURATION : float = 0.30
 const HOT_ACTIVE_HOLD        : float = 0.15
+# === EXPORT HOT BAR PULSE RATE ===
+@export_range(0.0, 0.5, 0.05) var hotPulseRate: float = 0.35
 # === VARIABLES HOT BAR ANIMATION ===
 var hot_pulse_tween: Tween
 var hot_active_timer: float = 0.0
 var hot_at_base: bool = true
 var hot_pulsing: bool = false
+var hot_pulse_cooldown: float = 0.0
+# === FUENTE Y SOMBRA ===
+@export var shadowColor: Color = Color(0, 0, 0, 0.6)
+@export var shadowOffset: Vector2 = Vector2(2, 2)
+@export var shadowSize: int = 1
+var _font: Font
 
 func _ready():
 	set_bar_vals(hotBar, maxHot)
 	set_bar_vals(medalCountdown, maxMedalCountdown)
 	hot_shader_material = hotBar.material as ShaderMaterial
 	hotBar.scale = HOT_BASE_SCALE
+	_load_font()
+	_apply_font_to_all_labels()
+	comboLabel.position = comboPosOut
+
+func _load_font() -> void:
+	_font = load("res://fonts/LuckiestGuy.ttf") as Font
+
+func _apply_font_to_all_labels() -> void:
+	for label in [gameScore, highScore, comboLabel, multLabel, gameName, highName]:
+		_setup_rich_label(label)
+
+func _setup_rich_label(label: RichTextLabel) -> void:
+	label.add_theme_font_override("normal_font", _font)
+	label.add_theme_color_override("font_shadow_color", shadowColor)
+	label.add_theme_constant_override("shadow_offset_x", int(shadowOffset.x))
+	label.add_theme_constant_override("shadow_offset_y", int(shadowOffset.y))
+	label.add_theme_constant_override("shadow_outline_size", shadowSize)
 
 func _process(_delta):
 	# Contadores
@@ -47,10 +77,16 @@ func _process(_delta):
 	highScore.text = str(SCORE.GeneralGameScore) # Temporal
 	comboLabel.text = "+" + str(SCORE.combo)
 	multLabel.text = "x" + str(SCORE.mult)
-	
+
+	# Reset visual del combo al morir
+	if SCORE.combo == 0 and _prevCombo > 0:
+		if tween: tween.kill()
+		comboLabel.position = comboPosOut
+	_prevCombo = SCORE.combo
+
 	# Ajuste de escala
 	_update_label_scale(comboLabel, SCORE.combo, 0.001)
-	_update_label_scale(multLabel, SCORE.mult, 0.05)
+	_update_label_scale(multLabel, SCORE.mult, 0.05, 3.0)
 	
 	# Barras
 	hotBar.value = SCORE.hot
@@ -76,6 +112,10 @@ func _process(_delta):
 		hot_active_timer -= _delta
 		if hot_active_timer <= 0.0:
 			_hot_return_to_base()
+	
+	# Cooldown entre pulsos
+	if hot_pulse_cooldown > 0.0:
+		hot_pulse_cooldown -= _delta
 
 # === SHADER HOT BAR ===
 func _update_hot_shader() -> void:
@@ -86,10 +126,13 @@ func _update_hot_shader() -> void:
 
 # === ANIMACIONES HOT BAR ===
 func pulse_hot_bar() -> void:
-	if hot_pulsing: return
-	hot_pulsing = true
+	if hot_pulse_cooldown > 0.0:
+		return
+	hot_pulse_cooldown = hotPulseRate
 	hot_at_base = false
+	hot_pulsing = true
 	if hot_pulse_tween: hot_pulse_tween.kill()
+	hotBar.scale = HOT_BASE_SCALE
 	hot_pulse_tween = create_tween()
 	hot_pulse_tween.tween_property(hotBar, "scale", HOT_PULSE_SCALE, HOT_PULSE_IN_DURATION)\
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
@@ -131,16 +174,17 @@ func set_bar_vals(currentBar, maxim):
 	currentBar.value = 0
 
 # === AJUSTE DE ESCALA ===
-func _update_label_scale(label, value: int, factor) -> void:
-	var scaleValue = clamp(1.0 + value * factor, 1.0, 2.5)
+func _update_label_scale(label, value: int, factor, maxScale: float = 2.5) -> void:
+	var scaleValue = clamp(1.0 + value * factor, 1.0, maxScale)
 	label.scale = Vector2(scaleValue, scaleValue)
 
 # === ANIMACIONES COMBO ===
 func label_in() -> void:
-	_start_tween(Vector2(35, 200))
+	comboLabel.position = comboPosOut
+	_start_tween(comboPosIn)
 
 func label_out() -> void:
-	_start_tween(Vector2(-165, 200))
+	_start_tween(comboPosOut)
 
 func _start_tween(targetPos: Vector2) -> void:
 	if tween: tween.kill()
