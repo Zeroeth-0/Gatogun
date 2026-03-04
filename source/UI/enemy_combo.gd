@@ -62,7 +62,6 @@ func free_label(enemType: String):
 	reparent(GLOBAL.get_subtree())
 	if !freeSet: text = "+" + str(SCORE.combo * SCORE.mult)
 	freeSet = true
-	modulate = Color.YELLOW
 
 	var tween = create_tween()
 	tween.set_trans(Tween.TRANS_LINEAR)
