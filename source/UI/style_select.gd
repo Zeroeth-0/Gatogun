@@ -50,7 +50,7 @@ func _ready() -> void:
 		SelectEnum.GATO: STYLES = GATOS
 		SelectEnum.DOLL: STYLES = DOLLS
 
-	var font := load("res://fonts/LuckiestGuy.ttf")
+	var font := load("res://fonts/AprilGothicOne-R.ttf")
 	font.antialiasing = TextServer.FONT_ANTIALIASING_NONE
 
 	for i in range(3):
@@ -60,7 +60,7 @@ func _ready() -> void:
 		var name_label: Label = vbox.get_child(1)
 		name_label.text = STYLES[i].name
 		name_label.add_theme_font_override("font", font)
-		name_label.add_theme_font_size_override("font_size", 20)
+		name_label.add_theme_font_size_override("font_size", 15)
 		name_label.add_theme_constant_override("outline_size", 13)
 		name_label.add_theme_color_override("outline_color", Color.BLACK)
 
@@ -232,7 +232,7 @@ func confirm_selection() -> void:
 					GLOBAL.raw_change_scene("DOLL")
 				SelectEnum.DOLL:
 					GAME.set_doll(chosenStyle)
-					GLOBAL.change_scene("GAME")
+					FLOW.begin_game()
 		)
 	)
 

@@ -5,7 +5,7 @@ extends Node2D
 # === ESTADO INTERNO ===
 var cooldown := 0.0
 var canFire = true
-var _laser_type_toggle := false   # false → type 3, true → type 2
+var _laser_type_toggle := false   # false → type 3, true → type 2 (shader)
 
 # === FLUJO DE COMPORTAMIENTO ===
 func _process(delta: float) -> void:
@@ -16,6 +16,7 @@ func _process(delta: float) -> void:
 # === DISPARO ===
 func _fire_burst(direction: Vector2) -> void:
 	_fire_bullet(direction)
+	SFX.play("burst", -24, 0, -0.1)
 	cooldown = fireRate
 
 func _fire_bullet(direction: Vector2) -> void:

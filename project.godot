@@ -33,6 +33,8 @@ DRNG="*res://utils/RNGManager.gd"
 RANK="*res://utils/RankManager.gd"
 CAMERA="*res://utils/CameraManager.gd"
 CUSTIME="*uid://bxhe74li6nu7y"
+SFX="*uid://bm6xm5cnl1pbe"
+FLOW="*uid://d2s16ey5stckg"
 
 [display]
 

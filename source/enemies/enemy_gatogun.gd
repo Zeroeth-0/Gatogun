@@ -8,6 +8,11 @@ extends "res://source/enemies/enemy.gd"
 @export var comboLabel: RichTextLabel
 @export var cutoff: float = 450.0
 
+# === CONSTANTES DE RANGO ===
+const MEDAL_RANGE: float   = 250.0
+const OUTLINE_FULL: float  = 240.0
+const OUTLINE_START: float = 400.0
+
 # === ESTADO INTERNO ===
 var canDie := false
 var canShoot := true
@@ -44,10 +49,9 @@ func _ready() -> void:
 	if isGround: $Hurtbox.add_to_group("Ground")
 	else: $Hitbox.add_to_group("Damage")
 
-	# Shader: guardar material y asignar offset aleatorio único por instancia
 	_hit_material = $Sprite2D.material as ShaderMaterial
 	if _hit_material:
-		_hit_material = _hit_material.duplicate()                               # ← Clave: instancia propia del material
+		_hit_material = _hit_material.duplicate()
 		$Sprite2D.material = _hit_material
 		_hit_material.set_shader_parameter("time_offset", randf() * 100.0)
 
@@ -57,6 +61,18 @@ func _process(delta: float) -> void:
 	stageTimer += delta
 	velocity = SCROLL.get_scroll() + extraVel if scrollFollow else extraVel
 	if position.y > cutoff: canShoot = false
+
+	# --- Outline de proximidad ---
+	if _hit_material:
+		var playerPos = GAME.get_player()
+		var dist: float = position.distance_to(playerPos)
+		var fill: float = clamp(
+			(OUTLINE_START - dist) / (OUTLINE_START - OUTLINE_FULL),
+			0.0, 1.0
+		)
+		_hit_material.set_shader_parameter("outline_fill",   fill)
+		_hit_material.set_shader_parameter("outline_active", 1.0 if dist <= OUTLINE_FULL else 0.0)
+		_hit_material.set_shader_parameter("custom_time", Time.get_ticks_msec() / 1000.0)
 
 	# Charge
 	var overlap = $Hurtbox.get_overlapping_areas()

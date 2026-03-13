@@ -58,7 +58,7 @@ func _ready():
 	comboLabel.position = comboPosOut
 
 func _load_font() -> void:
-	_font = load("res://fonts/LuckiestGuy.ttf") as Font
+	_font = load("res://fonts/AprilGothicOne-R.ttf") as Font
 
 func _apply_font_to_all_labels() -> void:
 	for label in [gameScore, highScore, comboLabel, multLabel, gameName, highName]:
@@ -86,7 +86,7 @@ func _process(_delta):
 
 	# Ajuste de escala
 	_update_label_scale(comboLabel, SCORE.combo, 0.001)
-	_update_label_scale(multLabel, SCORE.mult, 0.05, 3.0)
+	_update_label_scale(multLabel, SCORE.mult, 0.05, 2.5)
 	
 	# Barras
 	hotBar.value = SCORE.hot

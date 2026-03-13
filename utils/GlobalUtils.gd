@@ -94,13 +94,13 @@ func _change_subtree(packedScene: String) -> void:
 func _instantiate_scene(scene_id: String) -> Node:
 	scene_id = scene_id.to_upper()
 	match scene_id:
-		"GAME": GAME.inGame = true
+		"LEVEL_1": GAME.inGame = true
 		_: GAME.inGame = false
 	match scene_id:
 		"OVER":        return gameOver.instantiate()
 		"MENU":        return menuScene.instantiate()
 		"TITLE":       return titleScene.instantiate()
-		"GAME":        return gameScene.instantiate()
+		"LEVEL_1":     return gameScene.instantiate()
 		"MODE":        return modeScene.instantiate()
 		"GATO":        return gatoScene.instantiate()
 		"DOLL":        return dollScene.instantiate()

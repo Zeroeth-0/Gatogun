@@ -1,15 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://wm5ygajh4jkk"]
+[gd_scene format=3 uid="uid://wm5ygajh4jkk"]
 
 [ext_resource type="PackedScene" uid="uid://c4c43cerdgpvu" path="res://scenes/items/item.tscn" id="1_x7t37"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_sm3cw"]
+[ext_resource type="PackedScene" uid="uid://biy0dan8pm5u2" path="res://scenes/vfx/drop_shadow.tscn" id="3_220dp"]
 
-[node name="Item" groups=["PowerUp"] instance=ExtResource("1_x7t37")]
+[node name="Item" unique_id=814896193 groups=["PowerUp"] instance=ExtResource("1_x7t37")]
 z_index = 4
 itemEnum = 1
 
-[node name="Sprite2D" type="Sprite2D" parent="." index="0"]
+[node name="Sprite2D" type="Sprite2D" parent="." index="0" unique_id=538879726]
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_sm3cw")
+
+[node name="DropShadow" parent="Sprite2D" index="0" unique_id=1987613103 instance=ExtResource("3_220dp")]
 
 [node name="CollisionShape2D" parent="." index="1"]
 scale = Vector2(4, 4)

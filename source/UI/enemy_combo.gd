@@ -13,7 +13,7 @@ func _ready() -> void:
 
 func _apply_style() -> void:
 	# Cargar fuente
-	var font = load("res://fonts/LuckiestGuy.ttf")
+	var font = load("res://fonts/AprilGothicOne-R.ttf")
 	
 	# Crear FontVariation para poder añadir el shadow
 	var font_var = FontVariation.new()
@@ -24,7 +24,7 @@ func _apply_style() -> void:
 	
 	# Aplicar fuente vía theme override
 	add_theme_font_override("normal_font", font)
-	add_theme_font_size_override("normal_font_size", 20) # ajusta el tamaño
+	add_theme_font_size_override("normal_font_size", 15) # ajusta el tamaño
 
 	# Drop shadow vía theme
 	add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))

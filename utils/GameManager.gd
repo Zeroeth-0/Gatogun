@@ -129,7 +129,7 @@ func game_over() -> void:
 
 # Apertura del menú de pausa
 func _input(event: InputEvent) -> void:
-	if get_tree().paused: return
+	if get_tree().paused or GLOBAL.is_transitioning: return
 	
 	# Solo permitir pausa en escenas de nivel jugable
 	if event.is_action_pressed("Start") and GLOBAL.get_subtree().is_in_group("Level"):

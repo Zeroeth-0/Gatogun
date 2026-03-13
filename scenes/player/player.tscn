@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_86ini"]
 [ext_resource type="PackedScene" uid="uid://cayls45qnqvte" path="res://scenes/bullets/player/bomb.tscn" id="2_ufgkt"]
 [ext_resource type="PackedScene" uid="uid://cjhkionj3a6h3" path="res://scenes/weapons/player/weapon.tscn" id="4_g6re5"]
+[ext_resource type="PackedScene" uid="uid://biy0dan8pm5u2" path="res://scenes/vfx/drop_shadow.tscn" id="4_p47bc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_klkvo"]
 
@@ -29,6 +30,8 @@ modulate = Color(0, 1, 0, 1)
 z_index = 4
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_86ini")
+
+[node name="DropShadow" parent="Icon" unique_id=1987613103 instance=ExtResource("4_p47bc")]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=993576940]
 scale = Vector2(0.3, 0.3)

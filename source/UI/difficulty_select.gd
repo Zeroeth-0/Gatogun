@@ -40,7 +40,7 @@ func _ready() -> void:
 	
 	RANK.reset_all()
 	
-	var font := load("res://fonts/LuckiestGuy.ttf")
+	var font := load("res://fonts/AprilGothicOne-R.ttf")
 	font.antialiasing = TextServer.FONT_ANTIALIASING_NONE
 	
 	for option_text in OPTIONS:
@@ -53,7 +53,7 @@ func _ready() -> void:
 		label.clip_contents = false
 		
 		label.add_theme_font_override("normal_font", font)
-		label.add_theme_font_size_override("normal_font_size", 40)
+		label.add_theme_font_size_override("normal_font_size", 30)
 		label.add_theme_constant_override("outline_size", 27)
 		label.add_theme_color_override("outline_color", Color.BLACK)
 		

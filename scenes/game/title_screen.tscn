@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://dra7yqg0s7urp"]
+[gd_scene format=3 uid="uid://dra7yqg0s7urp"]
 
-[ext_resource type="Script" uid="uid://ce6rccpqgcq1s" path="res://source/UI/title_gameover.gd" id="1_tg2ys"]
+[ext_resource type="Script" uid="uid://ce6rccpqgcq1s" path="res://source/UI/title.gd" id="1_tg2ys"]
 
 [node name="Title Screen" type="Control"]
 layout_mode = 3

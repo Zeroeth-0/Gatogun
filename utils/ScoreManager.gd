@@ -72,8 +72,7 @@ func _update_mult(delta: float) -> void:
 			needWait = false
 		multDrainTime += delta
 		while multDrainTime >= multDrainLimit:
-			if (mult - 3 >= 1): mult -= 3
-			else: mult -= 1
+			mult -= 1
 			multDrainTime -= multDrainLimit
 	else: needWait = true
 	

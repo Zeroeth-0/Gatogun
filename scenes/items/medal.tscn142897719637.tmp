@@ -4,7 +4,6 @@
 [ext_resource type="Shader" uid="uid://cned32h6qndtn" path="res://shaders/shine.gdshader" id="2_h0x48"]
 [ext_resource type="Script" uid="uid://2gktgvlahed3" path="res://source/vfx/medal_shine.gd" id="4_eqbui"]
 [ext_resource type="Texture2D" uid="uid://yh7endpfa77a" path="res://sprites/medal_spritesheet.png" id="5_tyq56"]
-[ext_resource type="PackedScene" uid="uid://biy0dan8pm5u2" path="res://scenes/vfx/drop_shadow.tscn" id="5_yc2ob"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_tyq56"]
 shader = ExtResource("2_h0x48")
@@ -125,12 +124,6 @@ animation = &"jingle"
 autoplay = "jingle"
 frame_progress = 0.6071466
 script = ExtResource("4_eqbui")
-
-[node name="DropShadow" parent="AnimatedSprite2D" unique_id=1987613103 instance=ExtResource("5_yc2ob")]
-offset_left = -150.0
-offset_top = -150.0
-offset_right = -150.0
-offset_bottom = -150.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2121205495]
 z_index = 2

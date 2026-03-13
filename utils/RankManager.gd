@@ -12,7 +12,7 @@ var canDecrease = false
 func _process(_delta):
 	match DifficultyStyle:
 		DifficultyEnum.NOVICE:
-			baseRank = 1
+			baseRank = 0
 			rank = baseRank
 		DifficultyEnum.MANIAC:
 			baseRank = 6

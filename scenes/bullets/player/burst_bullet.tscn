@@ -14,13 +14,13 @@ shader_parameter/glow_color = Color(1, 0.3, 0, 1)
 shader_parameter/flash_color = Color(1, 0.5, 0, 1)
 shader_parameter/bullet_gap = 0.0
 shader_parameter/bullet_length = 0.94999998807907
-shader_parameter/bullet_width = 0.38200001674797
+shader_parameter/bullet_width = 0.39200001722297
 shader_parameter/tip_sharpness = 3.4370001157575
-shader_parameter/glow_radius = 0.30000001192093
-shader_parameter/glow_strength = 1.0
+shader_parameter/outline_width = 0.10000000149012
+shader_parameter/outline_softness = 0.006
 shader_parameter/flash_speed = 1.0
 shader_parameter/flash_duty = 0.00999999977648
-shader_parameter/tail_round = 0.1970000093575
+shader_parameter/tail_round = 0.3170000150575
 shader_parameter/opacity = 1.0
 shader_parameter/custom_time = 0.0
 
@@ -38,8 +38,8 @@ debug_color = Color(1, 1, 0, 0.419608)
 modulate = Color(1, 0.627451, 0, 1)
 z_index = 1
 material = SubResource("ShaderMaterial_jwfqj")
-position = Vector2(12.5, -1.6155871e-27)
-scale = Vector2(0.35937497, 0.39062497)
+position = Vector2(9.75, -1.6155871e-27)
+scale = Vector2(0.40234372, 0.39062497)
 texture = ExtResource("2_5kdky")
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]

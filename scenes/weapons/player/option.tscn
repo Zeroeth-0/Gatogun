@@ -3,11 +3,15 @@
 [ext_resource type="Script" uid="uid://ly3d42o66cyl" path="res://source/weapons/option.gd" id="1_b0tov"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_6f1wc"]
 [ext_resource type="PackedScene" uid="uid://k3dc4e2ha3m1" path="res://scenes/bullets/player/burst_bullet.tscn" id="2_t0u8t"]
+[ext_resource type="PackedScene" uid="uid://biy0dan8pm5u2" path="res://scenes/vfx/drop_shadow.tscn" id="4_t0u8t"]
 
 [node name="Option" type="Node2D" unique_id=338058656]
 script = ExtResource("1_b0tov")
 bulletScene = ExtResource("2_t0u8t")
+isOption = true
 
 [node name="Icon" type="Sprite2D" parent="." unique_id=437377955]
 scale = Vector2(0.35, 0.35)
 texture = ExtResource("2_6f1wc")
+
+[node name="DropShadow" parent="Icon" unique_id=1987613103 instance=ExtResource("4_t0u8t")]

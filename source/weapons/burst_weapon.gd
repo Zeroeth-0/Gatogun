@@ -5,6 +5,7 @@ extends Node2D
 @export var fireRate: float = 0.05
 @export var MAX_BULLETS: int = 4
 @export_range(-20, 20, 5) var deviationAngle: float = 0.0
+@export var isOption: bool = false
 
 # === ESTADO INTERNO ===
 var baseLvl := 1.0
@@ -24,6 +25,7 @@ func _fire_burst(direction: Vector2, scene: PackedScene) -> void:
 	canFire = false
 	for i in MAX_BULLETS:
 		await get_tree().create_timer(0.05, false).timeout
+		if !isOption: SFX.play("burst")
 		_fire_bullet(direction, scene)
 
 	await get_tree().create_timer(fireRate if direction == INPUT.fireDir else 0.0, false).timeout

@@ -58,9 +58,9 @@ text = "+9999"
 top_level = true
 z_index = 10
 layout_mode = 0
-offset_left = 550.0
+offset_left = 525.0
 offset_top = 100.0
-offset_right = 650.0
+offset_right = 625.0
 offset_bottom = 170.0
 text = "x999"
 

@@ -39,7 +39,7 @@ func _ready() -> void:
 	vbox = $VBoxContainer
 	vbox.clip_contents = false
 	
-	var font := load("res://fonts/LuckiestGuy.ttf")
+	var font := load("res://fonts/AprilGothicOne-R.ttf")
 	font.antialiasing = TextServer.FONT_ANTIALIASING_NONE
 	
 	for option_text in OPTIONS:
@@ -198,12 +198,10 @@ func confirm_selection() -> void:
 		1:  # RESTART
 			blink_and_confirm(func():
 				animate_exit(func():
+					for node in get_tree().get_nodes_in_group("PauseOverlay"): node.queue_free()
 					GLOBAL.resume_game()
-					RANK.reset_soft()
-					SCORE.reset()
-					SCORE.reset_game_score()
-					GAME.store(Vector2(10000, 10000), false)
-					GLOBAL.change_scene("GAME")
+					await get_tree().process_frame
+					FLOW.restart_level()
 				)
 			)
 		2:  # BACK TO TITLE
@@ -214,6 +212,7 @@ func confirm_selection() -> void:
 					RANK.reset_all()
 					SCORE.reset()
 					SCORE.reset_game_score()
+					GAME.store()
 					GLOBAL.change_scene("MENU")
 				)
 			)
