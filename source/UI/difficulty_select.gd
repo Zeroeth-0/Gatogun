@@ -2,7 +2,7 @@ extends Control
 
 const OPTIONS: Array[String] = [
 	"NOVICE",
-	"RANKED",
+	"DOUJIN",
 	"MANIAC"
 ]
 

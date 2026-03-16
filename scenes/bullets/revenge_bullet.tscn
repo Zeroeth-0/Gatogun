@@ -8,30 +8,32 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_iy0kc"]
 shader = ExtResource("2_15svb")
-shader_parameter/bullet_type = 0
+shader_parameter/bullet_type = 2
 shader_parameter/bullet_subtype = 0
 shader_parameter/bullet_color = Color(0, 0.38039216, 1, 1)
 shader_parameter/rim_color = Color(0, 0, 0.47058824, 1)
 shader_parameter/core_color = Color(1, 1, 1, 1)
 shader_parameter/invert_colors = false
-shader_parameter/core_radius = 0.2
-shader_parameter/rim_start = 0.25
+shader_parameter/core_radius = 0.13000000547648
+shader_parameter/rim_start = 0.13400000566648002
 shader_parameter/edge_softness = 0.025
 shader_parameter/brightness = 2.0
+shader_parameter/custom_time = 0.0
+shader_parameter/time_offset = 0.0
 shader_parameter/pulse_enabled = true
 shader_parameter/pulse_speed = 5.0
-shader_parameter/pulse_amount = 0.035
+shader_parameter/pulse_amount = 0.0
 shader_parameter/kunai_length = 2.0
 shader_parameter/kunai_tip_top = 1.8
 shader_parameter/kunai_tip_bottom = 1.8
-shader_parameter/box_aspect = 1.0
-shader_parameter/box_round = 0.1
-shader_parameter/box_bulge = 0.0
+shader_parameter/box_aspect = 1.5
+shader_parameter/box_round = 0.7030000333925
+shader_parameter/box_bulge = 0.072000015295
 shader_parameter/star_inner = 0.45
 shader_parameter/reach = 0.85
-shader_parameter/thickness = 0.3
+shader_parameter/thickness = 0.68200003169648
 shader_parameter/count = 4
-shader_parameter/spin = 2.0
+shader_parameter/spin = 10.0
 
 [node name="Bullet" type="Area2D" unique_id=458657033 groups=["Damage", "Enemy Bullet"]]
 z_index = 5

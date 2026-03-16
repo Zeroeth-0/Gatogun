@@ -1,9 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://5uth3014gypi"]
-
-[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/base/emitter.tscn" id="1_j7l7y"]
-
-[node name="Emitter" instance=ExtResource("1_j7l7y")]
-type = 1
-dirDuration = 0.1
-aimAtPlayer = true
-burstCount = 6

@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://chxcaanjxbqw2"]
+
+[ext_resource type="PackedScene" uid="uid://45jy2ekapnll" path="res://scenes/enemies/base/enemy.tscn" id="1_q4r1a"]
+[ext_resource type="PackedScene" uid="uid://cprt4dcdj4p68" path="res://scenes/weapons/enemies/popcorn/repeatAimedSpeed.tscn" id="2_iksxd"]
+[ext_resource type="Texture2D" uid="uid://diwcoh0ak0d75" path="res://sprites/enemies.png" id="2_lpeqa"]
+
+[node name="Enemy" unique_id=357624763 instance=ExtResource("1_q4r1a")]
+childhood = 8
+childSpeed = 250
+adulthood = 8
+adultDuration = 2.0
+adultSpeed = 250
+oldAge = 8
+oldSpeed = 250
+
+[node name="Sprite2D" parent="." index="0" unique_id=444427917]
+position = Vector2(5.8, 0.8)
+texture = ExtResource("2_lpeqa")
+hframes = 3
+vframes = 3
+frame = 6
+
+[node name="Emitter" parent="." index="5" unique_id=1035265031 instance=ExtResource("2_iksxd")]

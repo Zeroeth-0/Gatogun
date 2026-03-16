@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://bdihrxffponr5"]
+
+[ext_resource type="Script" uid="uid://3himmljf12sb" path="res://source/UI/ready_label.gd" id="1_ff30n"]
+[ext_resource type="Shader" uid="uid://82g567e4kc1x" path="res://shaders/ready_label.gdshader" id="2_w1lv5"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_aa8ij"]
+shader = ExtResource("2_w1lv5")
+shader_parameter/color_a = Color(0.3764706, 0.81960785, 0.2784314, 1)
+shader_parameter/color_b = Color(0.9372549, 0.80784315, 0.36078432, 1)
+shader_parameter/stripe_angle = 0.4
+shader_parameter/stripe_speed = 2.50000011875
+shader_parameter/custom_time = 0.0
+
+[node name="ReadyLabel" type="Control" unique_id=1933491209]
+z_index = 10
+layout_mode = 3
+anchors_preset = 0
+offset_top = 292.0
+offset_right = 40.0
+offset_bottom = 332.0
+script = ExtResource("1_ff30n")
+BORDER_COLOR = Color(0.22745098, 0.49411765, 0.12941177, 1)
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=379056868]
+material = SubResource("ShaderMaterial_aa8ij")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 639.0
+offset_bottom = 105.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=2013374669]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 639.0
+offset_bottom = 105.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "READY?"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BorderTop" type="ColorRect" parent="." unique_id=1285884515]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="BorderBottom" type="ColorRect" parent="." unique_id=311799641]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0

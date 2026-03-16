@@ -13,9 +13,9 @@ var burstLvl: float = 1.0
 var laserLvl: float = 1.0
 var chargeLvl: float = 1.0
 var maxLvl: float = 3.0
-var rOptActive: bool = false
-var lOptActive: bool = false
-var optionCounter: float = 0.0
+var rOptActive: bool = true
+var lOptActive: bool = true
+var optionCounter: float = 2.0
 
 # === NIVEL ARMAS ===
 func lvl_up(weapon: String):
@@ -33,9 +33,9 @@ func lvl_up(weapon: String):
 
 func reset_lvl():
 	for key in weapons: weapons[key] = 1.0
-	rOptActive = false
-	lOptActive = false
-	optionCounter = 0
+	rOptActive = true
+	lOptActive = true
+	optionCounter = 2
 	remap_lvl()
 
 func remap_lvl():

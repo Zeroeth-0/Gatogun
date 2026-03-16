@@ -1,9 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://dukgnwfkfdi2d"]
+[gd_scene format=3 uid="uid://dukgnwfkfdi2d"]
 
 [ext_resource type="Script" uid="uid://n0d06dpwhy7d" path="res://source/UI/style_select.gd" id="1_rdiiy"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_ca08h"]
 
-[node name="Doll Select" type="Control"]
+[node name="Doll Select" type="Control" unique_id=523671162]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,14 +13,14 @@ grow_vertical = 2
 script = ExtResource("1_rdiiy")
 SelectStyle = 1
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="." unique_id=369557732]
 layout_mode = 0
 offset_left = 70.0
 offset_top = 250.0
 offset_right = 462.0
 offset_bottom = 273.0
 
-[node name="FstVBoxContainer" type="VBoxContainer" parent="."]
+[node name="FstVBoxContainer" type="VBoxContainer" parent="." unique_id=1422545238]
 layout_mode = 0
 offset_left = 70.0
 offset_top = 250.0
@@ -29,15 +29,15 @@ offset_bottom = 405.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="FstIcon" type="TextureRect" parent="FstVBoxContainer"]
+[node name="FstIcon" type="TextureRect" parent="FstVBoxContainer" unique_id=1036588171]
 layout_mode = 2
 texture = ExtResource("2_ca08h")
 
-[node name="FstName" type="Label" parent="FstVBoxContainer"]
+[node name="FstName" type="Label" parent="FstVBoxContainer" unique_id=150762594]
 layout_mode = 2
 horizontal_alignment = 1
 
-[node name="SndVBoxContainer" type="VBoxContainer" parent="."]
+[node name="SndVBoxContainer" type="VBoxContainer" parent="." unique_id=1523180669]
 layout_mode = 0
 offset_left = 136.0
 offset_top = 250.0
@@ -46,15 +46,15 @@ offset_bottom = 405.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="SndIcon" type="TextureRect" parent="SndVBoxContainer"]
+[node name="SndIcon" type="TextureRect" parent="SndVBoxContainer" unique_id=276596696]
 layout_mode = 2
 texture = ExtResource("2_ca08h")
 
-[node name="SndName" type="Label" parent="SndVBoxContainer"]
+[node name="SndName" type="Label" parent="SndVBoxContainer" unique_id=1437340106]
 layout_mode = 2
 horizontal_alignment = 1
 
-[node name="TrdVBoxContainer" type="VBoxContainer" parent="."]
+[node name="TrdVBoxContainer" type="VBoxContainer" parent="." unique_id=1229885853]
 layout_mode = 0
 offset_left = 202.0
 offset_top = 250.0
@@ -63,10 +63,10 @@ offset_bottom = 405.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="TrdIcon" type="TextureRect" parent="TrdVBoxContainer"]
+[node name="TrdIcon" type="TextureRect" parent="TrdVBoxContainer" unique_id=160549511]
 layout_mode = 2
 texture = ExtResource("2_ca08h")
 
-[node name="TrdName" type="Label" parent="TrdVBoxContainer"]
+[node name="TrdName" type="Label" parent="TrdVBoxContainer" unique_id=1212719616]
 layout_mode = 2
 horizontal_alignment = 1

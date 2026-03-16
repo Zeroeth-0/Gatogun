@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://dra7yqg0s7urp"]
 
 [ext_resource type="Script" uid="uid://ce6rccpqgcq1s" path="res://source/UI/title.gd" id="1_tg2ys"]
+[ext_resource type="Texture2D" uid="uid://wwpvo01jgd4s" path="res://sprites/logo_gatogun.png" id="2_3t1qn"]
 
-[node name="Title Screen" type="Control"]
+[node name="Title Screen" type="Control" unique_id=832146992]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,22 +12,17 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_tg2ys")
 
-[node name="Title" type="Label" parent="."]
-layout_mode = 0
-offset_left = 302.0
-offset_top = 199.0
-offset_right = 394.0
-offset_bottom = 225.0
-text = "GATOGUN"
-horizontal_alignment = 1
-vertical_alignment = 1
+[node name="LogoGatogun" type="Sprite2D" parent="." unique_id=374232484]
+position = Vector2(341, 364)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_3t1qn")
 
-[node name="Start" type="Label" parent="."]
+[node name="Start" type="Label" parent="." unique_id=2126841574]
 layout_mode = 0
 offset_left = 242.0
-offset_top = 508.0
+offset_top = 622.0
 offset_right = 449.0
-offset_bottom = 534.0
+offset_bottom = 648.0
 text = "PUSH SHOOT BUTTON"
 horizontal_alignment = 1
 vertical_alignment = 1

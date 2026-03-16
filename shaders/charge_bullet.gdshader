@@ -30,11 +30,11 @@ uniform float star_softness     : hint_range(0.0, 0.1, 0.001) = 0.01;
 uniform float star_darkness     : hint_range(0.0, 1.0, 0.01)  = 0.0;
 uniform float star_pulse_amount : hint_range(0.0, 0.8, 0.01)  = 0.2;
 
-uniform vec4 core_color : source_color = vec4(1.00, 1.00, 0.92, 1.0);
+uniform vec4 core_color : source_color = vec4(1.00, 1.00, 0.88, 1.0);
 uniform vec4 mid_color  : source_color = vec4(1.00, 0.82, 0.15, 1.0);
 uniform vec4 edge_color : source_color = vec4(1.00, 0.38, 0.00, 1.0);
-uniform vec4 rim_color  : source_color = vec4(0.55, 0.03, 0.00, 1.0);
-uniform vec4 ray_color  : source_color = vec4(1.00, 0.82, 0.15, 1.0);
+uniform vec4 rim_color  : source_color = vec4(0.77, 0.00, 0.00, 1.0);
+uniform vec4 ray_color  : source_color = vec4(1.00, 0.90, 0.50, 1.0);
 
 // === TIEMPO ===
 uniform float custom_time : hint_range(0.0, 1000.0) = 0.0;

@@ -32,6 +32,7 @@ var spawnPos: Vector2 = Vector2(0, 0)
 var spawnContinued: bool = false
 var playing: bool = false
 var dead: bool = false
+var _spawning: bool = false
 
 func _process(_delta: float) -> void:
 	if get_tree().get_nodes_in_group("Level").size() >= 1:
@@ -49,33 +50,37 @@ func _process(_delta: float) -> void:
 		maxBombs = player.maxBombs
 		bombCount = player.bombCount
 	
-	# Limpieza opcional (puedes mantenerla o moverla a otro sitio)
+	# Limpieza opcional
 	if get_tree().get_nodes_in_group("Player").size() > 3:
 		get_tree().get_nodes_in_group("Player")[3].queue_free()
 	
 	if DollStyle == DollEnum.STRONG: remove_power_ups()
-		
+
 
 func spawn() -> void:
+	if _spawning: return
 	if get_tree().get_nodes_in_group("Player").size() > 0: return
-	
 	if not cat: return
-	
+
 	if lives >= 0: _respawn_player()
 	else:
 		RANK.reset_soft()
 		_show_continue()
 
 func _respawn_player() -> void:
+	_spawning = true
 	dead = false
-	if DollStyle != DollEnum.STRONG: _spawn_missing_powerups()
 	_reset_game_state()
+	if DollStyle != DollEnum.STRONG: _spawn_missing_powerups()
 	_instance_player()
-	
+
 	if spawnContinued:
 		var world = get_tree().get_first_node_in_group("Level")
 		world.lives = liveCount
 		if DollStyle != DollEnum.STRONG: _spawn_powerup(maxPowerUp)
+
+	await get_tree().process_frame
+	_spawning = false
 
 func _spawn_missing_powerups() -> void:
 	if spawnContinued: return
@@ -84,7 +89,6 @@ func _spawn_missing_powerups() -> void:
 	var totalLaser = WEAPON.laserLvl - 1
 	
 	for i in totalBurst: _spawn_powerup(powerUp)
-	
 	for i in totalLaser: _spawn_powerup(powerUp)
 
 func _spawn_powerup(node: PackedScene) -> void:
@@ -127,11 +131,9 @@ func game_over() -> void:
 	_reset_game_state()
 	GLOBAL.raw_change_scene("OVER")
 
-# Apertura del menú de pausa
 func _input(event: InputEvent) -> void:
 	if get_tree().paused or GLOBAL.is_transitioning: return
 	
-	# Solo permitir pausa en escenas de nivel jugable
 	if event.is_action_pressed("Start") and GLOBAL.get_subtree().is_in_group("Level"):
 		GLOBAL.pause_game()
 		var pause_menu = uiPause.instantiate()

@@ -44,7 +44,7 @@ uniform vec4  ray_color : source_color = vec4(1.00, 0.88, 0.28, 1.0);
 uniform vec4 core_color : source_color = vec4(1.00, 1.00, 0.92, 1.0);
 uniform vec4 mid_color  : source_color = vec4(1.00, 0.82, 0.15, 1.0);
 uniform vec4 edge_color : source_color = vec4(1.00, 0.38, 0.00, 1.0);
-uniform vec4 rim_color  : source_color = vec4(0.55, 0.03, 0.00, 1.0);
+uniform vec4 rim_color  : source_color = vec4(0.90, 0.00, 0.00, 1.0);
 
 // === TIEMPO ===
 uniform float custom_time : hint_range(0.0, 1000.0) = 0.0;

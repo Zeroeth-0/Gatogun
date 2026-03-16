@@ -37,6 +37,8 @@ comboLabel = NodePath("ComboLabel")
 multLabel = NodePath("MultLabel")
 gameName = NodePath("ScoreContainer/GameContainer/GameName")
 highName = NodePath("ScoreContainer/HighContainer/HighName")
+playerScoreColor = Color(0.9862152, 0.22923052, 0.1395481, 1)
+highScoreColor = Color(0.35521266, 0.5531213, 0.90879726, 1)
 hotBar = NodePath("HotBar")
 medalCountdown = NodePath("MedalCountdown")
 heartContainer = NodePath("HeartContainer")
@@ -68,10 +70,10 @@ text = "x999"
 z_index = 10
 material = SubResource("ShaderMaterial_18exe")
 layout_mode = 0
-offset_left = -2.999998
-offset_top = 97.0
+offset_left = -3.0
+offset_top = 112.0
 offset_right = 125.0
-offset_bottom = 225.0
+offset_bottom = 240.0
 scale = Vector2(0.6, 0.6)
 pivot_offset_ratio = Vector2(0.5, 0.5)
 fill_mode = 3
@@ -82,9 +84,9 @@ texture_progress = ExtResource("2_y5tme")
 z_index = 10
 layout_mode = 0
 offset_left = 120.0
-offset_top = 135.0
+offset_top = 150.0
 offset_right = 248.0
-offset_bottom = 263.0
+offset_bottom = 278.0
 scale = Vector2(0.4, 0.4)
 max_value = 5.0
 step = 0.01
@@ -96,17 +98,17 @@ texture_progress = ExtResource("2_y5tme")
 z_index = 10
 layout_mode = 0
 offset_left = 25.0
-offset_top = 70.0
+offset_top = 100.0
 offset_right = 65.00006
-offset_bottom = 110.0
+offset_bottom = 140.0
 scale = Vector2(0.25, 0.25)
 
 [node name="ScoreContainer" type="HBoxContainer" parent="." unique_id=403505537]
 layout_mode = 0
 offset_left = 40.0
-offset_top = 10.0
+offset_top = 20.0
 offset_right = 640.0
-offset_bottom = 70.0
+offset_bottom = 100.0
 theme_override_constants/separation = 0
 
 [node name="GameContainer" type="VBoxContainer" parent="ScoreContainer" unique_id=244395829]
@@ -115,9 +117,10 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="GameName" type="RichTextLabel" parent="ScoreContainer/GameContainer" unique_id=797841792]
-custom_minimum_size = Vector2(300, 30)
+custom_minimum_size = Vector2(300, 50)
 layout_mode = 2
 text = "PLAYER-SCORE"
+vertical_alignment = 1
 
 [node name="GameScore" type="RichTextLabel" parent="ScoreContainer/GameContainer" unique_id=1689133802]
 custom_minimum_size = Vector2(300, 30)
@@ -132,9 +135,10 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="HighName" type="RichTextLabel" parent="ScoreContainer/HighContainer" unique_id=1776930001]
-custom_minimum_size = Vector2(300, 30)
+custom_minimum_size = Vector2(300, 50)
 layout_mode = 2
 text = "HIGH-SCORE"
+vertical_alignment = 1
 
 [node name="HighScore" type="RichTextLabel" parent="ScoreContainer/HighContainer" unique_id=652332015]
 custom_minimum_size = Vector2(300, 30)

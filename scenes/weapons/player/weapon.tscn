@@ -37,11 +37,12 @@ shader_parameter/ray_softness = 0.15300000656898
 shader_parameter/ray_reach = 0.99999999254926
 shader_parameter/ray_screw_factor = 1.2
 shader_parameter/ray_base_intensity = 0.75
-shader_parameter/ray_color = Color(1, 0.88, 0.4, 1)
-shader_parameter/core_color = Color(1, 1, 1, 1)
-shader_parameter/mid_color = Color(1, 0.75, 0.1, 1)
-shader_parameter/edge_color = Color(1, 0.3, 0, 1)
-shader_parameter/rim_color = Color(0.7650495, 0.0628184, 9.62615e-08, 1)
+shader_parameter/ray_color = Color(1, 0.88, 0.28, 1)
+shader_parameter/core_color = Color(1, 1, 0.92, 1)
+shader_parameter/mid_color = Color(1, 0.82, 0.15, 1)
+shader_parameter/edge_color = Color(1, 0.38, 0, 1)
+shader_parameter/rim_color = Color(0.9, 0, 0, 1)
+shader_parameter/custom_time = 0.0
 
 [node name="Weapon" type="Node2D" unique_id=1513539329]
 script = ExtResource("1_3ropm")

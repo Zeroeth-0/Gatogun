@@ -53,7 +53,7 @@ func _ready() -> void:
 		
 		label.add_theme_font_override("normal_font", font)
 		label.add_theme_font_size_override("normal_font_size", 20)
-		label.add_theme_constant_override("outline_size", 13)
+		label.add_theme_constant_override("outline_size", 20)
 		label.add_theme_color_override("outline_color", Color.BLACK)
 		
 		label.text = option_text

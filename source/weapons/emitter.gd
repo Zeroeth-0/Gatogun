@@ -3,7 +3,7 @@ extends Marker2D
 # === BULLET CONFIG ===
 @export_category("BULLET")
 @export var bulletScene: PackedScene                                            # Tipo de bala
-@export_range(-400, 400, 50) var baseSpeed: float = 400.0                       # Velocidad de bala
+@export_range(-800, 800, 50) var baseSpeed: float = 400.0                       # Velocidad de bala
 
 @export_group("DIRECTION")
 enum BulletDirection { NONE, AIM, GRAVITY, LEFT, RIGHT, RANDOM }

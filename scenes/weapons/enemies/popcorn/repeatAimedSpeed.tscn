@@ -1,10 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://cprt4dcdj4p68"]
+[gd_scene format=3 uid="uid://cprt4dcdj4p68"]
 
 [ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/base/emitter.tscn" id="1_mxdek"]
 
-[node name="Emitter" instance=ExtResource("1_mxdek")]
-position = Vector2(1, 0)
-baseSpeed = 350.0
+[node name="Emitter" unique_id=1332438440 instance=ExtResource("1_mxdek")]
 aimAtPlayer = true
 burstCount = 2
 warmUp = 1.5

@@ -1,22 +1,13 @@
 [gd_scene format=3 uid="uid://bi7uyv2plo07x"]
 
 [ext_resource type="Script" uid="uid://hrxsyfgjv1kg" path="res://source/levels/level_parser.gd" id="1_g3wwy"]
-[ext_resource type="PackedScene" uid="uid://60qb43njmjls" path="res://scenes/enemies/mid/air/blammo.tscn" id="2_ssxqg"]
-[ext_resource type="PackedScene" uid="uid://sc2mi3jdynyo" path="res://scenes/enemies/mid/air/bommi.tscn" id="3_8tx05"]
-[ext_resource type="PackedScene" uid="uid://ux02h6c48bqc" path="res://scenes/enemies/mid/air/kabbi.tscn" id="4_kkypk"]
-[ext_resource type="PackedScene" uid="uid://bxqx2fgpmsmhm" path="res://scenes/enemies/mid/air/poppo.tscn" id="5_aa8ij"]
-[ext_resource type="PackedScene" uid="uid://dud5qahk5max2" path="res://scenes/enemies/mid/air/springo.tscn" id="6_xjrwe"]
-[ext_resource type="PackedScene" uid="uid://c4fvn2f5ho8el" path="res://scenes/enemies/mid/turret/hoppi.tscn" id="7_3y1yf"]
-[ext_resource type="PackedScene" uid="uid://bbrlpm3jwipc3" path="res://scenes/enemies/popcorn/air/sorro.tscn" id="8_cqqua"]
-[ext_resource type="PackedScene" uid="uid://d3wmttwclkdt1" path="res://scenes/enemies/popcorn/air/sorro_l.tscn" id="9_vsddf"]
-[ext_resource type="PackedScene" uid="uid://caswiih003iid" path="res://scenes/enemies/popcorn/air/sorro_p.tscn" id="10_dius1"]
-[ext_resource type="PackedScene" uid="uid://chxcaanjxbqw2" path="res://scenes/enemies/popcorn/air/torro.tscn" id="11_xe6ae"]
-[ext_resource type="PackedScene" uid="uid://jhl4f6yw03ra" path="res://scenes/enemies/popcorn/tank/rikki_d.tscn" id="12_nsaos"]
-[ext_resource type="PackedScene" uid="uid://bpq47v1bplbew" path="res://scenes/enemies/popcorn/tank/rikki_s.tscn" id="13_51ibf"]
-[ext_resource type="PackedScene" uid="uid://bl51xrgbhdkps" path="res://scenes/enemies/popcorn/tank/sukki_d.tscn" id="14_exrju"]
-[ext_resource type="PackedScene" uid="uid://clxkeo672dm54" path="res://scenes/enemies/popcorn/tank/sukki_s.tscn" id="15_pyypn"]
-[ext_resource type="PackedScene" uid="uid://gpd1ntke4nv1" path="res://scenes/enemies/popcorn/turret/pikko.tscn" id="16_o7v5e"]
-[ext_resource type="PackedScene" uid="uid://bvtnw342e8xsy" path="res://scenes/enemies/popcorn/turret/yukko.tscn" id="17_si4k2"]
+[ext_resource type="PackedScene" uid="uid://60qb43njmjls" path="res://scenes/enemies/mid/blammo.tscn" id="2_ssxqg"]
+[ext_resource type="PackedScene" uid="uid://ux02h6c48bqc" path="res://scenes/enemies/mid/kabbi.tscn" id="4_kkypk"]
+[ext_resource type="PackedScene" uid="uid://dud5qahk5max2" path="res://scenes/enemies/mid/springo.tscn" id="6_xjrwe"]
+[ext_resource type="PackedScene" uid="uid://bbrlpm3jwipc3" path="res://scenes/enemies/popcorn/sorro.tscn" id="8_cqqua"]
+[ext_resource type="PackedScene" uid="uid://chxcaanjxbqw2" path="res://scenes/enemies/popcorn/torro.tscn" id="11_xe6ae"]
+[ext_resource type="PackedScene" uid="uid://jhl4f6yw03ra" path="res://scenes/enemies/popcorn/rikki_d.tscn" id="12_nsaos"]
+[ext_resource type="PackedScene" uid="uid://bpq47v1bplbew" path="res://scenes/enemies/popcorn/rikki_s.tscn" id="13_51ibf"]
 [ext_resource type="Texture2D" uid="uid://chijma6mb38wf" path="res://background_cats.png" id="18_g3wwy"]
 [ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="19_01lr2"]
 [ext_resource type="Script" uid="uid://582anxy540je" path="res://source/levels/background.gd" id="19_ssxqg"]
@@ -26,10 +17,10 @@
 
 [node name="World" type="Node2D" unique_id=1973436339 groups=["Level"]]
 script = ExtResource("1_g3wwy")
-enemyScenes = Array[PackedScene]([ExtResource("2_ssxqg"), ExtResource("3_8tx05"), ExtResource("4_kkypk"), ExtResource("5_aa8ij"), ExtResource("6_xjrwe"), ExtResource("7_3y1yf"), ExtResource("8_cqqua"), ExtResource("9_vsddf"), ExtResource("10_dius1"), ExtResource("11_xe6ae"), ExtResource("12_nsaos"), ExtResource("13_51ibf"), ExtResource("14_exrju"), ExtResource("15_pyypn"), ExtResource("16_o7v5e"), ExtResource("17_si4k2")])
+enemyScenes = Array[PackedScene]([ExtResource("2_ssxqg"), ExtResource("4_kkypk"), ExtResource("6_xjrwe"), ExtResource("8_cqqua"), ExtResource("11_xe6ae"), ExtResource("12_nsaos"), ExtResource("13_51ibf")])
 
 [node name="BackgroundCats" type="Sprite2D" parent="." unique_id=1049015543]
-modulate = Color(0.1882353, 0.1882353, 0.1882353, 0.2627451)
+modulate = Color(0.41215277, 0.41215238, 0.41215235, 0.5058824)
 position = Vector2(340, 365)
 scale = Vector2(2, 2)
 texture = ExtResource("18_g3wwy")

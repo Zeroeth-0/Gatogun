@@ -2,23 +2,23 @@
 
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="1_ff2ik"]
 [ext_resource type="Script" uid="uid://dyfpfscqr447d" path="res://source/enemies/enemy_gatogun.gd" id="1_fxs2u"]
-[ext_resource type="Shader" uid="uid://ynex463g0i6x" path="res://shaders/enemy_hitndist.gdshader" id="1_mft1c"]
+[ext_resource type="Shader" uid="uid://ynex463g0i6x" path="res://shaders/enemy.gdshader" id="1_mft1c"]
 [ext_resource type="PackedScene" uid="uid://cnkhwx8t1jwmf" path="res://scenes/UI/enemy_combo.tscn" id="3_38ino"]
-[ext_resource type="PackedScene" uid="uid://biy0dan8pm5u2" path="res://scenes/vfx/drop_shadow.tscn" id="4_84wjj"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mft1c"]
 shader = ExtResource("1_mft1c")
+shader_parameter/shadow_offset = Vector2(20, 30)
+shader_parameter/shadow_color = Color(0, 0, 0, 0.8)
 shader_parameter/hit_effect = 0.0
 shader_parameter/shake_intensity = 5.0
 shader_parameter/flash_speed = 30.0
 shader_parameter/time_offset = 0.0
 shader_parameter/flash_color = Color(0.10779586, 0.34480074, 1, 1)
 shader_parameter/custom_time = 0.0
-shader_parameter/outline_fill = 0.0
-shader_parameter/outline_active = 0.0
-shader_parameter/outline_width = 16.0
-shader_parameter/outline_color = Color(1, 0.85, 0.1, 1)
-shader_parameter/inline_mode = true
+shader_parameter/breath_enabled = 1.0
+shader_parameter/breath_speed = 3.0000001392401203
+shader_parameter/breath_intensity = 0.10000000475
+shader_parameter/breath_seed = 0.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jtchi"]
 
@@ -28,6 +28,7 @@ shader_parameter/inline_mode = true
 
 [node name="Enemy" type="CharacterBody2D" unique_id=177661500 node_paths=PackedStringArray("comboLabel")]
 z_index = 3
+scale = Vector2(1.2, 1.2)
 script = ExtResource("1_fxs2u")
 comboLabel = NodePath("EnemyCombo")
 size = 40
@@ -37,10 +38,8 @@ scoreCount = 2
 modulate = Color(1, 0, 1, 1)
 z_index = 1
 material = SubResource("ShaderMaterial_mft1c")
-scale = Vector2(0.5, 0.5)
+scale = Vector2(0.7, 0.7)
 texture = ExtResource("1_ff2ik")
-
-[node name="DropShadow" parent="Sprite2D" unique_id=1987613103 instance=ExtResource("4_84wjj")]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1503006985]
 shape = SubResource("RectangleShape2D_jtchi")
@@ -63,8 +62,8 @@ shape = SubResource("RectangleShape2D_divk0")
 debug_color = Color(0, 1, 0, 0.419608)
 
 [node name="EnemyCombo" parent="." unique_id=456917589 instance=ExtResource("3_38ino")]
-offset_top = 10.0
-offset_bottom = 50.0
+offset_top = 32.0
+offset_bottom = 72.0
 
 [connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]
 [connection signal="area_exited" from="Hitbox" to="." method="_on_hitbox_area_exited"]

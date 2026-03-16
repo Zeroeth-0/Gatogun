@@ -1,4 +1,5 @@
 extends Control
+
 # === CONTADORES ===
 @export var gameScore: RichTextLabel
 @export var highScore: RichTextLabel
@@ -6,6 +7,9 @@ extends Control
 @export var multLabel: RichTextLabel
 @export var gameName: RichTextLabel
 @export var highName: RichTextLabel
+# === COLORES EXPORTABLES ===
+@export var playerScoreColor: Color
+@export var highScoreColor: Color
 # === BARRAS ===
 @export var hotBar: TextureProgressBar
 @export var medalCountdown: TextureProgressBar
@@ -57,6 +61,14 @@ func _ready():
 	_apply_font_to_all_labels()
 	comboLabel.position = comboPosOut
 
+	# ── Títulos con wave y color del inspector ──
+	gameName.bbcode_enabled = true
+	highName.bbcode_enabled = true
+	gameName.add_theme_color_override("default_color", playerScoreColor)
+	highName.add_theme_color_override("default_color", highScoreColor)
+	gameName.text = "[wave amp=48 freq=5.0]PLAYER SCORE[/wave]"
+	highName.text = "[wave amp=48 freq=5.0]HIGH SCORE[/wave]"
+
 func _load_font() -> void:
 	_font = load("res://fonts/AprilGothicOne-R.ttf") as Font
 
@@ -72,48 +84,39 @@ func _setup_rich_label(label: RichTextLabel) -> void:
 	label.add_theme_constant_override("shadow_outline_size", shadowSize)
 
 func _process(_delta):
-	# Contadores
 	gameScore.text = str(SCORE.GeneralGameScore)
-	highScore.text = str(SCORE.GeneralGameScore) # Temporal
+	highScore.text = str(SCORE.GeneralGameScore)
 	comboLabel.text = "+" + str(SCORE.combo)
 	multLabel.text = "x" + str(SCORE.mult)
 
-	# Reset visual del combo al morir
 	if SCORE.combo == 0 and _prevCombo > 0:
 		if tween: tween.kill()
 		comboLabel.position = comboPosOut
 	_prevCombo = SCORE.combo
 
-	# Ajuste de escala
 	_update_label_scale(comboLabel, SCORE.combo, 0.001)
 	_update_label_scale(multLabel, SCORE.mult, 0.05, 2.5)
-	
-	# Barras
+
 	hotBar.value = SCORE.hot
 	medalCountdown.value = SCORE.medalCountdown
-	
-	# Actualizar shader del hotBar
 	_update_hot_shader()
-	
-	# Contenedores
+
 	currentLives = GAME.lives
 	currentBombs = GAME.bombCount
 	currMaxBombs = GAME.maxBombs
-	
+
 	for child in heartContainer.get_children(): child.queue_free()
 	for child in currBombContainer.get_children(): child.queue_free()
 	for child in maxBombContainer.get_children(): child.queue_free()
 	print_container(heartContainer, currentLives)
 	print_container(currBombContainer, currentBombs)
 	print_container(maxBombContainer, currMaxBombs)
-	
-	# Timer inactividad hot bar
+
 	if hot_active_timer > 0.0:
 		hot_active_timer -= _delta
 		if hot_active_timer <= 0.0:
 			_hot_return_to_base()
-	
-	# Cooldown entre pulsos
+
 	if hot_pulse_cooldown > 0.0:
 		hot_pulse_cooldown -= _delta
 

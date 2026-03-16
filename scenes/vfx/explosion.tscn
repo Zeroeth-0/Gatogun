@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bq1gn1trtvcb8" path="res://source/vfx/explosion.gd" id="1_6d3yd"]
 [ext_resource type="Shader" uid="uid://csc5syqqm5eud" path="res://shaders/explosion.gdshader" id="2_rckmw"]
+[ext_resource type="PackedScene" uid="uid://npnu6bvkcebp" path="res://scenes/vfx/confetti.tscn" id="3_2au8o"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rckmw"]
 shader = ExtResource("2_rckmw")
@@ -35,3 +36,6 @@ offset_bottom = 150.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_6d3yd")
+
+[node name="Confetti" parent="ColorRect" unique_id=470888025 instance=ExtResource("3_2au8o")]
+position = Vector2(150, 150)

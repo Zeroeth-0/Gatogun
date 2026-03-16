@@ -1,9 +1,9 @@
 extends Area2D
 
 # === PROPIEDADES INTERNAS ===
-var speed := 250
+var speed := 400
 var direction := Vector2.ZERO
-var rotationSpeed := 360
+var rotationSpeed := 400
 
 # === NUEVO: Modo de rotación del sprite ===
 enum SpriteRotationMode {

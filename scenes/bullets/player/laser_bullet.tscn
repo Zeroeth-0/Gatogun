@@ -36,7 +36,6 @@ shape = SubResource("RectangleShape2D_ex51n")
 debug_color = Color(1, 1, 0, 0.419608)
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=173395998]
-modulate = Color(1, 0.627451, 0, 1)
 z_index = 1
 material = SubResource("ShaderMaterial_ud35j")
 position = Vector2(15, 0)

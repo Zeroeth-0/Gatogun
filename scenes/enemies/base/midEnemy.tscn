@@ -3,13 +3,14 @@
 [ext_resource type="PackedScene" uid="uid://45jy2ekapnll" path="res://scenes/enemies/base/enemy.tscn" id="1_wviyb"]
 
 [node name="Enemy" unique_id=1688539713 instance=ExtResource("1_wviyb")]
-scale = Vector2(2, 2)
+scale = Vector2(2.5, 2.5)
 typeEnum = 1
 size = 80
 scoreCount = 5
 
 [node name="Sprite2D" parent="." index="0" unique_id=444427917]
 position = Vector2(0, -10)
+scale = Vector2(0.4, 0.4)
 
 [node name="CollisionShape2D" parent="." index="1" unique_id=1503006985]
 position = Vector2(0, -10)
@@ -21,5 +22,5 @@ position = Vector2(0, -10)
 position = Vector2(0, -10)
 
 [node name="EnemyCombo" parent="." index="4" unique_id=456917589]
-offset_top = 5.0
-offset_bottom = 45.0
+offset_top = 22.0
+offset_bottom = 62.0

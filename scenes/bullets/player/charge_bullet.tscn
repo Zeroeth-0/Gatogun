@@ -31,11 +31,12 @@ shader_parameter/star_inner_ratio = 0.39999999478452
 shader_parameter/star_softness = 0.010000000475
 shader_parameter/star_darkness = 0.0
 shader_parameter/star_pulse_amount = 0.1999999955296
-shader_parameter/core_color = Color(1, 1, 0.95, 1)
-shader_parameter/mid_color = Color(1, 0.8509804, 0.050980393, 1)
+shader_parameter/core_color = Color(1, 1, 0.88, 1)
+shader_parameter/mid_color = Color(1, 0.82, 0.15, 1)
 shader_parameter/edge_color = Color(1, 0.38, 0, 1)
-shader_parameter/rim_color = Color(0.8883988, 0.07910278, 0, 1)
-shader_parameter/ray_color = Color(1, 0.88, 0.55, 1)
+shader_parameter/rim_color = Color(0.77, 0, 0, 1)
+shader_parameter/ray_color = Color(1, 0.9, 0.5, 1)
+shader_parameter/custom_time = 0.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qwrgv"]
 radius = 15.0
