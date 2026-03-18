@@ -15,9 +15,9 @@ PARADE(thickness=3,length=7,warmup=0.7) rikki_s at N0 after 1
 ; ═════════
 ; SECCIÓN B
 ; ═════════
-springo at W2 to S after 1
-blammo at E2+0.5 to S after 1
-PARADE(thickness=3,length=7,warmup=1) rikki_d at E1 with L to S after 1
+springo at W1 to S after 1
+blammo at E1-0.5 to S after 1
+PARADE(thickness=3,length=7,warmup=1) rikki_d at E1-2 with L to S after 1
 kabbi at N1 after 1
 kabbi at N3 after 1
 kabbi at N6 after 1

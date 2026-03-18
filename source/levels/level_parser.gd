@@ -1,7 +1,6 @@
 extends Node2D
 
 @export var enemyScenes: Array[PackedScene] = []
-var lives = 2
 var playing = true
 
 const LANE_GAP: int = 87
@@ -171,15 +170,13 @@ func _get_opposite_dir(dir: String) -> String:
 	return "S"
 
 func _spawn_enemy(data: Dictionary) -> void:
-	if data.type == "END_MARKER":
-		return
+	if data.type == "END_MARKER": return
 
 	if not data.has("type") or not data.has("lane") or not data.has("index"):
 		return
 
 	var scene := _get_enemy_scene_by_name(data.type)
-	if not scene:
-		return
+	if not scene: return
 
 	if not lanes.has(data.lane) or data.index >= lanes[data.lane].size():
 		return
@@ -187,10 +184,8 @@ func _spawn_enemy(data: Dictionary) -> void:
 	var enemy = scene.instantiate()
 	var spawn_pos: Vector2 = lanes[data.lane][data.index].global_position
 
-	if data.lane in ["N", "S"]:
-		spawn_pos.x += data.offset * LANE_GAP
-	else:
-		spawn_pos.y += data.offset * LANE_GAP
+	if data.lane in ["N", "S"]: spawn_pos.x += data.offset * LANE_GAP
+	else: spawn_pos.y += data.offset * LANE_GAP
 
 	enemy.position = spawn_pos
 	enemy.handedness = enemy.Handedness.RIGHT if data.hand == "R" else enemy.Handedness.LEFT

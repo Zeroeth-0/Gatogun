@@ -36,6 +36,10 @@ func _ready() -> void:
 		GAME.DollEnum.NEWBIE:
 			maxBombs = 6
 			bombCount = 3
+		GAME.DollEnum.CARAVAN:
+			WEAPON.lvl_up("MAX")
+			maxBombs = 0
+			bombCount = 0
 
 # === LOOP PRINCIPAL ===
 func _process(_delta: float) -> void:
@@ -43,7 +47,8 @@ func _process(_delta: float) -> void:
 		_handle_movement()
 		_clamp_to_screen(get_viewport().get_visible_rect().size)
 		if Input.is_action_just_pressed("B") and GAME.bombCount > 0 and canDie: _handle_bombing()
-		if GAME.DollStyle == GAME.DollEnum.SPEED: speed = 200 if INPUT.fireHold else 350
+		if GAME.DollStyle == GAME.DollEnum.SPEED or GAME.DollStyle == GAME.DollEnum.CARAVAN:
+			speed = 200 if INPUT.fireHold else 350
 		else: speed = 150 if INPUT.fireHold else 300
 	else:
 		# Movimiento automático antes de habilitar control
@@ -98,7 +103,7 @@ func _on_hurtbox_area_entered(area: Node) -> void:
 	if canDie and area.is_in_group("Damage"):
 		if GAME.DollStyle == GAME.DollEnum.NEWBIE and GAME.bombCount > 0: _handle_bombing()
 		else:
-			get_parent().lives -= 1
+			GAME.lives -= 1
 			GAME.store(global_position, false)
 			for b in get_tree().get_nodes_in_group("Enemy Bullet"): b.remove()
 			queue_free()

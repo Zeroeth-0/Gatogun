@@ -16,8 +16,10 @@ func _ready() -> void:
 
 	band.add_to_group("ShaderHolder")
 
-	var font := load("res://fonts/AprilGothicOne-R.ttf")
-	font.antialiasing = TextServer.FONT_ANTIALIASING_NONE
+	var base_font := load("res://fonts/AprilGothicOne-R.ttf")
+	var font := FontVariation.new()
+	font.base_font = base_font
+	font.opentype_features = {"kern": 0, "liga": 0, "calt": 0, "clig": 0}
 
 	# ── Bordes ──
 	border_top.color    = BORDER_COLOR

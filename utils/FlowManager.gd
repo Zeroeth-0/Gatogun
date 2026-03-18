@@ -23,6 +23,9 @@ const UI_SCENES: Dictionary = {
 	"GAME_CLEAR": "",
 }
 
+var isCaravan: bool = false
+var inCaravan: bool = false
+
 # ═══════════════════════════════════════════════════════
 #  FASES
 # ═══════════════════════════════════════════════════════
@@ -49,7 +52,7 @@ signal _ui_dismissed(ui_id: String)
 # ═══════════════════════════════════════════════════════
 var current_phase: Phase = Phase.IDLE
 var current_level_index: int = 0
-var _is_first_level: bool = true
+var _is_first_level: bool = false
 var _secret_unlocked: bool = false
 var _generation: int = 0
 
@@ -81,7 +84,7 @@ func restart_level() -> void:
 	SCORE.reset_game_score()
 	RANK.reset_soft()
 	GAME.store(Vector2(10000, 10000), false)
-	_is_first_level  = true
+	if current_level_index == 0: _is_first_level = true
 	_load_level(current_level_index)
 
 # ═══════════════════════════════════════════════════════

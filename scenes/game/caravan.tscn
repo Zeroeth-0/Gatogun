@@ -1,0 +1,131 @@
+[gd_scene format=3 uid="uid://bg0citcd3mksr"]
+
+[ext_resource type="Script" uid="uid://hrxsyfgjv1kg" path="res://source/levels/level_parser.gd" id="1_enroh"]
+[ext_resource type="PackedScene" uid="uid://60qb43njmjls" path="res://scenes/enemies/mid/blammo.tscn" id="2_y3o2u"]
+[ext_resource type="PackedScene" uid="uid://ux02h6c48bqc" path="res://scenes/enemies/mid/kabbi.tscn" id="3_w4wkx"]
+[ext_resource type="PackedScene" uid="uid://dud5qahk5max2" path="res://scenes/enemies/mid/springo.tscn" id="4_vx8wh"]
+[ext_resource type="PackedScene" uid="uid://bbrlpm3jwipc3" path="res://scenes/enemies/popcorn/sorro.tscn" id="5_exl27"]
+[ext_resource type="PackedScene" uid="uid://chxcaanjxbqw2" path="res://scenes/enemies/popcorn/torro.tscn" id="6_ewqge"]
+[ext_resource type="PackedScene" uid="uid://jhl4f6yw03ra" path="res://scenes/enemies/popcorn/rikki_d.tscn" id="7_pmvjo"]
+[ext_resource type="PackedScene" uid="uid://bpq47v1bplbew" path="res://scenes/enemies/popcorn/rikki_s.tscn" id="8_espgc"]
+[ext_resource type="Texture2D" uid="uid://chijma6mb38wf" path="res://background_cats.png" id="9_gog1b"]
+[ext_resource type="Script" uid="uid://582anxy540je" path="res://source/levels/background.gd" id="10_my08w"]
+[ext_resource type="Script" uid="uid://camgd3kf5nap7" path="res://source/levels/lane.gd" id="11_odagl"]
+[ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="12_30xcq"]
+[ext_resource type="PackedScene" uid="uid://cgts6rg8xrau" path="res://scenes/levels/playzone.tscn" id="13_2ki0c"]
+[ext_resource type="PackedScene" uid="uid://duam5mtyrxv5l" path="res://scenes/UI/hud.tscn" id="14_ujgk8"]
+
+[node name="World" type="Node2D" unique_id=1973436339 groups=["Level"]]
+script = ExtResource("1_enroh")
+enemyScenes = Array[PackedScene]([ExtResource("2_y3o2u"), ExtResource("3_w4wkx"), ExtResource("4_vx8wh"), ExtResource("5_exl27"), ExtResource("6_ewqge"), ExtResource("7_pmvjo"), ExtResource("8_espgc")])
+
+[node name="BackgroundCats" type="Sprite2D" parent="." unique_id=1049015543]
+modulate = Color(0.41215277, 0.41215238, 0.41215235, 0.5058824)
+position = Vector2(340, 365)
+scale = Vector2(2, 2)
+texture = ExtResource("9_gog1b")
+script = ExtResource("10_my08w")
+
+[node name="North Lane" type="Node2D" parent="." unique_id=1999811690]
+position = Vector2(340, -100)
+script = ExtResource("11_odagl")
+
+[node name="Zero" type="Marker2D" parent="North Lane" unique_id=243719467]
+position = Vector2(-261, 0)
+
+[node name="One" type="Marker2D" parent="North Lane" unique_id=306386352]
+position = Vector2(-174, 0)
+
+[node name="Two" type="Marker2D" parent="North Lane" unique_id=756134133]
+position = Vector2(-87, 0)
+
+[node name="Three" type="Marker2D" parent="North Lane" unique_id=1977954338]
+
+[node name="Four" type="Marker2D" parent="North Lane" unique_id=1564616153]
+position = Vector2(87, 0)
+
+[node name="Five" type="Marker2D" parent="North Lane" unique_id=3278235]
+position = Vector2(174, 0)
+
+[node name="Six" type="Marker2D" parent="North Lane" unique_id=289988224]
+position = Vector2(261, 0)
+
+[node name="West Lane" type="Node2D" parent="." unique_id=971500172]
+position = Vector2(-200, 365)
+rotation = 1.5708
+script = ExtResource("11_odagl")
+
+[node name="Zero" type="Marker2D" parent="West Lane" unique_id=817745540]
+position = Vector2(-261, 0)
+
+[node name="One" type="Marker2D" parent="West Lane" unique_id=1862459560]
+position = Vector2(-174, 0)
+
+[node name="Two" type="Marker2D" parent="West Lane" unique_id=691643726]
+position = Vector2(-87, 0)
+
+[node name="Three" type="Marker2D" parent="West Lane" unique_id=1179933934]
+
+[node name="Four" type="Marker2D" parent="West Lane" unique_id=1649853777]
+position = Vector2(87, 0)
+
+[node name="Five" type="Marker2D" parent="West Lane" unique_id=1394728961]
+position = Vector2(174, 0)
+
+[node name="Six" type="Marker2D" parent="West Lane" unique_id=2027703234]
+position = Vector2(261, 0)
+
+[node name="East Lane" type="Node2D" parent="." unique_id=207228024]
+position = Vector2(880, 365)
+rotation = 1.5708
+script = ExtResource("11_odagl")
+
+[node name="Zero" type="Marker2D" parent="East Lane" unique_id=1360278863]
+position = Vector2(-261, 0)
+
+[node name="One" type="Marker2D" parent="East Lane" unique_id=164924986]
+position = Vector2(-174, 0)
+
+[node name="Two" type="Marker2D" parent="East Lane" unique_id=1585260028]
+position = Vector2(-87, 0)
+
+[node name="Three" type="Marker2D" parent="East Lane" unique_id=836914895]
+
+[node name="Four" type="Marker2D" parent="East Lane" unique_id=1836044360]
+position = Vector2(87, 0)
+
+[node name="Five" type="Marker2D" parent="East Lane" unique_id=588025240]
+position = Vector2(174, 0)
+
+[node name="Six" type="Marker2D" parent="East Lane" unique_id=238170596]
+position = Vector2(261, 0)
+
+[node name="South Lane" type="Node2D" parent="." unique_id=857989646]
+position = Vector2(340, 830)
+script = ExtResource("11_odagl")
+
+[node name="Zero" type="Marker2D" parent="South Lane" unique_id=789174299]
+position = Vector2(-261, 0)
+
+[node name="One" type="Marker2D" parent="South Lane" unique_id=1265367991]
+position = Vector2(-174, 0)
+
+[node name="Two" type="Marker2D" parent="South Lane" unique_id=1401201157]
+position = Vector2(-87, 0)
+
+[node name="Three" type="Marker2D" parent="South Lane" unique_id=1866561048]
+
+[node name="Four" type="Marker2D" parent="South Lane" unique_id=918476758]
+position = Vector2(87, 0)
+
+[node name="Five" type="Marker2D" parent="South Lane" unique_id=1479376177]
+position = Vector2(174, 0)
+
+[node name="Six" type="Marker2D" parent="South Lane" unique_id=91877940]
+position = Vector2(261, 0)
+
+[node name="DeadBounds" parent="." unique_id=1230328338 instance=ExtResource("12_30xcq")]
+
+[node name="Playzone" parent="." unique_id=2052843971 instance=ExtResource("13_2ki0c")]
+
+[node name="HUD" parent="." unique_id=561898591 instance=ExtResource("14_ujgk8")]

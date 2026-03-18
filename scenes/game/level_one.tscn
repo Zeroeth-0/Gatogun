@@ -1,34 +1,34 @@
 [gd_scene format=3 uid="uid://bi7uyv2plo07x"]
 
-[ext_resource type="Script" uid="uid://hrxsyfgjv1kg" path="res://source/levels/level_parser.gd" id="1_g3wwy"]
-[ext_resource type="PackedScene" uid="uid://60qb43njmjls" path="res://scenes/enemies/mid/blammo.tscn" id="2_ssxqg"]
-[ext_resource type="PackedScene" uid="uid://ux02h6c48bqc" path="res://scenes/enemies/mid/kabbi.tscn" id="4_kkypk"]
-[ext_resource type="PackedScene" uid="uid://dud5qahk5max2" path="res://scenes/enemies/mid/springo.tscn" id="6_xjrwe"]
-[ext_resource type="PackedScene" uid="uid://bbrlpm3jwipc3" path="res://scenes/enemies/popcorn/sorro.tscn" id="8_cqqua"]
-[ext_resource type="PackedScene" uid="uid://chxcaanjxbqw2" path="res://scenes/enemies/popcorn/torro.tscn" id="11_xe6ae"]
-[ext_resource type="PackedScene" uid="uid://jhl4f6yw03ra" path="res://scenes/enemies/popcorn/rikki_d.tscn" id="12_nsaos"]
-[ext_resource type="PackedScene" uid="uid://bpq47v1bplbew" path="res://scenes/enemies/popcorn/rikki_s.tscn" id="13_51ibf"]
-[ext_resource type="Texture2D" uid="uid://chijma6mb38wf" path="res://background_cats.png" id="18_g3wwy"]
-[ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="19_01lr2"]
-[ext_resource type="Script" uid="uid://582anxy540je" path="res://source/levels/background.gd" id="19_ssxqg"]
-[ext_resource type="Script" uid="uid://camgd3kf5nap7" path="res://source/levels/lane.gd" id="20_8tx05"]
-[ext_resource type="PackedScene" uid="uid://cgts6rg8xrau" path="res://scenes/levels/playzone.tscn" id="20_g0bee"]
-[ext_resource type="PackedScene" uid="uid://duam5mtyrxv5l" path="res://scenes/UI/hud.tscn" id="21_kc3r2"]
+[ext_resource type="Script" uid="uid://hrxsyfgjv1kg" path="res://source/levels/level_parser.gd" id="1_38etc"]
+[ext_resource type="PackedScene" uid="uid://60qb43njmjls" path="res://scenes/enemies/mid/blammo.tscn" id="2_lyjet"]
+[ext_resource type="PackedScene" uid="uid://ux02h6c48bqc" path="res://scenes/enemies/mid/kabbi.tscn" id="3_5p3po"]
+[ext_resource type="PackedScene" uid="uid://dud5qahk5max2" path="res://scenes/enemies/mid/springo.tscn" id="4_3kd88"]
+[ext_resource type="PackedScene" uid="uid://bbrlpm3jwipc3" path="res://scenes/enemies/popcorn/sorro.tscn" id="5_4c2ps"]
+[ext_resource type="PackedScene" uid="uid://chxcaanjxbqw2" path="res://scenes/enemies/popcorn/torro.tscn" id="6_q5ghs"]
+[ext_resource type="PackedScene" uid="uid://jhl4f6yw03ra" path="res://scenes/enemies/popcorn/rikki_d.tscn" id="7_t63va"]
+[ext_resource type="PackedScene" uid="uid://bpq47v1bplbew" path="res://scenes/enemies/popcorn/rikki_s.tscn" id="8_3n5rf"]
+[ext_resource type="Texture2D" uid="uid://chijma6mb38wf" path="res://background_cats.png" id="9_rvump"]
+[ext_resource type="Script" uid="uid://582anxy540je" path="res://source/levels/background.gd" id="10_ix72u"]
+[ext_resource type="Script" uid="uid://camgd3kf5nap7" path="res://source/levels/lane.gd" id="11_ul74p"]
+[ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="12_0cmxr"]
+[ext_resource type="PackedScene" uid="uid://cgts6rg8xrau" path="res://scenes/levels/playzone.tscn" id="13_hmfu4"]
+[ext_resource type="PackedScene" uid="uid://duam5mtyrxv5l" path="res://scenes/UI/hud.tscn" id="14_ol3bn"]
 
 [node name="World" type="Node2D" unique_id=1973436339 groups=["Level"]]
-script = ExtResource("1_g3wwy")
-enemyScenes = Array[PackedScene]([ExtResource("2_ssxqg"), ExtResource("4_kkypk"), ExtResource("6_xjrwe"), ExtResource("8_cqqua"), ExtResource("11_xe6ae"), ExtResource("12_nsaos"), ExtResource("13_51ibf")])
+script = ExtResource("1_38etc")
+enemyScenes = Array[PackedScene]([ExtResource("2_lyjet"), ExtResource("3_5p3po"), ExtResource("4_3kd88"), ExtResource("5_4c2ps"), ExtResource("6_q5ghs"), ExtResource("7_t63va"), ExtResource("8_3n5rf")])
 
 [node name="BackgroundCats" type="Sprite2D" parent="." unique_id=1049015543]
 modulate = Color(0.41215277, 0.41215238, 0.41215235, 0.5058824)
 position = Vector2(340, 365)
 scale = Vector2(2, 2)
-texture = ExtResource("18_g3wwy")
-script = ExtResource("19_ssxqg")
+texture = ExtResource("9_rvump")
+script = ExtResource("10_ix72u")
 
 [node name="North Lane" type="Node2D" parent="." unique_id=1999811690]
 position = Vector2(340, -100)
-script = ExtResource("20_8tx05")
+script = ExtResource("11_ul74p")
 
 [node name="Zero" type="Marker2D" parent="North Lane" unique_id=243719467]
 position = Vector2(-261, 0)
@@ -51,9 +51,9 @@ position = Vector2(174, 0)
 position = Vector2(261, 0)
 
 [node name="West Lane" type="Node2D" parent="." unique_id=971500172]
-position = Vector2(-200, 250)
+position = Vector2(-200, 365)
 rotation = 1.5708
-script = ExtResource("20_8tx05")
+script = ExtResource("11_ul74p")
 
 [node name="Zero" type="Marker2D" parent="West Lane" unique_id=817745540]
 position = Vector2(-261, 0)
@@ -76,9 +76,9 @@ position = Vector2(174, 0)
 position = Vector2(261, 0)
 
 [node name="East Lane" type="Node2D" parent="." unique_id=207228024]
-position = Vector2(880, 250)
+position = Vector2(880, 365)
 rotation = 1.5708
-script = ExtResource("20_8tx05")
+script = ExtResource("11_ul74p")
 
 [node name="Zero" type="Marker2D" parent="East Lane" unique_id=1360278863]
 position = Vector2(-261, 0)
@@ -102,7 +102,7 @@ position = Vector2(261, 0)
 
 [node name="South Lane" type="Node2D" parent="." unique_id=857989646]
 position = Vector2(340, 830)
-script = ExtResource("20_8tx05")
+script = ExtResource("11_ul74p")
 
 [node name="Zero" type="Marker2D" parent="South Lane" unique_id=789174299]
 position = Vector2(-261, 0)
@@ -124,8 +124,8 @@ position = Vector2(174, 0)
 [node name="Six" type="Marker2D" parent="South Lane" unique_id=91877940]
 position = Vector2(261, 0)
 
-[node name="DeadBounds" parent="." unique_id=1230328338 instance=ExtResource("19_01lr2")]
+[node name="DeadBounds" parent="." unique_id=1230328338 instance=ExtResource("12_0cmxr")]
 
-[node name="Playzone" parent="." unique_id=2052843971 instance=ExtResource("20_g0bee")]
+[node name="Playzone" parent="." unique_id=2052843971 instance=ExtResource("13_hmfu4")]
 
-[node name="HUD" parent="." unique_id=561898591 instance=ExtResource("21_kc3r2")]
+[node name="HUD" parent="." unique_id=561898591 instance=ExtResource("14_ol3bn")]

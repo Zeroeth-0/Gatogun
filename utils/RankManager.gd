@@ -1,9 +1,9 @@
 extends Node
 
-enum DifficultyEnum { NOVICE, RANKED, MANIAC }
-var DifficultyStyle: DifficultyEnum = DifficultyEnum.RANKED
+enum DifficultyEnum { NOVICE, DOUJIN, MANIAC }
+var DifficultyStyle: DifficultyEnum = DifficultyEnum.DOUJIN
 
-@export_range(1, 6, 1) var rank: int
+@export_range(0, 6, 1) var rank: int = 1
 @export_range(1, 6, 1) var baseRank: int
 var medalCombo: int = 0
 const THRESHOLD: int = 100
@@ -17,7 +17,7 @@ func _process(_delta):
 		DifficultyEnum.MANIAC:
 			baseRank = 6
 			rank = baseRank
-		DifficultyEnum.RANKED:
+		DifficultyEnum.DOUJIN:
 			baseRank = 1
 			if SCORE.mult < medalCombo: reset_combo()
 			if SCORE.hot <= 0 and canDecrease: decrease_rank()
@@ -43,7 +43,7 @@ func decrease_rank():
 
 func reset_all():
 	reset_combo()
-	DifficultyStyle = DifficultyEnum.RANKED
+	DifficultyStyle = DifficultyEnum.DOUJIN
 	rank = 1
 
 func reset_soft():

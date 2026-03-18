@@ -1,9 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://dgtvsotq1xwi4"]
+[gd_scene format=3 uid="uid://dgtvsotq1xwi4"]
 
 [ext_resource type="Script" uid="uid://n0d06dpwhy7d" path="res://source/UI/style_select.gd" id="1_nw13j"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_2vedr"]
 
-[node name="Gato Select" type="Control"]
+[node name="Gato Select" type="Control" unique_id=507873688]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,14 +12,14 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_nw13j")
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="." unique_id=214884165]
 layout_mode = 0
 offset_left = 70.0
 offset_top = 250.0
 offset_right = 462.0
 offset_bottom = 273.0
 
-[node name="FstVBoxContainer" type="VBoxContainer" parent="."]
+[node name="FstVBoxContainer" type="VBoxContainer" parent="." unique_id=2140194040]
 layout_mode = 0
 offset_left = 220.0
 offset_top = 300.0
@@ -28,15 +28,17 @@ offset_bottom = 455.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="FstIcon" type="TextureRect" parent="FstVBoxContainer"]
+[node name="FstIcon" type="TextureRect" parent="FstVBoxContainer" unique_id=330809980]
 layout_mode = 2
 texture = ExtResource("2_2vedr")
 
-[node name="FstName" type="Label" parent="FstVBoxContainer"]
+[node name="RichTextLabel" type="RichTextLabel" parent="FstVBoxContainer" unique_id=805316759]
+custom_minimum_size = Vector2(130, 50)
 layout_mode = 2
 horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="SndVBoxContainer" type="VBoxContainer" parent="."]
+[node name="SndVBoxContainer" type="VBoxContainer" parent="." unique_id=211111454]
 layout_mode = 0
 offset_left = 220.0
 offset_top = 300.0
@@ -45,15 +47,17 @@ offset_bottom = 455.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="SndIcon" type="TextureRect" parent="SndVBoxContainer"]
+[node name="SndIcon" type="TextureRect" parent="SndVBoxContainer" unique_id=2090855422]
 layout_mode = 2
 texture = ExtResource("2_2vedr")
 
-[node name="SndName" type="Label" parent="SndVBoxContainer"]
+[node name="RichTextLabel" type="RichTextLabel" parent="SndVBoxContainer" unique_id=952208106]
+custom_minimum_size = Vector2(130, 50)
 layout_mode = 2
 horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="TrdVBoxContainer" type="VBoxContainer" parent="."]
+[node name="TrdVBoxContainer" type="VBoxContainer" parent="." unique_id=834495895]
 layout_mode = 0
 offset_left = 220.0
 offset_top = 300.0
@@ -62,10 +66,12 @@ offset_bottom = 455.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="TrdIcon" type="TextureRect" parent="TrdVBoxContainer"]
+[node name="TrdIcon" type="TextureRect" parent="TrdVBoxContainer" unique_id=1070029339]
 layout_mode = 2
 texture = ExtResource("2_2vedr")
 
-[node name="TrdName" type="Label" parent="TrdVBoxContainer"]
+[node name="RichTextLabel" type="RichTextLabel" parent="TrdVBoxContainer" unique_id=99368986]
+custom_minimum_size = Vector2(130, 50)
 layout_mode = 2
 horizontal_alignment = 1
+vertical_alignment = 1

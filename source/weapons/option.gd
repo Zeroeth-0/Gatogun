@@ -88,7 +88,7 @@ func _process_option_behavior(delta: float) -> void:
 					position = position.lerp(effectiveTargetPos, followDelay * delta)
 				
 				OptionEnum.FOLLOW:
-					followDelay = 5
+					followDelay = 4
 					deviationAngle = 0
 					if targetNode and is_instance_valid(targetNode) and (INPUT.xAxis != 0 or INPUT.yAxis != 0):
 						global_position = global_position.lerp(targetNode.global_position, followDelay * delta)

@@ -36,3 +36,7 @@ vertical_alignment = 1
 [node name="Emitter" parent="." unique_id=2059335812 instance=ExtResource("3_idahx")]
 position = Vector2(343, 349)
 gizmo_extents = 0.0
+arms = 5
+spreadAngle = 360.0
+symmetryGap = 5.0
+peakCount = 5

@@ -7,7 +7,7 @@ const GATOS: Array[Dictionary] = [
 	{"name": "SERGIO", "style": "CLASSIC"},
 ]
 const DOLLS: Array[Dictionary] = [
-	{"name": "NOEL", "style": "STRONG"},
+	{"name": "NOEL",   "style": "STRONG"},
 	{"name": "ACTEA",  "style": "SPEED"},
 	{"name": "PIRARU", "style": "NEWBIE"},
 ]
@@ -50,19 +50,27 @@ func _ready() -> void:
 		SelectEnum.GATO: STYLES = GATOS
 		SelectEnum.DOLL: STYLES = DOLLS
 
-	var font := load("res://fonts/AprilGothicOne-R.ttf")
-	font.antialiasing = TextServer.FONT_ANTIALIASING_NONE
+	var base_font := load("res://fonts/AprilGothicOne-R.ttf")
+	var font := FontVariation.new()
+	font.base_font = base_font
+	font.opentype_features = {"kern": 0, "liga": 0, "calt": 0, "clig": 0}
 
 	for i in range(3):
 		var vbox: VBoxContainer = get_child(i + 1)
 		cards.append(vbox)
 
-		var name_label: Label = vbox.get_child(1)
-		name_label.text = STYLES[i].name
-		name_label.add_theme_font_override("font", font)
-		name_label.add_theme_font_size_override("font_size", 15)
+		var name_label: RichTextLabel = vbox.get_child(1)
+		name_label.bbcode_enabled = true
+		name_label.fit_content = true
+		name_label.scroll_active = false
+		name_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+		name_label.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		name_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		name_label.add_theme_font_override("normal_font", font)
+		name_label.add_theme_font_size_override("normal_font_size", 15)
 		name_label.add_theme_constant_override("outline_size", 13)
 		name_label.add_theme_color_override("outline_color", Color.BLACK)
+		name_label.text = "[center]" + STYLES[i].name + "[/center]"
 
 		vbox.modulate.a = 0
 
@@ -166,8 +174,13 @@ func update_selection(animate: bool = true) -> void:
 		card.z_index = 100 if is_center else 10 + offset
 
 		var icon: TextureRect = card.get_child(0)
-		var name_label: Label = card.get_child(1)
+		var name_label: RichTextLabel = card.get_child(1)
 		var content_color := Color.WHITE if is_center else Color(0.25, 0.25, 0.25, unselected_alpha)
+
+		if is_center:
+			name_label.text = "[center][wave amp=48 freq=5.0]" + STYLES[i].name + "[/wave][/center]"
+		else:
+			name_label.text = "[center]" + STYLES[i].name + "[/center]"
 
 		if animate:
 			var tween := create_tween()
@@ -186,7 +199,7 @@ func update_selection(animate: bool = true) -> void:
 			icon.modulate = content_color
 			name_label.modulate = content_color
 
-		name_label.add_theme_font_size_override("font_size", 20)
+		name_label.add_theme_font_size_override("normal_font_size", 20)
 
 	if desc_label:
 		desc_label.text = STYLES[selected].style + " STYLE"
@@ -195,7 +208,7 @@ func blink_and_confirm(callback: Callable) -> void:
 	can_interact = false
 	var card := cards[selected]
 	var icon: TextureRect = card.get_child(0)
-	var name_label: Label = card.get_child(1)
+	var name_label: RichTextLabel = card.get_child(1)
 
 	for i in blink_count:
 		icon.modulate = Color(1.0, 1.0, 1.0, 0.0)
@@ -229,7 +242,10 @@ func confirm_selection() -> void:
 			match SelectStyle:
 				SelectEnum.GATO:
 					GAME.set_gato(chosenStyle)
-					GLOBAL.raw_change_scene("DOLL")
+					if FLOW.isCaravan:
+						FLOW.inCaravan = true
+						GLOBAL.change_scene("CARAVAN")
+					else: GLOBAL.raw_change_scene("DOLL")
 				SelectEnum.DOLL:
 					GAME.set_doll(chosenStyle)
 					FLOW.begin_game()
@@ -239,6 +255,7 @@ func confirm_selection() -> void:
 func go_back() -> void:
 	animate_exit(func():
 		match SelectStyle:
-			SelectEnum.GATO: GLOBAL.raw_change_scene("MODE")
+			SelectEnum.GATO:
+				GLOBAL.raw_change_scene("MENU") if FLOW.isCaravan else GLOBAL.raw_change_scene("MODE")
 			SelectEnum.DOLL: GLOBAL.raw_change_scene("GATO")
 	)

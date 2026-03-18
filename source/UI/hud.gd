@@ -77,7 +77,10 @@ func _apply_font_to_all_labels() -> void:
 		_setup_rich_label(label)
 
 func _setup_rich_label(label: RichTextLabel) -> void:
-	label.add_theme_font_override("normal_font", _font)
+	var font := FontVariation.new()
+	font.base_font = _font
+	font.opentype_features = {"kern": 0, "liga": 0, "calt": 0, "clig": 0}
+	label.add_theme_font_override("normal_font", font)
 	label.add_theme_color_override("font_shadow_color", shadowColor)
 	label.add_theme_constant_override("shadow_offset_x", int(shadowOffset.x))
 	label.add_theme_constant_override("shadow_offset_y", int(shadowOffset.y))

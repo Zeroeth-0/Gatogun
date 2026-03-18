@@ -15,7 +15,7 @@ var inGame: bool = false
 
 # === ESTILOS ===
 enum GatoEnum { RANGE, DAMAGE, CLASSIC }
-enum DollEnum { SPEED, STRONG, NEWBIE }
+enum DollEnum { SPEED, STRONG, NEWBIE, CARAVAN }
 var GatoStyle: GatoEnum = GatoEnum.RANGE
 var DollStyle: DollEnum = DollEnum.SPEED
 
@@ -37,12 +37,13 @@ var _spawning: bool = false
 func _process(_delta: float) -> void:
 	if get_tree().get_nodes_in_group("Level").size() >= 1:
 		var world = get_tree().get_first_node_in_group("Level")
-		lives = world.lives
 		playing = world.playing
 	
 	# Respawn automático si no hay jugador y el juego está activo
-	if get_tree().get_nodes_in_group("Player").size() <= 0 and playing and inGame:
+	if get_tree().get_nodes_in_group("Player").size() <= 0 and playing and (inGame or FLOW.inCaravan):
 		spawn()
+	
+	if FLOW.isCaravan: lives = 0
 	
 	# Actualizar referencias al jugador
 	if get_tree().get_nodes_in_group("Player").size() > 0:
@@ -54,7 +55,7 @@ func _process(_delta: float) -> void:
 	if get_tree().get_nodes_in_group("Player").size() > 3:
 		get_tree().get_nodes_in_group("Player")[3].queue_free()
 	
-	if DollStyle == DollEnum.STRONG: remove_power_ups()
+	if DollStyle == DollEnum.STRONG or DollStyle == DollEnum.CARAVAN: remove_power_ups()
 
 
 func spawn() -> void:
@@ -62,7 +63,7 @@ func spawn() -> void:
 	if get_tree().get_nodes_in_group("Player").size() > 0: return
 	if not cat: return
 
-	if lives >= 0: _respawn_player()
+	if lives >= 0 or FLOW.isCaravan: _respawn_player()
 	else:
 		RANK.reset_soft()
 		_show_continue()
@@ -71,13 +72,12 @@ func _respawn_player() -> void:
 	_spawning = true
 	dead = false
 	_reset_game_state()
-	if DollStyle != DollEnum.STRONG: _spawn_missing_powerups()
+	if DollStyle != DollEnum.STRONG and DollStyle != DollEnum.CARAVAN: _spawn_missing_powerups()
 	_instance_player()
 
 	if spawnContinued:
-		var world = get_tree().get_first_node_in_group("Level")
-		world.lives = liveCount
-		if DollStyle != DollEnum.STRONG: _spawn_powerup(maxPowerUp)
+		lives = liveCount
+		if DollStyle != DollEnum.STRONG and DollStyle != DollEnum.CARAVAN: _spawn_powerup(maxPowerUp)
 
 	await get_tree().process_frame
 	_spawning = false
@@ -152,6 +152,7 @@ func set_doll(style: String):
 		"SPEED": DollStyle = DollEnum.SPEED
 		"STRONG": DollStyle = DollEnum.STRONG
 		"NEWBIE": DollStyle = DollEnum.NEWBIE
+		"CARAVAN": DollStyle = DollEnum.CARAVAN
 		_: DollStyle = DollEnum.SPEED
 
 func remove_power_ups():

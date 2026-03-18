@@ -40,15 +40,15 @@ func _ready() -> void:
 		EnemyType.STD:
 			health    = 16.0
 			enemType  = "STD"
-			explScale = 1.25
+			explScale = 1.5
 		EnemyType.MID:
 			health    = 100.0
 			enemType  = "MID"
-			explScale = 1.75
+			explScale = 2
 		EnemyType.ELITE:
 			health    = 160.0
 			enemType  = "ELITE"
-			explScale = 2.5
+			explScale = 2.75
 
 	_scoreCount_f = float(scoreCount)
 
@@ -132,7 +132,7 @@ func _check_death() -> void:
 	# Explosión visual.
 	var expl := explosion.instantiate()
 	expl.global_position = global_position
-	expl.scale           *= explScale
+	expl.scale *= explScale
 	GLOBAL.add_to_game(expl)
 
 	# Puntuación base.
@@ -157,7 +157,7 @@ func _check_death() -> void:
 				SCORE.medalCountdown += 0.1
 
 	# Revenge bullets al morir cerca de la parte superior o con pulse.
-	if (position.y < 300.0 or pulseMarked) and not byBomb:
+	if (position.y < 300.0 or pulseMarked) and not byBomb and RANK.rank > 0:
 		_spawn_score(int(_scoreCount_f), revengeBullet)
 
 	# Power-up al matar un MID (excepto con estilo STRONG).
