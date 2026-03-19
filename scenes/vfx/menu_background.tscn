@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://dag4p2j605ep3"]
+
+[ext_resource type="Shader" uid="uid://cewa3he0qrtsb" path="res://shaders/menu_background.gdshader" id="1_1cxwe"]
+[ext_resource type="PackedScene" uid="uid://dhxq3rrbljwf" path="res://scenes/vfx/leaf_rain.tscn" id="2_8rnex"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_37mct"]
+shader = ExtResource("1_1cxwe")
+shader_parameter/scroll_mode = 0
+shader_parameter/scroll_speed = 0.5000000074506
+shader_parameter/tile_scale = 10.0000001341108
+shader_parameter/stripe_width = 0.39999999292186
+shader_parameter/edge_softness = 0.07
+shader_parameter/wobble_amount = 0.01999999955296
+shader_parameter/wobble_frequency = 1.5
+shader_parameter/wobble_speed = 0.0
+shader_parameter/color_light = Color(0.87455684, 0.96489865, 0.36396736, 0.75000006)
+shader_parameter/color_mid = Color(0.7490225, 0.8901186, 0.2347951, 0.75000006)
+shader_parameter/color_dark = Color(0.6390162, 0.815826, 0.14733289, 0.75000006)
+
+[node name="MenuBackground" type="ColorRect" unique_id=432135716]
+z_index = -1
+material = SubResource("ShaderMaterial_37mct")
+offset_right = 697.0
+offset_bottom = 750.0
+
+[node name="BlossomRain" parent="." unique_id=1829203761 instance=ExtResource("2_8rnex")]

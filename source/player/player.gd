@@ -84,6 +84,7 @@ func _handle_bombing() -> void:
 	for bullet in get_tree().get_nodes_in_group("Fire"): bullet.queue_free()
 	activate_shield(3)
 	SCORE.reset()
+	FLOW.miss()
 
 # === ESCUDO TEMPORAL ===
 func activate_shield(duration: float) -> void:
@@ -101,6 +102,7 @@ func _clamp_to_screen(screenSize: Vector2) -> void:
 # === COLISIONES ===
 func _on_hurtbox_area_entered(area: Node) -> void:
 	if canDie and area.is_in_group("Damage"):
+		FLOW.miss()
 		if GAME.DollStyle == GAME.DollEnum.NEWBIE and GAME.bombCount > 0: _handle_bombing()
 		else:
 			GAME.lives -= 1

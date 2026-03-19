@@ -48,10 +48,13 @@ vertical_alignment = 1
 
 [node name="BorderTop" type="ColorRect" parent="." unique_id=1285884515]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 679.0
+offset_bottom = 25.0
+color = Color(0.22745098, 0.49411765, 0.12941177, 1)
 
 [node name="BorderBottom" type="ColorRect" parent="." unique_id=311799641]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_top = 120.0
+offset_right = 679.0
+offset_bottom = 145.0
+color = Color(0.22745098, 0.49411765, 0.12941177, 1)

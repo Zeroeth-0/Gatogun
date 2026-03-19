@@ -1,113 +1,7 @@
 [gd_scene format=3 uid="uid://cr88epenivqi"]
 
 [ext_resource type="Script" uid="uid://dusllrupdy44j" path="res://source/items/item_gatogun.gd" id="1_8fdno"]
-[ext_resource type="Shader" uid="uid://cned32h6qndtn" path="res://shaders/shine.gdshader" id="2_h0x48"]
-[ext_resource type="Script" uid="uid://2gktgvlahed3" path="res://source/vfx/medal_shine.gd" id="4_eqbui"]
-[ext_resource type="Texture2D" uid="uid://yh7endpfa77a" path="res://sprites/medal_spritesheet.png" id="5_tyq56"]
-[ext_resource type="PackedScene" uid="uid://biy0dan8pm5u2" path="res://scenes/vfx/drop_shadow.tscn" id="5_yc2ob"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_tyq56"]
-shader = ExtResource("2_h0x48")
-shader_parameter/shine_color = Color(1, 1, 1, 1)
-shader_parameter/shine_angle = -45.0
-shader_parameter/shine_duration = 1.0
-shader_parameter/shine_speed = 500.0
-shader_parameter/shine_width = 20.0
-shader_parameter/shine_scale = 6.000000281740119
-shader_parameter/time_offset = 0.0
-shader_parameter/custom_time = 0.0
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_tyq56"]
-atlas = ExtResource("5_tyq56")
-region = Rect2(0, 0, 448, 447)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_yc2ob"]
-atlas = ExtResource("5_tyq56")
-region = Rect2(448, 0, 448, 447)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_d3v8s"]
-atlas = ExtResource("5_tyq56")
-region = Rect2(0, 447, 448, 447)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_5edit"]
-atlas = ExtResource("5_tyq56")
-region = Rect2(448, 447, 448, 447)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_2w32o"]
-atlas = ExtResource("5_tyq56")
-region = Rect2(896, 447, 448, 447)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_nk2oo"]
-atlas = ExtResource("5_tyq56")
-region = Rect2(0, 894, 448, 447)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_w1fg1"]
-atlas = ExtResource("5_tyq56")
-region = Rect2(0, 894, 448, 447)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_jqbal"]
-atlas = ExtResource("5_tyq56")
-region = Rect2(896, 447, 448, 447)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ajn4x"]
-atlas = ExtResource("5_tyq56")
-region = Rect2(448, 447, 448, 447)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_a5ngc"]
-atlas = ExtResource("5_tyq56")
-region = Rect2(0, 447, 448, 447)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_2s3hk"]
-atlas = ExtResource("5_tyq56")
-region = Rect2(448, 0, 448, 447)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_143b7"]
-atlas = ExtResource("5_tyq56")
-region = Rect2(0, 0, 448, 447)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_yc2ob"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_tyq56")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_yc2ob")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_d3v8s")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_5edit")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_2w32o")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_nk2oo")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_w1fg1")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_jqbal")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ajn4x")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_a5ngc")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_2s3hk")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_143b7")
-}],
-"loop": true,
-"name": &"jingle",
-"speed": 30.0
-}]
+[ext_resource type="PackedScene" uid="uid://dahm536brwuk1" path="res://scenes/UI/medal_icon.tscn" id="2_ydp5g"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_eqbui"]
 radius = 12.0
@@ -116,21 +10,7 @@ radius = 12.0
 z_index = 2
 script = ExtResource("1_8fdno")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=856237854 groups=["ShaderHolder"]]
-z_index = 2
-material = SubResource("ShaderMaterial_tyq56")
-scale = Vector2(0.25, 0.25)
-sprite_frames = SubResource("SpriteFrames_yc2ob")
-animation = &"jingle"
-autoplay = "jingle"
-frame_progress = 0.6071466
-script = ExtResource("4_eqbui")
-
-[node name="DropShadow" parent="AnimatedSprite2D" unique_id=1987613103 instance=ExtResource("5_yc2ob")]
-offset_left = -150.0
-offset_top = -150.0
-offset_right = -150.0
-offset_bottom = -150.0
+[node name="AnimatedSprite2D" parent="." unique_id=386798846 instance=ExtResource("2_ydp5g")]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2121205495]
 z_index = 2

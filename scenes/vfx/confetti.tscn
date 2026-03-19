@@ -39,7 +39,7 @@ curve = SubResource("Curve_270n7")
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_inard"]
 particle_flag_disable_z = true
 direction = Vector3(0, -1, 0)
-spread = 130.909
+spread = 130.0
 initial_velocity_min = 20.0
 initial_velocity_max = 200.0
 angular_velocity_min = -180.00002

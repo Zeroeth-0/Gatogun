@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://cq3bmvquga4va"]
+
+[ext_resource type="Script" uid="uid://bjqqt4k6kcpp6" path="res://source/UI/bonus.gd" id="1_ugwgi"]
+[ext_resource type="Shader" uid="uid://ceyfdtlbffr4j" path="res://shaders/drop_shadow.gdshader" id="3_ihhwi"]
+[ext_resource type="Texture2D" uid="uid://dewbpvdlhw6qx" path="res://sprites/actea_render.png" id="4_ihhwi"]
+[ext_resource type="PackedScene" uid="uid://dahm536brwuk1" path="res://scenes/UI/medal_icon.tscn" id="5_ugwgi"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ugwgi"]
+shader = ExtResource("3_ihhwi")
+shader_parameter/shadow_offset = Vector2(20, 30)
+shader_parameter/shadow_color = Color(0, 0, 0, 0.8)
+
+[node name="Bonus" type="Control" unique_id=480512631]
+process_mode = 3
+z_index = 10
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ugwgi")
+title_label_position = Vector2(370, 220)
+delay_medals_to_nomiss = 1.0
+hold_time = 3.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1063384672]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_left = 50.0
+offset_top = 500.0
+offset_right = 50.0
+offset_bottom = 500.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=1788173975]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1452.0
+offset_bottom = -762.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "VICTORY"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BorderTop" type="ColorRect" parent="." unique_id=81800230]
+layout_mode = 0
+offset_top = 264.0
+offset_right = 679.0
+offset_bottom = 289.0
+color = Color(0.22745098, 0.49411765, 0.12941177, 1)
+
+[node name="BorderBottom" type="ColorRect" parent="." unique_id=353854944]
+layout_mode = 0
+offset_top = 434.0
+offset_right = 679.0
+offset_bottom = 459.0
+color = Color(0.22745098, 0.49411765, 0.12941177, 1)
+
+[node name="ActeaRender" type="Sprite2D" parent="." unique_id=781249806]
+material = SubResource("ShaderMaterial_ugwgi")
+position = Vector2(488.00003, 355)
+scale = Vector2(0.81492543, 0.8149253)
+texture = ExtResource("4_ihhwi")
+
+[node name="AnimatedSprite2D" parent="." unique_id=386798846 instance=ExtResource("5_ugwgi")]
+position = Vector2(350, 327)
+scale = Vector2(0.15981537, 0.15981539)

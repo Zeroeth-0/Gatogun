@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dukgnwfkfdi2d"]
 
 [ext_resource type="Script" uid="uid://n0d06dpwhy7d" path="res://source/UI/style_select.gd" id="1_rdiiy"]
+[ext_resource type="PackedScene" uid="uid://dag4p2j605ep3" path="res://scenes/vfx/menu_background.tscn" id="2_c55o3"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_ca08h"]
 
 [node name="Doll Select" type="Control" unique_id=523671162]
@@ -12,6 +13,9 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_rdiiy")
 SelectStyle = 1
+
+[node name="MenuBackground" parent="." unique_id=432135716 instance=ExtResource("2_c55o3")]
+layout_mode = 0
 
 [node name="Label" type="Label" parent="." unique_id=369557732]
 layout_mode = 0

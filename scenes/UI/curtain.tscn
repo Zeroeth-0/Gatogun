@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://dlf8gh1jelgi8"]
+[gd_scene format=3 uid="uid://dlf8gh1jelgi8"]
 
 [ext_resource type="Shader" uid="uid://c4dh7njbyyity" path="res://shaders/transition.gdshader" id="1_dty6y"]
 
@@ -9,9 +9,9 @@ shader_parameter/animation_progress = 0.0
 shader_parameter/dot_size = 1.0000000475
 shader_parameter/dot_color = Color(0, 0, 0, 1)
 
-[node name="Curtain" type="CanvasLayer"]
+[node name="Curtain" type="CanvasLayer" unique_id=639358723]
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1528512345]
 material = SubResource("ShaderMaterial_hewb7")
 anchors_preset = 15
 anchor_right = 1.0

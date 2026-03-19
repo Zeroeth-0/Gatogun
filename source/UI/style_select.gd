@@ -41,6 +41,11 @@ var lastDir: int = 0
 var blink_count: int = 4
 var blink_speed: float = 0.08
 
+# === SOMBRA ===
+@export var shadowColor: Color = Color(0, 0, 0, 0.6)
+@export var shadowOffset: Vector2 = Vector2(2, 2)
+@export var shadowSize: int = 13
+
 # === ANIMACIONES ===
 var active_tweens: Array[Tween] = []
 var can_interact: bool = false
@@ -56,7 +61,7 @@ func _ready() -> void:
 	font.opentype_features = {"kern": 0, "liga": 0, "calt": 0, "clig": 0}
 
 	for i in range(3):
-		var vbox: VBoxContainer = get_child(i + 1)
+		var vbox: VBoxContainer = get_child(i + 2)
 		cards.append(vbox)
 
 		var name_label: RichTextLabel = vbox.get_child(1)
@@ -70,6 +75,11 @@ func _ready() -> void:
 		name_label.add_theme_font_size_override("normal_font_size", 15)
 		name_label.add_theme_constant_override("outline_size", 13)
 		name_label.add_theme_color_override("outline_color", Color.BLACK)
+		name_label.add_theme_color_override("font_shadow_color", shadowColor)
+		name_label.add_theme_constant_override("shadow_offset_x", int(shadowOffset.x))
+		name_label.add_theme_constant_override("shadow_offset_y", int(shadowOffset.y))
+		name_label.add_theme_constant_override("shadow_outline_size", shadowSize)
+	
 		name_label.text = "[center]" + STYLES[i].name + "[/center]"
 
 		vbox.modulate.a = 0

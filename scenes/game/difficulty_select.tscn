@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://hvdingcxhyb"]
 
 [ext_resource type="Script" uid="uid://dnuwp3olm7mxc" path="res://source/UI/difficulty_select.gd" id="1_yopkh"]
+[ext_resource type="PackedScene" uid="uid://dag4p2j605ep3" path="res://scenes/vfx/menu_background.tscn" id="2_yopkh"]
 
 [node name="Difficulty Select" type="Control" unique_id=1790599526]
 layout_mode = 3
@@ -10,6 +11,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_yopkh")
+
+[node name="MenuBackground" parent="." unique_id=432135716 instance=ExtResource("2_yopkh")]
+layout_mode = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1690660926]
 modulate = Color(1, 1, 1, 0)

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://n0d06dpwhy7d" path="res://source/UI/style_select.gd" id="1_nw13j"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_2vedr"]
+[ext_resource type="PackedScene" uid="uid://dag4p2j605ep3" path="res://scenes/vfx/menu_background.tscn" id="2_nnsyr"]
 
 [node name="Gato Select" type="Control" unique_id=507873688]
 layout_mode = 3
@@ -11,6 +12,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_nw13j")
+
+[node name="MenuBackground" parent="." unique_id=432135716 instance=ExtResource("2_nnsyr")]
+layout_mode = 0
 
 [node name="Label" type="Label" parent="." unique_id=214884165]
 layout_mode = 0

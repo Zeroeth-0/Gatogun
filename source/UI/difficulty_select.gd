@@ -32,6 +32,11 @@ var original_positions: Array[float] = []
 @export var blink_count: int = 3
 @export var blink_speed: float = 0.07
 
+# === SOMBRA ===
+@export var shadowColor: Color = Color(0, 0, 0, 0.6)
+@export var shadowOffset: Vector2 = Vector2(2, 2)
+@export var shadowSize: int = 27
+
 func _ready() -> void:
 	vbox = $VBoxContainer
 	vbox.clip_contents = false
@@ -58,6 +63,10 @@ func _ready() -> void:
 		label.add_theme_font_size_override("normal_font_size", 30)
 		label.add_theme_constant_override("outline_size", 27)
 		label.add_theme_color_override("outline_color", Color.BLACK)
+		label.add_theme_color_override("font_shadow_color", shadowColor)
+		label.add_theme_constant_override("shadow_offset_x", int(shadowOffset.x))
+		label.add_theme_constant_override("shadow_offset_y", int(shadowOffset.y))
+		label.add_theme_constant_override("shadow_outline_size", shadowSize)
 
 		label.text = "[center]" + option_text + "[/center]"
 

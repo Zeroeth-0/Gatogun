@@ -15,8 +15,6 @@
 [ext_resource type="Texture2D" uid="uid://dewbpvdlhw6qx" path="res://sprites/actea_render.png" id="12_5jirj"]
 [ext_resource type="Texture2D" uid="uid://b4w05uydjsmnr" path="res://sprites/viewport_frame.png" id="15_otnwt"]
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_5i0tg"]
-
 [sub_resource type="ViewportTexture" id="ViewportTexture_0sr1o"]
 viewport_path = NodePath("GameViewportContainer/GameViewport")
 
@@ -63,19 +61,6 @@ position = Vector2(1301.6667, -427.77795)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("8_ftsea")
 
-[node name="ViewportShadow" type="TextureRect" parent="." unique_id=772539656]
-texture_filter = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 485.0
-offset_top = 26.0
-offset_right = 1403.0
-offset_bottom = 1011.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = SubResource("PlaceholderTexture2D_5i0tg")
-
 [node name="GameViewportContainer" type="SubViewportContainer" parent="." unique_id=624464330]
 texture_filter = 2
 offset_left = 485.0
@@ -96,6 +81,9 @@ render_target_update_mode = 4
 
 [node name="Title Screen" parent="GameViewportContainer/GameViewport" unique_id=1368644560 instance=ExtResource("2_7h61r")]
 offset_right = 6.1035156e-05
+breathing_speed = 1.2
+breathing_amount = 0.04
+bobbing_enabled = true
 
 [node name="ZoomViewportContainer" type="SubViewportContainer" parent="." unique_id=635251099]
 texture_filter = 1

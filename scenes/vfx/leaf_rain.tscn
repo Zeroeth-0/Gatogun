@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://dhxq3rrbljwf"]
+
+[ext_resource type="Texture2D" uid="uid://duk56txdb1jj3" path="res://sprites/blossom.png" id="1_8yc7s"]
+[ext_resource type="Texture2D" uid="uid://b6xfat0dkui73" path="res://sprites/clover.png" id="2_dx6wo"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_x7y6s"]
+particle_flag_rotate_y = true
+particle_flag_disable_z = true
+emission_shape_offset = Vector3(300, 0, 0)
+emission_shape = 3
+emission_box_extents = Vector3(450, 1, 1)
+direction = Vector3(1, -1, 0)
+spread = 130.0
+initial_velocity_min = -20.0
+initial_velocity_max = 20.0
+angular_velocity_min = -180.00002
+angular_velocity_max = 179.99998
+gravity = Vector3(0, 75, 0)
+scale_min = 0.099999994
+scale_max = 0.19999999
+
+[node name="BlossomRain" type="GPUParticles2D" unique_id=1829203761]
+amount = 80
+texture = ExtResource("1_8yc7s")
+lifetime = 5.0
+preprocess = 4.0
+randomness = 1.0
+use_fixed_seed = true
+seed = 2004
+collision_base_size = 0.0
+process_material = SubResource("ParticleProcessMaterial_x7y6s")
+
+[node name="CloverRain" type="GPUParticles2D" parent="." unique_id=1079461766]
+amount = 20
+texture = ExtResource("2_dx6wo")
+lifetime = 5.0
+preprocess = 4.0
+randomness = 1.0
+use_fixed_seed = true
+seed = 2004
+collision_base_size = 0.0
+process_material = SubResource("ParticleProcessMaterial_x7y6s")

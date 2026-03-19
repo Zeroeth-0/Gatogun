@@ -19,7 +19,7 @@ const LEVELS: Array[Dictionary] = [
 const UI_SCENES: Dictionary = {
 	"READY":      "res://scenes/UI/ready_label.tscn",
 	"WARNING":    "",
-	"BONUS":      "",
+	"BONUS":      "res://scenes/UI/bonus.tscn",
 	"GAME_CLEAR": "",
 }
 
@@ -56,6 +56,9 @@ var _is_first_level: bool = false
 var _secret_unlocked: bool = false
 var _generation: int = 0
 
+var medal_counter: int = 0
+var missed: bool = false
+
 # ═══════════════════════════════════════════════════════
 #  API PÚBLICA
 # ═══════════════════════════════════════════════════════
@@ -77,6 +80,12 @@ func notify_boss_dead(boss_type: String) -> void:
 
 func notify_ui_done(ui_id: String) -> void:
 	_ui_dismissed.emit(ui_id.to_upper())
+
+func increase_medal_count() -> void:
+	medal_counter += 1
+
+func miss() -> void:
+	missed = true
 
 func restart_level() -> void:
 	GAME.inGame      = false
@@ -100,6 +109,8 @@ func _on_parser_ready(parser: Node) -> void:
 
 func _run_level(index: int, parser: Node, gen: int) -> void:
 	var data: Dictionary = LEVELS[index]
+	medal_counter = 0
+	missed        = false
 
 	# ── READY ─────────────────────────────────────────────────────
 	if _is_first_level:
