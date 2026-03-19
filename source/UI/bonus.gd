@@ -51,6 +51,7 @@ var _orig_bell_x:  float
 # READY
 # ═══════════════════════════════════════════════════════════
 func _ready() -> void:
+	process_mode = PROCESS_MODE_PAUSABLE
 	_base_font = load("res://fonts/AprilGothicOne-R.ttf") as Font
 
 	_orig_actea_x = actea_render.position.x

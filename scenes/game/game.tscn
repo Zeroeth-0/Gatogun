@@ -81,9 +81,6 @@ render_target_update_mode = 4
 
 [node name="Title Screen" parent="GameViewportContainer/GameViewport" unique_id=1368644560 instance=ExtResource("2_7h61r")]
 offset_right = 6.1035156e-05
-breathing_speed = 1.2
-breathing_amount = 0.04
-bobbing_enabled = true
 
 [node name="ZoomViewportContainer" type="SubViewportContainer" parent="." unique_id=635251099]
 texture_filter = 1
