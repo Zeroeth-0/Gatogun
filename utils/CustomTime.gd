@@ -1,4 +1,4 @@
-# CUSTIME.gd
+# CUSTIME
 extends Node
 
 var time: float = 0.0

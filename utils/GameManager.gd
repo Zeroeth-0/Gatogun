@@ -129,7 +129,7 @@ func store(pos: Vector2 = Vector2(0, 0), continued: bool = false) -> void:
 
 func game_over() -> void:
 	_reset_game_state()
-	GLOBAL.raw_change_scene("OVER")
+	GLOBAL.change_scene("OVER")
 
 func _input(event: InputEvent) -> void:
 	if get_tree().paused or GLOBAL.is_transitioning: return
@@ -154,6 +154,9 @@ func set_doll(style: String):
 		"NEWBIE": DollStyle = DollEnum.NEWBIE
 		"CARAVAN": DollStyle = DollEnum.CARAVAN
 		_: DollStyle = DollEnum.SPEED
+
+func set_lives():
+	lives = liveCount
 
 func remove_power_ups():
 	if get_tree().get_nodes_in_group("PowerUp").size() <= 0: return

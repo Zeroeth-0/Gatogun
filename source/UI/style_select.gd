@@ -17,7 +17,6 @@ enum SelectEnum { GATO, DOLL }
 @export var SelectStyle: SelectEnum = SelectEnum.GATO
 
 # === NODOS ===
-@onready var desc_label: Label = $Label
 @onready var cards: Array[VBoxContainer] = []
 
 # === ESTADO ===
@@ -61,7 +60,7 @@ func _ready() -> void:
 	font.opentype_features = {"kern": 0, "liga": 0, "calt": 0, "clig": 0}
 
 	for i in range(3):
-		var vbox: VBoxContainer = get_child(i + 2)
+		var vbox: VBoxContainer = get_child(i + 1)
 		cards.append(vbox)
 
 		var name_label: RichTextLabel = vbox.get_child(1)
@@ -94,9 +93,6 @@ func _ready() -> void:
 	await get_tree().process_frame
 
 	update_selection(false)
-
-	if desc_label:
-		desc_label.text = STYLES[selected].style + " STYLE"
 
 	var final_positions: Array[Vector2] = []
 	for card in cards:
@@ -211,9 +207,6 @@ func update_selection(animate: bool = true) -> void:
 
 		name_label.add_theme_font_size_override("normal_font_size", 20)
 
-	if desc_label:
-		desc_label.text = STYLES[selected].style + " STYLE"
-
 func blink_and_confirm(callback: Callable) -> void:
 	can_interact = false
 	var card := cards[selected]
@@ -254,7 +247,7 @@ func confirm_selection() -> void:
 					GAME.set_gato(chosenStyle)
 					if FLOW.isCaravan:
 						FLOW.inCaravan = true
-						GLOBAL.change_scene("CARAVAN")
+						FLOW.begin_caravan()
 					else: GLOBAL.raw_change_scene("DOLL")
 				SelectEnum.DOLL:
 					GAME.set_doll(chosenStyle)

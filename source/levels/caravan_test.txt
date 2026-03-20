@@ -1,0 +1,32 @@
+; ═════
+; INTRO
+; ═════
+SWARM(thickness=3,length=2,warmup=0.3) sorro at N0 after 1
+
+WAIT
+
+[INTRO_END]
+
+LADDER(steps=7,direction=R,jump=1,warmup=0.5) sorro at N0 after 0
+MIRROR(warmup=0.5) torro at N0 after 1
+
+WAIT
+
+PARADE(thickness=3,length=7,warmup=0.7) rikki_s at N0 after 0
+
+WAIT
+
+springo at W1 to S after 0
+blammo at E1-0.5 to S after 1
+
+WAIT
+
+PARADE(thickness=3,length=7,warmup=1) rikki_d at E1-2 with L to S after 0
+
+WAIT
+
+kabbi at N1 after 0
+kabbi at N3 after 1
+kabbi at N6 after 1
+
+WAIT

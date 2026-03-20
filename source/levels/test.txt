@@ -21,4 +21,7 @@ PARADE(thickness=3,length=7,warmup=1) rikki_d at E1-2 with L to S after 1
 kabbi at N1 after 1
 kabbi at N3 after 1
 kabbi at N6 after 1
+
+WAIT
+
 [BOSS]

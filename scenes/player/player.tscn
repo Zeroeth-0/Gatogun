@@ -5,8 +5,24 @@
 [ext_resource type="PackedScene" uid="uid://cayls45qnqvte" path="res://scenes/bullets/player/bomb.tscn" id="2_ufgkt"]
 [ext_resource type="PackedScene" uid="uid://cjhkionj3a6h3" path="res://scenes/weapons/player/weapon.tscn" id="4_g6re5"]
 [ext_resource type="PackedScene" uid="uid://biy0dan8pm5u2" path="res://scenes/vfx/drop_shadow.tscn" id="4_p47bc"]
+[ext_resource type="Shader" uid="uid://h1stlvk2oj7f" path="res://shaders/hitbox.gdshader" id="6_75vfm"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_klkvo"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0owmy"]
+shader = ExtResource("6_75vfm")
+shader_parameter/color = Color(1, 0, 0, 1)
+shader_parameter/core_size = 0.16800000728148
+shader_parameter/star_radius = 0.12800000445006
+shader_parameter/star_inner = 2.66900011746122
+shader_parameter/border_width = 0.06500000308749
+shader_parameter/ring_radius = 0.25300000875761997
+shader_parameter/ring_thickness = 0.04700000211608
+shader_parameter/pulse_speed = 8.0
+shader_parameter/pulse_amount = 0.050000002375
+shader_parameter/spin_speed = 6.0
+shader_parameter/custom_time = 0.0
+shader_parameter/visible_amount = 1.0
 
 [node name="CatPlayer" type="CharacterBody2D" unique_id=1691754433 node_paths=PackedStringArray("sprite", "hitbox") groups=["Player"]]
 z_index = 4
@@ -49,6 +65,14 @@ debug_color = Color(0, 1, 0, 0.419608)
 
 [node name="Weapon" parent="." unique_id=2043432693 instance=ExtResource("4_g6re5")]
 position = Vector2(0, -1)
+
+[node name="HitboxIcon" type="ColorRect" parent="." unique_id=500403589 groups=["ShaderHolder"]]
+z_index = 5
+material = SubResource("ShaderMaterial_0owmy")
+offset_left = -25.0
+offset_top = -25.0
+offset_right = 25.0
+offset_bottom = 25.0
 
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
 [connection signal="area_exited" from="Hurtbox" to="." method="_on_hurtbox_area_exited"]

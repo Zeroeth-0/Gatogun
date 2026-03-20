@@ -206,18 +206,19 @@ func blink_and_confirm(callback: Callable) -> void:
 
 func confirm_selection() -> void:
 	match selected:
-		0:
+		0: # RESUME
 			blink_and_confirm(_resume)
-		1:
+		1: # RESTART
 			blink_and_confirm(func():
 				animate_exit(func():
 					for node in get_tree().get_nodes_in_group("PauseOverlay"): node.queue_free()
 					GLOBAL.resume_game()
+					GAME.set_lives()
 					await get_tree().process_frame
 					FLOW.restart_level()
 				)
 			)
-		2:
+		2: # BACK TO TITLE
 			blink_and_confirm(func():
 				animate_exit(func():
 					GAME.playing = false
@@ -226,12 +227,13 @@ func confirm_selection() -> void:
 					SCORE.reset()
 					SCORE.reset_game_score()
 					GAME.store()
+					GAME.set_lives()
 					GLOBAL.change_scene("MENU")
 				)
 			)
-		3:
+		3: # SETTINGS
 			pass
-		4:
+		4: # EXIT
 			blink_and_confirm(func():
 				animate_exit(func():
 					GLOBAL.resume_game()

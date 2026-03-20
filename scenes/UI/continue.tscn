@@ -1,9 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://caj8rmr7nj5s7"]
+[gd_scene format=3 uid="uid://caj8rmr7nj5s7"]
 
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="1_4q3at"]
 [ext_resource type="Script" uid="uid://hh5i0phvdldj" path="res://source/UI/continue.gd" id="1_5ipfj"]
 
-[node name="Control" type="Control" node_paths=PackedStringArray("timerLabel")]
+[node name="Control" type="Control" unique_id=851634194]
 process_mode = 3
 z_index = 10
 layout_mode = 3
@@ -13,28 +13,29 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_5ipfj")
-timerLabel = NodePath("Timer")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1532942789]
 modulate = Color(0, 0, 0, 0.415686)
 position = Vector2(340, 365)
 scale = Vector2(6, 6)
 texture = ExtResource("1_4q3at")
 
-[node name="Timer" type="Label" parent="."]
+[node name="Continue" type="RichTextLabel" parent="." unique_id=661589053]
 layout_mode = 0
-offset_left = 318.0
-offset_top = 352.0
-offset_right = 358.0
-offset_bottom = 375.0
-text = "9"
+offset_left = 140.0
+offset_top = 250.0
+offset_right = 540.0
+offset_bottom = 350.0
+text = "CONTINUE"
 horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="Continue?" type="Label" parent="."]
+[node name="Timer" type="RichTextLabel" parent="." unique_id=1931754700]
 layout_mode = 0
-offset_left = 232.0
-offset_top = 280.0
-offset_right = 443.0
-offset_bottom = 303.0
-text = "Continue? Score will be lost"
+offset_left = 140.0
+offset_top = 350.0
+offset_right = 540.0
+offset_bottom = 450.0
+text = "CONTINUE"
 horizontal_alignment = 1
+vertical_alignment = 1

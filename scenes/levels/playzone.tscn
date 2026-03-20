@@ -1,12 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://cgts6rg8xrau"]
+[gd_scene format=3 uid="uid://cgts6rg8xrau"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1erge"]
 size = Vector2(20, 21.7333)
 
-[node name="Playzone" type="Area2D" groups=["Play"]]
+[node name="Playzone" type="Area2D" unique_id=380517386 groups=["Play"]]
 position = Vector2(340, 365)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["Play"]]
-scale = Vector2(33, 30)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1941055926 groups=["Play"]]
+scale = Vector2(31, 30)
 shape = SubResource("RectangleShape2D_1erge")
 debug_color = Color(1, 0.498039, 0, 0.419608)

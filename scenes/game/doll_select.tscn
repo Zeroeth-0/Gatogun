@@ -17,13 +17,6 @@ SelectStyle = 1
 [node name="MenuBackground" parent="." unique_id=432135716 instance=ExtResource("2_c55o3")]
 layout_mode = 0
 
-[node name="Label" type="Label" parent="." unique_id=369557732]
-layout_mode = 0
-offset_left = 70.0
-offset_top = 250.0
-offset_right = 462.0
-offset_bottom = 273.0
-
 [node name="FstVBoxContainer" type="VBoxContainer" parent="." unique_id=1422545238]
 layout_mode = 0
 offset_left = 70.0

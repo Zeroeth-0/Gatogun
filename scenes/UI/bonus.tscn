@@ -21,7 +21,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ugwgi")
 title_label_position = Vector2(370, 220)
-delay_medals_to_nomiss = 1.0
+delay_medals_to_nomiss = 0.5
 hold_time = 3.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1063384672]

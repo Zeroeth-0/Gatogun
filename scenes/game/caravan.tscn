@@ -17,7 +17,7 @@
 
 [node name="World" type="Node2D" unique_id=1973436339 groups=["Level"]]
 script = ExtResource("1_enroh")
-enemyScenes = Array[PackedScene]([ExtResource("2_y3o2u"), ExtResource("3_w4wkx"), ExtResource("4_vx8wh"), ExtResource("5_exl27"), ExtResource("6_ewqge"), ExtResource("7_pmvjo"), ExtResource("8_espgc")])
+enemyScenes = Array[PackedScene]([ExtResource("2_y3o2u"), ExtResource("3_w4wkx"), ExtResource("4_vx8wh"), ExtResource("7_pmvjo"), ExtResource("8_espgc"), ExtResource("5_exl27"), ExtResource("6_ewqge")])
 
 [node name="BackgroundCats" type="Sprite2D" parent="." unique_id=1049015543]
 modulate = Color(0.41215277, 0.41215238, 0.41215235, 0.5058824)

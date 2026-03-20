@@ -51,7 +51,7 @@ var _orig_bell_x:  float
 # READY
 # ═══════════════════════════════════════════════════════════
 func _ready() -> void:
-	process_mode = PROCESS_MODE_PAUSABLE
+	process_mode = Node.PROCESS_MODE_PAUSABLE  # pausa con el juego
 	_base_font = load("res://fonts/AprilGothicOne-R.ttf") as Font
 
 	_orig_actea_x = actea_render.position.x
@@ -97,24 +97,24 @@ func _ready() -> void:
 # ═══════════════════════════════════════════════════════════
 func _sequence_main() -> void:
 	_enter_left_group()
-	await get_tree().create_timer(delay_entry_to_band).timeout
+	await get_tree().create_timer(delay_entry_to_band, false).timeout
 
 	var tw_band := create_tween()
 	if border_top:    tw_band.parallel().tween_property(border_top,    "modulate:a", 1.0, 0.30)
 	if border_bottom: tw_band.parallel().tween_property(border_bottom, "modulate:a", 1.0, 0.30)
 	await tw_band.finished
 
-	await get_tree().create_timer(delay_band_to_medals).timeout
+	await get_tree().create_timer(delay_band_to_medals, false).timeout
 
 	_enter_medals_group()
-	await get_tree().create_timer(0.40).timeout
+	await get_tree().create_timer(0.40, false).timeout
 
-	await get_tree().create_timer(delay_medals_to_nomiss).timeout
+	await get_tree().create_timer(delay_medals_to_nomiss, false).timeout
 
 	_enter_nomiss_group()
-	await get_tree().create_timer(0.38).timeout
+	await get_tree().create_timer(0.38, false).timeout
 
-	await get_tree().create_timer(hold_time).timeout
+	await get_tree().create_timer(hold_time, false).timeout
 
 	await _do_exit()
 	queue_free()
@@ -160,9 +160,8 @@ func _enter_nomiss_group() -> void:
 # EXIT ANIMATION
 # ═══════════════════════════════════════════════════════════
 func _do_exit() -> void:
-	# Añadir puntos
 	SCORE.add_score(100000 * FLOW.medal_counter) if FLOW.missed else SCORE.add_score(FLOW.medal_counter)
-	
+
 	var sw := get_viewport_rect().size.x
 
 	var tw_f := create_tween()
@@ -191,7 +190,7 @@ func _do_exit() -> void:
 	tw_n.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
 	tw_n.tween_property(_no_miss_row, "position:x", sw + 200.0, 0.25).set_delay(0.05)
 
-	await get_tree().create_timer(0.35).timeout
+	await get_tree().create_timer(0.35, false).timeout
 
 
 # ═══════════════════════════════════════════════════════════

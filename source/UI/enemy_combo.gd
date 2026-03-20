@@ -52,7 +52,8 @@ func free_label(enemType: String):
 			offset = 300
 
 	reparent(GLOBAL.get_subtree())
-	if !freeSet: text = "+" + str(SCORE.combo * SCORE.mult)
+	var scoreVal = SCORE.combo * SCORE.mult
+	if !freeSet: text = "+" + (str(scoreVal) if scoreVal > 2000 else str(2000))
 	freeSet = true
 	var tween = create_tween()
 	tween.set_trans(Tween.TRANS_LINEAR)

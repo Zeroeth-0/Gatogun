@@ -16,13 +16,6 @@ script = ExtResource("1_nw13j")
 [node name="MenuBackground" parent="." unique_id=432135716 instance=ExtResource("2_nnsyr")]
 layout_mode = 0
 
-[node name="Label" type="Label" parent="." unique_id=214884165]
-layout_mode = 0
-offset_left = 70.0
-offset_top = 250.0
-offset_right = 462.0
-offset_bottom = 273.0
-
 [node name="FstVBoxContainer" type="VBoxContainer" parent="." unique_id=2140194040]
 layout_mode = 0
 offset_left = 220.0

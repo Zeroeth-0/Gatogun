@@ -135,8 +135,9 @@ func _check_death() -> void:
 	expl.scale *= explScale
 	GLOBAL.add_to_game(expl)
 
-	# Puntuación base.
-	SCORE.add_score(SCORE.combo)
+	# Puntuación base
+	var scoreVal = SCORE.combo * SCORE.mult
+	SCORE.add_score(SCORE.combo if scoreVal > 2000 else 2000)
 	_scoreCount_f = float(scoreCount) + float(RANK.rank)
 	if pulseMarked: _scoreCount_f *= 1.1
 

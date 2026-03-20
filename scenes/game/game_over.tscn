@@ -1,32 +1,36 @@
 [gd_scene format=3 uid="uid://do0plaogmk66"]
 
-[ext_resource type="Script" uid="uid://ce6rccpqgcq1s" path="res://source/UI/title.gd" id="1_vop4n"]
+[ext_resource type="Script" uid="uid://c3j7kboh4htns" path="res://source/UI/game_over.gd" id="1_hfhxj"]
+[ext_resource type="PackedScene" uid="uid://dag4p2j605ep3" path="res://scenes/vfx/menu_background.tscn" id="2_er7gy"]
 
-[node name="Title Screen" type="Control"]
+[node name="Game Over" type="Control" unique_id=2090161155]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_vop4n")
+script = ExtResource("1_hfhxj")
 
-[node name="Title" type="Label" parent="."]
+[node name="MenuBackground" parent="." unique_id=432135716 instance=ExtResource("2_er7gy")]
 layout_mode = 0
-offset_left = 300.0
-offset_top = 340.0
-offset_right = 392.0
-offset_bottom = 366.0
+
+[node name="Title" type="RichTextLabel" parent="." unique_id=1299199123]
+layout_mode = 0
+offset_left = 150.0
+offset_top = 200.0
+offset_right = 550.0
+offset_bottom = 300.0
 text = "GAME OVER"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Start" type="Label" parent="."]
+[node name="Start" type="RichTextLabel" parent="." unique_id=23069182]
 layout_mode = 0
-offset_left = 242.0
-offset_top = 508.0
-offset_right = 449.0
-offset_bottom = 534.0
+offset_left = 150.0
+offset_top = 470.0
+offset_right = 550.0
+offset_bottom = 570.0
 text = "PUSH SHOOT BUTTON"
 horizontal_alignment = 1
 vertical_alignment = 1

@@ -11,6 +11,7 @@ const OPTIONS: Array[String] = [
 ]
 
 @onready var labels: Array[RichTextLabel] = []
+@export var icons: Sprite2D
 var vbox: VBoxContainer
 
 # === ESTADO INTERNO ===
@@ -40,14 +41,25 @@ var original_positions: Array[float] = []
 @export var shadowOffset: Vector2 = Vector2(2, 2)
 @export var shadowSize: int = 20
 
+var _icons_base_scale: Vector2
+var _icons_original_x: float
+var _icons_ready: bool = false
+var _time: float = 0.0
+
 func _ready() -> void:
 	vbox = $VBoxContainer
 	vbox.clip_contents = false
-	
+
 	FLOW.isCaravan = false
 	FLOW.inCaravan = false
 	FLOW._is_first_level = false
 	GAME.lives = GAME.liveCount
+
+	# Guardar escala y posición original del icons antes de moverlo
+	if icons:
+		_icons_base_scale  = icons.scale
+		_icons_original_x  = icons.position.x
+		icons.visible = false
 
 	var base_font := load("res://fonts/AprilGothicOne-R.ttf")
 	var font := FontVariation.new()
@@ -98,6 +110,7 @@ func animate_entry() -> void:
 
 	vbox.modulate.a = 1
 
+	# Labels entran desde la derecha
 	for i in labels.size():
 		var label := labels[i]
 		label.position.x = screen_width + 100
@@ -108,8 +121,20 @@ func animate_entry() -> void:
 		tween.tween_property(label, "position:x", original_positions[i], 0.35).set_delay(i * 0.05)
 		active_tweens.append(tween)
 
+	# Icons entra desde la izquierda
+	if icons:
+		icons.position.x = -screen_width - 200
+		icons.visible = true
+		var tw_icon := create_tween()
+		tw_icon.set_ease(Tween.EASE_OUT)
+		tw_icon.set_trans(Tween.TRANS_CUBIC)
+		tw_icon.tween_property(icons, "position:x", _icons_original_x, 0.40)
+		await tw_icon.finished
+		_icons_ready = true
+
 func animate_exit(callback: Callable) -> void:
 	can_interact = false
+	_icons_ready = false
 
 	for tween in active_tweens:
 		if tween and tween.is_valid():
@@ -118,16 +143,26 @@ func animate_exit(callback: Callable) -> void:
 
 	var screen_width := get_viewport_rect().size.x
 
+	# Labels salen hacia la derecha
 	for i in labels.size():
 		var tween := create_tween()
 		tween.set_ease(Tween.EASE_IN)
 		tween.set_trans(Tween.TRANS_CUBIC)
 		tween.tween_property(labels[i], "position:x", screen_width + 100, 0.25).set_delay((labels.size() - 1 - i) * 0.04)
 
+	# Icons sale hacia la izquierda
+	if icons:
+		var tw_icon := create_tween()
+		tw_icon.set_ease(Tween.EASE_IN)
+		tw_icon.set_trans(Tween.TRANS_CUBIC)
+		tw_icon.tween_property(icons, "position:x", -screen_width - 200, 0.28)
+
 	await get_tree().create_timer((labels.size() - 1) * 0.04 + 0.25).timeout
 	callback.call()
 
 func _process(delta: float) -> void:
+	_time += delta
+
 	if not can_interact:
 		return
 

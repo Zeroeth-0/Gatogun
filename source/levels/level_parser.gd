@@ -46,12 +46,20 @@ func _parse_and_run(path: String) -> void:
 		if line.is_empty():
 			continue
 
+		# ── WAIT: espera a que el grupo "Enemy" esté vacío ────────────
+		if line.to_upper() == "WAIT":
+			while get_tree().get_nodes_in_group("Enemy").size() > 0:
+				await get_tree().process_frame
+			continue
+
+		# ── Marcadores de fase ────────────────────────────────────────
 		if line.begins_with("[") and line.ends_with("]"):
 			var marker: String = line.substr(1, line.length() - 2)
 			FLOW.notify_marker(marker)
 			await FLOW.resume_parsing
 			continue
 
+		# ── Línea de spawn normal ─────────────────────────────────────
 		var expanded := _expand_pattern_if_needed(line)
 		for l in expanded:
 			var data := _parse_wave_line(l)
@@ -62,6 +70,7 @@ func _parse_and_run(path: String) -> void:
 
 	_file.close()
 	_file = null
+	FLOW.notify_marker("LEVEL_END")  # avisa a FLOW de que el archivo terminó
 
 func _expand_pattern_if_needed(line: String) -> Array:
 	var parts := line.split(" ", false)
@@ -176,9 +185,12 @@ func _spawn_enemy(data: Dictionary) -> void:
 		return
 
 	var scene := _get_enemy_scene_by_name(data.type)
-	if not scene: return
+	if not scene:
+		push_error("LevelParser: escena no encontrada para enemigo: " + data.type)
+		return
 
 	if not lanes.has(data.lane) or data.index >= lanes[data.lane].size():
+		push_error("LevelParser: lane '%s' índice %d fuera de rango" % [data.lane, data.index])
 		return
 
 	var enemy = scene.instantiate()
@@ -205,9 +217,9 @@ func _get_enemy_scene_by_name(enemy_name: String) -> PackedScene:
 			return scene
 	return null
 
-# ========================
+# ════════════════════════════════════════════
 #  PATRONES
-# ========================
+# ════════════════════════════════════════════
 
 func _pattern_ladder(base: String, args: Dictionary) -> Array:
 	var steps: int        = int(args.get("steps", 4))
@@ -349,21 +361,18 @@ func _pattern_swarm(base: String, args: Dictionary) -> Array:
 
 	return lines
 
-# ========================
+# ════════════════════════════════════════════
 #  CÓMO USAR
-# ========================
+# ════════════════════════════════════════════
 # Línea estándar:
 #   EnemyName at LaneSide+LaneIndex+offset with Hand to Dir after Delay
-#   EnemyName @ LaneSideIndex+offset : Hand > Dir | Delay
 #
-# Ejemplos:
-#   sorro at N2 after 1.0
-#   torro at E1+0.5 with L to S after 2.0
+# Marcadores:
+#   [INTRO_END]   — fin intro, empieza sección A
+#   [MIDBOSS]     — pausa el parser, FLOW spawnea midboss
+#   [BOSS]        — pausa el parser, FLOW muestra Warning y spawnea boss
 #
-# Marcadores de fase (pausan el parser hasta que FLOW lo reanuda):
-#   [INTRO_END]   — fin de la intro, empieza sección A
-#   [MIDBOSS]     — para el parser, FLOW spawnea el midboss
-#   [BOSS]        — para el parser, FLOW muestra Warning y spawnea el boss
+# WAIT — pausa hasta que el grupo "Enemy" esté vacío
 #
 # Patrones:
 #   SWARM(thickness=3,length=4,warmup=0.3)  EnemyName at N0 after 1

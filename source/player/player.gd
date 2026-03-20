@@ -11,6 +11,9 @@ extends CharacterBody2D
 @export var screenMargin: int                                                   # Bordes de la pantalla
 var direction := Vector2.UP                                                     # Dirección de movimiento
 
+# === HITBOX ICON ===
+@onready var hitbox_icon: ShaderMaterial = $HitboxIcon.material
+
 # === ESTADO INTERNO ===
 var playable := false
 var goPoint: Vector2
@@ -50,6 +53,10 @@ func _process(_delta: float) -> void:
 		if GAME.DollStyle == GAME.DollEnum.SPEED or GAME.DollStyle == GAME.DollEnum.CARAVAN:
 			speed = 200 if INPUT.fireHold else 350
 		else: speed = 150 if INPUT.fireHold else 300
+		var target_vis := 1.0 if INPUT.fireHold else 0.0
+		var current_vis: float = hitbox_icon.get_shader_parameter("visible_amount")
+		hitbox_icon.set_shader_parameter("visible_amount",
+		move_toward(current_vis, target_vis, _delta * 8.0))
 	else:
 		# Movimiento automático antes de habilitar control
 		if not shielded:
@@ -78,7 +85,7 @@ func _handle_movement() -> void:
 # === BOMBA ===
 func _handle_bombing() -> void:
 	var bombInstance = bomb.instantiate()
-	bombInstance.position = Vector2(340, 1000)
+	bombInstance.position = Vector2(340, 1200)
 	GLOBAL.add_to_game(bombInstance, true)
 	bombCount -= 1
 	for bullet in get_tree().get_nodes_in_group("Fire"): bullet.queue_free()
