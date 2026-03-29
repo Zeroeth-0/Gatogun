@@ -22,18 +22,19 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+EVENTS="*uid://dt8w0pn8wvnub"
+DRNG="*res://utils/RNGManager.gd"
+CUSTIME="*uid://bxhe74li6nu7y"
 INPUT="*res://utils/InputManager.gd"
+CAMERA="*res://utils/CameraManager.gd"
 SCROLL="*res://utils/ScrollManager.gd"
 SCORE="*res://utils/ScoreManager.gd"
-GAME="*res://utils/GameManager.gd"
-WEAPON="*res://utils/WeaponManager.gd"
-GLOBAL="*res://utils/GlobalUtils.gd"
-DRNG="*res://utils/RNGManager.gd"
 RANK="*res://utils/RankManager.gd"
-CAMERA="*res://utils/CameraManager.gd"
-CUSTIME="*uid://bxhe74li6nu7y"
+WEAPON="*res://utils/WeaponManager.gd"
 SFX="*uid://bm6xm5cnl1pbe"
+GAME="*res://utils/GameManager.gd"
 FLOW="*uid://d2s16ey5stckg"
+GLOBAL="*res://utils/GlobalUtils.gd"
 
 [display]
 

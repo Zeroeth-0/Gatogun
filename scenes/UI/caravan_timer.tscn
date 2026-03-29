@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://dykv1csnejwo6"]
+
+[ext_resource type="Script" uid="uid://dqk6poc65jh1k" path="res://source/UI/caravan_timer.gd" id="1_gyo6f"]
+
+[node name="CaravanTimer" type="Control" unique_id=590085336]
+z_index = 11
+layout_mode = 3
+anchors_preset = 0
+offset_left = 90.0
+offset_top = 65.0
+offset_right = 590.0
+offset_bottom = 265.0
+script = ExtResource("1_gyo6f")
+total_time = 60.0
+
+[node name="CountdownLabel" type="RichTextLabel" parent="." unique_id=1200149720]
+layout_mode = 0
+offset_top = 197.0
+offset_right = 500.0
+offset_bottom = 397.0
+text = "3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TimeLabel" type="RichTextLabel" parent="." unique_id=961023888]
+layout_mode = 0
+offset_top = -26.0
+offset_right = 500.0
+offset_bottom = 174.0
+horizontal_alignment = 1
+vertical_alignment = 1

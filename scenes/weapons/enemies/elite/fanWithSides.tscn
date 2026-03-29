@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://ds7bq1lqtkcdm"]
+
+[ext_resource type="Script" uid="uid://brhb4mwkf3rn1" path="res://source/weapons/emitter.gd" id="1_d7gs6"]
+[ext_resource type="PackedScene" uid="uid://dha3ds2h57s2b" path="res://scenes/bullets/bullet.tscn" id="2_gfb1d"]
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/base/emitter.tscn" id="3_gfb1d"]
+
+[node name="Emitter" type="Marker2D" unique_id=2059335812]
+script = ExtResource("1_d7gs6")
+bulletScene = ExtResource("2_gfb1d")
+aimAtPlayer = true
+arms = 3
+growWithRound = true
+burstCount = 6
+warmUp = 2.0
+spreadAngle = 90.0
+
+[node name="EmitterR" parent="." unique_id=625559485 instance=ExtResource("3_gfb1d")]
+position = Vector2(40, 0)
+aimAtPlayer = true
+delay = 2.0
+armWidth = 2
+burstCount = 3
+warmUp = 0.5
+spreadAngle = 0.0
+
+[node name="EmitterL" parent="." unique_id=183463660 instance=ExtResource("3_gfb1d")]
+position = Vector2(-40, 0)
+aimAtPlayer = true
+delay = 2.0
+armWidth = 2
+burstCount = 3
+warmUp = 0.5
+spreadAngle = 0.0
