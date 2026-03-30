@@ -1,5 +1,5 @@
-# autoloads/events.gd
-# Nombre: EVENTS
+# autoloads/Events.gd
+# Name: EVENTS
 
 # Centralized signal bus.
 # RULE: NEVER cast methods from external systems.

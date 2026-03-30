@@ -35,6 +35,7 @@ SFX="*uid://bm6xm5cnl1pbe"
 GAME="*res://utils/GameManager.gd"
 FLOW="*uid://d2s16ey5stckg"
 GLOBAL="*res://utils/GlobalUtils.gd"
+BPOOL="*uid://bx20xmr67pie2"
 
 [display]
 

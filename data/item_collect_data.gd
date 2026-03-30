@@ -13,6 +13,6 @@ var new_mult: int
 var weapon_id: StringName
 var new_weapon_lvl: int
 
-func init (p_type: int, p_position: Vector2) -> void:
+func _init (p_type: int, p_position: Vector2) -> void:
 	item_type = p_type
 	position = p_position

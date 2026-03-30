@@ -23,6 +23,9 @@ var maxHot: float = SCORE.hotSize
 var maxMedalCountdown: float = SCORE.MAX_MEDAL_COUNTDOWN
 var currentLives
 var currentBombs
+var cachedLives: int = -1
+var cachedBombs: int = -1
+var cachedMaxBombs: int = -1
 var currMaxBombs
 var _prevCombo: int = 0
 # === VARIABLES SHADER ===
@@ -86,7 +89,7 @@ func _setup_rich_label(label: RichTextLabel) -> void:
 	label.add_theme_constant_override("shadow_offset_y", int(shadowOffset.y))
 	label.add_theme_constant_override("shadow_outline_size", shadowSize)
 
-func _process(_delta):
+func _process(delta: float):
 	gameScore.text = str(SCORE.GeneralGameScore)
 	highScore.text = str(SCORE.GeneralGameScore)
 	comboLabel.text = "+" + str(SCORE.combo)
@@ -108,20 +111,26 @@ func _process(_delta):
 	currentBombs = GAME.bombCount
 	currMaxBombs = GAME.maxBombs
 
-	for child in heartContainer.get_children(): child.queue_free()
-	for child in currBombContainer.get_children(): child.queue_free()
-	for child in maxBombContainer.get_children(): child.queue_free()
-	print_container(heartContainer, currentLives)
-	print_container(currBombContainer, currentBombs)
-	print_container(maxBombContainer, currMaxBombs)
+	if currentLives != cachedLives:
+		cachedLives = currentLives
+		for child in heartContainer.get_children(): child.queue_free()
+		print_container(heartContainer, currentLives)
+	if currentBombs != cachedBombs:
+		cachedBombs = currentBombs
+		for child in currBombContainer.get_children(): child.queue_free()
+		print_container(currBombContainer, currentBombs)
+	if currMaxBombs != cachedMaxBombs:
+		cachedMaxBombs = currMaxBombs
+		for child in maxBombContainer.get_children(): child.queue_free()
+		print_container(maxBombContainer, currMaxBombs)
 
 	if hot_active_timer > 0.0:
-		hot_active_timer -= _delta
+		hot_active_timer -= delta
 		if hot_active_timer <= 0.0:
 			_hot_return_to_base()
 
 	if hot_pulse_cooldown > 0.0:
-		hot_pulse_cooldown -= _delta
+		hot_pulse_cooldown -= delta
 
 # === SHADER HOT BAR ===
 func _update_hot_shader() -> void:

@@ -11,6 +11,7 @@ const HOT_DRAIN_RATE: float = 50.0
 const HOT_SIZE: float = 100.0
 const COMBO_LIMIT: float = 0.001
 const MULT_DRAIN_LIMIT: float = 0.01
+const MULT_INITIAL_DELAY: float = POINT_FIVE
 const MAX_MEDAL_COUNTDOWN: float = 2.0
 # === ESTADO DE PUNTUACIÓN ===
 var GeneralGameScore: int = ZERO
@@ -22,6 +23,7 @@ var mult: int = ONE
 var comboResetTimer: float = POINT_ONE
 var comboDrainTime: float = ZERO_POINT
 var multDrainTime: float = ZERO_POINT
+var multDrainDelay: float = ZERO
 var hotDrainDelay: float = POINT_FIVE
 # === CONFIGURACIÓN DE SISTEMA ===
 var hotDrainRate: float = HOT_DRAIN_RATE
@@ -65,18 +67,20 @@ func keep_hot() -> void:
 
 # === SISTEMA DE MULT ===
 func _update_mult(delta: float) -> void:
-	var needWait: bool = true
-	if hot <= 0 and mult > 1:
-		if needWait:
-			await get_tree().create_timer(0.5).timeout
-			needWait = false
-		multDrainTime += delta
-		while multDrainTime >= multDrainLimit:
-			mult -= 1
-			multDrainTime -= multDrainLimit
-	else: needWait = true
+	if hot > 0.0 or mult <= 1:
+		multDrainDelay = MULT_INITIAL_DELAY
+		multDrainTime = 0.0
+		mult = max(mult, 1)
+		return
 	
-	if mult <= 1: mult = 1
+	if multDrainDelay > 0.0:
+		multDrainDelay -= delta
+		return
+	
+	multDrainTime += delta
+	while multDrainTime >= multDrainLimit:
+		mult = max(mult - 1, 1)
+		multDrainTime -= multDrainLimit
 
 # === SISTEMA DE COMBO ===
 func _update_combo(delta: float) -> void:
