@@ -253,7 +253,7 @@ func game_start() -> void:
 	animate_exit(func(): GLOBAL.raw_change_scene("MODE"))
 
 func caravan() -> void:
-	RANK.DifficultyStyle = RANK.DifficultyEnum.DOUJIN
+	RANK.DifficultyStyle = RANK.DifficultyEnum.ORIGINAL
 	FLOW.isCaravan = true
 	GAME.DollStyle = GAME.DollEnum.CARAVAN
 	animate_exit(func(): GLOBAL.raw_change_scene("GATO"))

@@ -71,6 +71,11 @@ func _ready():
 	highName.add_theme_color_override("default_color", highScoreColor)
 	gameName.text = "[wave amp=48 freq=5.0]PLAYER SCORE[/wave]"
 	highName.text = "[wave amp=48 freq=5.0]HIGH SCORE[/wave]"
+	
+	EVENTS.hot_bar_pulse.connect(pulse_hot_bar)
+	EVENTS.hot_bar_keep.connect(keep_hot_bar)
+	EVENTS.combo_label_in.connect(label_in)
+	EVENTS.combo_label_out.connect(label_out)
 
 func _load_font() -> void:
 	_font = load("res://fonts/AprilGothicOne-R.ttf") as Font

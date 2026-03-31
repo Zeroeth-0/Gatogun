@@ -2,7 +2,7 @@ extends Control
 
 const OPTIONS: Array[String] = [
 	"NOVICE",
-	"DOUJIN",
+	"ORIGINAL",
 	"MANIAC"
 ]
 
@@ -206,11 +206,7 @@ func blink_and_confirm(callback: Callable) -> void:
 
 func confirm_selection() -> void:
 	match selected:
-		0:
-			RANK.DifficultyStyle = RANK.DifficultyEnum.NOVICE
-		1:
-			RANK.DifficultyStyle = RANK.DifficultyEnum.DOUJIN
-		2:
-			RANK.DifficultyStyle = RANK.DifficultyEnum.MANIAC
-
+		0: RANK.set_difficulty(RANK.DifficultyEnum.NOVICE)
+		1: RANK.set_difficulty(RANK.DifficultyEnum.ORIGINAL)
+		2: RANK.set_difficulty(RANK.DifficultyEnum.MANIAC)
 	blink_and_confirm(func(): animate_exit(func(): GLOBAL.raw_change_scene("GATO")))

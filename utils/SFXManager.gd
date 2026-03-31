@@ -1,32 +1,67 @@
-# AudioManager.gd — ponlo en Autoload
+# utils/SFXManager.gd
+# Name: SFX
 extends Node
 
-const POOL_SIZE = 16  # Voces simultáneas para SFX cortos
+# ==============================================================================
+# CONSTANTS
+# ==============================================================================
+
+const POOL_SIZE: int = 32
+
+# ==============================================================================
+# INTERNAL STATE
+# ==============================================================================
 
 var _pool: Array[AudioStreamPlayer] = []
-var _pool_index: int = 0
+var _index: int = 0
 
-# Registra tus sonidos aquí
-var sounds = {
-	"burst": preload("res://sfx/burst.wav"),
-	"medal": preload("res://sfx/medal.wav")
+## Master volume offset applied on top of every call
+var master_db: float = 0.0
+
+var _sounds: Dictionary = {
+	&"burst": preload("res://sfx/burst.wav"),
+	&"medal": preload("res://sfx/medal.wav")
 }
 
-func _ready():
-	# Crear el pool de AudioStreamPlayers
+# ==============================================================================
+# LIFECYCLE
+# ==============================================================================
+
+func _ready() -> void:
 	for i in POOL_SIZE:
-		var player = AudioStreamPlayer.new()
+		var player := AudioStreamPlayer.new()
 		player.bus = "SFX"
 		add_child(player)
 		_pool.append(player)
 
-func play(sound_name: String, db: float = -24.0, pitch_variation: float = 0.0, plus_pitch: float = 0.0):
-	if not sounds.has(sound_name): return
+# ==============================================================================
+# PUBLIC API
+# ==============================================================================
+
+## Plays a registered sound
+func play(sound: StringName,
+		  db: float = -24.0,
+		  pitch_var: float = 0.0,
+		  pitch_offset: float = 0.0) -> void:
+	if !_sounds.has(sound):
+		push_warning("SFX.play(): sound is not registered")
+		return
 	
-	var player = _pool[_pool_index]
-	_pool_index = (_pool_index + 1) % POOL_SIZE
+	var player := _pool[_index]
+	_index = (_index + 1) % POOL_SIZE
 	
-	player.stream = sounds[sound_name]
-	player.pitch_scale = 1.0 + randf_range(-pitch_variation, pitch_variation) + plus_pitch
-	player.volume_db = db
+	player.stream = _sounds[sound]
+	player.pitch_scale = 1.0 + randf_range(-pitch_var, pitch_var) + pitch_offset
+	player.volume_db = db + master_db
 	player.play()
+
+## Registers a new sound at runtime
+func register(sound: StringName, stream: AudioStream) -> void:
+	if stream == null:
+		push_error("SFX.register(): null stream")
+		return
+	_sounds[sound] = stream
+
+## True if the sound id is registered
+func has_sound(sound: StringName) -> bool:
+	return _sounds.has(sound)
