@@ -39,7 +39,7 @@ z_index = 5
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=1541289978]
 scale = Vector2(0.3, 0.3)
 shape = SubResource("RectangleShape2D_klkvo")
-debug_color = Color(0, 1, 0, 0.419608)
+debug_color = Color(1, 0, 0, 0.41960785)
 
 [node name="Icon" type="Sprite2D" parent="." unique_id=712924624]
 modulate = Color(0, 1, 0, 1)

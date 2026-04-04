@@ -26,9 +26,6 @@ z_index = 1
 scale = Vector2(1.1, 1.1)
 script = ExtResource("1_xyv0w")
 BulletType = 1
-speed = 2000.0
-damage = 2
-lifeTime = 0.2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=565531003]
 scale = Vector2(4.6, 4.6)

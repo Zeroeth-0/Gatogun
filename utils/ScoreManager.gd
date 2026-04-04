@@ -42,6 +42,9 @@ var _mult_drain_time: float = 0.0
 # MAIN LOOP
 # ==============================================================================
 
+func _ready() -> void:
+	EVENTS.player_hit.connect(_on_player_hit)
+
 func _process(delta: float) -> void:
 	_tick_hot(delta)
 	_tick_combo(delta)
@@ -174,3 +177,8 @@ func reset() -> void:
 	EVENTS.mult_flow.emit(1)
 	EVENTS.hot_flow.emit(0.0, false)
 	EVENTS.combo_label_out.emit()
+
+func _on_player_hit(_bullet_type: int, damage: int, was_hold: bool, _position: Vector2) -> void:
+	increase_combo(damage)
+	if was_hold: keep_hot()
+	else: increase_hot(damage)
