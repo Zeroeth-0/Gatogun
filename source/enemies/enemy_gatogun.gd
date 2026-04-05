@@ -87,7 +87,7 @@ func _process(delta: float) -> void:
 	# Vulnerabilidad post-1er disparo: reduce vida a la mitad una sola vez.
 	if emitter != null and not halvedHealth:
 		var trigger_round: int = 1 if typeEnum != EnemyType.ELITE else 2
-		if emitter.totalRounds >= trigger_round:
+		if emitter.total_rounds >= trigger_round:
 			health       *= 0.5
 			halvedHealth  = true
 

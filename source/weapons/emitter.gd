@@ -1,601 +1,484 @@
-## BulletEmitter — Generador definitivo de patrones bullet hell
-## Nodo raíz: Marker2D
+# source/weapons/emitter.gd
+# Interprets EmitterConfig and fires bullets
+@tool
+class_name BulletEmitter
 extends Marker2D
 
-# ════════════════════════════════════════════════════════════════════════════
-#  BULLET
-# ════════════════════════════════════════════════════════════════════════════
-@export_category("BULLET")
+# ==============================================================================
+# INSPECTOR
+# ==============================================================================
 
-## Escena de bala a instanciar en cada disparo.
-## Debe tener los métodos set_properties() y modify_direction() (ver bullet.gd).
-@export var bulletScene: PackedScene
-
-## Velocidad base de las balas en píxeles/segundo.
-## Negativo = las balas salen hacia atrás respecto a la dirección del emitter.
-@export_range(-800, 800, 50) var baseSpeed: float = 400.0
-
-@export_group("Direction Modifier")
-
-## Comportamiento de la bala tras ser disparada:
-## NONE      → vuela en línea recta sin cambios.
-## AIM       → al entrar en la ventana de tiempo, gira hacia el jugador (una vez).
-## AIM_MOUSE → igual pero apunta al cursor del ratón.
-## GRAVITY   → activa caída por gravedad (intensidad controlada por gravIntensity).
-## LEFT      → gira progresivamente a la izquierda (deviationAngle = °/s).
-## RIGHT     → gira progresivamente a la derecha.
-## RANDOM    → desviación aleatoria continua.
-## HOMING    → seguimiento suave del jugador (deviationAngle = °/s de giro máximo).
-## SINE_WAVE → oscilación sinusoidal perpendicular al movimiento.
-## BOUNCE    → rebota al llegar al borde del viewport.
-@export var type: BulletDirection = BulletDirection.NONE
-
-## Intensidad de la gravedad en GRAVITY y SINE_WAVE.
-## 0 = sin efecto, 1 = gravedad completa del proyecto.
-@export_range(0, 1, 0.1) var gravIntensity: float = 0.5
-
-## Grados de desviación o velocidad de giro según el tipo:
-## LEFT/RIGHT/RANDOM → grados/segundo de giro.
-## HOMING            → grados/segundo de giro máximo hacia el jugador.
-## SINE_WAVE         → amplitud de la oscilación lateral.
-@export_range(0, 360, 1) var deviationAngle: int = 45
-
-## Segundos desde el disparo hasta que empieza el modificador de dirección.
-@export_range(0, 5, 0.1) var dirStartTime: float = 0.0
-
-## Duración en segundos del modificador de dirección.
-## Pasado este tiempo, la bala vuela recta de nuevo (excepto HOMING, que es continuo).
-@export_range(0, 5, 0.1) var dirDuration: float = 5.0
-
-@export_group("Speed Modifier")
-
-## Activa la modificación temporal de velocidad por tramos.
-@export var modifySpeed: bool = false
-
-## Primera velocidad alternativa en píxeles/segundo.
-@export_range(-800, 800, 10) var fstNewSpeed: int = 0
-
-## Momento (segundos desde el disparo) en que se aplica la primera velocidad.
-@export_range(0, 5, 0.05) var fstStartTime: float = 0.0
-
-## Segunda velocidad alternativa en píxeles/segundo.
-@export_range(-800, 800, 10) var sndNewSpeed: int = 0
-
-## Momento (segundos desde el disparo) en que se aplica la segunda velocidad.
-@export_range(0, 5, 0.05) var sndStartTime: float = 0.0
-
-## Curva de velocidad personalizada (opcional).
-## Eje X = tiempo normalizado (0→speedCurveDuration). Eje Y = multiplicador sobre baseSpeed.
-## Si se asigna, anula fstNewSpeed y sndNewSpeed.
-@export var speedCurve: Curve = null
-
-## Duración total de la curva de velocidad en segundos.
-@export_range(0.1, 10.0, 0.1) var speedCurveDuration: float = 3.0
-
-enum BulletDirection {
-	NONE, AIM, AIM_MOUSE, GRAVITY, LEFT, RIGHT, RANDOM, HOMING, SINE_WAVE, BOUNCE,
+@export var config: EmitterConfig
+enum PresetType {
+	NONE,
+	AIMED_STREAM, AIMED_SPREAD, AIMED_WALL, SPEED_LAYERS,
+	RING, ALTERNATING_RING, LAYERED_RING, SPINNING_RING,
+	SPIRAL, DOUBLE_SPIRAL, N_SPIRAL,
+	SWEEP, SYMMETRIC_SWEEP,
+	HOMING_BURST, DELAYED_HOMING,
+	CURTAIN, SCATTER
 }
+@export var apply_preset: PresetType = PresetType.NONE:
+	set(value):
+		apply_preset = value
+		if value != PresetType.NONE and Engine.is_editor_hint():
+			_apply_preset(value)
+			apply_preset = PresetType.NONE
+@export var preset_speed: float = 300.0
+@export var preset_arms: int = 8
+@export var preset_spread: float = 45.0
+@export var preset_warm_up: float = 1.0
 
-# ════════════════════════════════════════════════════════════════════════════
-#  WEAPON
-# ════════════════════════════════════════════════════════════════════════════
-@export_category("WEAPON")
+func _apply_preset(p: PresetType) -> void:
+	match p:
+		PresetType.AIMED_STREAM:
+			config = EmitterPresets.aimed_stream(preset_speed, preset_warm_up)
+		PresetType.AIMED_SPREAD:
+			config = EmitterPresets.aimed_spread(preset_arms, preset_spread, preset_speed, preset_warm_up)
+		PresetType.AIMED_WALL:
+			config = EmitterPresets.aimed_wall(preset_arms, preset_spread, preset_speed, preset_warm_up)
+		PresetType.SPEED_LAYERS:
+			config = EmitterPresets.speed_layers(preset_arms, preset_speed * 0.6, preset_speed * 1.4)
+		PresetType.RING:
+			config = EmitterPresets.ring(preset_arms, preset_speed, 0.0, preset_warm_up)
+		PresetType.ALTERNATING_RING:
+			config = EmitterPresets.alternating_ring(preset_arms, preset_arms - 1, preset_speed, preset_warm_up)
+		PresetType.LAYERED_RING:
+			config = EmitterPresets.layered_ring(preset_arms, preset_speed * 0.7, preset_speed * 1.3)
+		PresetType.SPINNING_RING:
+			config = EmitterPresets.spinning_ring(preset_arms, preset_speed, 45.0, preset_warm_up)
+		PresetType.SPIRAL:
+			config = EmitterPresets.spiral(preset_speed, 60.0, preset_warm_up)
+		PresetType.DOUBLE_SPIRAL:
+			config = EmitterPresets.double_spiral(preset_speed, 60.0, preset_warm_up)
+		PresetType.N_SPIRAL:
+			config = EmitterPresets.n_spiral(preset_arms, preset_speed, 45.0, preset_warm_up)
+		PresetType.SWEEP:
+			config = EmitterPresets.sweep(preset_arms, preset_spread, preset_speed, 12, preset_warm_up)
+		PresetType.SYMMETRIC_SWEEP:
+			config = EmitterPresets.symmetric_sweep(preset_spread, preset_speed, 10, preset_warm_up)
+		PresetType.HOMING_BURST:
+			config = EmitterPresets.homing_burst(preset_arms, preset_speed, 120.0, preset_warm_up)
+		PresetType.DELAYED_HOMING:
+			config = EmitterPresets.delayed_homing(preset_arms, preset_speed, 0.5, 90.0, preset_warm_up)
+		PresetType.CURTAIN:
+			config = EmitterPresets.curtain(preset_arms, preset_speed, preset_warm_up)
+		PresetType.SCATTER:
+			config = EmitterPresets.scatter(preset_arms, preset_speed)
+	notify_property_list_changed()
 
-enum Direction { NORTH, WEST, SOUTH, EAST, NWEST, NEAST, SWEST, SEAST }
+# ==============================================================================
+# PUBLIC STATE
+# ==============================================================================
 
-## Dirección base del disparo cuando no se apunta automáticamente.
-## NORTH = arriba, SOUTH = abajo, EAST = derecha, WEST = izquierda.
-@export var directionEnum: Direction = Direction.SOUTH
+var total_rounds: int = 0
+## Set to false to suppress fire without stopping the loop
+var can_shoot: bool = true
 
-## Desvío angular respecto a la dirección base, en grados.
-## Positivo = gira en sentido antihorario. Negativo = sentido horario.
-## Sirve para afinar la dirección sin cambiar el enum (ej: 15° para un ángulo intermedio).
-@export_range(-180.0, 180.0, 1.0) var dirDeviation: float = 0.0
+# ==============================================================================
+# INTERNAL STATE
+# ==============================================================================
 
-## Si está activo, la dirección base apunta siempre al jugador al inicio de cada ráfaga.
-@export var aimAtPlayer: bool = false
+var _running:        bool  = false
+var _stop_rotation:  bool  = false
+var _rotation_deg:   float = 0.0
+var _rotation_dir:   int   = 1
+var _ping_pong_dir:  int   = 1
+var _bround:         int   = 0
+var _usable_arms:    int   = 1
+var _current_speed:  float = 0.0
 
-## Si está activo, la dirección base apunta siempre al cursor del ratón al inicio de cada ráfaga.
-@export var aimAtMouse: bool = false
+# Rank snapshot — taken once at start, not polled
+var _rank: int = 0
 
-## Si está activo, los brazos se distribuyen en paralelo (desplazamiento lateral)
-## en lugar de abrirse angularmente como un abanico.
-@export var parallel: bool = false
+# Effective values after rank scaling
+var _eff_speed:    float = 0.0
+var _eff_arms:     int   = 1
+var _eff_burst:    int   = 1
+var _eff_rot_spd:  float = 0.0
 
-## Desfase en punta para el modo parallel.
-## Positivo = los brazos exteriores se adelantan, creando una cuña hacia delante.
-## Negativo = los exteriores se retrasan, creando una cuña hacia atrás.
-@export_range(-200, 200, 1) var steepness: int = 0
+# Direction cache
+var _base_direction: Vector2 = Vector2.DOWN
+var _aim_target:     Vector2 = Vector2.ZERO
 
-## Forma de la curva de la punta en modo parallel (solo tiene efecto con steepness != 0).
-## 1.0 = lineal (rampa constante entre el centro y los extremos).
-## Mayor que 1 = punta más afilada: el centro destaca y los extremos caen abruptamente.
-## Menor que 1 = punta más suave: la transición es gradual desde el primer brazo.
-## Rango útil: 0.3 (muy suave) hasta 4.0 (muy picudo).
-@export_range(0.1, 6.0, 0.1) var steepnessSharpness: float = 1.0
+# ==============================================================================
+# LIFECYCLE
+# ==============================================================================
 
-var _directionMap: Dictionary = {
-	Direction.NORTH: Vector2.UP,    Direction.SOUTH: Vector2.DOWN,
-	Direction.WEST:  Vector2.LEFT,  Direction.EAST:  Vector2.RIGHT,
-	Direction.NWEST: Vector2(-1,-1).normalized(), Direction.NEAST: Vector2(1,-1).normalized(),
-	Direction.SWEST: Vector2(-1, 1).normalized(), Direction.SEAST: Vector2(1, 1).normalized(),
-}
-var direction := Vector2.DOWN
-
-# ════════════════════════════════════════════════════════════════════════════
-#  ROTATION
-# ════════════════════════════════════════════════════════════════════════════
-@export_category("ROTATION")
-
-## Si está activo, el emitter continúa rotando mientras dispara la ráfaga.
-## Si está desactivado, se congela durante la ráfaga y reanuda después.
-@export var burstRotation: bool = false
-
-## Ángulo límite de rotación en grados.
-## 0 = rotación libre de 360°. Otro valor = rota hasta ese ángulo y para (o rebota con pingPong).
-@export_range(-360, 360, 1) var rotationAngle: int = 0
-
-## Velocidad de rotación en grados/segundo.
-## Solo se usa cuando syncPingPongToBurst está desactivado.
-@export_range(0, 360, 1) var rotationSpeed: float = 0.0
-
-## Activa el vaivén: el emitter va de un extremo al otro del rango y vuelve.
-## Requiere rotationAngle != 0.
-@export var pingPong: bool = false
-
-## Sincroniza el vaivén con la cadencia de disparo matemáticamente.
-## El disparo 0 sale en un extremo y el último en el otro. Sin drift ni desincronización.
-## Desactivado = usa rotationSpeed para la velocidad del vaivén.
-@export var syncPingPongToBurst: bool = true
-
-## Si está activo, el rango queda centrado en la dirección de disparo: [-angle/2 … +angle/2].
-## Si está desactivado: [0 … angle].
-@export var centerStart: bool = true
-
-## Invierte la dirección inicial del vaivén.
-@export var pingPongInvert: bool = false
-
-# ════════════════════════════════════════════════════════════════════════════
-#  BURST
-# ════════════════════════════════════════════════════════════════════════════
-@export_category("BURST")
-
-## Ráfagas antes de que el emitter se destruya automáticamente.
-## -1 = infinito. Pon 1 en sub-emitters para que disparen una sola vez y desaparezcan.
-@export_range(-1, 200, 1) var maxRounds: int = -1
-
-## Segundos de espera antes del primer disparo.
-@export_range(0, 10, 0.1) var delay: float = 0.0
-
-## Número de brazos (direcciones) por cada disparo individual.
-## Con 1 brazo = un haz. Con 8 brazos y spreadAngle=360 = anillo completo.
-@export_range(1, 64, 1) var arms: int = 1
-
-## Número alternativo de brazos que se usa en los disparos pares.
-## 0 = desactivado. Crea patrones alternados con diferente número de brazos.
-@export_range(0, 64, 1) var alterArms: int = 0
-
-## Si está activo, añade un brazo extra con cada ronda disparada.
-@export var growWithRound: bool = false
-
-## Balas por brazo (grosor del brazo). Con 3 = cada brazo dispara 3 balas paralelas.
-@export_range(1, 10, 1) var armWidth: int = 1
-
-## Separación entre las balas de un mismo brazo cuando armWidth > 1.
-## 0 = todas juntas. 1 = separación máxima.
-@export_range(0, 1, 0.05) var armSpacingFactor: float = 0.5
-
-## Disparos consecutivos dentro de una ráfaga. Cada uno espera bulletInterval antes del siguiente.
-@export_range(1, 100, 1) var burstCount: int = 1
-
-## Segundos entre disparos dentro de una ráfaga.
-@export_range(0, 2, 0.01) var bulletInterval: float = 0.1
-
-## Segundos entre el final de una ráfaga y el inicio de la siguiente.
-@export_range(0, 10, 0.05) var warmUp: float = 1.0
-
-## Distancia extra en píxeles desde el emitter a la que aparece cada bala (en su dirección).
-@export_range(0, 600, 1) var distanceCenter: int = 0
-
-## Probabilidad de omitir un brazo aleatoriamente. 0 = nunca. 0.5 = la mitad se saltan.
-@export_range(0.0, 1.0, 0.01) var skipChance: float = 0.0
-
-## Delay aleatorio máximo en segundos por bala. Crea un efecto de stagger o ruido.
-@export_range(0.0, 1.0, 0.01) var staggerDelay: float = 0.0
-
-## Delay en segundos entre el disparo de cada brazo consecutivo.
-## Con 0.02–0.05 crea un efecto espiral secuencial (los brazos salen uno tras otro).
-@export_range(0.0, 0.5, 0.005) var intraArmDelay: float = 0.0
-
-@export_group("Spread")
-
-## Ángulo total del abanico. 45 = abanico de 45°. 360 = anillo completo.
-@export_range(0, 360, 1) var spreadAngle: float = 45.0
-
-## Separación lateral en píxeles entre brazos en modo parallel.
-@export_range(0, 1000, 1) var spreadOffset: int = 100
-
-## Activa la simetría del patrón respecto a la dirección de disparo.
-## El patrón se duplica: una copia a cada lado del eje central, perfectamente reflejada.
-## En las balas simétricas, LEFT se convierte en RIGHT y viceversa.
-@export var useSymmetry: bool = false
-
-## Separación en grados entre los dos lados del patrón simétrico.
-## 0 = los dos lados parten del mismo eje (se tocan en el centro).
-## 30 = cada lado se desplaza 15° hacia afuera, dejando un hueco entre ellos.
-@export_range(0, 180, 1) var symmetryGap: float = 0.0
-
-## Qué recibe el multiplicador speedVariation:
-## BULLET = cada bala individual. ARM = cada brazo completo.
-enum SpeedVar { BULLET, ARM }
-@export var speedVar: SpeedVar = SpeedVar.BULLET
-
-## Multiplicador acumulativo de velocidad por disparo o por brazo (según speedVar).
-## 1.0 = sin cambio. 1.1 = cada disparo es un 10% más rápido que el anterior.
-@export_range(0.5, 2.0, 0.01) var speedVariation: float = 1.0
-
-@export_group("Speed Wave")
-
-## Número de picos de velocidad distribuidos a lo largo del abanico de brazos.
-## 0 = desactivado (todos los brazos a la misma velocidad base).
-## 1 = un pico en el centro (el brazo central va más rápido que los extremos).
-## 2 = dos picos a 1/4 y 3/4 del abanico. 3 = tres picos equidistribuidos. Etc.
-@export_range(0, 16, 1) var peakCount: int = 0
-
-## Velocidad extra máxima en píxeles/segundo añadida en cada pico.
-## Los brazos en el pico suman esta cantidad. Los brazos en el valle no reciben nada.
-@export_range(0, 1000, 10) var peakSpeedBonus: float = 100.0
-
-@export_group("Probability")
-
-## Variación aleatoria del ángulo de cada brazo en grados.
-## 0 = todos exactos. 10 = cada brazo puede desviarse ±10° aleatoriamente.
-@export_range(0, 180, 1) var randomAngle: int = 0
-
-## Variación aleatoria de la posición de origen en píxeles.
-## 0 = todas nacen en el emitter. 50 = rango aleatorio de ±50px.
-@export_range(0, 400, 1) var randomOffset: int = 0
-
-## Variación aleatoria de velocidad. 0 = todas iguales. 0.2 = velocidad ±20%.
-@export_range(0, 0.9, 0.01) var randomSpeed: float = 0.0
-
-@export_group("Repeater")
-
-## Número de veces que se repite el patrón completo en cada disparo,
-## distribuidas angularmente según repeatAngle.
-@export_range(1, 16, 1) var repeatCount: int = 1
-
-## Ángulo de distribución entre repeticiones. 360 = distribuidas en anillo completo.
-@export_range(0, 360, 1) var repeatAngle: int = 360
-
-## Si está activo, mantiene la velocidad acumulada por speedVariation entre repeticiones.
-@export var keepSpeed: bool = false
-
-# ════════════════════════════════════════════════════════════════════════════
-#  SUB EMITTER
-# ════════════════════════════════════════════════════════════════════════════
-@export_category("SUB EMITTER")
-
-## Escena del emitter secundario (Marker2D con este mismo script).
-## Se instancia sobre cada bala disparada y lanza su propio patrón.
-## Pon maxRounds=1 en el sub-emitter para que dispare una sola ráfaga y desaparezca.
-@export var subEmitterScene: PackedScene = null
-
-## Cuándo se activa el sub-emitter:
-## ON_DEATH    → al destruirse la bala. El sub-emitter aparece en su posición. Pon maxRounds=1.
-## AFTER_DELAY → tras subEmitDelay segundos. El sub-emitter sigue a la bala hasta activarse.
-## IMMEDIATELY → al nacer la bala. El sub-emitter la acompaña durante toda su vida.
-enum SubEmitTrigger { ON_DEATH, AFTER_DELAY, IMMEDIATELY }
-@export var subEmitTrigger: SubEmitTrigger = SubEmitTrigger.ON_DEATH
-
-## Segundos de espera antes de activar el sub-emitter. Solo para AFTER_DELAY.
-@export_range(0.0, 10.0, 0.1) var subEmitDelay: float = 0.5
-
-# ════════════════════════════════════════════════════════════════════════════
-#  ESTADO INTERNO
-# ════════════════════════════════════════════════════════════════════════════
-var totalRounds: int = 0  # preservado — usado en scripts externos
-var canShoot: bool   = true  # preservado — usado en scripts externos
-
-var rotationDirection := 1
-var stopRotation      := false
-var playerPos: Vector2 = Vector2.ZERO
-var speed: float
-var usableArms: int
-var rank := float(RANK.rank)
-var bRound: int = 0
-
-var _elapsedTime: float = 0.0
-var _pingPongDir: int   = 1   # +1 = ida,  -1 = vuelta
-
-# ════════════════════════════════════════════════════════════════════════════
-#  INICIALIZACIÓN
-# ════════════════════════════════════════════════════════════════════════════
 func _ready() -> void:
-	if peakCount > 0: dirDeviation = 5
-	usableArms = arms
-	speed      = baseSpeed
-	direction  = _directionMap.get(directionEnum, Vector2.DOWN).rotated(deg_to_rad(dirDeviation))
-	_apply_rank_modifiers()
-	_init_pingpong_position()
-	_reset_rotation_direction()
-	shoot()
+	if config == null:
+		push_error("No config assigned")
+		return
+	_start()
 
 func _process(delta: float) -> void:
-	_elapsedTime += delta
-	if "canShoot" in get_parent():
-		canShoot = get_parent().canShoot
-	if pingPong and syncPingPongToBurst:
-		return
-	if not stopRotation:
-		rotation_degrees += rotationSpeed * delta * rotationDirection
+	if !_running or _stop_rotation: return
+	if config.ping_pong and config.sync_ping_pong_to_burst: return
+	_rotation_deg += _eff_rot_spd * delta * float(_rotation_dir)
 	_handle_rotation_bounds()
 
-# ════════════════════════════════════════════════════════════════════════════
-#  PING PONG SINCRONIZADO
-# ════════════════════════════════════════════════════════════════════════════
-func _sync_angle_for_shot(shot_i: int) -> float:
-	var total := float(abs(rotationAngle))
-	var lo    := -total / 2.0 if centerStart else 0.0
-	var hi    :=  total / 2.0 if centerStart else total
-	var t     := 0.0 if burstCount <= 1 else float(shot_i) / float(burstCount - 1)
-	return lerp(lo, hi, t) if _pingPongDir >= 0 else lerp(hi, lo, t)
+func _exit_tree() -> void:
+	_running = false
 
-func _init_pingpong_position() -> void:
-	if not pingPong or rotationAngle == 0:
+# ==============================================================================
+# PUBLIC API
+# ==============================================================================
+
+## Assign a new config and restart the fire loop
+func set_config(new_config: EmitterConfig) -> void:
+	config = new_config
+	_running = false
+	await get_tree().process_frame
+	_start()
+
+## Stop firing. The node stays in the tree
+func stop() -> void:
+	_running = false
+
+## Resume after stop()
+func resume() -> void:
+	if config and not _running:
+		_running = true
+
+# ==============================================================================
+# STARTUP
+# ==============================================================================
+
+func _start() -> void:
+	_rank          = RANK.rank
+	_bround        = 0
+	total_rounds   = 0
+	_rotation_deg  = 0.0
+	_ping_pong_dir = -1 if config.ping_pong_invert else 1
+	_running       = true
+	
+	_apply_rank_scaling()
+	_usable_arms   = _eff_arms
+	_current_speed = _eff_speed
+	
+	_base_direction = EmitterConfig.direction_to_vec(config.direction_enum)\
+		.rotated(deg_to_rad(config.dir_deviation))
+
+	_init_pingpong_angle()
+	_reset_rotation_direction()
+	_fire_loop()
+
+# ==============================================================================
+# RANK SCALING
+# ==============================================================================
+
+func _apply_rank_scaling() -> void:
+	var r    := float(_rank)
+	var p    := pow(r / 6.0, 2.0)
+	
+	_eff_speed   = config.base_speed
+	_eff_arms    = config.arms
+	_eff_burst   = config.burst_count
+	_eff_rot_spd = config.rotation_speed
+	
+	# Rank 0: slight nerf to ease the game for beginners
+	if _rank == 0:
+		_eff_speed   *= 0.85
+		_eff_rot_spd *= 0.85
 		return
-	if pingPongInvert:
-		_pingPongDir = -1
-	if syncPingPongToBurst:
-		rotation_degrees = _sync_angle_for_shot(0)
+		
+	if _rank <= 1: return
+	
+	if config.rank_scale_speed:
+		_eff_speed = lerp(_eff_speed, _eff_speed * (1.0 + config.rank_factor), p)
+	
+	if config.rank_scale_arms:
+		_eff_arms = int(lerp(float(_eff_arms),
+			float(_eff_arms) * (1.0 + config.rank_factor), p))
+	
+	if config.rank_scale_burst:
+		if _eff_burst > 1:
+			_eff_burst = int(lerp(float(_eff_burst),
+				float(_eff_burst) * (1.0 + config.rank_factor), p))
+		else:
+			# Single-shot bursts scale to multi-shot at high rank
+			_eff_burst = int(lerp(1.0, 1.0 + config.rank_factor * 3.0, p))
+	
+	if config.rank_scale_rotation:
+		_eff_rot_spd = lerp(_eff_rot_spd,
+			_eff_rot_spd * (1.0 + config.rank_factor), p)
+
+# ==============================================================================
+# MAIN FIRE LOOP
+# ==============================================================================
+
+func _fire_loop() -> void:
+	if not _running: return
+	if config.delay > 0.0: await get_tree().create_timer(config.delay, false).timeout
+	_do_burst_cycle()
+
+func _do_burst_cycle() -> void:
+	if not _running: return
+	
+	var is_sync := config.ping_pong and config.sync_ping_pong_to_burst
+	if not config.burst_rotation and not is_sync: _stop_rotation = true
+	
+	_fire_all_shots(is_sync)
+
+func _fire_all_shots(is_sync: bool) -> void:
+	if not _running: return
+	
+	# Capture aim target once per burst
+	if config.aim_at_player: _aim_target = GAME.get_player()
+	
+	var shot_speed := _current_speed
+	_shoot_one_shot(0, _eff_burst, is_sync, shot_speed)
+
+func _shoot_one_shot(shot_i: int, total: int, is_sync: bool, speed: float) -> void:
+	if not _running: return
+	if is_sync: _rotation_deg = _sync_angle_for_shot(shot_i)
+	if can_shoot: _fire(speed)
+	if shot_i >= total - 1:
+		_on_burst_finished(is_sync)
 		return
-	var half := float(abs(rotationAngle)) / 2.0
-	if centerStart:
-		rotation_degrees = -half if not pingPongInvert else half
-	else:
-		rotation_degrees = 0.0 if not pingPongInvert else float(rotationAngle)
+	
+	var next_speed := speed
+	if config.speed_var_target == EmitterConfig.SpeedVarTarget.BULLET:
+		next_speed *= config.speed_variation
+	
+	await get_tree().create_timer(config.bullet_interval, false).timeout
+	_shoot_one_shot(shot_i + 1, total, is_sync, next_speed)
+
+func _on_burst_finished(is_sync: bool) -> void:
+	if not _running: return
+	# Finalize sync ping-pong position
+	if is_sync:
+		_rotation_deg = _sync_angle_for_shot(_eff_burst - 1)
+		_ping_pong_dir *= -1
+	
+	_usable_arms = _eff_arms
+	if config.grow_with_round: _usable_arms += _bround
+	
+	if not config.burst_rotation and not is_sync:
+		_stop_rotation = false
+		_reset_rotation_direction()
+	
+	_bround += 1
+	total_rounds += 1
+	
+	if not config.keep_speed: _current_speed = _eff_speed
+	
+	if config.max_rounds >= 0 and total_rounds >= config.max_rounds:
+		_running = false
+		queue_free()
+		return
+	
+	await get_tree().create_timer(config.warm_up, false).timeout
+	_do_burst_cycle()
+
+# ==============================================================================
+# FIRE
+# ==============================================================================
+
+func _fire(current_speed: float) -> void:
+	var arms_to_use := alter_arms_for_round()
+	var half_n := maxf(float(arms_to_use - 1) / 2.0, 0.001)
+	var base_dir := _get_base_direction()
+	var gap_rad := deg_to_rad(config.symmetry_gap * 0.5) if config.use_symmetry else 0.0
+	
+	for r in config.repeat_count:
+		var rep_offset := deg_to_rad(
+			float(config.repeat_angle) / float(config.repeat_count) * float(r))
+		var rep_dir := base_dir.rotated(deg_to_rad(_rotation_deg) + rep_offset)
+		
+		var spread_step := float(config.spread_offset) / float(arms_to_use)
+		var divisor := float(arms_to_use) if config.spread_angle == 360.0 \
+			else maxf(1.0, float(arms_to_use - 1))
+		var angle_step := config.spread_angle / divisor
+		
+		var arm_speed := current_speed
+		
+		for i in arms_to_use:
+			# Skip chance
+			if config.skip_chance > 0.0 \
+					and DRNG.drandf_range(0.0, 1.0) < config.skip_chance: continue
+			# Per-arm speed variation
+			if config.speed_var_target == EmitterConfig.SpeedVarTarget.ARM:
+				arm_speed *= config.speed_variation
+			# Speed wave peak bonus
+			var peak_bonus := 0.0
+			if config.peak_count > 0 and arms_to_use > 1:
+				var x := float(i) / float(arms_to_use - 1)
+				peak_bonus = abs(sin(x * float(config.peak_count) * PI)) \
+					* config.peak_speed_bonus
+			# Spawn noise
+			var noise := Vector2(
+				DRNG.drandf_range(-float(config.random_offset), float(config.random_offset)),
+				DRNG.drandf_range(-float(config.random_offset), float(config.random_offset)))
+			# Direction and position
+			var shoot_dir: Vector2
+			var shoot_pos: Vector2
+			# Parallel shooting
+			if config.parallel:
+				shoot_dir = rep_dir.rotated(gap_rad)
+				var norm_d = abs(float(i) - half_n) / half_n
+				var steep_p := pow(norm_d, 1.0 / config.steepness_sharpness)
+				var steep_d := steep_p * half_n * float(config.steepness)
+				var lateral := float(i) - float(arms_to_use) / 2.0
+				shoot_pos = global_position + noise \
+					+ shoot_dir * steep_d \
+					+ shoot_dir.orthogonal() * (lateral * spread_step + spread_step / 2.0)
+			else:
+				var a_off := 0.0
+				if arms_to_use > 1:
+					a_off = angle_step * float(i) - config.spread_angle / 2.0 \
+						+ float(DRNG.drandf_range(-config.random_angle, config.random_angle))
+				shoot_dir = rep_dir.rotated(gap_rad + deg_to_rad(a_off))
+				if config.spread_angle == 360.0: shoot_dir *= -1.0
+				shoot_pos = global_position + noise
+			
+			# Fire arm_width bullets per arm
+			for j in config.arm_width:
+				var w_off := (float(j) - float(config.arm_width - 1) / 2.0) \
+					* spread_step * config.arm_spacing_factor
+				var final_pos := shoot_pos + shoot_dir.orthogonal() * w_off
+				var final_spd := (arm_speed + peak_bonus) \
+					* DRNG.drandf_range(1.0 - config.random_speed, 1.0 + config.random_speed)
+				# Per-bullet speed variation
+				if config.speed_var_target == EmitterConfig.SpeedVarTarget.BULLET:
+					arm_speed *= config.speed_variation
+				var arm_delay := float(i) * config.intra_arm_delay \
+					+ DRNG.drandf_range(0.0, config.stagger_delay)
+				_shoot_bullet(shoot_dir, final_pos, final_spd, arm_delay, false)
+				# Symmetry mirror
+				if config.use_symmetry:
+					var mirror_dir := _mirror_direction(shoot_dir, rep_dir)
+					var mirror_pos: Vector2
+					if config.parallel:
+						var norm_d2 = abs(float(i) - half_n) / half_n
+						var steep_p2 := pow(norm_d2, 1.0 / config.steepness_sharpness)
+						var steep_d2 := steep_p2 * half_n * float(config.steepness)
+						var lateral2 := float(i) - float(arms_to_use) / 2.0
+						mirror_pos = global_position + noise \
+							+ mirror_dir * steep_d2 \
+							+ mirror_dir.orthogonal() \
+								* (-(lateral2 * spread_step + spread_step / 2.0) - w_off)
+					else:
+						mirror_pos = shoot_pos + mirror_dir.orthogonal() * (-w_off)
+					_shoot_bullet(mirror_dir, mirror_pos, final_spd, arm_delay, true)
+
+# ==============================================================================
+# SHOOT ONE BULLET
+# ==============================================================================
+
+func _shoot_bullet(
+		dir: Vector2,
+		pos: Vector2,
+		spd: float,
+		delay: float,
+		is_mirror: bool) -> void:
+	if delay > 0.0: _shoot_bullet_delayed(dir, pos, spd, delay, is_mirror)
+	else: _spawn_bullet(dir, pos, spd, is_mirror)
+
+func _shoot_bullet_delayed(
+		dir: Vector2,
+		pos: Vector2,
+		spd: float,
+		wait: float,
+		is_mirror: bool) -> void:
+	await get_tree().create_timer(wait, false).timeout
+	if _running and is_inside_tree(): _spawn_bullet(dir, pos, spd, is_mirror)
+
+func _spawn_bullet(
+		dir: Vector2,
+		pos: Vector2,
+		spd: float,
+		is_mirror: bool) -> void:
+	if config.bullet_scene == null:
+		push_error("BulletEmitter '%s': bullet_scene is null." % name)
+		return
+	var bullet: Node = BPOOL.acquire(config.bullet_scene)
+	if bullet == null: return
+	# Configure behavior modifier
+	var behavior := config.behavior_type
+	if is_mirror: behavior = _flip_lr_behavior(behavior)
+	bullet.set_properties(dir, int(spd))
+	bullet.modify_direction(
+		behavior,
+		config.behavior_intensity,
+		config.behavior_deviation,
+		config.behavior_start_time,
+		config.behavior_duration)
+	if config.modify_speed:
+		bullet.modify_speed(
+			config.speed_phase_1,
+			config.speed_phase_1_time,
+			config.speed_phase_2,
+			config.speed_phase_2_time)
+	if config.speed_curve != null and bullet.has_method("set_speed_curve"):
+		bullet.set_speed_curve(config.speed_curve, config.base_speed,
+			config.speed_curve_duration)
+	# Position must be set after BPOOL.acquire()
+	bullet.global_position = pos + dir * float(config.distance_center)
+	# Sub-emitter
+	if config.sub_emitter_scene != null and bullet.has_method("set_sub_emitter"):
+		bullet.set_sub_emitter(
+			config.sub_emitter_scene,
+			int(config.sub_trigger),
+			config.sub_delay)
+
+# ==============================================================================
+# DIRECTION HELPERS
+# ==============================================================================
+
+func _get_base_direction() -> Vector2:
+	if config.aim_at_player:
+		return (_aim_target - global_position).normalized()
+	return _base_direction
+
+func _mirror_direction(dir: Vector2, axis: Vector2) -> Vector2:
+	var n := axis.normalized()
+	return (2.0 * dir.dot(n) * n - dir).normalized()
+
+func _flip_lr_behavior(b: EmitterConfig.BehaviorType) -> EmitterConfig.BehaviorType:
+	match b:
+		EmitterConfig.BehaviorType.TURN_LEFT:  return EmitterConfig.BehaviorType.TURN_RIGHT
+		EmitterConfig.BehaviorType.TURN_RIGHT: return EmitterConfig.BehaviorType.TURN_LEFT
+	return b
+
+func alter_arms_for_round() -> int:
+	if config.alter_arms > 0 and _bround % 2 == 1: return config.alter_arms
+	return _usable_arms
+
+# ==============================================================================
+# ROTATION HELPERS
+# ==============================================================================
+
+func _init_pingpong_angle() -> void:
+	if not config.ping_pong or config.rotation_angle == 0: return
+	if config.sync_ping_pong_to_burst:
+		_rotation_deg = _sync_angle_for_shot(0)
+		return
+	var half := float(abs(config.rotation_angle)) / 2.0
+	if config.center_start: _rotation_deg = -half if not config.ping_pong_invert else half
+	else: _rotation_deg = 0.0 if not config.ping_pong_invert else float(config.rotation_angle)
+
+func _sync_angle_for_shot(shot_i: int) -> float:
+	var total := float(abs(config.rotation_angle))
+	var lo := -total / 2.0 if config.center_start else 0.0
+	var hi :=  total / 2.0 if config.center_start else total
+	var t := 0.0 if _eff_burst <= 1 else float(shot_i) / float(_eff_burst - 1)
+	return lerp(lo, hi, t) if _ping_pong_dir >= 0 else lerp(hi, lo, t)
 
 func _reset_rotation_direction() -> void:
-	rotationDirection = 0 if rotationAngle == 0 else (1 if rotationAngle >= 0 else -1)
+	if config.rotation_angle == 0: _rotation_dir = 1
+	else: _rotation_dir = 1 if config.rotation_angle >= 0 else -1
 
-# ════════════════════════════════════════════════════════════════════════════
-#  RANK
-# ════════════════════════════════════════════════════════════════════════════
-func _apply_rank_modifiers() -> void:
-	if rank == 4: rank = 4.5
-
-	var pScale := (rank / 6.0) ** 2
-	if rank > 1:
-		speed         = lerp(speed,         speed         + speed         / 2.0, pScale)
-		arms          = int(lerp(float(arms),  float(arms)  + float(arms)  / 2.0, pScale))
-		rotationSpeed = lerp(rotationSpeed, rotationSpeed + rotationSpeed / 2.0, pScale)
-		burstCount    = int(lerp(float(burstCount), float(burstCount) + float(burstCount) / 2.0, pScale)) \
-			if burstCount > 1 \
-			else int(lerp(float(burstCount), float(burstCount) * 3.0, pScale))
-
-	if rank == 0:
-		speed *= 0.9
-		if arms       > 1: arms       = int(arms       * 1)
-		if burstCount > 1: burstCount = int(burstCount * 1)
-		rotationSpeed *= 0.9
-
-# ════════════════════════════════════════════════════════════════════════════
-#  LÍMITES DE ROTACIÓN (modo libre)
-# ════════════════════════════════════════════════════════════════════════════
 func _handle_rotation_bounds() -> void:
-	if rotationAngle == 0: return
-	var total := float(abs(rotationAngle))
-	var hi    :=  total / 2.0 if centerStart else total
-	var lo    := -total / 2.0 if centerStart else 0.0
-	if rotationAngle < 0:
-		var tmp := lo; lo = hi; hi = tmp
-	if pingPong:
-		if   rotation_degrees >= hi: rotationDirection = -1
-		elif rotation_degrees <= lo: rotationDirection =  1
+	if config.rotation_angle == 0: return
+	var total := float(abs(config.rotation_angle))
+	var hi :=  total / 2.0 if config.center_start else total
+	var lo := -total / 2.0 if config.center_start else 0.0
+	if config.rotation_angle < 0: var tmp := lo; lo = hi; hi = tmp
+	if config.ping_pong:
+		if _rotation_deg >= hi:   _rotation_dir = -1
+		elif _rotation_deg <= lo: _rotation_dir =  1
 	else:
-		if rotationSpeed > 0:
-			if rotation_degrees >= hi and abs(rotationAngle) < 360: rotationDirection = 0
-			if rotation_degrees <= lo and abs(rotationAngle) < 360: rotationDirection = 0
-
-# ════════════════════════════════════════════════════════════════════════════
-#  BUCLE PRINCIPAL
-# ════════════════════════════════════════════════════════════════════════════
-func shoot() -> void:
-	await get_tree().create_timer(delay, false).timeout
-	while true:
-		if aimAtPlayer: playerPos = GAME.get_player()
-		if aimAtMouse:  playerPos = get_global_mouse_position()
-
-		var currentSpeed: float = speed
-		var isSyncMode: bool    = pingPong and syncPingPongToBurst
-
-		if not burstRotation and not isSyncMode:
-			stopRotation = true
-
-		var t0: float = Time.get_ticks_msec() / 1000.0
-
-		for shot_i in burstCount:
-			if isSyncMode:
-				rotation_degrees = _sync_angle_for_shot(shot_i)
-			if speedVar == SpeedVar.BULLET: currentSpeed *= speedVariation
-			if canShoot: fire(currentSpeed)
-			await get_tree().create_timer(bulletInterval, false).timeout
-
-		if isSyncMode:
-			rotation_degrees = _sync_angle_for_shot(burstCount - 1)
-
-		usableArms = arms
-
-		if not burstRotation and not isSyncMode:
-			stopRotation = false
-			_reset_rotation_direction()
-
-		if isSyncMode and warmUp > 0.0:
-			stopRotation = true
-
-		var elapsed: float = (Time.get_ticks_msec() / 1000.0) - t0
-		if elapsed < warmUp:
-			await get_tree().create_timer(warmUp - elapsed, false).timeout
-
-		if isSyncMode:
-			_pingPongDir *= -1
-			stopRotation  = false
-
-		totalRounds += 1
-		if maxRounds >= 0 and totalRounds >= maxRounds:
-			queue_free()
-			return
-
-# ════════════════════════════════════════════════════════════════════════════
-#  FIRE
-# ════════════════════════════════════════════════════════════════════════════
-func fire(currentSpeed: float) -> void:
-	var armsToUse: int = alterArms if (alterArms > 0 and bRound % 2 == 1) else usableArms
-	# halfN: distancia del brazo central al extremo, para normalizar steepness.
-	var halfN: float = max(float(armsToUse - 1) / 2.0, 0.001)
-
-	for r in repeatCount:
-		var spreadStep: float = float(spreadOffset) / float(armsToUse)
-		var divisor:    float = float(armsToUse) if spreadAngle == 360.0 \
-								else max(1.0, float(armsToUse - 1))
-		var angleStep:  float = spreadAngle / divisor
-		var offCorr:    float = spreadStep / 2.0
-		var repRot:     float = float(repeatAngle) / float(repeatCount) * r
-
-		var baseDir := direction.rotated(rotation + deg_to_rad(repRot))
-		if aimAtPlayer or aimAtMouse:
-			baseDir = (playerPos - global_position).normalized()
-
-		# gapRad solo se aplica si useSymmetry está activo.
-		# Si no, symmetryGap != 0 rotaría toda la dirección de disparo aunque no haya espejo.
-		var gapRad: float = deg_to_rad(symmetryGap * 0.5) if useSymmetry else 0.0
-
-		var armSpeed: float = currentSpeed
-		for i in armsToUse:
-			if skipChance > 0.0 and DRNG.drandf_range(0.0, 1.0) < skipChance:
-				continue
-			if speedVar == SpeedVar.ARM: armSpeed *= speedVariation
-
-			# ── Onda de velocidad ─────────────────────────────────────────
-			var peakBonus: float = 0.0
-			if peakCount > 0 and armsToUse > 1:
-				var x: float = float(i) / float(armsToUse - 1)
-				peakBonus = abs(sin(x * float(peakCount) * PI)) * peakSpeedBonus
-
-			var noise := Vector2(DRNG.drandf_range(-randomOffset, randomOffset),
-								 DRNG.drandf_range(-randomOffset, randomOffset))
-
-			# ── Dirección y posición del disparo original ─────────────────
-			var shootDir: Vector2
-			var shootPos: Vector2
-
-			if parallel:
-				shootDir = baseDir.rotated(gapRad)
-				# steepnessSharpness controla la curva de la cuña:
-				# normDist = 0 en el centro, 1 en los extremos.
-				# pow(normDist, 1/sharpness): sharpness>1 = cuña más picuda.
-				var normDist  = abs(float(i) - halfN) / halfN
-				var steepPow  := pow(normDist, 1.0 / steepnessSharpness)
-				var steepDist := steepPow * halfN * float(steepness)
-				var lateral   := float(i) - float(armsToUse) / 2.0
-				shootPos  = global_position + noise
-				shootPos += shootDir * steepDist
-				shootPos += shootDir.orthogonal() * (lateral * spreadStep + offCorr)
-			else:
-				var aOff: float = 0.0
-				if armsToUse > 1:
-					aOff = angleStep * i - spreadAngle / 2.0 \
-						   + DRNG.drandf_range(-randomAngle, randomAngle)
-				shootDir = baseDir.rotated(gapRad + deg_to_rad(aOff))
-				if spreadAngle == 360.0:
-					shootDir *= -1.0
-				shootPos = global_position + noise
-
-			# ── Disparar balas del brazo (armWidth) ───────────────────────
-			for j in armWidth:
-				var wOff:     float   = (float(j) - float(armWidth - 1) / 2.0) \
-										* spreadStep * armSpacingFactor
-				var finalPos: Vector2 = shootPos + shootDir.orthogonal() * wOff
-				var finalSpd: float   = (armSpeed + peakBonus) \
-										* DRNG.drandf_range(1.0 - randomSpeed, 1.0 + randomSpeed)
-				var armDelay: float   = float(i) * intraArmDelay \
-										+ DRNG.drandf_range(0.0, staggerDelay)
-
-				_fire_bullet(shootDir, finalPos, finalSpd, armDelay, type)
-
-				# ── Copia simétrica ───────────────────────────────────────
-				if useSymmetry:
-					# Reflejar la dirección respecto al eje base (baseDir)
-					var mirrorDir: Vector2 = _mirror_direction(shootDir, baseDir)
-
-					var mirrorPos: Vector2
-					if parallel:
-						# Reconstruir posición espejo: misma profundidad (steep),
-						# lateral invertido respecto al eje
-						var normDist2  = abs(float(i) - halfN) / halfN
-						var steepPow2  := pow(normDist2, 1.0 / steepnessSharpness)
-						var steepDist2 := steepPow2 * halfN * float(steepness)
-						var lateral2   := float(i) - float(armsToUse) / 2.0
-						mirrorPos  = global_position + noise
-						mirrorPos += mirrorDir * steepDist2
-						mirrorPos += mirrorDir.orthogonal() * (-(lateral2 * spreadStep + offCorr))
-						mirrorPos += mirrorDir.orthogonal() * (-wOff)
-					else:
-						# Modo angular: misma posición de origen, armWidth invertido
-						mirrorPos = shootPos + mirrorDir.orthogonal() * (-wOff)
-
-					# LEFT↔RIGHT invertidos en la bala simétrica
-					_fire_bullet(mirrorDir, mirrorPos, finalSpd, armDelay, _flip_lr_type(type))
-
-	bRound += 1
-	if growWithRound: usableArms += 1
-
-# ════════════════════════════════════════════════════════════════════════════
-#  HELPERS
-# ════════════════════════════════════════════════════════════════════════════
-
-## Invierte LEFT y RIGHT. Cualquier otro tipo lo devuelve sin cambios.
-func _flip_lr_type(t: BulletDirection) -> BulletDirection:
-	match t:
-		BulletDirection.LEFT:  return BulletDirection.RIGHT
-		BulletDirection.RIGHT: return BulletDirection.LEFT
-		_: return t
-
-func _fire_bullet(dir: Vector2, pos: Vector2, spd: float,
-				  d: float, bType: BulletDirection) -> void:
-	if d > 0.0:
-		_shoot_bullet_delayed(dir, pos, spd, d, bType)
-	else:
-		_shoot_bullet(dir, pos, spd, bType)
-
-func _shoot_bullet_delayed(dir: Vector2, pos: Vector2, spd: float,
-							wait: float, bType: BulletDirection) -> void:
-	await get_tree().create_timer(wait, false).timeout
-	if is_inside_tree(): _shoot_bullet(dir, pos, spd, bType)
-
-func _shoot_bullet(dir: Vector2, pos: Vector2, spd: float,
-				   bType: BulletDirection) -> void:
-	var bullet = bulletScene.instantiate()
-	bullet.set_properties(dir, spd)
-	bullet.modify_direction(bType, gravIntensity, deviationAngle, dirStartTime, dirDuration)
-	if modifySpeed:
-		bullet.modify_speed(fstNewSpeed, fstStartTime, sndNewSpeed, sndStartTime)
-	if speedCurve != null and bullet.has_method("set_speed_curve"):
-		bullet.set_speed_curve(speedCurve, baseSpeed, speedCurveDuration)
-	# PRIMERO add_to_game (dispara _ready en la bala), DESPUÉS posición y sub-emitter.
-	# El orden importa: set_sub_emitter necesita que la bala ya esté en el árbol.
-	GLOBAL.add_to_game(bullet)
-	bullet.global_position = pos + dir * float(distanceCenter)
-	if subEmitterScene != null and bullet.has_method("set_sub_emitter"):
-		bullet.set_sub_emitter(subEmitterScene, int(subEmitTrigger), subEmitDelay)
-
-# API pública para compatibilidad con scripts externos
-func mirror_direction(dir: Vector2, axis: Vector2) -> Vector2:
-	return _mirror_direction(dir, axis)
-func reflect_vector(v: Vector2, axis: Vector2) -> Vector2:
-	return _reflect_vector(v, axis)
-func _mirror_direction(dir: Vector2, axis: Vector2) -> Vector2:
-	return _reflect_vector(dir, axis).normalized()
-func _reflect_vector(v: Vector2, axis: Vector2) -> Vector2:
-	var n := axis.normalized()
-	return 2.0 * v.dot(n) * n - v
+		if abs(config.rotation_angle) < 360:
+			if _rotation_deg >= hi: _rotation_dir = 0
+			if _rotation_deg <= lo: _rotation_dir = 0

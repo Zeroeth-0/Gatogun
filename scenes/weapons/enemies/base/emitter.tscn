@@ -1,8 +1,6 @@
 [gd_scene format=3 uid="uid://cwod13co6stfe"]
 
 [ext_resource type="Script" uid="uid://brhb4mwkf3rn1" path="res://source/weapons/emitter.gd" id="1_5biob"]
-[ext_resource type="PackedScene" uid="uid://dha3ds2h57s2b" path="res://scenes/bullets/bullet.tscn" id="2_oy8ri"]
 
 [node name="Emitter" type="Marker2D" unique_id=2059335812]
 script = ExtResource("1_5biob")
-bulletScene = ExtResource("2_oy8ri")
