@@ -1,216 +1,176 @@
-extends "res://source/enemies/enemy.gd"
+# source/enemies/enemy_gatogun.gd
+# Gatogun-specific enemy logic
+extends BaseEnemy
 
-# === EXPORTS ===
-@export var medal:         PackedScene = preload("res://scenes/items/medal.tscn")
-@export var revengeBullet: PackedScene = preload("res://scenes/bullets/revenge_bullet.tscn")
-@export var powerUp:       PackedScene = preload("res://scenes/items/power_up.tscn")
-@export var explosion:     PackedScene = preload("res://scenes/vfx/explosion.tscn")
-@export var comboLabel:    RichTextLabel
-@export var cutoff:        float = 450.0
+# ==============================================================================
+# EXPORTS
+# ==============================================================================
 
-const MEDAL_RANGE: float = 250.0
+## EnemyCombo label node. Assign in scene inspector.
+@export var combo_label: RichTextLabel
 
-# === ESTADO INTERNO ===
-var canDie:       bool  = false
-var canShoot:     bool  = true
-var health:       float = 0.0
-var lastBullet:   bool  = false
-var pulseMarked:  bool  = false
-var byBomb:       bool  = false
-var halvedHealth: bool  = false
-var emitter:      Node2D = null
-var enemType:     String = ""
-var explScale:    float  = 1.0
-# scoreCount se convierte en float porque se multiplica por 1.1 en muerte por pulse.
-# El export original es int, lo promovemos a float aquí para evitar errores de tipado.
-var _scoreCount_f: float = 0.0
+# ==============================================================================
+# INTERNAL STATE
+# ==============================================================================
 
-# === SHADER HIT ===
-var _hit_tween:    Tween          = null
-var _hit_material: ShaderMaterial = null
+var _health:       float = 0.0
+var _can_die:      bool  = false
+var _can_shoot:    bool  = true
+var _pulse_marked: bool  = false
+var _by_bomb:      bool  = false
+var _halved:       bool  = false
+var _last_bullet:  bool  = false
 
-# ─────────────────────────────────────────────
-func _ready() -> void:
-	# breath_seed es puramente visual: randf() nativo está bien (no afecta jugabilidad).
-	$Sprite2D.material.set_shader_parameter("breath_seed", randf_range(0.0, 100.0))
+var _emitter: BulletEmitter = null
 
-	if $Emitter: emitter = $Emitter
+var _hit_mat:   ShaderMaterial = null
+var _hit_tween: Tween          = null
 
-	match typeEnum:
-		EnemyType.STD:
-			health    = 16.0
-			enemType  = "STD"
-			explScale = 1.5
-		EnemyType.MID:
-			health    = 100.0
-			enemType  = "MID"
-			explScale = 2
-		EnemyType.ELITE:
-			health    = 160.0
-			enemType  = "ELITE"
-			explScale = 2.75
+# ==============================================================================
+# LIFECYCLE
+# ==============================================================================
 
-	_scoreCount_f = float(scoreCount)
+func _on_ready() -> void:
+	if data == null:
+		push_error("EnemyGatogun '%s': EnemyData not assigned." % name)
+		return
 
-	if isGround: $Hurtbox.add_to_group("Ground")
-	else:        $Hitbox.add_to_group("Damage")
+	_health  = data.base_health
+	_emitter = get_node_or_null("Emitter")
 
-	# Duplicar material para que cada enemigo tenga su propio estado de shader.
-	_hit_material = $Sprite2D.material as ShaderMaterial
-	if _hit_material:
-		_hit_material = _hit_material.duplicate()
-		$Sprite2D.material = _hit_material
-		# time_offset también es visual; randf() nativo correcto.
-		_hit_material.set_shader_parameter("time_offset", randf() * 100.0)
+	$Hitbox.add_to_group("Damage")
 
-# ─────────────────────────────────────────────
+	var sprite := get_node_or_null("Sprite2D") as Sprite2D
+	if sprite and sprite.material is ShaderMaterial:
+		_hit_mat = (sprite.material as ShaderMaterial).duplicate()
+		sprite.material = _hit_mat
+		_hit_mat.set_shader_parameter("breath_seed", randf_range(0.0, 100.0))
+		_hit_mat.set_shader_parameter("time_offset",  randf() * 100.0)
+
+# ==============================================================================
+# MAIN LOOP
+# ==============================================================================
+
 func _process(delta: float) -> void:
+	if data == null:
+		return
+
+	tick_movement(delta)
+	_check_cutoff()
+	_check_charge_overlap(delta)
+	_check_health_halving()
+
+	if _hit_mat:
+		_hit_mat.set_shader_parameter("custom_time",
+			Time.get_ticks_msec() / 1000.0)
+
 	_check_death()
 
-	stageTimer += delta
+# ==============================================================================
+# COMBAT
+# ==============================================================================
 
-	# Scroll y extraVel se gestionan en enemy._smooth_move().
-	# Aquí solo bloqueamos el disparo al salir de pantalla.
-	if position.y > cutoff:
-		canShoot = false
+func _check_cutoff() -> void:
+	if position.y > data.cutoff_y:
+		_set_can_shoot(false)
 
-	# Actualizar tiempo del shader de hit.
-	if _hit_material:
-		_hit_material.set_shader_parameter("custom_time", Time.get_ticks_msec() / 1000.0)
+func _check_charge_overlap(delta: float) -> void:
+	for area in $Hurtbox.get_overlapping_areas():
+		if area.is_in_group("Charge"):
+			_pulse_marked = true
+			_health -= delta * area.damage
 
-	# Daño por Charge (área de carga del jugador).
-	for a in $Hurtbox.get_overlapping_areas():
-		if a.is_in_group("Charge"):
-			pulseMarked = true
-			health -= delta * a.damage
+func _check_health_halving() -> void:
+	if _emitter == null or _halved:
+		return
+	if _emitter.total_rounds >= data.halving_trigger_round:
+		_health *= 0.5
+		_halved  = true
 
-	# Vulnerabilidad post-1er disparo: reduce vida a la mitad una sola vez.
-	if emitter != null and not halvedHealth:
-		var trigger_round: int = 1 if typeEnum != EnemyType.ELITE else 2
-		if emitter.total_rounds >= trigger_round:
-			health       *= 0.5
-			halvedHealth  = true
+func _set_can_shoot(value: bool) -> void:
+	_can_shoot = value
+	if _emitter:
+		_emitter.can_shoot = value
 
-	# Fases de movimiento.
-	match currentStage:
-		"childhood":
-			speed = childSpeed
-			if stageTimer > childDuration:
-				_change_stage("adulthood", adultInvert)
-			else:
-				apply_movement(childhood, childDuration, delta)
-		"adulthood":
-			speed = adultSpeed
-			if stageTimer > adultDuration:
-				_change_stage("old_age", oldInvert)
-			else:
-				apply_movement(adulthood, adultDuration, delta)
-		"old_age":
-			speed = oldSpeed
-			apply_movement(oldAge, adultDuration, delta)
+# ==============================================================================
+# DEATH
+# ==============================================================================
 
-# ─────────────────────────────────────────────
+func _check_death() -> void:
+	if _health > 0.0:
+		return
+
+	var score_f := float(data.score_count) + float(RANK.rank)
+	if _pulse_marked:
+		score_f *= 1.1
+
+	var revenge := data.drops_revenge \
+		and (position.y < 300.0 or _pulse_marked) \
+		and not _by_bomb \
+		and RANK.rank > 0
+
+	EVENTS.enemy_killed.emit(EnemyKillData.new(
+		EnemyData.EnemyType.keys()[data.enemy_type],
+		global_position,
+		data.explosion_scale,
+		SCORE.combo,
+		SCORE.mult,
+		RANK.rank,
+		int(score_f),
+		_pulse_marked,
+		_by_bomb,
+		_last_bullet,
+		not INPUT.fireHold,
+		revenge,
+		data.drops_powerup
+	))
+
+	if combo_label:
+		combo_label.free_label(EnemyData.EnemyType.keys()[data.enemy_type])
+
+	queue_free()
+
+# ==============================================================================
 # HIT FLASH
-# ─────────────────────────────────────────────
-func trigger_hit_flash() -> void:
-	if _hit_material == null: return
-	if _hit_tween: _hit_tween.kill()
+# ==============================================================================
 
-	_hit_material.set_shader_parameter("hit_effect", 1.0)
+func _trigger_hit_flash() -> void:
+	if _hit_mat == null:
+		return
+	if _hit_tween:
+		_hit_tween.kill()
+	_hit_mat.set_shader_parameter("hit_effect", 1.0)
 	_hit_tween = create_tween()
 	_hit_tween.tween_method(
-		func(val: float): _hit_material.set_shader_parameter("hit_effect", val),
+		func(v: float) -> void: _hit_mat.set_shader_parameter("hit_effect", v),
 		1.0, 0.0, 0.25
 	).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 
-# ─────────────────────────────────────────────
-# MUERTE Y RECOMPENSAS
-# ─────────────────────────────────────────────
-func _check_death() -> void:
-	if health > 0.0: return
+# ==============================================================================
+# AREA SIGNALS
+# ==============================================================================
 
-	# Explosión visual.
-	var expl := explosion.instantiate()
-	expl.global_position = global_position
-	expl.scale *= explScale
-	GLOBAL.add_to_game(expl)
-
-	# Puntuación base
-	var scoreVal = SCORE.combo * SCORE.mult
-	SCORE.add_score(SCORE.combo if scoreVal > 2000 else 2000)
-	_scoreCount_f = float(scoreCount) + float(RANK.rank)
-	if pulseMarked: _scoreCount_f *= 1.1
-
-	var player_pos := GAME.get_player()
-	var near_player := position.distance_to(player_pos) < MEDAL_RANGE
-	var medal_active := SCORE.medalCountdown > 0.0
-
-	# Medallas: solo si no fue bomba y el jugador está cerca, hay medallas activas o hay pulse.
-	if not byBomb and (near_player or medal_active or pulseMarked):
-		_spawn_score(int(_scoreCount_f), medal)
-
-		if lastBullet and not pulseMarked and not INPUT.fireHold:
-			if not medal_active:
-				# Primer kill limpio: arranca el contador de medallas.
-				SCORE.medalCountdown = SCORE.MAX_MEDAL_COUNTDOWN
-			else:
-				# Kill limpio encadenado: prolonga el contador.
-				SCORE.medalCountdown += 0.1
-
-	# Revenge bullets al morir cerca de la parte superior o con pulse.
-	if (position.y < 300.0 or pulseMarked) and not byBomb and RANK.rank > 0:
-		_spawn_score(int(_scoreCount_f), revengeBullet)
-
-	# Power-up al matar un MID (excepto con estilo STRONG).
-	if typeEnum == EnemyType.MID and GAME.DollStyle != GAME.DollEnum.STRONG:
-		_spawn_score(1, powerUp, true)
-
-	# Los ELITE cancelan todas las balas enemigas activas al morir.
-	if typeEnum == EnemyType.ELITE:
-		for bullet in get_tree().get_nodes_in_group("Enemy Bullet"):
-			if bullet.has_method("cancel"): bullet.cancel()
-
-	# Bonus por pulse.
-	if pulseMarked:
-		SCORE.increase_hot(5)
-		SCORE.increase_combo(100)
-	
-	if SCORE.hot <= 50: SCORE.hot = 50
-
-	if comboLabel: comboLabel.free_label(enemType)
-	queue_free()
-
-func _spawn_score(count: int, entity: PackedScene, center: bool = false) -> void:
-	for i in count:
-		var item := entity.instantiate()
-		GLOBAL.add_to_game(item, true)
-		var offset := Vector2.ZERO
-		if not center:
-			# DRNG para determinismo en replay: la posición del drop es gameplay.
-			offset = Vector2(DRNG.drandf_range(-float(size), float(size)), 0.0)
-		item.position = global_position + offset
-
-# ─────────────────────────────────────────────
-# COLISIONES
-# ─────────────────────────────────────────────
 func _on_hurtbox_area_entered(area: Node) -> void:
 	if area.is_in_group("Fire"):
-		if comboLabel: comboLabel.show_combo()
-		if canDie: health -= area.damage
-		lastBullet = (area.BulletType == area.BulletEnum.BURST)
-		trigger_hit_flash()
-	if area.is_in_group("Player") and isGround:
-		canShoot = false
+		if combo_label:
+			combo_label.show_combo()
+		if _can_die:
+			_health      -= area.damage
+			_last_bullet  = (area.BulletType == area.BulletEnum.BURST)
+		_trigger_hit_flash()
+
 	if area.is_in_group("Bomb"):
-		byBomb  = true
-		health -= area.damage
+		_by_bomb  = true
+		_health  -= area.damage
 
 func _on_hurtbox_area_exited(area: Node) -> void:
-	if area.is_in_group("Player") and isGround: canShoot = true
-	if area.is_in_group("Pulse"):               pulseMarked = false
+	if area.is_in_group("Pulse"):
+		_pulse_marked = false
 
 func _on_hitbox_area_entered(area: Node) -> void:
-	if area.is_in_group("Play"): canDie = true
+	if area.is_in_group("Play"):
+		_can_die = true
 
 func _on_hitbox_area_exited(area: Node) -> void:
-	if area.is_in_group("Free"): queue_free()
+	if area.is_in_group("Free"):
+		queue_free()

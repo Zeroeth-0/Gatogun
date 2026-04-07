@@ -158,9 +158,11 @@ func _start() -> void:
 	
 	_base_direction = EmitterConfig.direction_to_vec(config.direction_enum)\
 		.rotated(deg_to_rad(config.dir_deviation))
-
+	
 	_init_pingpong_angle()
 	_reset_rotation_direction()
+	await get_tree().process_frame
+	await get_tree().process_frame
 	_fire_loop()
 
 # ==============================================================================
@@ -222,27 +224,20 @@ func _do_burst_cycle() -> void:
 
 func _fire_all_shots(is_sync: bool) -> void:
 	if not _running: return
+	if config.aim_at_player:   _aim_target = GAME.get_player()
 	
-	# Capture aim target once per burst
-	if config.aim_at_player: _aim_target = GAME.get_player()
+	var speed := _current_speed
 	
-	var shot_speed := _current_speed
-	_shoot_one_shot(0, _eff_burst, is_sync, shot_speed)
-
-func _shoot_one_shot(shot_i: int, total: int, is_sync: bool, speed: float) -> void:
-	if not _running: return
-	if is_sync: _rotation_deg = _sync_angle_for_shot(shot_i)
-	if can_shoot: _fire(speed)
-	if shot_i >= total - 1:
-		_on_burst_finished(is_sync)
-		return
+	for shot_i in _eff_burst:
+		if not _running: return
+		if is_sync: _rotation_deg = _sync_angle_for_shot(shot_i)
+		if can_shoot: _fire(speed)
+		if shot_i < _eff_burst - 1:
+			if config.speed_var_target == EmitterConfig.SpeedVarTarget.BULLET:
+				speed *= config.speed_variation
+			await get_tree().create_timer(config.bullet_interval, false).timeout
 	
-	var next_speed := speed
-	if config.speed_var_target == EmitterConfig.SpeedVarTarget.BULLET:
-		next_speed *= config.speed_variation
-	
-	await get_tree().create_timer(config.bullet_interval, false).timeout
-	_shoot_one_shot(shot_i + 1, total, is_sync, next_speed)
+	_on_burst_finished(is_sync)
 
 func _on_burst_finished(is_sync: bool) -> void:
 	if not _running: return
@@ -282,38 +277,37 @@ func _fire(current_speed: float) -> void:
 	var gap_rad := deg_to_rad(config.symmetry_gap * 0.5) if config.use_symmetry else 0.0
 	
 	for r in config.repeat_count:
-		var rep_offset := deg_to_rad(
-			float(config.repeat_angle) / float(config.repeat_count) * float(r))
+		var rep_offset := deg_to_rad(float(config.repeat_angle) / float(config.repeat_count) * float(r))
 		var rep_dir := base_dir.rotated(deg_to_rad(_rotation_deg) + rep_offset)
-		
 		var spread_step := float(config.spread_offset) / float(arms_to_use)
 		var divisor := float(arms_to_use) if config.spread_angle == 360.0 \
 			else maxf(1.0, float(arms_to_use - 1))
 		var angle_step := config.spread_angle / divisor
-		
 		var arm_speed := current_speed
-		
+
 		for i in arms_to_use:
-			# Skip chance
 			if config.skip_chance > 0.0 \
-					and DRNG.drandf_range(0.0, 1.0) < config.skip_chance: continue
-			# Per-arm speed variation
+					and DRNG.drandf_range(0.0, 1.0) < config.skip_chance:
+				continue
+
+			# ARM: each arm within this single shot is faster than the previous
+			# BULLET: all arms in this shot share the same speed
 			if config.speed_var_target == EmitterConfig.SpeedVarTarget.ARM:
 				arm_speed *= config.speed_variation
-			# Speed wave peak bonus
+
 			var peak_bonus := 0.0
 			if config.peak_count > 0 and arms_to_use > 1:
 				var x := float(i) / float(arms_to_use - 1)
 				peak_bonus = abs(sin(x * float(config.peak_count) * PI)) \
 					* config.peak_speed_bonus
-			# Spawn noise
+
 			var noise := Vector2(
 				DRNG.drandf_range(-float(config.random_offset), float(config.random_offset)),
 				DRNG.drandf_range(-float(config.random_offset), float(config.random_offset)))
-			# Direction and position
+
 			var shoot_dir: Vector2
 			var shoot_pos: Vector2
-			# Parallel shooting
+
 			if config.parallel:
 				shoot_dir = rep_dir.rotated(gap_rad)
 				var norm_d = abs(float(i) - half_n) / half_n
@@ -329,23 +323,21 @@ func _fire(current_speed: float) -> void:
 					a_off = angle_step * float(i) - config.spread_angle / 2.0 \
 						+ float(DRNG.drandf_range(-config.random_angle, config.random_angle))
 				shoot_dir = rep_dir.rotated(gap_rad + deg_to_rad(a_off))
-				if config.spread_angle == 360.0: shoot_dir *= -1.0
+				if config.spread_angle == 360.0:
+					shoot_dir *= -1.0
 				shoot_pos = global_position + noise
-			
-			# Fire arm_width bullets per arm
+
+			var arm_delay := float(i) * config.intra_arm_delay \
+				+ DRNG.drandf_range(0.0, config.stagger_delay)
+
 			for j in config.arm_width:
 				var w_off := (float(j) - float(config.arm_width - 1) / 2.0) \
 					* spread_step * config.arm_spacing_factor
 				var final_pos := shoot_pos + shoot_dir.orthogonal() * w_off
 				var final_spd := (arm_speed + peak_bonus) \
 					* DRNG.drandf_range(1.0 - config.random_speed, 1.0 + config.random_speed)
-				# Per-bullet speed variation
-				if config.speed_var_target == EmitterConfig.SpeedVarTarget.BULLET:
-					arm_speed *= config.speed_variation
-				var arm_delay := float(i) * config.intra_arm_delay \
-					+ DRNG.drandf_range(0.0, config.stagger_delay)
 				_shoot_bullet(shoot_dir, final_pos, final_spd, arm_delay, false)
-				# Symmetry mirror
+
 				if config.use_symmetry:
 					var mirror_dir := _mirror_direction(shoot_dir, rep_dir)
 					var mirror_pos: Vector2

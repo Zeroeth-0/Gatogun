@@ -131,20 +131,25 @@ func _create_node(scene: PackedScene) -> Node:
 	return node
 
 func _activate(node: Node) -> void:
-	if !node.get_meta("bpool_in_tree", false):
+	if not node.get_meta("bpool_in_tree", false):
 		var subtree := GLOBAL.get_subtree()
 		if subtree == null:
 			push_error("BPOOL._activate() get_subtree() returned null")
 			return
 		subtree.add_child(node)
 		node.set_meta("bpool_in_tree", true)
-	
+	else:
+		# Move to end of parent
+		var parent := node.get_parent()
+		if is_instance_valid(parent):
+			parent.move_child(node, -1)
+
 	node.set_meta("bpool_active", true)
 	node.visible = true
 	node.set_process(true)
 	node.set_physics_process(true)
 	node.set_process_input(false)
-	
+
 	if node.has_method("on_acquired"): node.on_acquired()
 
 func _deactivate(node: Node) -> void:

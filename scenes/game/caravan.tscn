@@ -1,13 +1,15 @@
 [gd_scene format=3 uid="uid://bg0citcd3mksr"]
 
 [ext_resource type="Script" uid="uid://hrxsyfgjv1kg" path="res://source/levels/level_parser.gd" id="1_enroh"]
+[ext_resource type="Script" uid="uid://dxni8cw8okxda" path="res://resources/enemy_registry.gd" id="2_kvkgx"]
+[ext_resource type="Script" uid="uid://cwjdnkhkortfc" path="res://resources/enemy_registry_entry.gd" id="2_w4wkx"]
 [ext_resource type="PackedScene" uid="uid://60qb43njmjls" path="res://scenes/enemies/mid/blammo.tscn" id="2_y3o2u"]
 [ext_resource type="PackedScene" uid="uid://ux02h6c48bqc" path="res://scenes/enemies/mid/kabbi.tscn" id="3_w4wkx"]
 [ext_resource type="PackedScene" uid="uid://dud5qahk5max2" path="res://scenes/enemies/mid/springo.tscn" id="4_vx8wh"]
 [ext_resource type="PackedScene" uid="uid://bbrlpm3jwipc3" path="res://scenes/enemies/popcorn/sorro.tscn" id="5_exl27"]
 [ext_resource type="PackedScene" uid="uid://chxcaanjxbqw2" path="res://scenes/enemies/popcorn/torro.tscn" id="6_ewqge"]
-[ext_resource type="PackedScene" uid="uid://jhl4f6yw03ra" path="res://scenes/enemies/popcorn/rikki_d.tscn" id="7_pmvjo"]
 [ext_resource type="PackedScene" uid="uid://bpq47v1bplbew" path="res://scenes/enemies/popcorn/rikki_s.tscn" id="8_espgc"]
+[ext_resource type="PackedScene" uid="uid://jhl4f6yw03ra" path="res://scenes/enemies/popcorn/rikki_d.tscn" id="8_vx8wh"]
 [ext_resource type="Texture2D" uid="uid://chijma6mb38wf" path="res://background_cats.png" id="9_gog1b"]
 [ext_resource type="Script" uid="uid://582anxy540je" path="res://source/levels/background.gd" id="10_my08w"]
 [ext_resource type="Script" uid="uid://camgd3kf5nap7" path="res://source/levels/lane.gd" id="11_odagl"]
@@ -15,9 +17,56 @@
 [ext_resource type="PackedScene" uid="uid://cgts6rg8xrau" path="res://scenes/levels/playzone.tscn" id="13_2ki0c"]
 [ext_resource type="PackedScene" uid="uid://duam5mtyrxv5l" path="res://scenes/UI/hud.tscn" id="14_ujgk8"]
 
+[sub_resource type="Resource" id="Resource_exl27"]
+script = ExtResource("2_w4wkx")
+enemy_id = &"sorro"
+scene = ExtResource("5_exl27")
+metadata/_custom_type_script = "uid://cwjdnkhkortfc"
+
+[sub_resource type="Resource" id="Resource_ewqge"]
+script = ExtResource("2_w4wkx")
+enemy_id = &"torro"
+scene = ExtResource("6_ewqge")
+metadata/_custom_type_script = "uid://cwjdnkhkortfc"
+
+[sub_resource type="Resource" id="Resource_pmvjo"]
+script = ExtResource("2_w4wkx")
+enemy_id = &"rikki_s"
+scene = ExtResource("8_espgc")
+metadata/_custom_type_script = "uid://cwjdnkhkortfc"
+
+[sub_resource type="Resource" id="Resource_espgc"]
+script = ExtResource("2_w4wkx")
+enemy_id = &"springo"
+scene = ExtResource("4_vx8wh")
+metadata/_custom_type_script = "uid://cwjdnkhkortfc"
+
+[sub_resource type="Resource" id="Resource_gog1b"]
+script = ExtResource("2_w4wkx")
+enemy_id = &"blammo"
+scene = ExtResource("2_y3o2u")
+metadata/_custom_type_script = "uid://cwjdnkhkortfc"
+
+[sub_resource type="Resource" id="Resource_my08w"]
+script = ExtResource("2_w4wkx")
+enemy_id = &"rikki_d"
+scene = ExtResource("8_vx8wh")
+metadata/_custom_type_script = "uid://cwjdnkhkortfc"
+
+[sub_resource type="Resource" id="Resource_odagl"]
+script = ExtResource("2_w4wkx")
+enemy_id = &"kabbi"
+scene = ExtResource("3_w4wkx")
+metadata/_custom_type_script = "uid://cwjdnkhkortfc"
+
+[sub_resource type="Resource" id="Resource_30xcq"]
+script = ExtResource("2_kvkgx")
+entries = Array[ExtResource("2_w4wkx")]([SubResource("Resource_exl27"), SubResource("Resource_ewqge"), SubResource("Resource_pmvjo"), SubResource("Resource_espgc"), SubResource("Resource_gog1b"), SubResource("Resource_my08w"), SubResource("Resource_odagl")])
+metadata/_custom_type_script = "uid://dxni8cw8okxda"
+
 [node name="World" type="Node2D" unique_id=1973436339 groups=["Level"]]
 script = ExtResource("1_enroh")
-enemyScenes = Array[PackedScene]([ExtResource("2_y3o2u"), ExtResource("3_w4wkx"), ExtResource("4_vx8wh"), ExtResource("7_pmvjo"), ExtResource("8_espgc"), ExtResource("5_exl27"), ExtResource("6_ewqge")])
+registry = SubResource("Resource_30xcq")
 
 [node name="BackgroundCats" type="Sprite2D" parent="." unique_id=1049015543]
 modulate = Color(0.41215277, 0.41215238, 0.41215235, 0.5058824)

@@ -9,7 +9,7 @@ const GATOS: Array[Dictionary] = [
 const DOLLS: Array[Dictionary] = [
 	{"name": "NOEL",   "style": "STRONG"},
 	{"name": "ACTEA",  "style": "SPEED"},
-	{"name": "PIRARU", "style": "NEWBIE"},
+	{"name": "PIRU", "style": "NEWBIE"},
 ]
 
 var STYLES: Array[Dictionary]

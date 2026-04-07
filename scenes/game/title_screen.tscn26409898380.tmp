@@ -4,11 +4,25 @@
 [ext_resource type="Texture2D" uid="uid://wwpvo01jgd4s" path="res://sprites/logo_gatogun.png" id="2_3t1qn"]
 [ext_resource type="PackedScene" uid="uid://dag4p2j605ep3" path="res://scenes/vfx/menu_background.tscn" id="2_v1bup"]
 [ext_resource type="Shader" uid="uid://ceyfdtlbffr4j" path="res://shaders/drop_shadow.gdshader" id="3_v1bup"]
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/base/emitter.tscn" id="5_4nd0i"]
+[ext_resource type="PackedScene" uid="uid://dha3ds2h57s2b" path="res://scenes/bullets/bullet.tscn" id="6_f132y"]
+[ext_resource type="Script" uid="uid://xbsvaggi6su7" path="res://resources/emitter_config.gd" id="7_is7vn"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_v1bup"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yhou1"]
 shader = ExtResource("3_v1bup")
 shader_parameter/shadow_offset = Vector2(30, 40)
 shader_parameter/shadow_color = Color(0, 0, 0, 0.8)
+
+[sub_resource type="Resource" id="Resource_4nd0i"]
+script = ExtResource("7_is7vn")
+bullet_scene = ExtResource("6_f132y")
+base_speed = 210.0
+burst_count = 3
+bullet_interval = 0.08
+warm_up = 1.5
+arms = 8
+spread_angle = 360.0
+speed_variation = 1.229178921278807
 
 [node name="Title Screen" type="Control" unique_id=832146992]
 layout_mode = 3
@@ -25,10 +39,10 @@ bobbing_enabled = false
 [node name="MenuBackground" parent="." unique_id=432135716 instance=ExtResource("2_v1bup")]
 layout_mode = 0
 
-[node name="LogoGatogun" type="Sprite2D" parent="." unique_id=2101002880]
-material = SubResource("ShaderMaterial_v1bup")
-position = Vector2(336, 368)
-scale = Vector2(0.28229365, 0.2792783)
+[node name="LogoGatogun" type="Sprite2D" parent="." unique_id=374232484]
+material = SubResource("ShaderMaterial_yhou1")
+position = Vector2(341, 364)
+scale = Vector2(0.3, 0.3)
 texture = ExtResource("2_3t1qn")
 
 [node name="StartText" type="RichTextLabel" parent="." unique_id=339974098]
@@ -40,3 +54,7 @@ offset_bottom = 561.0
 text = "PUSH SHOOT BUTTON"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Emitter" parent="." unique_id=2059335812 instance=ExtResource("5_4nd0i")]
+position = Vector2(347, 354)
+config = SubResource("Resource_4nd0i")

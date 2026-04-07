@@ -36,6 +36,7 @@ GAME="*res://utils/GameManager.gd"
 FLOW="*uid://d2s16ey5stckg"
 GLOBAL="*res://utils/GlobalUtils.gd"
 BPOOL="*uid://bx20xmr67pie2"
+KILLS="*uid://ck5ykyc8lsjke"
 
 [display]
 

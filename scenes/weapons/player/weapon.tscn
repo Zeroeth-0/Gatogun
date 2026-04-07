@@ -49,26 +49,25 @@ script = ExtResource("1_3ropm")
 stdTargetPos = Vector2(70, 40)
 dpsTargetPos = Vector2(40, 40)
 
-[node name="Laser" parent="." unique_id=1697073958 instance=ExtResource("2_7ca01")]
-
-[node name="Burst" parent="." unique_id=1472949014 instance=ExtResource("3_ae5gp")]
-
 [node name="OptionL" parent="." unique_id=1613605707 node_paths=PackedStringArray("targetNode") instance=ExtResource("4_etdfv")]
 targetPos = Vector2(-70, 40)
 targetNode = NodePath("../OptionR")
 offSign = -1
-deviationAngle = -10.0
 
 [node name="OptionR" parent="." unique_id=509595740 node_paths=PackedStringArray("targetNode") instance=ExtResource("4_etdfv")]
 targetPos = Vector2(70, 40)
 targetNode = NodePath("..")
 offSign = 1
-deviationAngle = 10.0
+
+[node name="Laser" parent="." unique_id=1697073958 instance=ExtResource("2_7ca01")]
+
+[node name="Burst" parent="." unique_id=1472949014 instance=ExtResource("3_ae5gp")]
 
 [node name="Charge" parent="." unique_id=335478095 node_paths=PackedStringArray("sprite") instance=ExtResource("5_yrtdw")]
 sprite = NodePath("../Icon")
 
 [node name="Icon" type="Sprite2D" parent="." unique_id=1127111197 groups=["ShaderHolder"]]
+z_index = 1
 material = SubResource("ShaderMaterial_ae5gp")
 position = Vector2(0, -65)
 scale = Vector2(0.7, 0.7)

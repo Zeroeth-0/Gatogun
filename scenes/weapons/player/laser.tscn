@@ -1,8 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://dhpo7sa5v3t30"]
+[gd_scene format=3 uid="uid://dhpo7sa5v3t30"]
 
 [ext_resource type="Script" uid="uid://dbp1laj7a7kru" path="res://source/weapons/laser_weapon.gd" id="1_xrnny"]
 [ext_resource type="PackedScene" uid="uid://bkkquuwyecdv2" path="res://scenes/bullets/player/laser_bullet.tscn" id="2_7aqs4"]
 
-[node name="Laser" type="Node2D"]
+[node name="Laser" type="Node2D" unique_id=917502493]
 script = ExtResource("1_xrnny")
 bulletScene = ExtResource("2_7aqs4")

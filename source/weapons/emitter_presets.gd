@@ -3,6 +3,8 @@
 class_name EmitterPresets
 extends Object
 
+const PRED_BULLET := preload (("res://scenes/bullets/bullet.tscn"))
+
 # ==============================================================================
 # STREAM PATTERNS
 # ==============================================================================
@@ -10,6 +12,7 @@ extends Object
 ## Single aimed stream. Tracks player at burst start
 static func aimed_stream(speed: float = 350.0, warm_up: float = 0.8) -> EmitterConfig:
 	var c := EmitterConfig.new()
+	c.bullet_scene = PRED_BULLET
 	c.arms          = 1
 	c.spread_angle  = 0.0
 	c.aim_at_player = true
@@ -24,6 +27,7 @@ static func aimed_spread(
 		speed: float = 350.0,
 		warm_up: float = 1.2) -> EmitterConfig:
 	var c := EmitterConfig.new()
+	c.bullet_scene = PRED_BULLET
 	c.arms          = arms
 	c.spread_angle  = spread
 	c.aim_at_player = true
@@ -39,6 +43,7 @@ static func speed_layers(
 		aim: bool = true,
 		warm_up: float = 1.0) -> EmitterConfig:
 	var c := EmitterConfig.new()
+	c.bullet_scene = PRED_BULLET
 	c.arms           = layers
 	c.spread_angle   = 0.0
 	c.aim_at_player  = aim
@@ -58,6 +63,7 @@ static func ring(
 		rotation_speed: float = 0.0,
 		warm_up: float = 1.0) -> EmitterConfig:
 	var c := EmitterConfig.new()
+	c.bullet_scene = PRED_BULLET
 	c.arms           = arms
 	c.spread_angle   = 360.0
 	c.base_speed     = speed
@@ -72,6 +78,7 @@ static func alternating_ring(
 		speed: float = 300.0,
 		warm_up: float = 1.0) -> EmitterConfig:
 	var c := EmitterConfig.new()
+	c.bullet_scene = PRED_BULLET
 	c.arms         = arms_a
 	c.alter_arms   = arms_b
 	c.spread_angle = 360.0
@@ -88,6 +95,7 @@ static func layered_ring(
 		layer_interval: float = 0.08,
 		warm_up: float = 1.5) -> EmitterConfig:
 	var c := EmitterConfig.new()
+	c.bullet_scene = PRED_BULLET
 	c.arms            = arms
 	c.spread_angle    = 360.0
 	c.base_speed      = speed_inner
@@ -106,10 +114,14 @@ static func spinning_ring(
 		deg_per_second: float = 45.0,
 		warm_up: float = 0.8) -> EmitterConfig:
 	var c := EmitterConfig.new()
+	c.bullet_scene = PRED_BULLET
 	c.arms           = arms
 	c.spread_angle   = 360.0
 	c.base_speed     = speed
 	c.rotation_speed = deg_per_second
+	c.burst_rotation = true
+	c.burst_count    = 5
+	c.bullet_interval = 0.05
 	c.warm_up        = warm_up
 	return c
 
@@ -123,10 +135,14 @@ static func spiral(
 		deg_per_second: float = 60.0,
 		warm_up: float = 0.15) -> EmitterConfig:
 	var c := EmitterConfig.new()
+	c.bullet_scene = PRED_BULLET
 	c.arms           = 1
 	c.spread_angle   = 0.0
 	c.base_speed     = speed
 	c.rotation_speed = deg_per_second
+	c.burst_rotation = true
+	c.burst_count    = 8
+	c.bullet_interval = 0.05
 	c.warm_up        = warm_up
 	return c
 
@@ -136,10 +152,14 @@ static func double_spiral(
 		deg_per_second: float = 60.0,
 		warm_up: float = 0.15) -> EmitterConfig:
 	var c := EmitterConfig.new()
+	c.bullet_scene = PRED_BULLET
 	c.arms           = 2
 	c.spread_angle   = 180.0
 	c.base_speed     = speed
 	c.rotation_speed = deg_per_second
+	c.burst_rotation = true
+	c.burst_count    = 8
+	c.bullet_interval = 0.05
 	c.warm_up        = warm_up
 	return c
 
@@ -150,10 +170,14 @@ static func n_spiral(
 		deg_per_second: float = 45.0,
 		warm_up: float = 0.12) -> EmitterConfig:
 	var c := EmitterConfig.new()
+	c.bullet_scene = PRED_BULLET
 	c.arms           = arms
 	c.spread_angle   = 360.0 / float(arms) * float(arms - 1)
 	c.base_speed     = speed
 	c.rotation_speed = deg_per_second
+	c.burst_rotation = true
+	c.burst_count    = 8
+	c.bullet_interval = 0.05
 	c.warm_up        = warm_up
 	return c
 
@@ -169,6 +193,7 @@ static func sweep(
 		burst: int = 12,
 		warm_up: float = 0.5) -> EmitterConfig:
 	var c := EmitterConfig.new()
+	c.bullet_scene = PRED_BULLET
 	c.arms           = arms
 	c.spread_angle   = 0.0
 	c.aim_at_player  = true
@@ -188,6 +213,7 @@ static func symmetric_sweep(
 		burst: int = 10,
 		warm_up: float = 0.6) -> EmitterConfig:
 	var c := EmitterConfig.new()
+	c.bullet_scene = PRED_BULLET
 	c.arms           = 1
 	c.spread_angle   = 0.0
 	c.use_symmetry   = true
@@ -213,6 +239,7 @@ static func homing_burst(
 		turn_speed_deg: float = 120.0,
 		warm_up: float = 1.5) -> EmitterConfig:
 	var c := EmitterConfig.new()
+	c.bullet_scene = PRED_BULLET
 	c.arms             = count
 	c.spread_angle     = 360.0
 	c.base_speed       = speed
@@ -229,6 +256,7 @@ static func delayed_homing(
 		turn_speed_deg: float = 90.0,
 		warm_up: float = 1.2) -> EmitterConfig:
 	var c := EmitterConfig.new()
+	c.bullet_scene = PRED_BULLET
 	c.arms                 = arms
 	c.spread_angle         = 0.0
 	c.aim_at_player        = true
@@ -250,6 +278,7 @@ static func aimed_wall(
 		speed: float = 280.0,
 		warm_up: float = 2.0) -> EmitterConfig:
 	var c := EmitterConfig.new()
+	c.bullet_scene = PRED_BULLET
 	c.arms          = arms
 	c.spread_angle  = spread
 	c.aim_at_player = true
@@ -264,6 +293,7 @@ static func curtain(
 		speed: float = 260.0,
 		warm_up: float = 1.8) -> EmitterConfig:
 	var c := EmitterConfig.new()
+	c.bullet_scene = PRED_BULLET
 	c.arms          = arms
 	c.spread_angle  = 90.0
 	c.direction_enum = EmitterConfig.FiringDirection.SOUTH
@@ -278,6 +308,7 @@ static func scatter(
 		speed: float = 300.0,
 		speed_variance: float = 0.3) -> EmitterConfig:
 	var c := EmitterConfig.new()
+	c.bullet_scene = PRED_BULLET
 	c.arms         = count
 	c.spread_angle = 360.0
 	c.base_speed   = speed
@@ -295,6 +326,7 @@ static func scatter(
 ## Returns a copy of the config with all rank-scaling disabled
 static func no_rank(base: EmitterConfig) -> EmitterConfig:
 	var c: EmitterConfig = base.duplicate()
+	c.bullet_scene = PRED_BULLET
 	c.rank_scale_speed    = false
 	c.rank_scale_arms     = false
 	c.rank_scale_burst    = false
@@ -304,6 +336,7 @@ static func no_rank(base: EmitterConfig) -> EmitterConfig:
 ## Returns a copy with inverted rotation direction
 static func inverted(base: EmitterConfig) -> EmitterConfig:
 	var c: EmitterConfig = base.duplicate()
+	c.bullet_scene = PRED_BULLET
 	c.ping_pong_invert = not c.ping_pong_invert
 	c.rotation_speed   = -c.rotation_speed
 	return c
@@ -311,6 +344,7 @@ static func inverted(base: EmitterConfig) -> EmitterConfig:
 ## Returns a copy aimed downward (common for enemies entering from top)
 static func aimed_south(base: EmitterConfig) -> EmitterConfig:
 	var c: EmitterConfig = base.duplicate()
+	c.bullet_scene = PRED_BULLET
 	c.direction_enum = EmitterConfig.FiringDirection.SOUTH
 	c.aim_at_player  = false
 	return c
