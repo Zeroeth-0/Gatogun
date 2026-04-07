@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cq3bmvquga4va"]
 
-[ext_resource type="Script" uid="uid://bjqqt4k6kcpp6" path="res://source/UI/bonus.gd" id="1_ugwgi"]
+[ext_resource type="Script" uid="uid://bjqqt4k6kcpp6" path="res://source/UI/flow/bonus.gd" id="1_ugwgi"]
 [ext_resource type="Shader" uid="uid://ceyfdtlbffr4j" path="res://shaders/drop_shadow.gdshader" id="3_ihhwi"]
 [ext_resource type="Texture2D" uid="uid://dewbpvdlhw6qx" path="res://sprites/actea_render.png" id="4_ihhwi"]
 [ext_resource type="PackedScene" uid="uid://dahm536brwuk1" path="res://scenes/UI/medal_icon.tscn" id="5_ugwgi"]

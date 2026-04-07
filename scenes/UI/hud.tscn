@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://duam5mtyrxv5l"]
 
-[ext_resource type="Script" uid="uid://ccmb0til07tbv" path="res://source/UI/hud.gd" id="1_rd3kb"]
+[ext_resource type="Script" uid="uid://ccmb0til07tbv" path="res://source/UI/hud/hud.gd" id="1_rd3kb"]
 [ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_y5tme"]
 [ext_resource type="Shader" uid="uid://5sgorh56i7op" path="res://shaders/intensity_gauge.gdshader" id="3_y5tme"]
 

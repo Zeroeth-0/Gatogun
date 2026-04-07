@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cnkhwx8t1jwmf"]
 
-[ext_resource type="Script" uid="uid://djk52f4xp5wom" path="res://source/UI/enemy_combo.gd" id="1_f7643"]
+[ext_resource type="Script" uid="uid://djk52f4xp5wom" path="res://source/UI/hud/enemy_combo.gd" id="1_f7643"]
 
 [node name="EnemyCombo" type="RichTextLabel" unique_id=814699234]
 z_index = 10

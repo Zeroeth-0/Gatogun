@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://do0plaogmk66"]
 
-[ext_resource type="Script" uid="uid://c3j7kboh4htns" path="res://source/UI/game_over.gd" id="1_hfhxj"]
+[ext_resource type="Script" uid="uid://c3j7kboh4htns" path="res://source/UI/flow/game_over.gd" id="1_hfhxj"]
 [ext_resource type="PackedScene" uid="uid://dag4p2j605ep3" path="res://scenes/vfx/menu_background.tscn" id="2_er7gy"]
 
 [node name="Game Over" type="Control" unique_id=2090161155]

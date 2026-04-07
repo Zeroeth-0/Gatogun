@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dra7yqg0s7urp"]
 
-[ext_resource type="Script" uid="uid://ce6rccpqgcq1s" path="res://source/UI/title.gd" id="1_tg2ys"]
+[ext_resource type="Script" uid="uid://ce6rccpqgcq1s" path="res://source/UI/menus/title.gd" id="1_tg2ys"]
 [ext_resource type="Texture2D" uid="uid://wwpvo01jgd4s" path="res://sprites/logo_gatogun.png" id="2_3t1qn"]
 [ext_resource type="PackedScene" uid="uid://dag4p2j605ep3" path="res://scenes/vfx/menu_background.tscn" id="2_v1bup"]
 [ext_resource type="Shader" uid="uid://ceyfdtlbffr4j" path="res://shaders/drop_shadow.gdshader" id="3_v1bup"]

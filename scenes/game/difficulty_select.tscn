@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://hvdingcxhyb"]
 
-[ext_resource type="Script" uid="uid://dnuwp3olm7mxc" path="res://source/UI/difficulty_select.gd" id="1_yopkh"]
+[ext_resource type="Script" uid="uid://dnuwp3olm7mxc" path="res://source/UI/menus/difficulty_select.gd" id="1_yopkh"]
 [ext_resource type="PackedScene" uid="uid://dag4p2j605ep3" path="res://scenes/vfx/menu_background.tscn" id="2_yopkh"]
 
 [node name="Difficulty Select" type="Control" unique_id=1790599526]
