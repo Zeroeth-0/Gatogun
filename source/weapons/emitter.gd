@@ -243,15 +243,15 @@ func _on_burst_finished(is_sync: bool) -> void:
 	if not _running: return
 	# Finalize sync ping-pong position
 	if is_sync:
-		_rotation_deg = _sync_angle_for_shot(_eff_burst - 1)
 		_ping_pong_dir *= -1
+		_rotation_deg = _sync_angle_for_shot(_eff_burst - 1)
 	
 	_usable_arms = _eff_arms
 	if config.grow_with_round: _usable_arms += _bround
 	
 	if not config.burst_rotation and not is_sync:
 		_stop_rotation = false
-		_reset_rotation_direction()
+		if not config.ping_pong: _reset_rotation_direction()
 	
 	_bround += 1
 	total_rounds += 1

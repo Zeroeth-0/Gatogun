@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://bbrlpm3jwipc3" path="res://scenes/enemies/popcorn/sorro.tscn" id="5_exl27"]
 [ext_resource type="PackedScene" uid="uid://chxcaanjxbqw2" path="res://scenes/enemies/popcorn/torro.tscn" id="6_ewqge"]
 [ext_resource type="PackedScene" uid="uid://bpq47v1bplbew" path="res://scenes/enemies/popcorn/rikki_s.tscn" id="8_espgc"]
-[ext_resource type="PackedScene" uid="uid://jhl4f6yw03ra" path="res://scenes/enemies/popcorn/rikki_d.tscn" id="8_vx8wh"]
+[ext_resource type="PackedScene" uid="uid://jhl4f6yw03ra" path="res://scenes/enemies/popcorn/rikki_r.tscn" id="8_vx8wh"]
 [ext_resource type="Texture2D" uid="uid://chijma6mb38wf" path="res://background_cats.png" id="9_gog1b"]
 [ext_resource type="Script" uid="uid://582anxy540je" path="res://source/levels/background.gd" id="10_my08w"]
 [ext_resource type="Script" uid="uid://camgd3kf5nap7" path="res://source/levels/lane.gd" id="11_odagl"]

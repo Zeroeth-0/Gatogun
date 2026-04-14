@@ -10,7 +10,7 @@ shader = ExtResource("3_cqqbs")
 shader_parameter/shadow_offset = Vector2(30, 40)
 shader_parameter/shadow_color = Color(0, 0, 0, 0.54901963)
 
-[node name="Menu" type="Control" unique_id=324535070 node_paths=PackedStringArray("icons")]
+[node name="Menu" type="Control" unique_id=324535070]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -18,7 +18,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_s6rgi")
-icons = NodePath("MenuTotem")
 
 [node name="MenuBackground" parent="." unique_id=432135716 instance=ExtResource("2_w6tk6")]
 layout_mode = 0

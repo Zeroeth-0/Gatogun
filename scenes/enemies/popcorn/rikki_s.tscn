@@ -6,7 +6,6 @@
 
 [node name="Enemy" unique_id=2036288171 instance=ExtResource("1_221gf")]
 z_index = 2
-isGround = true
 
 [node name="Sprite2D" parent="." index="0" unique_id=444427917]
 modulate = Color(0, 0, 1, 1)
