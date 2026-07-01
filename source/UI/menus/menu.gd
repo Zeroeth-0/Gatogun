@@ -1,274 +1,102 @@
 extends Control
 
-const OPTIONS: Array[String] = [
-	"GAME START",
-	"CARAVAN",
-	"PRACTICE",
-	"LEADERBOARDS",
-	"GALLERY",
-	"SETTINGS",
-	"EXIT"
-]
+const OPTIONS: Array[String] = ["GAME START", "CARAVAN", "PRACTICE", "LEADERBOARDS", "GALLERY", "SETTINGS", "EXIT"]
 
-@onready var labels: Array[RichTextLabel] = []
+@onready var vbox: VBoxContainer = $VBoxContainer
 @export var icons: Sprite2D
-var vbox: VBoxContainer
 
-# === ESTADO INTERNO ===
-var selected: int = 0
-var initDelay: float = 0.20
-var repDelay: float = 0.1
-var deadzone: float = 0.1
-var repTimer: float = 0.0
-var lastDir: int = 0
-var first_frame: bool = true
-
-# === ANIMACIONES ===
-var can_interact: bool = false
-var active_tweens: Array[Tween] = []
+var labels: Array[RichTextLabel] = []
 var original_positions: Array[float] = []
+var nav: MenuNavigator
+var active_tweens: Array[Tween] = []
 
-# === CONFIGURACIÓN DIAGONAL ===
 @export var diagonal_offset: float = 10.0
-
-# === CONFIGURACIÓN DE SELECCIÓN ===
 @export var unselected_alpha: float = 0.75
-@export var blink_count: int = 3
-@export var blink_speed: float = 0.07
 
-# === SOMBRA ===
-@export var shadowColor: Color = Color(0, 0, 0, 0.6)
-@export var shadowOffset: Vector2 = Vector2(2, 2)
-@export var shadowSize: int = 20
-
-var _icons_base_scale: Vector2
 var _icons_original_x: float
-var _icons_ready: bool = false
-var _time: float = 0.0
 
 func _ready() -> void:
-	vbox = $VBoxContainer
-	vbox.clip_contents = false
-
 	FLOW.isCaravan = false
 	FLOW.inCaravan = false
 	FLOW._is_first_level = false
 	GAME.lives = GAME.liveCount
 
-	# Guardar escala y posición original del icons antes de moverlo
 	if icons:
-		_icons_base_scale  = icons.scale
-		_icons_original_x  = icons.position.x
+		_icons_original_x = icons.position.x
 		icons.visible = false
 
-	var base_font := load("res://fonts/AprilGothicOne-R.ttf")
-	var font := FontVariation.new()
-	font.base_font = base_font
-	font.opentype_features = {"kern": 0, "liga": 0, "calt": 0, "clig": 0}
-
+	vbox.clip_contents = false
 	for option_text in OPTIONS:
 		var label := RichTextLabel.new()
-		label.bbcode_enabled = true
-		label.fit_content = true
-		label.scroll_active = false
-		label.autowrap_mode = TextServer.AUTOWRAP_OFF
 		label.custom_minimum_size = Vector2(400, 40)
-		label.clip_contents = false
-
-		label.add_theme_font_override("normal_font", font)
-		label.add_theme_font_size_override("normal_font_size", 20)
-		label.add_theme_constant_override("outline_size", 20)
-		label.add_theme_color_override("outline_color", Color.BLACK)
-		label.add_theme_color_override("font_shadow_color", shadowColor)
-		label.add_theme_constant_override("shadow_offset_x", int(shadowOffset.x))
-		label.add_theme_constant_override("shadow_offset_y", int(shadowOffset.y))
-		label.add_theme_constant_override("shadow_outline_size", shadowSize)
-
-		label.text = option_text
-
-		vbox.modulate.a = 0
+		UIUtils.apply_menu_style(label, 20)
 		vbox.add_child(label)
 		labels.append(label)
 
-	update_selection()
+	nav = MenuNavigator.new()
+	nav.option_count = OPTIONS.size()
+	nav.selection_changed.connect(_update_selection)
+	nav.confirmed.connect(_on_confirmed)
+	nav.cancelled.connect(func(): _animate_exit(func(): GLOBAL.change_scene("TITLE")))
+	add_child(nav)
+
+	_update_selection(0)
+	vbox.modulate.a = 0
 
 	await get_tree().process_frame
 	await get_tree().process_frame
-	animate_entry()
+	_animate_entry()
 
-func animate_entry() -> void:
-	can_interact = true
-	var screen_width := get_viewport_rect().size.x
-
-	await get_tree().process_frame
-
-	original_positions.clear()
+func _update_selection(index: int) -> void:
 	for i in labels.size():
-		var base_x := labels[i].position.x
-		var diagonal_x := base_x + (i * diagonal_offset)
-		original_positions.append(diagonal_x)
-
-	vbox.modulate.a = 1
-
-	# Labels entran desde la derecha
-	for i in labels.size():
-		var label := labels[i]
-		label.position.x = screen_width + 100
-
-		var tween := create_tween()
-		tween.set_ease(Tween.EASE_OUT)
-		tween.set_trans(Tween.TRANS_CUBIC)
-		tween.tween_property(label, "position:x", original_positions[i], 0.35).set_delay(i * 0.05)
-		active_tweens.append(tween)
-
-	# Icons entra desde la izquierda
-	if icons:
-		icons.position.x = -screen_width - 200
-		icons.visible = true
-		var tw_icon := create_tween()
-		tw_icon.set_ease(Tween.EASE_OUT)
-		tw_icon.set_trans(Tween.TRANS_CUBIC)
-		tw_icon.tween_property(icons, "position:x", _icons_original_x, 0.40)
-		await tw_icon.finished
-		_icons_ready = true
-
-func animate_exit(callback: Callable) -> void:
-	can_interact = false
-	_icons_ready = false
-
-	for tween in active_tweens:
-		if tween and tween.is_valid():
-			tween.kill()
-	active_tweens.clear()
-
-	var screen_width := get_viewport_rect().size.x
-
-	# Labels salen hacia la derecha
-	for i in labels.size():
-		var tween := create_tween()
-		tween.set_ease(Tween.EASE_IN)
-		tween.set_trans(Tween.TRANS_CUBIC)
-		tween.tween_property(labels[i], "position:x", screen_width + 100, 0.25).set_delay((labels.size() - 1 - i) * 0.04)
-
-	# Icons sale hacia la izquierda
-	if icons:
-		var tw_icon := create_tween()
-		tw_icon.set_ease(Tween.EASE_IN)
-		tw_icon.set_trans(Tween.TRANS_CUBIC)
-		tw_icon.tween_property(icons, "position:x", -screen_width - 200, 0.28)
-
-	await get_tree().create_timer((labels.size() - 1) * 0.04 + 0.25).timeout
-	callback.call()
-
-func _process(delta: float) -> void:
-	_time += delta
-
-	if not can_interact:
-		return
-
-	var yAxis := INPUT.yAxis
-
-	var direction: int = 0
-	if yAxis > deadzone: direction = 1
-	elif yAxis < -deadzone: direction = -1
-
-	if direction != lastDir:
-		if direction != 0:
-			move_selection(direction == 1)
-			repTimer = initDelay
-		else: repTimer = 0.0
-		lastDir = direction
-
-	if direction != 0 and repTimer > 0:
-		repTimer -= delta
-		if repTimer <= 0:
-			move_selection(direction == 1)
-			repTimer = repDelay
-
-	if !first_frame:
-		if Input.is_action_just_pressed("C") or Input.is_action_just_pressed("A"):
-			confirm_selection()
-		if Input.is_action_just_pressed("B"):
-			animate_exit(func(): GLOBAL.change_scene("TITLE"))
-	else: first_frame = false
-
-func move_selection(is_down: bool) -> void:
-	if is_down: selected = (selected + 1) % OPTIONS.size()
-	else: selected = (selected - 1 + OPTIONS.size()) % OPTIONS.size()
-	update_selection()
-
-func update_selection() -> void:
-	for i in labels.size():
-		if i == selected:
+		if i == index:
 			labels[i].modulate = Color.WHITE
 			labels[i].text = "[wave amp=48 freq=5.0]" + OPTIONS[i] + "[/wave]"
-			shake_label(labels[i])
+			if not original_positions.is_empty(): UIUtils.shake_x(labels[i], original_positions[i])
 		else:
 			labels[i].modulate = Color(0.25, 0.25, 0.25, unselected_alpha)
 			labels[i].text = OPTIONS[i]
 
-func shake_label(label: RichTextLabel) -> void:
-	if original_positions.is_empty():
-		return
+func _animate_entry() -> void:
+	var screen_w := get_viewport_rect().size.x
+	original_positions.clear()
+	for i in labels.size(): original_positions.append(labels[i].position.x + (i * diagonal_offset))
+	
+	vbox.modulate.a = 1
+	active_tweens = UIUtils.animate_list_entry(labels, original_positions, screen_w)
+	
+	if icons:
+		icons.position.x = -screen_w - 200
+		icons.visible = true
+		var tw := create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+		tw.tween_property(icons, "position:x", _icons_original_x, 0.40)
+		await tw.finished
+		
+	nav.can_interact = true
 
-	var label_index := labels.find(label)
-	if label_index == -1:
-		return
+func _animate_exit(callback: Callable) -> void:
+	nav.can_interact = false
+	for t in active_tweens: if t and t.is_valid(): t.kill()
+	
+	var screen_w := get_viewport_rect().size.x
+	UIUtils.animate_list_exit(labels, screen_w)
+	
+	if icons:
+		var tw := create_tween().set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+		tw.tween_property(icons, "position:x", -screen_w - 200, 0.28)
 
-	var shake_tween := create_tween()
-	shake_tween.set_ease(Tween.EASE_IN_OUT)
-	shake_tween.set_trans(Tween.TRANS_SINE)
-
-	var original_x := original_positions[label_index]
-	var shake_amount := 4.0
-
-	shake_tween.tween_property(label, "position:x", original_x + shake_amount, 0.04)
-	shake_tween.tween_property(label, "position:x", original_x - shake_amount, 0.04)
-	shake_tween.tween_property(label, "position:x", original_x + shake_amount, 0.04)
-	shake_tween.tween_property(label, "position:x", original_x, 0.04)
-
-func blink_and_confirm(callback: Callable) -> void:
-	can_interact = false
-	var label := labels[selected]
-
-	for i in blink_count:
-		label.modulate = Color(1.0, 1.0, 1.0, 0.0)
-		await get_tree().create_timer(blink_speed).timeout
-		label.modulate = Color.WHITE
-		await get_tree().create_timer(blink_speed).timeout
-
+	await get_tree().create_timer((labels.size() - 1) * 0.04 + 0.25).timeout
 	callback.call()
 
-func confirm_selection() -> void:
-	match selected:
-		0: blink_and_confirm(game_start)
-		1: blink_and_confirm(caravan)
-		2: pass
-		3: pass
-		4: pass
-		5: pass
-		6: blink_and_confirm(exit_game)
-
-func game_start() -> void:
-	animate_exit(func(): GLOBAL.raw_change_scene("MODE"))
-
-func caravan() -> void:
-	RANK.DifficultyStyle = RANK.DifficultyEnum.ORIGINAL
-	FLOW.isCaravan = true
-	GAME.DollStyle = GAME.DollEnum.CARAVAN
-	animate_exit(func(): GLOBAL.raw_change_scene("GATO"))
-
-func practice() -> void:
-	pass
-
-func leaderboards() -> void:
-	pass
-
-func gallery() -> void:
-	pass
-
-func settings() -> void:
-	pass
-
-func exit_game() -> void:
-	animate_exit(func(): get_tree().quit())
+func _on_confirmed(index: int) -> void:
+	nav.can_interact = false
+	await UIUtils.blink_node(labels[index], get_tree())
+	match index:
+		0: _animate_exit(func(): GLOBAL.raw_change_scene("MODE"))
+		1: 
+			RANK.DifficultyStyle = RANK.DifficultyEnum.ORIGINAL
+			FLOW.isCaravan = true
+			GAME.DollStyle = GAME.DollEnum.CARAVAN
+			_animate_exit(func(): GLOBAL.raw_change_scene("GATO"))
+		6: _animate_exit(func(): get_tree().quit())
+		_: nav.can_interact = true # Para los menús no implementados

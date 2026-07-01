@@ -23,6 +23,7 @@ shader_parameter/rise_bias = 0.45
 shader_parameter/filament_str = 0.35
 
 [node name="Explosion" type="Node2D" unique_id=418346158]
+z_index = 3
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=2111601058 groups=["ShaderHolder"]]
 material = SubResource("ShaderMaterial_rckmw")
@@ -38,4 +39,5 @@ grow_vertical = 2
 script = ExtResource("1_6d3yd")
 
 [node name="Confetti" parent="ColorRect" unique_id=470888025 instance=ExtResource("3_2au8o")]
+z_index = 0
 position = Vector2(150, 150)
