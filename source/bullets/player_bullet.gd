@@ -41,6 +41,7 @@ func _on_acquired() -> void:
 	if BulletType == BulletEnum.LASER:
 		var lvl := clampi(WEAPON.laserLvl, 1, 4)
 		scale = Vector2.ONE * (0.5 + lvl * 0.3)
+	if BulletType == BulletEnum.BOMB: is_bomb = true
 
 func _on_released() -> void:
 	shader_bullet_type = -1
@@ -120,7 +121,7 @@ func _on_area_entered(area: Node) -> void:
 			isCancelled = true
 
 func _on_area_exited(area: Node) -> void:
-	if area.is_in_group("Free"): 
+	if area.is_in_group("Free") and BulletType != BulletEnum.BOMB:
 		isCancelled = true
 
 # ==============================================================================

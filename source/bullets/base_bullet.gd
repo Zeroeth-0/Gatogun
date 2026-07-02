@@ -19,6 +19,7 @@ var damage: int = 1
 var isCancelled: bool = false
 var _elapsed: float = 0.0
 var _has_been_visible: bool = false
+var is_bomb: bool = false
 
 ## Velocity applied this frame. Modified by subclasses
 var velocity: Vector2 = Vector2.ZERO
@@ -50,14 +51,14 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	_elapsed += delta
 	
-	if isCancelled: 
+	if isCancelled:
 		_do_release()
 		return
 	
 	# Bounds check
 	var vp_rect := get_viewport_rect()
 	if vp_rect.has_point(global_position): _has_been_visible = true
-	elif _has_been_visible:
+	elif _has_been_visible and !is_bomb:
 		_do_release()
 		return
 	

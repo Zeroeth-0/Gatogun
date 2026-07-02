@@ -79,7 +79,6 @@ func _on_confirmed(index: int) -> void:
 		2: _animate_exit(func():
 			GAME.playing = false
 			GLOBAL.resume_game()
-			RANK.reset_all()
 			SCORE.reset()
 			SCORE.reset_game_score()
 			GAME.store()

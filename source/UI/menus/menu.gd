@@ -92,11 +92,10 @@ func _on_confirmed(index: int) -> void:
 	nav.can_interact = false
 	await UIUtils.blink_node(labels[index], get_tree())
 	match index:
-		0: _animate_exit(func(): GLOBAL.raw_change_scene("MODE"))
+		0: _animate_exit(func(): GLOBAL.raw_change_scene("DOLL"))
 		1: 
-			RANK.DifficultyStyle = RANK.DifficultyEnum.ORIGINAL
 			FLOW.isCaravan = true
 			GAME.DollStyle = GAME.DollEnum.CARAVAN
-			_animate_exit(func(): GLOBAL.raw_change_scene("GATO"))
+			_animate_exit(func(): GLOBAL.raw_change_scene("CARAVAN"))
 		6: _animate_exit(func(): get_tree().quit())
 		_: nav.can_interact = true # Para los menús no implementados

@@ -88,10 +88,7 @@ var _bround:         int   = 0
 var _usable_arms:    int   = 1
 var _current_speed:  float = 0.0
 
-# Rank snapshot — taken once at start, not polled
-var _rank: int = 0
-
-# Effective values after rank scaling
+# Effective values (formerly scaled by rank)
 var _eff_speed:    float = 0.0
 var _eff_arms:     int   = 1
 var _eff_burst:    int   = 1
@@ -145,14 +142,17 @@ func resume() -> void:
 # ==============================================================================
 
 func _start() -> void:
-	_rank          = RANK.rank
 	_bround        = 0
 	total_rounds   = 0
 	_rotation_deg  = 0.0
 	_ping_pong_dir = -1 if config.ping_pong_invert else 1
 	_running       = true
 	
-	_apply_rank_scaling()
+	_eff_speed   = config.base_speed
+	_eff_arms    = config.arms
+	_eff_burst   = config.burst_count
+	_eff_rot_spd = config.rotation_speed
+
 	_usable_arms   = _eff_arms
 	_current_speed = _eff_speed
 	
@@ -164,46 +164,6 @@ func _start() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 	_fire_loop()
-
-# ==============================================================================
-# RANK SCALING
-# ==============================================================================
-
-func _apply_rank_scaling() -> void:
-	var r    := float(_rank)
-	var p    := pow(r / 6.0, 2.0)
-	
-	_eff_speed   = config.base_speed
-	_eff_arms    = config.arms
-	_eff_burst   = config.burst_count
-	_eff_rot_spd = config.rotation_speed
-	
-	# Rank 0: slight nerf to ease the game for beginners
-	if _rank == 0:
-		_eff_speed   *= 0.85
-		_eff_rot_spd *= 0.85
-		return
-		
-	if _rank <= 1: return
-	
-	if config.rank_scale_speed:
-		_eff_speed = lerp(_eff_speed, _eff_speed * (1.0 + config.rank_factor), p)
-	
-	if config.rank_scale_arms:
-		_eff_arms = int(lerp(float(_eff_arms),
-			float(_eff_arms) * (1.0 + config.rank_factor), p))
-	
-	if config.rank_scale_burst:
-		if _eff_burst > 1:
-			_eff_burst = int(lerp(float(_eff_burst),
-				float(_eff_burst) * (1.0 + config.rank_factor), p))
-		else:
-			# Single-shot bursts scale to multi-shot at high rank
-			_eff_burst = int(lerp(1.0, 1.0 + config.rank_factor * 3.0, p))
-	
-	if config.rank_scale_rotation:
-		_eff_rot_spd = lerp(_eff_rot_spd,
-			_eff_rot_spd * (1.0 + config.rank_factor), p)
 
 # ==============================================================================
 # MAIN FIRE LOOP

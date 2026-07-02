@@ -13,8 +13,6 @@ var is_transitioning := false
 @onready var menuScene: PackedScene = preload("res://scenes/game/menu.tscn")
 @onready var titleScene: PackedScene = preload("res://scenes/game/title_screen.tscn")
 @onready var lvlOneScene: PackedScene = preload("res://scenes/game/level_one.tscn")
-@onready var modeScene: PackedScene = preload("res://scenes/game/difficulty_select.tscn")
-@onready var gatoScene: PackedScene = preload("res://scenes/game/gato_select.tscn")
 @onready var dollScene: PackedScene = preload("res://scenes/game/doll_select.tscn")
 @export var caravanScene: PackedScene = preload("res://scenes/game/caravan.tscn")
 @export var practScene: PackedScene
@@ -101,8 +99,6 @@ func _instantiate_scene(scene_id: String) -> Node:
 		"MENU":        return menuScene.instantiate()
 		"TITLE":       return titleScene.instantiate()
 		"LEVEL_1":     return lvlOneScene.instantiate()
-		"MODE":        return modeScene.instantiate()
-		"GATO":        return gatoScene.instantiate()
 		"DOLL":        return dollScene.instantiate()
 		"CARAVAN":     return caravanScene.instantiate()
 		"PRACTICE":    return null #practScene.instantiate()

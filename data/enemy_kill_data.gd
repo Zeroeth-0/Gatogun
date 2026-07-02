@@ -13,7 +13,6 @@ var explosion_scale: float = 1.5
 # === Death state ===
 var combo_at_death: int
 var mult_at_death: int
-var rank_at_death: int
 var score_drop_count: int
 var by_charge: bool
 var by_bomb: bool
@@ -28,7 +27,6 @@ func _init(
 	p_explosion_scale: float,
 	p_combo: int,
 	p_mult: int,
-	p_rank: int,
 	p_score_drops: int,
 	p_charge: bool,
 	p_bomb: bool,
@@ -42,7 +40,6 @@ func _init(
 	explosion_scale = p_explosion_scale
 	combo_at_death = p_combo
 	mult_at_death = p_mult
-	rank_at_death = p_rank
 	score_drop_count = p_score_drops
 	by_charge = p_charge
 	by_bomb = p_bomb

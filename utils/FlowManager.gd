@@ -111,7 +111,6 @@ func restart_level() -> void:
 	GAME.inGame      = false
 	SCORE.reset()
 	SCORE.reset_game_score()
-	RANK.reset_soft()
 	GAME.store(Vector2(10000, 10000), false)
 	if isCaravan:
 		_load_caravan()

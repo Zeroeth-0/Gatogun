@@ -29,7 +29,8 @@ extends Resource
 @export_range(0.0, 2.0, 0.01) var bullet_interval: float = 0.1
 ## Seconds betweet bursts
 @export_range(0.0, 10.0, 0.05) var warm_up: float = 1.0
-## Total bursts before self-destruction. -1 = infinite
+## Total bursts before self-destruction.
+# -1 = infinite
 @export_range(-1, 200, 1) var max_rounds: int = -1
 
 # ==============================================================================
@@ -39,7 +40,8 @@ extends Resource
 @export_category("Shape")
 ## Number of directions fired per shot
 @export_range(1, 64, 1) var arms: int = 1
-## Alternate arm count on odd-numbered shots. 0 = disabled
+## Alternate arm count on odd-numbered shots.
+# 0 = disabled
 @export_range(0, 64, 1) var alter_arms: int = 0
 ## Add one arm per burst
 @export var grow_with_round: bool = false
@@ -123,7 +125,8 @@ enum BehaviorType {
 @export var behavior_type: BehaviorType = BehaviorType.NONE
 ## Seconds after spawn before the behavior activates
 @export_range(0.0, 5.0, 0.1) var behavior_start_time: float = 0.0
-## Seconds the behavior stays active. -1 = permanent
+## Seconds the behavior stays active.
+# -1 = permanent
 @export_range(-1.0, 10.0, 0.1) var behavior_duration: float = 5.0
 ## Intensity multiplier for the behavior
 @export_range(0.0, 1.0, 0.01) var behavior_intensity: float = 0.5
@@ -174,7 +177,8 @@ enum BehaviorType {
 enum SpeedVarTarget { BULLET, ARM }
 ## Apply  per bullet or per arm
 @export var speed_var_target: SpeedVarTarget = SpeedVarTarget.BULLET
-## Cumulative speed multiplier. 1 = no change
+## Cumulative speed multiplier.
+# 1 = no change
 @export_range(0.5, 2.0, 0.01) var speed_variation: float = 1.0
 ## Preserve speed accumulation across bursts
 @export var keep_speed: bool = false
@@ -194,22 +198,6 @@ enum SubEmitterTrigger {
 @export var sub_trigger: SubEmitterTrigger = SubEmitterTrigger.ON_DEATH
 ## Delay for trigger
 @export_range(0.0, 10.0, 0.1) var sub_delay: float = 0.5
-
-# ==============================================================================
-# RANK SCALING
-# ==============================================================================
-
-@export_category("Rank Scaling")
-## Scale bullet speed with rank
-@export var rank_scale_speed: bool = true
-## Scale arm count with rank
-@export var rank_scale_arms: bool = true
-## Scale burst count with rank
-@export var rank_scale_burst: bool = true
-## Scale rotation speed with rank
-@export var rank_scale_rotation: bool = true
-## Max fraction of the original value added at rank 6
-@export_range(0.0, 2.0, 0.05) var rank_factor: float = 0.5
 
 # ==============================================================================
 # STATIC DIRECTION MAP

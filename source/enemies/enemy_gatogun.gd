@@ -79,7 +79,7 @@ func _check_charge_overlap(delta: float) -> void:
 		if area.is_in_group("Charge"):
 			_pulse_marked = true
 			# Comprobación segura por si el area no tiene damage
-			_health -= delta * area.get("damage", 75.0)
+			_health -= delta * area.get("damage")
 
 func _check_health_halving() -> void:
 	if _emitter == null or _halved:
@@ -101,14 +101,13 @@ func _check_death() -> void:
 	if _health > 0.0:
 		return
 
-	var score_f := float(data.score_count) + float(RANK.rank)
+	var score_f := float(data.score_count)
 	if _pulse_marked:
 		score_f *= 1.1
 
-	var revenge := data.drops_revenge \
+	var revenge = data.drops_revenge \
 		and (position.y < 300.0 or _pulse_marked) \
-		and not _by_bomb \
-		and RANK.rank > 0
+		and not _by_bomb
 
 	EVENTS.enemy_killed.emit(EnemyKillData.new(
 		EnemyData.EnemyType.keys()[data.enemy_type],
@@ -116,7 +115,6 @@ func _check_death() -> void:
 		data.explosion_scale,
 		SCORE.combo,
 		SCORE.mult,
-		RANK.rank,
 		int(score_f),
 		_pulse_marked,
 		_by_bomb,

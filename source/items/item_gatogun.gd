@@ -25,7 +25,6 @@ func _on_area_entered(area: Node) -> void:
 		match itemEnum:
 			ItemType.MEDAL:
 				SCORE.increase_mult()
-				RANK.increase_combo()
 				FLOW.increase_medal_count()
 				if SCORE.mult % 2 == 0: SFX.play("medal", -12)
 			ItemType.POWERUP: WEAPON.lvl_up("ALL")

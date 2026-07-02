@@ -138,7 +138,4 @@ func _on_confirmed(_index: int) -> void:
 			FLOW.begin_game())
 
 func _go_back() -> void:
-	_animate_exit(func():
-		if SelectStyle == SelectEnum.GATO:
-			GLOBAL.raw_change_scene("MENU") if FLOW.isCaravan else GLOBAL.raw_change_scene("MODE")
-		else: GLOBAL.raw_change_scene("GATO"))
+	_animate_exit(func(): GLOBAL.raw_change_scene("MENU"))

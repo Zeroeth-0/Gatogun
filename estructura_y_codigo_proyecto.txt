@@ -24,10 +24,9 @@ ESTRUCTURA COMPLETA DEL PROYECTO
 (0tqq (Bfonts
 (0x   tqq (BAprilGothicOne-R.ttf
 (0x   mqq (BAprilGothicOne-R.ttf.import
-(0tqq (Bgenerar_fuente.sh
 (0tqq (Bicon.svg
 (0tqq (Bicon.svg.import
-(0tqq (Borganizador_proyecto.txt
+(0tqq (Borganizador_proyecto.sh
 (0tqq (Bproject.godot
 (0tqq (BREADME.md
 (0tqq (Bresources
@@ -71,11 +70,9 @@ ESTRUCTURA COMPLETA DEL PROYECTO
 (0x   x       mqq (Btorro.tscn
 (0x   tqq (Bgame
 (0x   x   tqq (Bcaravan.tscn
-(0x   x   tqq (Bdifficulty_select.tscn
 (0x   x   tqq (Bdoll_select.tscn
 (0x   x   tqq (Bgame_over.tscn
 (0x   x   tqq (Bgame.tscn
-(0x   x   tqq (Bgato_select.tscn
 (0x   x   tqq (Bgato_select.tscn7563702757.tmp
 (0x   x   tqq (Blevel_one.tscn
 (0x   x   tqq (Bmenu.tscn
@@ -93,7 +90,6 @@ ESTRUCTURA COMPLETA DEL PROYECTO
 (0x   x   tqq (B1up.tscn
 (0x   x   tqq (Bbomb_item.tscn
 (0x   x   tqq (Bitem.tscn
-(0x   x   tqq (Bmax_power_up.tscn
 (0x   x   tqq (Bmedal.tscn
 (0x   x   tqq (Bmedal.tscn142897719637.tmp
 (0x   x   mqq (Bpower_up.tscn
@@ -231,9 +227,7 @@ ESTRUCTURA COMPLETA DEL PROYECTO
 (0x   x   x   mqq (Bui_utils.gd.uid
 (0x   x   tqq (Bdebug
 (0x   x   x   tqq (Bfps_debug.gd
-(0x   x   x   tqq (Bfps_debug.gd.uid
-(0x   x   x   tqq (Brank_debug.gd
-(0x   x   x   mqq (Brank_debug.gd.uid
+(0x   x   x   mqq (Bfps_debug.gd.uid
 (0x   x   tqq (BfeverBar.gd.uid
 (0x   x   tqq (Bflow
 (0x   x   x   tqq (Bbonus.gd
@@ -254,8 +248,6 @@ ESTRUCTURA COMPLETA DEL PROYECTO
 (0x   x   x   tqq (Bzoom_viewport.gd
 (0x   x   x   mqq (Bzoom_viewport.gd.uid
 (0x   x   mqq (Bmenus
-(0x   x       tqq (Bdifficulty_select.gd
-(0x   x       tqq (Bdifficulty_select.gd.uid
 (0x   x       tqq (Bmenu.gd
 (0x   x       tqq (Bmenu.gd.uid
 (0x   x       tqq (Bpause.gd
@@ -367,8 +359,6 @@ ESTRUCTURA COMPLETA DEL PROYECTO
 (0    tqq (BGlobalUtils.gd.uid
 (0    tqq (BInputManager.gd
 (0    tqq (BInputManager.gd.uid
-(0    tqq (BRankManager.gd
-(0    tqq (BRankManager.gd.uid
 (0    tqq (BRNGManager.gd
 (0    tqq (BRNGManager.gd.uid
 (0    tqq (BScoreManager.gd
@@ -380,7 +370,7 @@ ESTRUCTURA COMPLETA DEL PROYECTO
 (0    tqq (BWeaponManager.gd
 (0    mqq (BWeaponManager.gd.uid
 
-44 directories, 333 files
+44 directories, 323 files
 
 ==================================================
 CÓDIGO FUENTE DE LOS SCRIPTS Y SHADERS
@@ -555,14 +545,6 @@ signal medal_countdown_flow(new_value: float)
 signal score_reset()
 
 # ==============================================================================
-# RANK
-# ==============================================================================
-
-## Issued by RankManager
-signal rank_flow(new_rank: int, previous_rank: int)
-signal medal_combo_flow(new_combo: int)
-
-# ==============================================================================
 # ITEMS
 # ==============================================================================
 
@@ -673,7 +655,6 @@ var explosion_scale: float = 1.5
 # === Death state ===
 var combo_at_death: int
 var mult_at_death: int
-var rank_at_death: int
 var score_drop_count: int
 var by_charge: bool
 var by_bomb: bool
@@ -688,7 +669,6 @@ func _init(
 	p_explosion_scale: float,
 	p_combo: int,
 	p_mult: int,
-	p_rank: int,
 	p_score_drops: int,
 	p_charge: bool,
 	p_bomb: bool,
@@ -702,7 +682,6 @@ func _init(
 	explosion_scale = p_explosion_scale
 	combo_at_death = p_combo
 	mult_at_death = p_mult
-	rank_at_death = p_rank
 	score_drop_count = p_score_drops
 	by_charge = p_charge
 	by_bomb = p_bomb
@@ -798,7 +777,8 @@ extends Resource
 @export_range(0.0, 2.0, 0.01) var bullet_interval: float = 0.1
 ## Seconds betweet bursts
 @export_range(0.0, 10.0, 0.05) var warm_up: float = 1.0
-## Total bursts before self-destruction. -1 = infinite
+## Total bursts before self-destruction.
+# -1 = infinite
 @export_range(-1, 200, 1) var max_rounds: int = -1
 
 # ==============================================================================
@@ -808,7 +788,8 @@ extends Resource
 @export_category("Shape")
 ## Number of directions fired per shot
 @export_range(1, 64, 1) var arms: int = 1
-## Alternate arm count on odd-numbered shots. 0 = disabled
+## Alternate arm count on odd-numbered shots.
+# 0 = disabled
 @export_range(0, 64, 1) var alter_arms: int = 0
 ## Add one arm per burst
 @export var grow_with_round: bool = false
@@ -892,7 +873,8 @@ enum BehaviorType {
 @export var behavior_type: BehaviorType = BehaviorType.NONE
 ## Seconds after spawn before the behavior activates
 @export_range(0.0, 5.0, 0.1) var behavior_start_time: float = 0.0
-## Seconds the behavior stays active. -1 = permanent
+## Seconds the behavior stays active.
+# -1 = permanent
 @export_range(-1.0, 10.0, 0.1) var behavior_duration: float = 5.0
 ## Intensity multiplier for the behavior
 @export_range(0.0, 1.0, 0.01) var behavior_intensity: float = 0.5
@@ -943,7 +925,8 @@ enum BehaviorType {
 enum SpeedVarTarget { BULLET, ARM }
 ## Apply  per bullet or per arm
 @export var speed_var_target: SpeedVarTarget = SpeedVarTarget.BULLET
-## Cumulative speed multiplier. 1 = no change
+## Cumulative speed multiplier.
+# 1 = no change
 @export_range(0.5, 2.0, 0.01) var speed_variation: float = 1.0
 ## Preserve speed accumulation across bursts
 @export var keep_speed: bool = false
@@ -963,22 +946,6 @@ enum SubEmitterTrigger {
 @export var sub_trigger: SubEmitterTrigger = SubEmitterTrigger.ON_DEATH
 ## Delay for trigger
 @export_range(0.0, 10.0, 0.1) var sub_delay: float = 0.5
-
-# ==============================================================================
-# RANK SCALING
-# ==============================================================================
-
-@export_category("Rank Scaling")
-## Scale bullet speed with rank
-@export var rank_scale_speed: bool = true
-## Scale arm count with rank
-@export var rank_scale_arms: bool = true
-## Scale burst count with rank
-@export var rank_scale_burst: bool = true
-## Scale rotation speed with rank
-@export var rank_scale_rotation: bool = true
-## Max fraction of the original value added at rank 6
-@export_range(0.0, 2.0, 0.05) var rank_factor: float = 0.5
 
 # ==============================================================================
 # STATIC DIRECTION MAP
@@ -3216,14 +3183,19 @@ func _closest_enemy() -> Node2D:
 # ==============================================================================
 
 func _on_area_entered(area: Node) -> void:
+	if isCancelled: return # Evitar que la colisión se procese múltiples veces
+	
 	if area.is_in_group("Enemy"):
 		if BulletType != BulletEnum.BOMB and BulletType != BulletEnum.CHARGE:
-			EVENTS.player_hit.emit(
-				BulletType, damage, INPUT.fireHold, global_position)
-			_do_release()
+			EVENTS.player_hit.emit(BulletType, damage, INPUT.fireHold, global_position)
+			# FIX: Usamos isCancelled = true en lugar de _do_release() para diferir la 
+			# destrucción al ciclo de _process. Esto garantiza que el enemigo siempre 
+			# tenga tiempo de detectar la bala en este frame de físicas.
+			isCancelled = true
 
 func _on_area_exited(area: Node) -> void:
-	if area.is_in_group("Free"): _do_release()
+	if area.is_in_group("Free"): 
+		isCancelled = true
 
 # ==============================================================================
 # HELPERS
@@ -3231,7 +3203,7 @@ func _on_area_exited(area: Node) -> void:
 
 func _lifetime_for_type() -> float:
 	match BulletType:
-		BulletEnum.BOMB:  return 3.0
+		BulletEnum.BOMB:  return 5.0
 		BulletEnum.LASER: return 0.15
 	return 1.5  # BURST, FOLLOW, CHARGE
 
@@ -3342,8 +3314,7 @@ func _process(delta: float) -> void:
 	_check_health_halving()
 
 	if _hit_mat:
-		_hit_mat.set_shader_parameter("custom_time",
-			Time.get_ticks_msec() / 1000.0)
+		_hit_mat.set_shader_parameter("custom_time", Time.get_ticks_msec() / 1000.0)
 
 	_check_death()
 
@@ -3356,10 +3327,12 @@ func _check_cutoff() -> void:
 		_set_can_shoot(false)
 
 func _check_charge_overlap(delta: float) -> void:
+	if not has_node("Hurtbox"): return
 	for area in $Hurtbox.get_overlapping_areas():
 		if area.is_in_group("Charge"):
 			_pulse_marked = true
-			_health -= delta * area.damage
+			# Comprobación segura por si el area no tiene damage
+			_health -= delta * area.get("damage", 75.0)
 
 func _check_health_halving() -> void:
 	if _emitter == null or _halved:
@@ -3381,14 +3354,13 @@ func _check_death() -> void:
 	if _health > 0.0:
 		return
 
-	var score_f := float(data.score_count) + float(RANK.rank)
+	var score_f := float(data.score_count)
 	if _pulse_marked:
 		score_f *= 1.1
 
-	var revenge := data.drops_revenge \
+	var revenge = data.drops_revenge \
 		and (position.y < 300.0 or _pulse_marked) \
-		and not _by_bomb \
-		and RANK.rank > 0
+		and not _by_bomb
 
 	EVENTS.enemy_killed.emit(EnemyKillData.new(
 		EnemyData.EnemyType.keys()[data.enemy_type],
@@ -3396,7 +3368,6 @@ func _check_death() -> void:
 		data.explosion_scale,
 		SCORE.combo,
 		SCORE.mult,
-		RANK.rank,
 		int(score_f),
 		_pulse_marked,
 		_by_bomb,
@@ -3436,13 +3407,22 @@ func _on_hurtbox_area_entered(area: Node) -> void:
 		if combo_label:
 			combo_label.show_combo()
 		if _can_die:
-			_health      -= area.damage
-			_last_bullet  = (area.BulletType == area.BulletEnum.BURST)
+			# Extracción segura de la variable damage
+			var dmg: float = area.get("damage") if "damage" in area else 1.0
+			_health -= dmg
+			
+			# Extracción segura de BulletType para evitar crashes si choca con otra cosa
+			if "BulletType" in area and "BulletEnum" in area:
+				_last_bullet = (area.BulletType == area.BulletEnum.BURST)
+			else:
+				_last_bullet = false
+				
 		_trigger_hit_flash()
 
 	if area.is_in_group("Bomb"):
 		_by_bomb  = true
-		_health  -= area.damage
+		var dmg: float = area.get("damage") if "damage" in area else 200.0
+		_health  -= dmg
 
 func _on_hurtbox_area_exited(area: Node) -> void:
 	if area.is_in_group("Pulse"):
@@ -3783,7 +3763,6 @@ func _on_area_entered(area: Node) -> void:
 		match itemEnum:
 			ItemType.MEDAL:
 				SCORE.increase_mult()
-				RANK.increase_combo()
 				FLOW.increase_medal_count()
 				if SCORE.mult % 2 == 0: SFX.play("medal", -12)
 			ItemType.POWERUP: WEAPON.lvl_up("ALL")
@@ -4748,17 +4727,6 @@ func _process(_delta):
 
 
 --------------------------------------------------
-ARCHIVO: ./source/UI/debug/rank_debug.gd
---------------------------------------------------
-
-extends Label
-
-# This is a debug script
-func _process(_delta):
-	text = "Rank: " + str(RANK.rank)
-
-
---------------------------------------------------
 ARCHIVO: ./source/UI/flow/bonus.gd
 --------------------------------------------------
 
@@ -5700,89 +5668,6 @@ func _clamp_to_screen() -> void:
 
 
 --------------------------------------------------
-ARCHIVO: ./source/UI/menus/difficulty_select.gd
---------------------------------------------------
-
-extends Control
-
-const OPTIONS: Array[String] = ["NOVICE", "ORIGINAL", "MANIAC"]
-
-@onready var vbox: VBoxContainer = $VBoxContainer
-var labels: Array[RichTextLabel] = []
-var original_positions: Array[float] = []
-var nav: MenuNavigator
-var active_tweens: Array[Tween] = []
-
-@export var diagonal_offset: float = 0.0
-@export var vertical_spacing: int = 80
-@export var unselected_alpha: float = 0.75
-
-func _ready() -> void:
-	vbox.clip_contents = false
-	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	vbox.add_theme_constant_override("separation", vertical_spacing)
-	RANK.reset_all()
-
-	for option_text in OPTIONS:
-		var label := RichTextLabel.new()
-		label.custom_minimum_size = Vector2(400, 50)
-		UIUtils.apply_menu_style(label, 30, Color(0,0,0,0.6), Vector2(2,2), 27, 27)
-		vbox.add_child(label)
-		labels.append(label)
-
-	nav = MenuNavigator.new()
-	nav.option_count = OPTIONS.size()
-	nav.selection_changed.connect(_update_selection)
-	nav.confirmed.connect(_on_confirmed)
-	nav.cancelled.connect(func(): _animate_exit(func(): GLOBAL.raw_change_scene("MENU")))
-	add_child(nav)
-
-	_update_selection(0)
-	vbox.modulate.a = 0
-
-	await get_tree().process_frame
-	await get_tree().process_frame
-	_animate_entry()
-
-func _update_selection(index: int) -> void:
-	for i in labels.size():
-		if i == index:
-			labels[i].modulate = Color.WHITE
-			labels[i].text = "[center][wave amp=48 freq=5.0]" + OPTIONS[i] + "[/wave][/center]"
-			if not original_positions.is_empty(): UIUtils.shake_x(labels[i], original_positions[i])
-		else:
-			labels[i].modulate = Color(0.25, 0.25, 0.25, unselected_alpha)
-			labels[i].text = "[center]" + OPTIONS[i] + "[/center]"
-
-func _animate_entry() -> void:
-	var screen_w := get_viewport_rect().size.x
-	original_positions.clear()
-	for i in labels.size(): original_positions.append(labels[i].position.x + (i * diagonal_offset))
-	
-	vbox.modulate.a = 1
-	active_tweens = UIUtils.animate_list_entry(labels, original_positions, screen_w)
-	nav.can_interact = true
-
-func _animate_exit(callback: Callable) -> void:
-	nav.can_interact = false
-	for t in active_tweens: if t and t.is_valid(): t.kill()
-	
-	UIUtils.animate_list_exit(labels, get_viewport_rect().size.x)
-	await get_tree().create_timer((labels.size() - 1) * 0.04 + 0.25).timeout
-	callback.call()
-
-func _on_confirmed(index: int) -> void:
-	nav.can_interact = false
-	match index:
-		0: RANK.set_difficulty(RANK.DifficultyEnum.NOVICE)
-		1: RANK.set_difficulty(RANK.DifficultyEnum.ORIGINAL)
-		2: RANK.set_difficulty(RANK.DifficultyEnum.MANIAC)
-	
-	await UIUtils.blink_node(labels[index], get_tree())
-	_animate_exit(func(): GLOBAL.raw_change_scene("GATO"))
-
-
---------------------------------------------------
 ARCHIVO: ./source/UI/menus/menu.gd
 --------------------------------------------------
 
@@ -5880,12 +5765,11 @@ func _on_confirmed(index: int) -> void:
 	nav.can_interact = false
 	await UIUtils.blink_node(labels[index], get_tree())
 	match index:
-		0: _animate_exit(func(): GLOBAL.raw_change_scene("MODE"))
+		0: _animate_exit(func(): GLOBAL.raw_change_scene("DOLL"))
 		1: 
-			RANK.DifficultyStyle = RANK.DifficultyEnum.ORIGINAL
 			FLOW.isCaravan = true
 			GAME.DollStyle = GAME.DollEnum.CARAVAN
-			_animate_exit(func(): GLOBAL.raw_change_scene("GATO"))
+			_animate_exit(func(): GLOBAL.raw_change_scene("CARAVAN"))
 		6: _animate_exit(func(): get_tree().quit())
 		_: nav.can_interact = true # Para los menús no implementados
 
@@ -5975,7 +5859,6 @@ func _on_confirmed(index: int) -> void:
 		2: _animate_exit(func():
 			GAME.playing = false
 			GLOBAL.resume_game()
-			RANK.reset_all()
 			SCORE.reset()
 			SCORE.reset_game_score()
 			GAME.store()
@@ -6132,10 +6015,7 @@ func _on_confirmed(_index: int) -> void:
 			FLOW.begin_game())
 
 func _go_back() -> void:
-	_animate_exit(func():
-		if SelectStyle == SelectEnum.GATO:
-			GLOBAL.raw_change_scene("MENU") if FLOW.isCaravan else GLOBAL.raw_change_scene("MODE")
-		else: GLOBAL.raw_change_scene("GATO"))
+	_animate_exit(func(): GLOBAL.raw_change_scene("MENU"))
 
 
 --------------------------------------------------
@@ -6472,10 +6352,7 @@ var _bround:         int   = 0
 var _usable_arms:    int   = 1
 var _current_speed:  float = 0.0
 
-# Rank snapshot — taken once at start, not polled
-var _rank: int = 0
-
-# Effective values after rank scaling
+# Effective values (formerly scaled by rank)
 var _eff_speed:    float = 0.0
 var _eff_arms:     int   = 1
 var _eff_burst:    int   = 1
@@ -6529,14 +6406,17 @@ func resume() -> void:
 # ==============================================================================
 
 func _start() -> void:
-	_rank          = RANK.rank
 	_bround        = 0
 	total_rounds   = 0
 	_rotation_deg  = 0.0
 	_ping_pong_dir = -1 if config.ping_pong_invert else 1
 	_running       = true
 	
-	_apply_rank_scaling()
+	_eff_speed   = config.base_speed
+	_eff_arms    = config.arms
+	_eff_burst   = config.burst_count
+	_eff_rot_spd = config.rotation_speed
+
 	_usable_arms   = _eff_arms
 	_current_speed = _eff_speed
 	
@@ -6548,46 +6428,6 @@ func _start() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 	_fire_loop()
-
-# ==============================================================================
-# RANK SCALING
-# ==============================================================================
-
-func _apply_rank_scaling() -> void:
-	var r    := float(_rank)
-	var p    := pow(r / 6.0, 2.0)
-	
-	_eff_speed   = config.base_speed
-	_eff_arms    = config.arms
-	_eff_burst   = config.burst_count
-	_eff_rot_spd = config.rotation_speed
-	
-	# Rank 0: slight nerf to ease the game for beginners
-	if _rank == 0:
-		_eff_speed   *= 0.85
-		_eff_rot_spd *= 0.85
-		return
-		
-	if _rank <= 1: return
-	
-	if config.rank_scale_speed:
-		_eff_speed = lerp(_eff_speed, _eff_speed * (1.0 + config.rank_factor), p)
-	
-	if config.rank_scale_arms:
-		_eff_arms = int(lerp(float(_eff_arms),
-			float(_eff_arms) * (1.0 + config.rank_factor), p))
-	
-	if config.rank_scale_burst:
-		if _eff_burst > 1:
-			_eff_burst = int(lerp(float(_eff_burst),
-				float(_eff_burst) * (1.0 + config.rank_factor), p))
-		else:
-			# Single-shot bursts scale to multi-shot at high rank
-			_eff_burst = int(lerp(1.0, 1.0 + config.rank_factor * 3.0, p))
-	
-	if config.rank_scale_rotation:
-		_eff_rot_spd = lerp(_eff_rot_spd,
-			_eff_rot_spd * (1.0 + config.rank_factor), p)
 
 # ==============================================================================
 # MAIN FIRE LOOP
@@ -7844,7 +7684,6 @@ func restart_level() -> void:
 	GAME.inGame      = false
 	SCORE.reset()
 	SCORE.reset_game_score()
-	RANK.reset_soft()
 	GAME.store(Vector2(10000, 10000), false)
 	if isCaravan:
 		_load_caravan()
@@ -8072,7 +7911,6 @@ var inGame: bool = false
 # === ESCENAS DISPONIBLES ===
 @onready var cat: PackedScene = preload("res://scenes/player/player.tscn")
 @onready var powerUp: PackedScene = preload("res://scenes/items/power_up.tscn")
-@onready var maxPowerUp: PackedScene = preload("res://scenes/items/max_power_up.tscn")
 @onready var uiContinue: PackedScene = preload("res://scenes/UI/continue.tscn")
 @onready var uiPause: PackedScene = preload("res://scenes/UI/pause.tscn")
 
@@ -8128,7 +7966,6 @@ func spawn() -> void:
 
 	if lives >= 0 or FLOW.isCaravan: _respawn_player()
 	else:
-		RANK.reset_soft()
 		_show_continue()
 
 func _respawn_player() -> void:
@@ -8138,9 +7975,7 @@ func _respawn_player() -> void:
 	if DollStyle != DollEnum.STRONG and DollStyle != DollEnum.CARAVAN: _spawn_missing_powerups()
 	_instance_player()
 
-	if spawnContinued:
-		lives = liveCount
-		if DollStyle != DollEnum.STRONG and DollStyle != DollEnum.CARAVAN: _spawn_powerup(maxPowerUp)
+	if spawnContinued: lives = liveCount
 
 	await get_tree().process_frame
 	_spawning = false
@@ -8246,8 +8081,6 @@ var is_transitioning := false
 @onready var menuScene: PackedScene = preload("res://scenes/game/menu.tscn")
 @onready var titleScene: PackedScene = preload("res://scenes/game/title_screen.tscn")
 @onready var lvlOneScene: PackedScene = preload("res://scenes/game/level_one.tscn")
-@onready var modeScene: PackedScene = preload("res://scenes/game/difficulty_select.tscn")
-@onready var gatoScene: PackedScene = preload("res://scenes/game/gato_select.tscn")
 @onready var dollScene: PackedScene = preload("res://scenes/game/doll_select.tscn")
 @export var caravanScene: PackedScene = preload("res://scenes/game/caravan.tscn")
 @export var practScene: PackedScene
@@ -8334,8 +8167,6 @@ func _instantiate_scene(scene_id: String) -> Node:
 		"MENU":        return menuScene.instantiate()
 		"TITLE":       return titleScene.instantiate()
 		"LEVEL_1":     return lvlOneScene.instantiate()
-		"MODE":        return modeScene.instantiate()
-		"GATO":        return gatoScene.instantiate()
 		"DOLL":        return dollScene.instantiate()
 		"CARAVAN":     return caravanScene.instantiate()
 		"PRACTICE":    return null #practScene.instantiate()
@@ -8418,124 +8249,6 @@ func _handle_actions(delta: float) -> void:
 		buffTimer = 0.0
 	
 	firing = buffActive or Input.is_action_pressed("A")
-
-
---------------------------------------------------
-ARCHIVO: ./utils/RankManager.gd
---------------------------------------------------
-
-# utils/RankManager.gd
-# Name: RANK
-extends Node
-
-# ==============================================================================
-# ENUMS + CONSTANTS
-# ==============================================================================
-
-enum DifficultyEnum { NOVICE, ORIGINAL, MANIAC }
-const THRESHOLD: int = 100
-
-# ==============================================================================
-# PUBLIC STATE
-# ==============================================================================
-
-var DifficultyStyle: DifficultyEnum = DifficultyEnum.ORIGINAL
-var rank: int = 1
-var baseRank: int = 1
-
-# ==============================================================================
-# INTERNAL STATE
-# ==============================================================================
-
-var medalCombo: int = 0
-var canDecrease: bool = false
-var _current_hot: float = 0.0 # local mirror to detect hot -> 0 transition
-
-# ==============================================================================
-# LIFECYCLE
-# ==============================================================================
-
-func _ready() -> void:
-	EVENTS.hot_flow.connect(_on_hot_flow)
-	EVENTS.mult_flow.connect(_on_mult_flow)
-
-# ==============================================================================
-# EVENT LISTENERS
-# ==============================================================================
-
-func _on_hot_flow(new_hot: float, _is_keeping: bool) -> void:
-	if DifficultyStyle != DifficultyEnum.ORIGINAL: return
-	var was_positive := _current_hot > 0.0
-	_current_hot = new_hot
-	if new_hot > 0.0: canDecrease = true
-	elif was_positive and canDecrease: decrease_rank()
-
-func _on_mult_flow(new_mult: int) -> void:
-	if DifficultyStyle != DifficultyEnum.ORIGINAL: return
-	# If mult dropped below our medal combo, the chain is broken
-	if new_mult < medalCombo: reset_combo()
-
-# ==============================================================================
-# PUBLIC API
-# ==============================================================================
-
-func increase_combo() -> void:
-	if DifficultyStyle != DifficultyEnum.ORIGINAL: return
-	medalCombo += 1
-	EVENTS.medal_combo_flow.emit(medalCombo)
-	if medalCombo >= THRESHOLD * rank: increase_rank()
-
-func increase_rank() -> void:
-	if DifficultyStyle != DifficultyEnum.ORIGINAL: return
-	var prev := rank
-	rank = min(rank + 1, 6)
-	reset_combo()
-	if rank != prev: EVENTS.rank_flow.emit(rank, prev)
-
-func decrease_rank() -> void:
-	if DifficultyStyle != DifficultyEnum.ORIGINAL: return
-	var prev := rank
-	rank = max(rank - 1, 1)
-	canDecrease = false
-	reset_combo()
-	if rank != prev: EVENTS.rank_flow.emit(rank, prev)
-
-func reset_combo() -> void:
-	medalCombo = 0
-	EVENTS.medal_combo_flow.emit(0)
-
-func reset_all() -> void:
-	reset_combo()
-	canDecrease = false
-	_current_hot = 0.0
-	DifficultyStyle = DifficultyEnum.ORIGINAL
-	var prev := rank
-	rank = 1
-	baseRank = 1
-	if rank != prev: EVENTS.rank_flow.emit(rank, prev)
-
-func reset_soft() -> void:
-	reset_combo()
-	canDecrease = false
-	_current_hot = 0.0
-	var prev := rank
-	rank = baseRank
-	if rank != prev: EVENTS.rank_flow.emit(rank, prev)
-
-## Called when difficulty is selected. Sets baseRank and clamps rank
-func set_difficulty(style: DifficultyEnum) -> void:
-	DifficultyStyle = style
-	match style:
-		DifficultyEnum.NOVICE:
-			baseRank = 0
-			rank = 0
-		DifficultyEnum.MANIAC:
-			baseRank = 6
-			rank = 6
-		DifficultyEnum.ORIGINAL:
-			baseRank = 1
-			rank = 1
-	EVENTS.rank_flow.emit(rank, rank)
 
 
 --------------------------------------------------

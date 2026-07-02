@@ -9,7 +9,6 @@ var inGame: bool = false
 # === ESCENAS DISPONIBLES ===
 @onready var cat: PackedScene = preload("res://scenes/player/player.tscn")
 @onready var powerUp: PackedScene = preload("res://scenes/items/power_up.tscn")
-@onready var maxPowerUp: PackedScene = preload("res://scenes/items/max_power_up.tscn")
 @onready var uiContinue: PackedScene = preload("res://scenes/UI/continue.tscn")
 @onready var uiPause: PackedScene = preload("res://scenes/UI/pause.tscn")
 
@@ -65,7 +64,6 @@ func spawn() -> void:
 
 	if lives >= 0 or FLOW.isCaravan: _respawn_player()
 	else:
-		RANK.reset_soft()
 		_show_continue()
 
 func _respawn_player() -> void:
@@ -75,9 +73,7 @@ func _respawn_player() -> void:
 	if DollStyle != DollEnum.STRONG and DollStyle != DollEnum.CARAVAN: _spawn_missing_powerups()
 	_instance_player()
 
-	if spawnContinued:
-		lives = liveCount
-		if DollStyle != DollEnum.STRONG and DollStyle != DollEnum.CARAVAN: _spawn_powerup(maxPowerUp)
+	if spawnContinued: lives = liveCount
 
 	await get_tree().process_frame
 	_spawning = false
