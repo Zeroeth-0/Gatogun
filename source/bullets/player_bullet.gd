@@ -109,14 +109,19 @@ func _closest_enemy() -> Node2D:
 # ==============================================================================
 
 func _on_area_entered(area: Node) -> void:
+	if isCancelled: return # Evitar que la colisión se procese múltiples veces
+	
 	if area.is_in_group("Enemy"):
 		if BulletType != BulletEnum.BOMB and BulletType != BulletEnum.CHARGE:
-			EVENTS.player_hit.emit(
-				BulletType, damage, INPUT.fireHold, global_position)
-			_do_release()
+			EVENTS.player_hit.emit(BulletType, damage, INPUT.fireHold, global_position)
+			# FIX: Usamos isCancelled = true en lugar de _do_release() para diferir la 
+			# destrucción al ciclo de _process. Esto garantiza que el enemigo siempre 
+			# tenga tiempo de detectar la bala en este frame de físicas.
+			isCancelled = true
 
 func _on_area_exited(area: Node) -> void:
-	if area.is_in_group("Free"): _do_release()
+	if area.is_in_group("Free"): 
+		isCancelled = true
 
 # ==============================================================================
 # HELPERS

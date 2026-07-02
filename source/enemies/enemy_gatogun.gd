@@ -61,8 +61,7 @@ func _process(delta: float) -> void:
 	_check_health_halving()
 
 	if _hit_mat:
-		_hit_mat.set_shader_parameter("custom_time",
-			Time.get_ticks_msec() / 1000.0)
+		_hit_mat.set_shader_parameter("custom_time", Time.get_ticks_msec() / 1000.0)
 
 	_check_death()
 
@@ -75,10 +74,12 @@ func _check_cutoff() -> void:
 		_set_can_shoot(false)
 
 func _check_charge_overlap(delta: float) -> void:
+	if not has_node("Hurtbox"): return
 	for area in $Hurtbox.get_overlapping_areas():
 		if area.is_in_group("Charge"):
 			_pulse_marked = true
-			_health -= delta * area.damage
+			# Comprobación segura por si el area no tiene damage
+			_health -= delta * area.get("damage", 75.0)
 
 func _check_health_halving() -> void:
 	if _emitter == null or _halved:
@@ -155,13 +156,22 @@ func _on_hurtbox_area_entered(area: Node) -> void:
 		if combo_label:
 			combo_label.show_combo()
 		if _can_die:
-			_health      -= area.damage
-			_last_bullet  = (area.BulletType == area.BulletEnum.BURST)
+			# Extracción segura de la variable damage
+			var dmg: float = area.get("damage") if "damage" in area else 1.0
+			_health -= dmg
+			
+			# Extracción segura de BulletType para evitar crashes si choca con otra cosa
+			if "BulletType" in area and "BulletEnum" in area:
+				_last_bullet = (area.BulletType == area.BulletEnum.BURST)
+			else:
+				_last_bullet = false
+				
 		_trigger_hit_flash()
 
 	if area.is_in_group("Bomb"):
 		_by_bomb  = true
-		_health  -= area.damage
+		var dmg: float = area.get("damage") if "damage" in area else 200.0
+		_health  -= dmg
 
 func _on_hurtbox_area_exited(area: Node) -> void:
 	if area.is_in_group("Pulse"):
