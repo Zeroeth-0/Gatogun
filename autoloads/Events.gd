@@ -60,7 +60,7 @@ signal score_reset()
 ## Issued by ItemGatogun
 signal item_collected(item_type: int, position: Vector2)
 signal medal_collected(position: Vector2, new_mult: int)
-signal powerup_collected(weapon_id: StringName, new_level: int)
+signal powerup_collected(new_style: int)
 signal oneup_collected(new_lives: int)
 
 # ==============================================================================

@@ -54,14 +54,12 @@ func _setup_doll_style() -> void:
 			maxBombs  = 4
 			bombCount = 2
 		GAME.DollEnum.STRONG:
-			WEAPON.lvl_up(&"MAX")
 			maxBombs  = 2
 			bombCount = 1
 		GAME.DollEnum.NEWBIE:
 			maxBombs  = 6
 			bombCount = 3
 		GAME.DollEnum.CARAVAN:
-			WEAPON.lvl_up(&"MAX")
 			maxBombs  = 0
 			bombCount = 0
 

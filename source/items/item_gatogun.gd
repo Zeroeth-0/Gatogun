@@ -1,10 +1,12 @@
 extends "res://source/items/item.gd"
 
 # === TIPOS DE ITEM ===
-enum ItemType { MEDAL, POWERUP, MAXPOWERUP, BOMB, ONEUP }
+enum ItemType { MEDAL, SIDESITEM, ORBITITEM, FOLLOWITEM, BOMB, ONEUP }
+enum GrantedStyleEnum { SIDES, ORBIT, FOLLOW }
 
 # === EXPORTABLES CONFIGURABLES ===
 @export var itemEnum: ItemType = ItemType.MEDAL                                 # Tipo de item
+@export var grantedOptionStyle: GrantedStyleEnum = GrantedStyleEnum.SIDES       # Estilo que otorga
 
 # === CONSTANTES ===
 const COLLECT_HEIGHT_THRESHOLD: float = 250
@@ -27,8 +29,9 @@ func _on_area_entered(area: Node) -> void:
 				SCORE.increase_mult()
 				FLOW.increase_medal_count()
 				if SCORE.mult % 2 == 0: SFX.play("medal", -12)
-			ItemType.POWERUP: WEAPON.lvl_up("ALL")
-			ItemType.MAXPOWERUP: WEAPON.lvl_up("MAX")
+			ItemType.SIDESITEM, ItemType.ORBITITEM, ItemType.FOLLOWITEM: 
+				GAME.OptionStyle = grantedOptionStyle as int
+				EVENTS.powerup_collected.emit(grantedOptionStyle as int)
 			ItemType.BOMB:
 				var player = get_tree().get_first_node_in_group("Player")
 				if player.bombCount < player.maxBombs: player.bombCount += 1

@@ -100,8 +100,7 @@ func _execute(tokens: Array) -> void:
 			WaveLexer.TokenType.PATTERN:
 				var cmds := WaveParser.parse_pattern(token, _lane_sizes)
 				for cmd: WaveParser.SpawnCommand in cmds:
-					if cmd.delay > 0.0:
-						await get_tree().create_timer(cmd.delay, false).timeout
+					if cmd.delay > 0.0: await get_tree().create_timer(cmd.delay, false).timeout
 					_spawn(cmd)
 
 func _spawn(cmd: WaveParser.SpawnCommand) -> void:

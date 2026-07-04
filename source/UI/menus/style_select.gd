@@ -1,6 +1,6 @@
 extends Control
 
-const GATOS: Array[Dictionary] = [{"name": "ZEBE", "style": "DAMAGE"}, {"name": "FUKU", "style": "RANGE"}, {"name": "SERGIO", "style": "CLASSIC"}]
+const GATOS: Array[Dictionary] = [{"name": "ZEBE", "style": "ORBIT"}, {"name": "FUKU", "style": "SIDES"}, {"name": "SERGIO", "style": "FOLLOW"}]
 const DOLLS: Array[Dictionary] = [{"name": "NOEL", "style": "STRONG"}, {"name": "ACTEA", "style": "SPEED"}, {"name": "PIRU", "style": "NEWBIE"}]
 
 enum SelectEnum { GATO, DOLL }
@@ -128,7 +128,7 @@ func _on_confirmed(_index: int) -> void:
 	var chosenStyle = STYLES[nav.selected].style
 	_animate_exit(func():
 		if SelectStyle == SelectEnum.GATO:
-			GAME.set_gato(chosenStyle)
+			GAME.set_option_style(chosenStyle)
 			if FLOW.isCaravan:
 				FLOW.inCaravan = true
 				FLOW.begin_caravan()

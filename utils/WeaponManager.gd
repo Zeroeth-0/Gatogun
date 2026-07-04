@@ -12,9 +12,9 @@ const MAX_LVL: int = 3
 # PUBLIC STATE
 # ==============================================================================
 
-var burstLvl: int = 1
-var laserLvl: int = 1
-var chargeLvl: int = 1
+var burstLvl: int = 3
+var laserLvl: int = 3
+var chargeLvl: int = 3
 
 ## 0 = none, 1 = right, 2 = both
 var optionCount: int = 2
@@ -29,31 +29,18 @@ var lOptActive: bool:
 
 func lvl_up(weapon: StringName) -> void:
 	match weapon:
-		&"ALL":
-			burstLvl = mini(burstLvl + 1, MAX_LVL)
-			laserLvl = mini(laserLvl + 1, MAX_LVL)
-			chargeLvl = mini(chargeLvl + 1, MAX_LVL)
-			EVENTS.weapon_lvl_flow.emit(&"ALL", burstLvl)
-		&"MAX":
-			burstLvl = MAX_LVL
-			laserLvl = MAX_LVL
-			chargeLvl = MAX_LVL
-			optionCount = 2
-			EVENTS.weapon_lvl_flow.emit(&"MAX", MAX_LVL)
-			EVENTS.option_flow.emit(true, true)
 		&"OPTION":
 			optionCount = mini(optionCount + 1, 2)
 			EVENTS.weapon_lvl_flow.emit(&"OPTION", optionCount)
 			EVENTS.option_flow.emit(rOptActive, lOptActive)
 		_:
-			push_warning("WEAPON.lvl_up(): unkwnown weapon")
-			return
+			# Las armas ya no suben de nivel
+			pass
 
 func reset_lvl() -> void:
-	burstLvl = 1
-	laserLvl = 1
-	chargeLvl = 1
+	burstLvl = 3
+	laserLvl = 3
+	chargeLvl = 3
 	optionCount = 2
 	EVENTS.weapon_reset.emit()
 	EVENTS.option_flow.emit(true, true)
-	

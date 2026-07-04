@@ -9,13 +9,16 @@
 [ext_resource type="PackedScene" uid="uid://bbrlpm3jwipc3" path="res://scenes/enemies/popcorn/sorro.tscn" id="5_4c2ps"]
 [ext_resource type="PackedScene" uid="uid://chxcaanjxbqw2" path="res://scenes/enemies/popcorn/torro.tscn" id="6_q5ghs"]
 [ext_resource type="PackedScene" uid="uid://bpq47v1bplbew" path="res://scenes/enemies/popcorn/rikki_s.tscn" id="8_3n5rf"]
-[ext_resource type="PackedScene" uid="uid://jhl4f6yw03ra" path="res://scenes/enemies/popcorn/rikki_d.tscn" id="8_5p3po"]
+[ext_resource type="PackedScene" uid="uid://jhl4f6yw03ra" path="res://scenes/enemies/popcorn/rikki_r.tscn" id="8_5p3po"]
 [ext_resource type="Texture2D" uid="uid://chijma6mb38wf" path="res://background_cats.png" id="9_rvump"]
 [ext_resource type="Script" uid="uid://582anxy540je" path="res://source/levels/background.gd" id="10_ix72u"]
 [ext_resource type="Script" uid="uid://camgd3kf5nap7" path="res://source/levels/lane.gd" id="11_ul74p"]
 [ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="12_0cmxr"]
 [ext_resource type="PackedScene" uid="uid://cgts6rg8xrau" path="res://scenes/levels/playzone.tscn" id="13_hmfu4"]
 [ext_resource type="PackedScene" uid="uid://duam5mtyrxv5l" path="res://scenes/UI/hud.tscn" id="14_ol3bn"]
+[ext_resource type="PackedScene" uid="uid://hoe0n6m5f6n7" path="res://scenes/items/orbit_item.tscn" id="17_q5ghs"]
+[ext_resource type="PackedScene" uid="uid://bnw5lajutdr4s" path="res://scenes/items/follow_item.tscn" id="18_t63va"]
+[ext_resource type="PackedScene" uid="uid://wm5ygajh4jkk" path="res://scenes/items/sides_item.tscn" id="19_3n5rf"]
 
 [sub_resource type="Resource" id="Resource_3kd88"]
 script = ExtResource("2_gvm2m")
@@ -178,3 +181,12 @@ position = Vector2(261, 0)
 [node name="Playzone" parent="." unique_id=2052843971 instance=ExtResource("13_hmfu4")]
 
 [node name="HUD" parent="." unique_id=561898591 instance=ExtResource("14_ol3bn")]
+
+[node name="Item" parent="." unique_id=814896193 instance=ExtResource("17_q5ghs")]
+position = Vector2(210, 256)
+
+[node name="Item2" parent="." unique_id=2104869768 instance=ExtResource("18_t63va")]
+position = Vector2(373, -126)
+
+[node name="Item3" parent="." unique_id=1581710855 instance=ExtResource("19_3n5rf")]
+position = Vector2(574, -420)

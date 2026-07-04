@@ -8,14 +8,16 @@ var inGame: bool = false
 
 # === ESCENAS DISPONIBLES ===
 @onready var cat: PackedScene = preload("res://scenes/player/player.tscn")
-@onready var powerUp: PackedScene = preload("res://scenes/items/power_up.tscn")
+@onready var sidesItem: PackedScene = preload("res://scenes/items/sides_item.tscn")
+@onready var orbitItem: PackedScene = preload("res://scenes/items/orbit_item.tscn")
+@onready var followItem: PackedScene = preload("res://scenes/items/follow_item.tscn")
 @onready var uiContinue: PackedScene = preload("res://scenes/UI/continue.tscn")
 @onready var uiPause: PackedScene = preload("res://scenes/UI/pause.tscn")
 
 # === ESTILOS ===
-enum GatoEnum { RANGE, DAMAGE, CLASSIC }
+enum OptionEnum { SIDES, ORBIT, FOLLOW }
 enum DollEnum { SPEED, STRONG, NEWBIE, CARAVAN }
-var GatoStyle: GatoEnum = GatoEnum.RANGE
+var OptionStyle: OptionEnum = OptionEnum.SIDES
 var DollStyle: DollEnum = DollEnum.SPEED
 
 # === ESTADO GLOBAL DEL JUGADOR ===
@@ -70,28 +72,12 @@ func _respawn_player() -> void:
 	_spawning = true
 	dead = false
 	_reset_game_state()
-	if DollStyle != DollEnum.STRONG and DollStyle != DollEnum.CARAVAN: _spawn_missing_powerups()
 	_instance_player()
 
 	if spawnContinued: lives = liveCount
 
 	await get_tree().process_frame
 	_spawning = false
-
-func _spawn_missing_powerups() -> void:
-	if spawnContinued: return
-	
-	var totalBurst = WEAPON.burstLvl - 1
-	var totalLaser = WEAPON.laserLvl - 1
-	
-	for i in totalBurst: _spawn_powerup(powerUp)
-	for i in totalLaser: _spawn_powerup(powerUp)
-
-func _spawn_powerup(node: PackedScene) -> void:
-	var item = node.instantiate()
-	GLOBAL.add_to_game(item, true)
-	var spawnOffset = Vector2(DRNG.drandf_range(-128, 128), 0)
-	item.position = spawnPos + spawnOffset
 
 func _reset_game_state() -> void:
 	SCORE.reset()
@@ -136,12 +122,12 @@ func _input(event: InputEvent) -> void:
 		GLOBAL.add_to_game(pause_menu)
 		get_viewport().set_input_as_handled()
 
-func set_gato(style: String):
+func set_option_style(style: String):
 	match style:
-		"RANGE": GatoStyle = GatoEnum.RANGE
-		"DAMAGE": GatoStyle = GatoEnum.DAMAGE
-		"CLASSIC": GatoStyle = GatoEnum.CLASSIC
-		_: GatoStyle = GatoEnum.RANGE
+		"SIDES": OptionStyle = OptionEnum.SIDES
+		"ORBIT": OptionStyle = OptionEnum.ORBIT
+		"FOLLOW": OptionStyle = OptionEnum.FOLLOW
+		_: OptionStyle = OptionEnum.SIDES
 
 func set_doll(style: String):
 	match style:

@@ -2533,6 +2533,7 @@ var damage: int = 1
 var isCancelled: bool = false
 var _elapsed: float = 0.0
 var _has_been_visible: bool = false
+var is_bomb: bool = false
 
 ## Velocity applied this frame. Modified by subclasses
 var velocity: Vector2 = Vector2.ZERO
@@ -2564,14 +2565,14 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	_elapsed += delta
 	
-	if isCancelled: 
+	if isCancelled:
 		_do_release()
 		return
 	
 	# Bounds check
 	var vp_rect := get_viewport_rect()
 	if vp_rect.has_point(global_position): _has_been_visible = true
-	elif _has_been_visible:
+	elif _has_been_visible and !is_bomb:
 		_do_release()
 		return
 	
@@ -3115,6 +3116,7 @@ func _on_acquired() -> void:
 	if BulletType == BulletEnum.LASER:
 		var lvl := clampi(WEAPON.laserLvl, 1, 4)
 		scale = Vector2.ONE * (0.5 + lvl * 0.3)
+	if BulletType == BulletEnum.BOMB: is_bomb = true
 
 func _on_released() -> void:
 	shader_bullet_type = -1
@@ -3194,7 +3196,7 @@ func _on_area_entered(area: Node) -> void:
 			isCancelled = true
 
 func _on_area_exited(area: Node) -> void:
-	if area.is_in_group("Free"): 
+	if area.is_in_group("Free") and BulletType != BulletEnum.BOMB:
 		isCancelled = true
 
 # ==============================================================================
@@ -3203,7 +3205,7 @@ func _on_area_exited(area: Node) -> void:
 
 func _lifetime_for_type() -> float:
 	match BulletType:
-		BulletEnum.BOMB:  return 5.0
+		BulletEnum.BOMB:  return 3.0
 		BulletEnum.LASER: return 0.15
 	return 1.5  # BURST, FOLLOW, CHARGE
 
@@ -3332,7 +3334,7 @@ func _check_charge_overlap(delta: float) -> void:
 		if area.is_in_group("Charge"):
 			_pulse_marked = true
 			# Comprobación segura por si el area no tiene damage
-			_health -= delta * area.get("damage", 75.0)
+			_health -= delta * area.get("damage")
 
 func _check_health_halving() -> void:
 	if _emitter == null or _halved:
@@ -3434,7 +3436,15 @@ func _on_hitbox_area_entered(area: Node) -> void:
 
 func _on_hitbox_area_exited(area: Node) -> void:
 	if area.is_in_group("Free"):
+		print("=== DIAGNÓSTICO DE DESTRUCCIÓN ===")
+		print("1. Mi nombre actual es: ", name)
+		print("2. Mi clase de Godot es: ", get_class())
+		print("3. Mi ruta exacta en la escena es: ", get_path())
+		
 		queue_free()
+		
+		print("4. ¿Godot aceptó la orden de borrado?: ", is_queued_for_deletion())
+		print("==================================")
 
 
 --------------------------------------------------
@@ -3995,8 +4005,7 @@ func _execute(tokens: Array) -> void:
 			WaveLexer.TokenType.PATTERN:
 				var cmds := WaveParser.parse_pattern(token, _lane_sizes)
 				for cmd: WaveParser.SpawnCommand in cmds:
-					if cmd.delay > 0.0:
-						await get_tree().create_timer(cmd.delay, false).timeout
+					if cmd.delay > 0.0: await get_tree().create_timer(cmd.delay, false).timeout
 					_spawn(cmd)
 
 func _spawn(cmd: WaveParser.SpawnCommand) -> void:

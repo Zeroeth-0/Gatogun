@@ -9,7 +9,9 @@ extends Node
 
 const MEDAL_SCENE     := preload("res://scenes/items/medal.tscn")
 const REVENGE_SCENE   := preload("res://scenes/bullets/revenge_bullet.tscn")
-const POWERUP_SCENE   := preload("res://scenes/items/power_up.tscn")
+const SIDES_SCENE   := preload("res://scenes/items/sides_item.tscn")
+const ORBIT_SCENE   := preload("res://scenes/items/orbit_item.tscn")
+const FOLLOW_SCENE   := preload("res://scenes/items/follow_item.tscn")
 const EXPLOSION_SCENE := preload("res://scenes/vfx/explosion.tscn")
 
 const MEDAL_RANGE:  float = 250.0
@@ -69,9 +71,9 @@ func _handle_drops(data: EnemyKillData) -> void:
 	if data.revenge:
 		_spawn_items(data.score_drop_count, REVENGE_SCENE, data.position)
 	
-	# Powerup (MID enemies, not STRONG doll style)
-	if data.drops_powerup and GAME.DollStyle != GAME.DollEnum.STRONG:
-		_spawn_items(1, POWERUP_SCENE, data.position, true)
+	# COME BACK LATER
+	#if data.drops_powerup and GAME.DollStyle != GAME.DollEnum.STRONG:
+	#	_spawn_items(1, POWERUP_SCENE, data.position, true)
 	
 	# ELITE: cancel all enemy bullets
 	if data.enemy_type == &"ELITE":
