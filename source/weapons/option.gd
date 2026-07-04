@@ -79,11 +79,12 @@ func _process(delta: float) -> void:
 						global_position = global_position.lerp(targetNode.global_position, followDelay * delta)
 
 func _damage_no_hold_orbit(parent: Node2D, delta: float) -> void:
-	followDelay = 10
+	followDelay = 25
 	orbit_angle -= orbit_angular_speed * delta
 	var offset = Vector2(cos(orbit_angle) * orbit_radius, sin(orbit_angle) * orbit_radius)
 	var target_global = parent.global_position + offset
 	global_position = global_position.lerp(target_global, followDelay * delta)
+	
 	deviationAngle = 0
 
 func _sides_hold(parent: Node2D, dir: Vector2, delta: float) -> void:
