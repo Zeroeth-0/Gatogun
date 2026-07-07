@@ -89,10 +89,12 @@ ESTRUCTURA COMPLETA DEL PROYECTO
 (0x   tqq (Bitems
 (0x   x   tqq (B1up.tscn
 (0x   x   tqq (Bbomb_item.tscn
+(0x   x   tqq (Bfollow_item.tscn
 (0x   x   tqq (Bitem.tscn
 (0x   x   tqq (Bmedal.tscn
 (0x   x   tqq (Bmedal.tscn142897719637.tmp
-(0x   x   mqq (Bpower_up.tscn
+(0x   x   tqq (Borbit_item.tscn
+(0x   x   mqq (Bsides_item.tscn
 (0x   tqq (Blevels
 (0x   x   tqq (Bdead_bounds.tscn
 (0x   x   tqq (Bplayzone.tscn
@@ -370,7 +372,7 @@ ESTRUCTURA COMPLETA DEL PROYECTO
 (0    tqq (BWeaponManager.gd
 (0    mqq (BWeaponManager.gd.uid
 
-44 directories, 323 files
+44 directories, 325 files
 
 ==================================================
 CÓDIGO FUENTE DE LOS SCRIPTS Y SHADERS
@@ -551,7 +553,7 @@ signal score_reset()
 ## Issued by ItemGatogun
 signal item_collected(item_type: int, position: Vector2)
 signal medal_collected(position: Vector2, new_mult: int)
-signal powerup_collected(weapon_id: StringName, new_level: int)
+signal powerup_collected(new_style: int)
 signal oneup_collected(new_lives: int)
 
 # ==============================================================================
@@ -3436,15 +3438,7 @@ func _on_hitbox_area_entered(area: Node) -> void:
 
 func _on_hitbox_area_exited(area: Node) -> void:
 	if area.is_in_group("Free"):
-		print("=== DIAGNÓSTICO DE DESTRUCCIÓN ===")
-		print("1. Mi nombre actual es: ", name)
-		print("2. Mi clase de Godot es: ", get_class())
-		print("3. Mi ruta exacta en la escena es: ", get_path())
-		
 		queue_free()
-		
-		print("4. ¿Godot aceptó la orden de borrado?: ", is_queued_for_deletion())
-		print("==================================")
 
 
 --------------------------------------------------
@@ -3749,10 +3743,12 @@ ARCHIVO: ./source/items/item_gatogun.gd
 extends "res://source/items/item.gd"
 
 # === TIPOS DE ITEM ===
-enum ItemType { MEDAL, POWERUP, MAXPOWERUP, BOMB, ONEUP }
+enum ItemType { MEDAL, SIDESITEM, ORBITITEM, FOLLOWITEM, BOMB, ONEUP }
+enum GrantedStyleEnum { SIDES, ORBIT, FOLLOW }
 
 # === EXPORTABLES CONFIGURABLES ===
 @export var itemEnum: ItemType = ItemType.MEDAL                                 # Tipo de item
+@export var grantedOptionStyle: GrantedStyleEnum = GrantedStyleEnum.SIDES       # Estilo que otorga
 
 # === CONSTANTES ===
 const COLLECT_HEIGHT_THRESHOLD: float = 250
@@ -3775,8 +3771,9 @@ func _on_area_entered(area: Node) -> void:
 				SCORE.increase_mult()
 				FLOW.increase_medal_count()
 				if SCORE.mult % 2 == 0: SFX.play("medal", -12)
-			ItemType.POWERUP: WEAPON.lvl_up("ALL")
-			ItemType.MAXPOWERUP: WEAPON.lvl_up("MAX")
+			ItemType.SIDESITEM, ItemType.ORBITITEM, ItemType.FOLLOWITEM: 
+				GAME.OptionStyle = grantedOptionStyle as int
+				EVENTS.powerup_collected.emit(grantedOptionStyle as int)
 			ItemType.BOMB:
 				var player = get_tree().get_first_node_in_group("Player")
 				if player.bombCount < player.maxBombs: player.bombCount += 1
@@ -4432,14 +4429,12 @@ func _setup_doll_style() -> void:
 			maxBombs  = 4
 			bombCount = 2
 		GAME.DollEnum.STRONG:
-			WEAPON.lvl_up(&"MAX")
 			maxBombs  = 2
 			bombCount = 1
 		GAME.DollEnum.NEWBIE:
 			maxBombs  = 6
 			bombCount = 3
 		GAME.DollEnum.CARAVAN:
-			WEAPON.lvl_up(&"MAX")
 			maxBombs  = 0
 			bombCount = 0
 
@@ -5886,7 +5881,7 @@ ARCHIVO: ./source/UI/menus/style_select.gd
 
 extends Control
 
-const GATOS: Array[Dictionary] = [{"name": "ZEBE", "style": "DAMAGE"}, {"name": "FUKU", "style": "RANGE"}, {"name": "SERGIO", "style": "CLASSIC"}]
+const GATOS: Array[Dictionary] = [{"name": "ZEBE", "style": "ORBIT"}, {"name": "FUKU", "style": "SIDES"}, {"name": "SERGIO", "style": "FOLLOW"}]
 const DOLLS: Array[Dictionary] = [{"name": "NOEL", "style": "STRONG"}, {"name": "ACTEA", "style": "SPEED"}, {"name": "PIRU", "style": "NEWBIE"}]
 
 enum SelectEnum { GATO, DOLL }
@@ -6014,7 +6009,7 @@ func _on_confirmed(_index: int) -> void:
 	var chosenStyle = STYLES[nav.selected].style
 	_animate_exit(func():
 		if SelectStyle == SelectEnum.GATO:
-			GAME.set_gato(chosenStyle)
+			GAME.set_option_style(chosenStyle)
 			if FLOW.isCaravan:
 				FLOW.inCaravan = true
 				FLOW.begin_caravan()
@@ -7109,81 +7104,66 @@ ARCHIVO: ./source/weapons/option.gd
 extends "res://source/weapons/burst_weapon.gd"
 
 # === TIPOS DE OPTION ===
-enum OptionEnum { SIDES, FOLLOW }
+enum OptionFormation { SIDES, FOLLOW }
 
-# === EXPORTS GENERALES ===
-@export var OptionType: OptionEnum = OptionEnum.SIDES                           # Tipo de option
+@export var OptionType: OptionFormation = OptionFormation.SIDES
 @export var targetPos: Vector2 = Vector2.ZERO
 @export var targetNode: Node2D
 @export_range(0, 20, 1) var followDelay: int = 15
-@export var focusTarget: Vector2 = Vector2.ZERO
 @export var sideOffset: float = 30.0
 @export_range(-1, 1, 1) var offSign: int
 @export var oscSpeed: float = 150.0
+
+# Variables para la órbita
+@export var orbit_radius: float = 60.0
+@export var orbit_angular_speed: float = 2.5
+var orbit_angle: float = 0.0
 
 # === ESTADO INTERNO ===
 var prevParentPos: Vector2
 var currLatOffset: float
 var moveDir: int
-var lastMoveDirection: Vector2 = Vector2.DOWN
-var currentRotationAngle: float = 0.0   # Ángulo actual suavizado para la rotación en RANGE sin hold
+var currentRotationAngle: float = 0.0
 
-# Variables para la órbita (solo usadas en DAMAGE !fireHold)
-var orbit_angle: float = 0.0
-@export var orbit_radius: float = 60.0
-@export var orbit_angular_speed: float = 2.5   # rad/s — antihorario (positivo)
-
-# === FLUJO DE COMPORTAMIENTO ===
 func _ready() -> void:
 	baseLvl = 0.0
 	prevParentPos = get_parent().global_position
 	deviationAngle = 0
 	currLatOffset = -offSign * sideOffset
 	moveDir = 1 if offSign == 1 else -1
-	orbit_angle = offSign * PI / 2.0   # uno empieza más a la derecha, otro a la izquierda
+	orbit_angle = offSign * PI / 2.0
 
 func _process(delta: float) -> void:
 	super._process(delta)
 	activeBullets = get_tree().get_nodes_in_group("BulletCount").size()
-	_process_option_behavior(delta)
-
-# === OPTIONS ===
-func _process_option_behavior(delta: float) -> void:
+	
 	var parent = get_parent()
 	var parentDelta = parent.global_position - prevParentPos
 	prevParentPos = parent.global_position
 	
 	var dir := Vector2.UP
-	var GatoStyle = GAME.GatoStyle
-	var StyleEnum = GAME.GatoEnum
+	var OptStyle = GAME.OptionStyle
+	var StyleEnum = GAME.OptionEnum
 	
 	if INPUT.fireHold:
-		# ── Comportamiento cuando se mantiene el disparo (sin cambios) ──
-		match GatoStyle:
-			StyleEnum.RANGE:   _range_hold(parent, dir, delta)
-			StyleEnum.DAMAGE:  _damage_hold(parent, dir, delta)
-			StyleEnum.CLASSIC: _classic_hold(dir, delta)
-		
-		# Reseteamos órbita para que al soltar vuelva a empezar limpio
 		orbit_angle = offSign * PI / 2.0
-	
+		match OptStyle:
+			StyleEnum.SIDES:  _sides_hold(parent, dir, delta)
+			StyleEnum.ORBIT:  _orbit_hold(parent, dir, delta)
+			StyleEnum.FOLLOW: _follow_hold(dir, delta)
 	else:
-		# ── Comportamiento cuando NO se dispara ──
-		if GatoStyle == StyleEnum.DAMAGE:
-			# ── Especial DAMAGE: órbita antihoraria ──
+		global_position -= parentDelta
+		
+		if OptStyle == StyleEnum.ORBIT:
 			_damage_no_hold_orbit(parent, delta)
 		else:
-			# ── Comportamiento original para RANGE y CLASSIC (sin hold) ──
-			global_position -= parentDelta
-			
 			match OptionType:
-				OptionEnum.SIDES:
+				OptionFormation.SIDES:
 					followDelay = 15
-					
 					var effectiveTargetPos = targetPos
-					var baseDeviation = 10 * offSign if GatoStyle == StyleEnum.RANGE else 0
+					var baseDeviation = 10 * offSign if OptStyle == StyleEnum.SIDES else 0
 					
-					if GatoStyle == StyleEnum.RANGE:
+					if OptStyle == StyleEnum.SIDES:
 						var maxRotationDegrees: float = 15.0
 						var targetRotation = deg_to_rad(INPUT.xAxis * maxRotationDegrees)
 						var rotationLerpSpeed: float = 4.0
@@ -7195,120 +7175,86 @@ func _process_option_behavior(delta: float) -> void:
 					
 					position = position.lerp(effectiveTargetPos, followDelay * delta)
 				
-				OptionEnum.FOLLOW:
+				OptionFormation.FOLLOW:
 					followDelay = 5
 					deviationAngle = 0
 					if targetNode and is_instance_valid(targetNode) and (INPUT.xAxis != 0 or INPUT.yAxis != 0):
 						global_position = global_position.lerp(targetNode.global_position, followDelay * delta)
 
-# === ESTILOS (hold) ===
-func _range_hold(parent: Node2D, dir: Vector2, delta: float) -> void:
+func _damage_no_hold_orbit(parent: Node2D, delta: float) -> void:
+	followDelay = 25
+	orbit_angle -= orbit_angular_speed * delta
+	var offset = Vector2(cos(orbit_angle) * orbit_radius, sin(orbit_angle) * orbit_radius)
+	var target_global = parent.global_position + offset
+	global_position = global_position.lerp(target_global, followDelay * delta)
+	
+	deviationAngle = 0
+
+func _sides_hold(parent: Node2D, dir: Vector2, delta: float) -> void:
 	var enemy = _get_closest_enemy()
 	dir = (enemy.global_position - parent.global_position).normalized() if enemy else Vector2.UP
 	var distance := 50.0
 	deviationAngle = 0
-	
 	var targetPosition = parent.global_position + dir * distance
 	var offsetDir := dir.orthogonal().normalized()
 	targetPosition += offsetDir * -offSign * sideOffset
-	
 	global_position = global_position.lerp(targetPosition, followDelay * delta)
 	followDelay = 15
-	
 	if canFire and activeBullets < maxBullets:
 		await _fire_burst(dir, bulletScene)
 
-func _damage_hold(parent: Node2D, dir: Vector2, delta: float) -> void:
+func _orbit_hold(parent: Node2D, dir: Vector2, delta: float) -> void:
 	var distance := 75.0
 	var nSideOffset = sideOffset * 1.5
-	
 	var ratio = abs(currLatOffset) / nSideOffset
 	var minSpeedFactor: float = 0.3
 	var effectiveSpeed = oscSpeed * (minSpeedFactor + (1 - minSpeedFactor) * ratio)
-	
 	currLatOffset += moveDir * effectiveSpeed * delta
-	
 	var jumped: bool = false
-	
 	if currLatOffset >= nSideOffset:
 		currLatOffset = -nSideOffset + 10
 		jumped = true
 	elif currLatOffset <= -nSideOffset:
 		currLatOffset = nSideOffset - 10
 		jumped = true
-	
 	var targetPosition = parent.global_position + dir * distance
 	var offsetDir := dir.orthogonal().normalized()
 	targetPosition += offsetDir * currLatOffset
-	
-	if jumped:
-		global_position = targetPosition
-	else:
-		global_position = global_position.lerp(targetPosition, followDelay * delta)
-	
+	if jumped: global_position = targetPosition
+	else: global_position = global_position.lerp(targetPosition, followDelay * delta)
 	followDelay = 15
-	
 	if canFire and activeBullets < maxBullets:
 		await _fire_burst(dir, bulletScene)
 
-func _classic_hold(dir: Vector2, delta: float) -> void:
+func _follow_hold(dir: Vector2, delta: float) -> void:
 	followDelay = 5
 	deviationAngle = 0
-	
 	if targetNode and is_instance_valid(targetNode):
 		targetPos = targetNode.global_position
 		var toTarget = targetPos - global_position
 		var distance = toTarget.length()
-		
 		var desiredDistance: float = 80.0
 		var speedFactor: float = 6.0
 		var idealPos: Vector2
-		
 		if distance > 0.1:
 			var directionAway = -toTarget.normalized()
 			idealPos = targetPos + directionAway * desiredDistance
 		else:
 			var backDir = -targetNode.lastMoveDirection.normalized()
 			idealPos = targetPos + backDir * desiredDistance
-		
 		global_position = global_position.lerp(idealPos, speedFactor * delta)
-	
 	if canFire and activeBullets < maxBullets:
 		await _fire_burst(dir, bulletScene)
 
-# === Órbita ===
-func _damage_no_hold_orbit(parent: Node2D, delta: float) -> void:
-	followDelay = 10   # suavizado razonable
-	
-	# Avanzamos el ángulo (positivo = antihorario en Godot 2D)
-	orbit_angle -= orbit_angular_speed * delta
-	
-	# Offset en coordenadas locales del jugador
-	var offset = Vector2(
-		cos(orbit_angle) * orbit_radius,
-		sin(orbit_angle) * orbit_radius
-	)
-	
-	var target_global = parent.global_position + offset
-	
-	# Movimiento suave
-	global_position = global_position.lerp(target_global, followDelay * delta)
-	
-	# Normalmente no queremos desviación de disparo en órbita
-	deviationAngle = 0
-
-# === AUXILIAR ===
 func _get_closest_enemy() -> Node2D:
 	var enemies = get_tree().get_nodes_in_group("Enemy")
 	var closest: Node2D = null
 	var minDist := INF
-	
 	for enemy in enemies:
 		var dist = global_position.distance_to(enemy.global_position)
 		if dist < minDist:
 			minDist = dist
 			closest = enemy
-	
 	return closest
 
 
@@ -7318,35 +7264,36 @@ ARCHIVO: ./source/weapons/option_manager.gd
 
 extends Node2D
 
-# === EXPORTS GENERALES ===
 @export var stdTargetPos: Vector2 = Vector2.ZERO
 @export var dpsTargetPos: Vector2 = Vector2.ZERO
 
-# === ESTADO INTERNO ===
 var lastMoveDirection: Vector2 = Vector2.DOWN
 
-# === FLUJO DE COMPORTAMIENTO ===
 func _process(_delta: float) -> void:
+	formation_handler()
+	shot_type()
 	option_waker()
-	lastMoveDirection = get_parent().lastMoveDirection
+	if get_parent() and "lastMoveDirection" in get_parent():
+		lastMoveDirection = get_parent().lastMoveDirection
 
 func _ready():
 	formation_handler()
 	shot_type()
 
-# === AUXILIAR ===
 func formation_handler():
-	match GAME.GatoStyle:
-		GAME.GatoEnum.CLASSIC:
-			$OptionR.OptionType = $OptionR.OptionEnum.FOLLOW
-			$OptionL.OptionType = $OptionL.OptionEnum.FOLLOW
+	if not has_node("OptionR") or not has_node("OptionL"): return
+	match GAME.OptionStyle:
+		GAME.OptionEnum.FOLLOW:
+			$OptionR.OptionType = 1
+			$OptionL.OptionType = 1
 		_:
-			$OptionR.OptionType = $OptionR.OptionEnum.SIDES
-			$OptionL.OptionType = $OptionL.OptionEnum.SIDES
+			$OptionR.OptionType = 0
+			$OptionL.OptionType = 0
 
 func shot_type():
-	match GAME.GatoStyle:
-		GAME.GatoEnum.DAMAGE:
+	if not has_node("OptionR") or not has_node("OptionL"): return
+	match GAME.OptionStyle:
+		GAME.OptionEnum.ORBIT:
 			$OptionR.targetPos = dpsTargetPos * Vector2($OptionR.offSign, 1)
 			$OptionL.targetPos = dpsTargetPos * Vector2($OptionL.offSign, 1)
 		_:
@@ -7354,6 +7301,7 @@ func shot_type():
 			$OptionL.targetPos = stdTargetPos * Vector2($OptionL.offSign, 1)
 
 func option_waker():
+	if not has_node("OptionR") or not has_node("OptionL"): return
 	$OptionR.visible = WEAPON.rOptActive
 	$OptionR.set_process(WEAPON.rOptActive)
 	$OptionL.visible = WEAPON.lOptActive
@@ -7474,7 +7422,9 @@ extends Node
 
 const MEDAL_SCENE     := preload("res://scenes/items/medal.tscn")
 const REVENGE_SCENE   := preload("res://scenes/bullets/revenge_bullet.tscn")
-const POWERUP_SCENE   := preload("res://scenes/items/power_up.tscn")
+const SIDES_SCENE   := preload("res://scenes/items/sides_item.tscn")
+const ORBIT_SCENE   := preload("res://scenes/items/orbit_item.tscn")
+const FOLLOW_SCENE   := preload("res://scenes/items/follow_item.tscn")
 const EXPLOSION_SCENE := preload("res://scenes/vfx/explosion.tscn")
 
 const MEDAL_RANGE:  float = 250.0
@@ -7534,9 +7484,9 @@ func _handle_drops(data: EnemyKillData) -> void:
 	if data.revenge:
 		_spawn_items(data.score_drop_count, REVENGE_SCENE, data.position)
 	
-	# Powerup (MID enemies, not STRONG doll style)
-	if data.drops_powerup and GAME.DollStyle != GAME.DollEnum.STRONG:
-		_spawn_items(1, POWERUP_SCENE, data.position, true)
+	# COME BACK LATER
+	#if data.drops_powerup and GAME.DollStyle != GAME.DollEnum.STRONG:
+	#	_spawn_items(1, POWERUP_SCENE, data.position, true)
 	
 	# ELITE: cancel all enemy bullets
 	if data.enemy_type == &"ELITE":
@@ -7919,14 +7869,16 @@ var inGame: bool = false
 
 # === ESCENAS DISPONIBLES ===
 @onready var cat: PackedScene = preload("res://scenes/player/player.tscn")
-@onready var powerUp: PackedScene = preload("res://scenes/items/power_up.tscn")
+@onready var sidesItem: PackedScene = preload("res://scenes/items/sides_item.tscn")
+@onready var orbitItem: PackedScene = preload("res://scenes/items/orbit_item.tscn")
+@onready var followItem: PackedScene = preload("res://scenes/items/follow_item.tscn")
 @onready var uiContinue: PackedScene = preload("res://scenes/UI/continue.tscn")
 @onready var uiPause: PackedScene = preload("res://scenes/UI/pause.tscn")
 
 # === ESTILOS ===
-enum GatoEnum { RANGE, DAMAGE, CLASSIC }
+enum OptionEnum { SIDES, ORBIT, FOLLOW }
 enum DollEnum { SPEED, STRONG, NEWBIE, CARAVAN }
-var GatoStyle: GatoEnum = GatoEnum.RANGE
+var OptionStyle: OptionEnum = OptionEnum.SIDES
 var DollStyle: DollEnum = DollEnum.SPEED
 
 # === ESTADO GLOBAL DEL JUGADOR ===
@@ -7981,28 +7933,12 @@ func _respawn_player() -> void:
 	_spawning = true
 	dead = false
 	_reset_game_state()
-	if DollStyle != DollEnum.STRONG and DollStyle != DollEnum.CARAVAN: _spawn_missing_powerups()
 	_instance_player()
 
 	if spawnContinued: lives = liveCount
 
 	await get_tree().process_frame
 	_spawning = false
-
-func _spawn_missing_powerups() -> void:
-	if spawnContinued: return
-	
-	var totalBurst = WEAPON.burstLvl - 1
-	var totalLaser = WEAPON.laserLvl - 1
-	
-	for i in totalBurst: _spawn_powerup(powerUp)
-	for i in totalLaser: _spawn_powerup(powerUp)
-
-func _spawn_powerup(node: PackedScene) -> void:
-	var item = node.instantiate()
-	GLOBAL.add_to_game(item, true)
-	var spawnOffset = Vector2(DRNG.drandf_range(-128, 128), 0)
-	item.position = spawnPos + spawnOffset
 
 func _reset_game_state() -> void:
 	SCORE.reset()
@@ -8047,12 +7983,12 @@ func _input(event: InputEvent) -> void:
 		GLOBAL.add_to_game(pause_menu)
 		get_viewport().set_input_as_handled()
 
-func set_gato(style: String):
+func set_option_style(style: String):
 	match style:
-		"RANGE": GatoStyle = GatoEnum.RANGE
-		"DAMAGE": GatoStyle = GatoEnum.DAMAGE
-		"CLASSIC": GatoStyle = GatoEnum.CLASSIC
-		_: GatoStyle = GatoEnum.RANGE
+		"SIDES": OptionStyle = OptionEnum.SIDES
+		"ORBIT": OptionStyle = OptionEnum.ORBIT
+		"FOLLOW": OptionStyle = OptionEnum.FOLLOW
+		_: OptionStyle = OptionEnum.SIDES
 
 func set_doll(style: String):
 	match style:
@@ -8610,9 +8546,9 @@ const MAX_LVL: int = 3
 # PUBLIC STATE
 # ==============================================================================
 
-var burstLvl: int = 1
-var laserLvl: int = 1
-var chargeLvl: int = 1
+var burstLvl: int = 3
+var laserLvl: int = 3
+var chargeLvl: int = 3
 
 ## 0 = none, 1 = right, 2 = both
 var optionCount: int = 2
@@ -8627,33 +8563,20 @@ var lOptActive: bool:
 
 func lvl_up(weapon: StringName) -> void:
 	match weapon:
-		&"ALL":
-			burstLvl = mini(burstLvl + 1, MAX_LVL)
-			laserLvl = mini(laserLvl + 1, MAX_LVL)
-			chargeLvl = mini(chargeLvl + 1, MAX_LVL)
-			EVENTS.weapon_lvl_flow.emit(&"ALL", burstLvl)
-		&"MAX":
-			burstLvl = MAX_LVL
-			laserLvl = MAX_LVL
-			chargeLvl = MAX_LVL
-			optionCount = 2
-			EVENTS.weapon_lvl_flow.emit(&"MAX", MAX_LVL)
-			EVENTS.option_flow.emit(true, true)
 		&"OPTION":
 			optionCount = mini(optionCount + 1, 2)
 			EVENTS.weapon_lvl_flow.emit(&"OPTION", optionCount)
 			EVENTS.option_flow.emit(rOptActive, lOptActive)
 		_:
-			push_warning("WEAPON.lvl_up(): unkwnown weapon")
-			return
+			# Las armas ya no suben de nivel
+			pass
 
 func reset_lvl() -> void:
-	burstLvl = 1
-	laserLvl = 1
-	chargeLvl = 1
+	burstLvl = 3
+	laserLvl = 3
+	chargeLvl = 3
 	optionCount = 2
 	EVENTS.weapon_reset.emit()
 	EVENTS.option_flow.emit(true, true)
-	
 
 

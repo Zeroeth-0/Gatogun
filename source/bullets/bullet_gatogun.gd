@@ -24,7 +24,7 @@ func _on_acquired() -> void:
 	revHealth = 7
 	# Revenge bullets point at the player on spawn
 	if revenge:
-		direction = (GAME.get_player()- global_position).normalized()
+		direction = (GAME.get_player() - global_position).normalized()
 		velocity = direction * speed
 
 # ==============================================================================
@@ -54,8 +54,11 @@ func _on_area_entered(area: Node) -> void:
 	if !area.is_in_group("Fire") or !revenge: return
 	revHealth -= 1
 	if revHealth > 0 or isCancelled: return
-	isCancelled = true
+	
 	var player_pos := GAME.get_player()
-	var near_player := position.distance_to(player_pos) < 150
+	var near_player := global_position.distance_to(player_pos) < 150
+	
 	if near_player or SCORE.medalCountdown > 0: cancel()
-	else: _do_release()
+	else: 
+		isCancelled = true
+		_do_release()

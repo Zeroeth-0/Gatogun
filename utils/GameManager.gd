@@ -33,60 +33,65 @@ var spawnPos: Vector2 = Vector2(0, 0)
 var spawnContinued: bool = false
 var playing: bool = false
 var dead: bool = false
-var _spawning: bool = false
 
 func _process(_delta: float) -> void:
-	if get_tree().get_nodes_in_group("Level").size() >= 1:
-		var world = get_tree().get_first_node_in_group("Level")
-		playing = world.playing
+	var is_caravan = FLOW.isCaravan or DollStyle == DollEnum.CARAVAN
+	if is_caravan: 
+		lives = 0
 	
-	# Respawn automático si no hay jugador y el juego está activo
-	if get_tree().get_nodes_in_group("Player").size() <= 0 and playing and (inGame or FLOW.inCaravan):
+	var world_playing = false
+	var levels = get_tree().get_nodes_in_group("Level")
+	if levels.size() > 0:
+		var world = levels[0]
+		if "playing" in world:
+			world_playing = world.playing
+		else:
+			world_playing = true
+	
+	playing = world_playing
+
+	var auto_spawn = false
+	if is_caravan and world_playing:
+		auto_spawn = true
+	elif playing and inGame:
+		auto_spawn = true
+
+	var players = get_tree().get_nodes_in_group("Player")
+	if players.size() == 0 and auto_spawn:
 		spawn()
-	
-	if FLOW.isCaravan: lives = 0
-	
-	# Actualizar referencias al jugador
-	if get_tree().get_nodes_in_group("Player").size() > 0:
-		player = get_tree().get_first_node_in_group("Player")
+	elif players.size() > 0:
+		player = players[0]
 		maxBombs = player.maxBombs
 		bombCount = player.bombCount
 	
-	# Limpieza opcional
-	if get_tree().get_nodes_in_group("Player").size() > 3:
-		get_tree().get_nodes_in_group("Player")[3].queue_free()
+	if players.size() > 3:
+		players[3].queue_free()
 	
-	if DollStyle == DollEnum.STRONG or DollStyle == DollEnum.CARAVAN: remove_power_ups()
-
+	if DollStyle == DollEnum.STRONG or is_caravan:
+		remove_power_ups()
 
 func spawn() -> void:
-	if _spawning: return
 	if get_tree().get_nodes_in_group("Player").size() > 0: return
 	if not cat: return
 
-	if lives >= 0 or FLOW.isCaravan: _respawn_player()
+	var is_caravan = FLOW.isCaravan or DollStyle == DollEnum.CARAVAN
+	if lives >= 0 or is_caravan: 
+		_respawn_player()
 	else:
 		_show_continue()
 
 func _respawn_player() -> void:
-	_spawning = true
 	dead = false
-	_reset_game_state()
-	_instance_player()
-
-	if spawnContinued: lives = liveCount
-
-	await get_tree().process_frame
-	_spawning = false
-
-func _reset_game_state() -> void:
 	SCORE.reset()
 	WEAPON.reset_lvl()
-
-func _instance_player() -> void:
+	
 	var instance = cat.instantiate()
+	# Añadimos al grupo de inmediato para prevenir bugs de spawn múltiple
+	instance.add_to_group("Player") 
 	instance.position = spawnPoint
 	GLOBAL.add_to_game(instance, true)
+
+	if spawnContinued: lives = liveCount
 
 func _show_continue() -> void:
 	if dead: return
@@ -110,7 +115,8 @@ func store(pos: Vector2 = Vector2(0, 0), continued: bool = false) -> void:
 	spawnContinued = continued
 
 func game_over() -> void:
-	_reset_game_state()
+	SCORE.reset()
+	WEAPON.reset_lvl()
 	GLOBAL.change_scene("OVER")
 
 func _input(event: InputEvent) -> void:
@@ -141,6 +147,7 @@ func set_lives():
 	lives = liveCount
 
 func remove_power_ups():
-	if get_tree().get_nodes_in_group("PowerUp").size() <= 0: return
-	else:
-		for pw in get_tree().get_nodes_in_group("PowerUp"): pw.queue_free()
+	var power_ups = get_tree().get_nodes_in_group("PowerUp")
+	if power_ups.size() > 0:
+		for pw in power_ups: 
+			pw.queue_free()

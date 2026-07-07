@@ -84,7 +84,7 @@ func _process(delta: float) -> void:
 	if input_dir.length_squared() > 0.01:
 		lastMoveDirection = input_dir
 
-	# Sync with GAME so HUD and other systems read current values
+	# Sync con GAME para que el HUD u otros sistemas lean los valores actuales
 	GAME.bombCount = bombCount
 	GAME.maxBombs  = maxBombs
 
@@ -115,7 +115,6 @@ func _clamp_to_screen(screen_size: Vector2) -> void:
 	position.y = clamp(position.y, screen_margin, screen_size.y - screen_margin)
 
 func _update_speed_by_style() -> void:
-	# Speed and Caravan are faster when not focusing
 	match GAME.DollStyle:
 		GAME.DollEnum.SPEED, GAME.DollEnum.CARAVAN:
 			speed_focus  = 200
@@ -196,7 +195,11 @@ func _take_hit() -> void:
 	if GAME.DollStyle == GAME.DollEnum.NEWBIE and bombCount > 0:
 		_use_bomb()
 		return
-	GAME.lives  -= 1
+	
+	var is_caravan = FLOW.isCaravan or GAME.DollStyle == GAME.DollEnum.CARAVAN
+	if not is_caravan:
+		GAME.lives -= 1
+		
 	EVENTS.player_died.emit(global_position)
 	EVENTS.lives_flow.emit(GAME.lives)
 	GAME.store(global_position, false)
