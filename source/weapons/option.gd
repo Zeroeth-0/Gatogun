@@ -6,7 +6,14 @@ enum OptionFormation { SIDES, FOLLOW }
 @export var OptionType: OptionFormation = OptionFormation.SIDES
 @export var targetPos: Vector2 = Vector2.ZERO
 @export var targetNode: Node2D
-@export_range(0, 20, 1) var followDelay: int = 15
+
+## Cantidad de puntos/posiciones de retraso en la estela (determina la distancia constante).
+@export_range(1, 60, 1) var trailDelay: int = 15
+@export var followDelay: int = 15
+
+## Suavidad de transición al perseguir la estela (valores más bajos = transición más suave).
+@export var followLerpSpeed: float = 8.0
+
 @export var sideOffset: float = 30.0
 @export_range(-1, 1, 1) var offSign: int
 @export var oscSpeed: float = 150.0
@@ -16,11 +23,16 @@ enum OptionFormation { SIDES, FOLLOW }
 @export var orbit_angular_speed: float = 2.5
 var orbit_angle: float = 0.0
 
+# === HISTORIAL DE POSICIONES (BREADCRUMBS) ===
+@export var minRecordDistance: float = 3.0
+var positionHistory: Array[Vector2] = []
+
 # === ESTADO INTERNO ===
 var prevParentPos: Vector2
 var currLatOffset: float
 var moveDir: int
 var currentRotationAngle: float = 0.0
+
 
 func _ready() -> void:
 	baseLvl = 0.0
@@ -29,6 +41,7 @@ func _ready() -> void:
 	currLatOffset = -offSign * sideOffset
 	moveDir = 1 if offSign == 1 else -1
 	orbit_angle = offSign * PI / 2.0
+
 
 func _process(delta: float) -> void:
 	super._process(delta)
@@ -42,6 +55,9 @@ func _process(delta: float) -> void:
 	var OptStyle = GAME.OptionStyle
 	var StyleEnum = GAME.OptionEnum
 	
+	# Grabamos SIEMPRE la posición del objetivo en segundo plano
+	_record_target_position()
+
 	if INPUT.fireHold:
 		orbit_angle = offSign * PI / 2.0
 		match OptStyle:
@@ -73,10 +89,37 @@ func _process(delta: float) -> void:
 					position = position.lerp(effectiveTargetPos, followDelay * delta)
 				
 				OptionFormation.FOLLOW:
-					followDelay = 5
-					deviationAngle = 0
-					if targetNode and is_instance_valid(targetNode) and (INPUT.xAxis != 0 or INPUT.yAxis != 0):
-						global_position = global_position.lerp(targetNode.global_position, followDelay * delta)
+					_update_follow_movement(delta)
+
+
+# === LÓGICA DE HISTORIAL EN SEGUNDO PLANO ===
+
+func _record_target_position() -> void:
+	if not targetNode or not is_instance_valid(targetNode):
+		return
+
+	var current_target_pos: Vector2 = targetNode.global_position
+
+	# Guardamos solo si el objetivo se ha movido la distancia mínima
+	if positionHistory.is_empty() or positionHistory.back().distance_to(current_target_pos) >= minRecordDistance:
+		positionHistory.append(current_target_pos)
+
+	# Mantenemos el buffer exactamente en el tamaño trailDelay
+	while positionHistory.size() > trailDelay:
+		positionHistory.pop_front()
+
+
+func _update_follow_movement(delta: float) -> void:
+	deviationAngle = 0
+	if positionHistory.is_empty():
+		return
+
+	# Lerp suave hacia la miguita más antigua disponible
+	var goal_pos: Vector2 = positionHistory[0]
+	global_position = global_position.lerp(goal_pos, followLerpSpeed * delta)
+
+
+# === COMPORTAMIENTOS DE DISPARO Y MOVIMIENTO ORIGINALES ===
 
 func _damage_no_hold_orbit(parent: Node2D, delta: float) -> void:
 	followDelay = 25
@@ -84,8 +127,8 @@ func _damage_no_hold_orbit(parent: Node2D, delta: float) -> void:
 	var offset = Vector2(cos(orbit_angle) * orbit_radius, sin(orbit_angle) * orbit_radius)
 	var target_global = parent.global_position + offset
 	global_position = global_position.lerp(target_global, followDelay * delta)
-	
 	deviationAngle = 0
+
 
 func _sides_hold(parent: Node2D, dir: Vector2, delta: float) -> void:
 	var enemy = _get_closest_enemy()
@@ -99,6 +142,7 @@ func _sides_hold(parent: Node2D, dir: Vector2, delta: float) -> void:
 	followDelay = 15
 	if canFire and activeBullets < maxBullets:
 		await _fire_burst(dir, bulletScene)
+
 
 func _orbit_hold(parent: Node2D, dir: Vector2, delta: float) -> void:
 	var distance := 75.0
@@ -123,6 +167,7 @@ func _orbit_hold(parent: Node2D, dir: Vector2, delta: float) -> void:
 	if canFire and activeBullets < maxBullets:
 		await _fire_burst(dir, bulletScene)
 
+
 func _follow_hold(dir: Vector2, delta: float) -> void:
 	followDelay = 5
 	deviationAngle = 0
@@ -142,6 +187,7 @@ func _follow_hold(dir: Vector2, delta: float) -> void:
 		global_position = global_position.lerp(idealPos, speedFactor * delta)
 	if canFire and activeBullets < maxBullets:
 		await _fire_burst(dir, bulletScene)
+
 
 func _get_closest_enemy() -> Node2D:
 	var enemies = get_tree().get_nodes_in_group("Enemy")
