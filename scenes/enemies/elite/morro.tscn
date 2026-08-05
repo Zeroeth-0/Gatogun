@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://6qtxnrit8f7l"]
+
+[ext_resource type="PackedScene" uid="uid://45jy2ekapnll" path="res://scenes/enemies/base/enemy.tscn" id="1_kh5m6"]
+[ext_resource type="PackedScene" uid="uid://ds7bq1lqtkcdm" path="res://scenes/weapons/enemies/elite/fanWithSides.tscn" id="2_mpim7"]
+[ext_resource type="Texture2D" uid="uid://diwcoh0ak0d75" path="res://sprites/enemies.png" id="2_pn0ei"]
+
+[node name="Enemy" unique_id=177661500 instance=ExtResource("1_kh5m6")]
+scale = Vector2(4, 4)
+typeEnum = 2
+size = 100
+scoreCount = 15
+
+[node name="Sprite2D" parent="." index="0" unique_id=444427917]
+position = Vector2(-1, -5.2499995)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_pn0ei")
+hframes = 3
+vframes = 3
+frame = 4
+
+[node name="Emitter" parent="." index="5" unique_id=2059335812 instance=ExtResource("2_mpim7")]

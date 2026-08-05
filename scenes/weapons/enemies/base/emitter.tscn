@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cwod13co6stfe"]
+
+[ext_resource type="Script" uid="uid://brhb4mwkf3rn1" path="res://source/weapons/emitter.gd" id="1_5biob"]
+
+[node name="Emitter" type="Marker2D" unique_id=2059335812]
+script = ExtResource("1_5biob")

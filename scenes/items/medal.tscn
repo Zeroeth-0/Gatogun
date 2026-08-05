@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://cr88epenivqi"]
+
+[ext_resource type="Script" uid="uid://dusllrupdy44j" path="res://source/items/item_gatogun.gd" id="1_8fdno"]
+[ext_resource type="PackedScene" uid="uid://dahm536brwuk1" path="res://scenes/UI/medal_icon.tscn" id="2_ydp5g"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_eqbui"]
+radius = 12.0
+
+[node name="Medal" type="Area2D" unique_id=841883223]
+z_index = 2
+script = ExtResource("1_8fdno")
+
+[node name="AnimatedSprite2D" parent="." unique_id=386798846 instance=ExtResource("2_ydp5g")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2121205495]
+z_index = 2
+shape = SubResource("CircleShape2D_eqbui")
+debug_color = Color(1, 1, 0, 0.419608)
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

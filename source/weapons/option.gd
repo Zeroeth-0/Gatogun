@@ -1,0 +1,201 @@
+extends "res://source/weapons/burst_weapon.gd"
+
+# === TIPOS DE OPTION ===
+enum OptionFormation { SIDES, FOLLOW }
+
+@export var OptionType: OptionFormation = OptionFormation.SIDES
+@export var targetPos: Vector2 = Vector2.ZERO
+@export var targetNode: Node2D
+
+## Cantidad de puntos/posiciones de retraso en la estela (determina la distancia constante).
+@export_range(1, 60, 1) var trailDelay: int = 15
+@export var followDelay: int = 15
+
+## Suavidad de transición al perseguir la estela (valores más bajos = transición más suave).
+@export var followLerpSpeed: float = 8.0
+
+@export var sideOffset: float = 30.0
+@export_range(-1, 1, 1) var offSign: int
+@export var oscSpeed: float = 150.0
+
+# Variables para la órbita
+@export var orbit_radius: float = 60.0
+@export var orbit_angular_speed: float = 2.5
+var orbit_angle: float = 0.0
+
+# === HISTORIAL DE POSICIONES (BREADCRUMBS) ===
+@export var minRecordDistance: float = 3.0
+var positionHistory: Array[Vector2] = []
+
+# === ESTADO INTERNO ===
+var prevParentPos: Vector2
+var currLatOffset: float
+var moveDir: int
+var currentRotationAngle: float = 0.0
+
+
+func _ready() -> void:
+	baseLvl = 0.0
+	prevParentPos = get_parent().global_position
+	deviationAngle = 0
+	currLatOffset = -offSign * sideOffset
+	moveDir = 1 if offSign == 1 else -1
+	orbit_angle = offSign * PI / 2.0
+
+
+func _physics_process(_delta: float) -> void:
+	super._physics_process(GLOBAL.TICK)
+	activeBullets = get_tree().get_nodes_in_group("BulletCount").size()
+	
+	var parent = get_parent()
+	var parentDelta = parent.global_position - prevParentPos
+	prevParentPos = parent.global_position
+	
+	var dir := Vector2.UP
+	var OptStyle = GAME.OptionStyle
+	var StyleEnum = GAME.OptionEnum
+	
+	# Grabamos SIEMPRE la posición del objetivo en segundo plano
+	_record_target_position()
+
+	if INPUT.fireHold:
+		orbit_angle = offSign * PI / 2.0
+		match OptStyle:
+			StyleEnum.SIDES:  _sides_hold(parent, dir, GLOBAL.TICK)
+			StyleEnum.ORBIT:  _orbit_hold(parent, dir, GLOBAL.TICK)
+			StyleEnum.FOLLOW: _follow_hold(dir, GLOBAL.TICK)
+	else:
+		global_position -= parentDelta
+		
+		if OptStyle == StyleEnum.ORBIT:
+			_damage_no_hold_orbit(parent, GLOBAL.TICK)
+		else:
+			match OptionType:
+				OptionFormation.SIDES:
+					followDelay = 15
+					var effectiveTargetPos = targetPos
+					var baseDeviation = 10 * offSign if OptStyle == StyleEnum.SIDES else 0
+					
+					if OptStyle == StyleEnum.SIDES:
+						var maxRotationDegrees: float = 15.0
+						var targetRotation = deg_to_rad(INPUT.xAxis * maxRotationDegrees)
+						var rotationLerpSpeed: float = 4.0
+						currentRotationAngle = lerp_angle(currentRotationAngle, targetRotation, rotationLerpSpeed * GLOBAL.TICK)
+						effectiveTargetPos = targetPos.rotated(currentRotationAngle)
+						deviationAngle = baseDeviation + rad_to_deg(currentRotationAngle)
+					else:
+						deviationAngle = baseDeviation
+					
+					position = position.lerp(effectiveTargetPos, followDelay * GLOBAL.TICK)
+				
+				OptionFormation.FOLLOW:
+					_update_follow_movement(GLOBAL.TICK)
+
+
+# === LÓGICA DE HISTORIAL EN SEGUNDO PLANO ===
+
+func _record_target_position() -> void:
+	if not targetNode or not is_instance_valid(targetNode):
+		return
+
+	var current_target_pos: Vector2 = targetNode.global_position
+
+	# Guardamos solo si el objetivo se ha movido la distancia mínima
+	if positionHistory.is_empty() or positionHistory.back().distance_to(current_target_pos) >= minRecordDistance:
+		positionHistory.append(current_target_pos)
+
+	# Mantenemos el buffer exactamente en el tamaño trailDelay
+	while positionHistory.size() > trailDelay:
+		positionHistory.pop_front()
+
+
+func _update_follow_movement(tick: float) -> void:
+	deviationAngle = 0
+	if positionHistory.is_empty():
+		return
+
+	# Lerp suave hacia la miguita más antigua disponible
+	var goal_pos: Vector2 = positionHistory[0]
+	global_position = global_position.lerp(goal_pos, followLerpSpeed * tick)
+
+
+# === COMPORTAMIENTOS DE DISPARO Y MOVIMIENTO ORIGINALES ===
+
+func _damage_no_hold_orbit(parent: Node2D, tick: float) -> void:
+	followDelay = 25
+	orbit_angle -= orbit_angular_speed * tick
+	var offset = Vector2(cos(orbit_angle) * orbit_radius, sin(orbit_angle) * orbit_radius)
+	var target_global = parent.global_position + offset
+	global_position = global_position.lerp(target_global, followDelay * tick)
+	deviationAngle = 0
+
+
+func _sides_hold(parent: Node2D, dir: Vector2, tick: float) -> void:
+	var enemy = _get_closest_enemy()
+	dir = (enemy.global_position - parent.global_position).normalized() if enemy else Vector2.UP
+	var distance := 50.0
+	deviationAngle = 0
+	var targetPosition = parent.global_position + dir * distance
+	var offsetDir := dir.orthogonal().normalized()
+	targetPosition += offsetDir * -offSign * sideOffset
+	global_position = global_position.lerp(targetPosition, followDelay * tick)
+	followDelay = 15
+	if canFire and activeBullets < maxBullets:
+		await _fire_burst(dir, bulletScene)
+
+
+func _orbit_hold(parent: Node2D, dir: Vector2, tick: float) -> void:
+	var distance := 75.0
+	var nSideOffset = sideOffset * 1.5
+	var ratio = abs(currLatOffset) / nSideOffset
+	var minSpeedFactor: float = 0.3
+	var effectiveSpeed = oscSpeed * (minSpeedFactor + (1 - minSpeedFactor) * ratio)
+	currLatOffset += moveDir * effectiveSpeed * tick
+	var jumped: bool = false
+	if currLatOffset >= nSideOffset:
+		currLatOffset = -nSideOffset + 10
+		jumped = true
+	elif currLatOffset <= -nSideOffset:
+		currLatOffset = nSideOffset - 10
+		jumped = true
+	var targetPosition = parent.global_position + dir * distance
+	var offsetDir := dir.orthogonal().normalized()
+	targetPosition += offsetDir * currLatOffset
+	if jumped: global_position = targetPosition
+	else: global_position = global_position.lerp(targetPosition, followDelay * tick)
+	followDelay = 15
+	if canFire and activeBullets < maxBullets:
+		await _fire_burst(dir, bulletScene)
+
+
+func _follow_hold(dir: Vector2, tick: float) -> void:
+	followDelay = 5
+	deviationAngle = 0
+	if targetNode and is_instance_valid(targetNode):
+		targetPos = targetNode.global_position
+		var toTarget = targetPos - global_position
+		var distance = toTarget.length()
+		var desiredDistance: float = 80.0
+		var speedFactor: float = 6.0
+		var idealPos: Vector2
+		if distance > 0.1:
+			var directionAway = -toTarget.normalized()
+			idealPos = targetPos + directionAway * desiredDistance
+		else:
+			var backDir = -targetNode.lastMoveDirection.normalized()
+			idealPos = targetPos + backDir * desiredDistance
+		global_position = global_position.lerp(idealPos, speedFactor * tick)
+	if canFire and activeBullets < maxBullets:
+		await _fire_burst(dir, bulletScene)
+
+
+func _get_closest_enemy() -> Node2D:
+	var enemies = get_tree().get_nodes_in_group("Enemy")
+	var closest: Node2D = null
+	var minDist := INF
+	for enemy in enemies:
+		var dist = global_position.distance_to(enemy.global_position)
+		if dist < minDist:
+			minDist = dist
+			closest = enemy
+	return closest

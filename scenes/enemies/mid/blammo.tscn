@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://60qb43njmjls"]
+
+[ext_resource type="PackedScene" uid="uid://cpaqrklh3fr4s" path="res://scenes/enemies/base/midEnemy.tscn" id="1_v0o27"]
+[ext_resource type="Texture2D" uid="uid://diwcoh0ak0d75" path="res://sprites/enemies.png" id="2_cr1eh"]
+[ext_resource type="PackedScene" uid="uid://ckt8ptwvv6ss8" path="res://scenes/weapons/enemies/mid/bendyRange.tscn" id="2_g7c5a"]
+
+[node name="Enemy" unique_id=216912149 instance=ExtResource("1_v0o27")]
+childhood = 5
+childDuration = 2.5
+adulthood = 4
+adultDuration = 7.0
+adultSpeed = 50
+oldAge = 9
+oldSpeed = 200
+
+[node name="Sprite2D" parent="." index="0" unique_id=444427917]
+position = Vector2(2.8, -16)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2_cr1eh")
+hframes = 3
+vframes = 3
+
+[node name="CollisionShape2D" parent="Hurtbox" parent_id_path=PackedInt32Array(779846352) index="0" unique_id=1834027415]
+scale = Vector2(4.9999995, 4.9999995)
+
+[node name="Emitter" parent="." index="5" unique_id=1204105341 instance=ExtResource("2_g7c5a")]

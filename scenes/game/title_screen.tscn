@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://dra7yqg0s7urp"]
+
+[ext_resource type="Script" uid="uid://ce6rccpqgcq1s" path="res://source/UI/menus/title.gd" id="1_tg2ys"]
+[ext_resource type="Texture2D" uid="uid://wwpvo01jgd4s" path="res://sprites/logo_gatogun.png" id="2_3t1qn"]
+[ext_resource type="PackedScene" uid="uid://dag4p2j605ep3" path="res://scenes/vfx/menu_background.tscn" id="2_v1bup"]
+[ext_resource type="Shader" uid="uid://ceyfdtlbffr4j" path="res://shaders/drop_shadow.gdshader" id="3_v1bup"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v1bup"]
+shader = ExtResource("3_v1bup")
+shader_parameter/shadow_offset = Vector2(30, 40)
+shader_parameter/shadow_color = Color(0, 0, 0, 0.8)
+
+[node name="Title Screen" type="Control" unique_id=832146992]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tg2ys")
+breathing_speed = 0.5
+breathing_amount = 0.05
+bobbing_enabled = false
+
+[node name="MenuBackground" parent="." unique_id=432135716 instance=ExtResource("2_v1bup")]
+layout_mode = 0
+
+[node name="LogoGatogun" type="Sprite2D" parent="." unique_id=2101002880]
+material = SubResource("ShaderMaterial_v1bup")
+position = Vector2(336, 368)
+scale = Vector2(0.28229365, 0.2792783)
+texture = ExtResource("2_3t1qn")
+
+[node name="StartText" type="RichTextLabel" parent="." unique_id=339974098]
+layout_mode = 1
+offset_left = 179.0
+offset_top = 511.0
+offset_right = 507.0
+offset_bottom = 561.0
+text = "PUSH SHOOT BUTTON"
+horizontal_alignment = 1
+vertical_alignment = 1

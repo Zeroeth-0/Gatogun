@@ -1,0 +1,173 @@
+[gd_scene load_steps=15 format=3 uid="uid://bi7uyv2plo07x"]
+
+[ext_resource type="Script" path="res://source/levels/world.gd" id="1_btnht"]
+[ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="3_0hlg8"]
+[ext_resource type="PackedScene" uid="uid://cgts6rg8xrau" path="res://scenes/levels/playzone.tscn" id="4_hkylk"]
+[ext_resource type="PackedScene" uid="uid://4y26tmtqbxdx" path="res://scenes/levels/ground.tscn" id="5_sf1u2"]
+[ext_resource type="PackedScene" uid="uid://col2b2mp7eu6y" path="res://scenes/enemies/PT-Pr03.tscn" id="6_ay5fw"]
+[ext_resource type="PackedScene" uid="uid://b75rvmh44msfh" path="res://scenes/enemies/PA-Pr01.tscn" id="6_kdx7s"]
+[ext_resource type="PackedScene" uid="uid://1jns7p21mhry" path="res://scenes/enemies/PA-Pr02.tscn" id="7_ewcwf"]
+[ext_resource type="PackedScene" uid="uid://chegi2am56x1" path="res://scenes/UI/combo_label.tscn" id="9_ckr2p"]
+[ext_resource type="PackedScene" uid="uid://jkopai8ptvrm" path="res://scenes/UI/score_label.tscn" id="10_s7d0j"]
+[ext_resource type="PackedScene" uid="uid://ber78ar7g5504" path="res://scenes/UI/fever_bar.tscn" id="11_yb1ae"]
+[ext_resource type="PackedScene" uid="uid://bh5j5lxy0e3ox" path="res://scenes/enemies/MA-Ad01.tscn" id="13_wto8c"]
+[ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="14_kq4rh"]
+[ext_resource type="PackedScene" uid="uid://cxlnulg54i4r6" path="res://scenes/enemies/EA-Dc01.tscn" id="14_m2u0j"]
+[ext_resource type="Script" path="res://source/UI/lives.gd" id="15_nlt8f"]
+
+[node name="World" type="Node2D"]
+script = ExtResource("1_btnht")
+csv_file = "res://source/levels/test.txt"
+enemy_scenes = Array[PackedScene]([ExtResource("6_kdx7s"), ExtResource("7_ewcwf"), ExtResource("6_ay5fw"), ExtResource("13_wto8c"), ExtResource("14_m2u0j")])
+
+[node name="North Lane" type="Node2D" parent="."]
+position = Vector2(340, -100)
+
+[node name="Zero" type="Marker2D" parent="North Lane"]
+position = Vector2(-261, 0)
+
+[node name="One" type="Marker2D" parent="North Lane"]
+position = Vector2(-174, 0)
+
+[node name="Two" type="Marker2D" parent="North Lane"]
+position = Vector2(-87, 0)
+
+[node name="Three" type="Marker2D" parent="North Lane"]
+
+[node name="Four" type="Marker2D" parent="North Lane"]
+position = Vector2(87, 0)
+
+[node name="Five" type="Marker2D" parent="North Lane"]
+position = Vector2(174, 0)
+
+[node name="Six" type="Marker2D" parent="North Lane"]
+position = Vector2(261, 0)
+
+[node name="West Lane" type="Node2D" parent="."]
+position = Vector2(-100, 250)
+rotation = 1.5708
+
+[node name="Zero" type="Marker2D" parent="West Lane"]
+position = Vector2(-261, 0)
+
+[node name="One" type="Marker2D" parent="West Lane"]
+position = Vector2(-174, 0)
+
+[node name="Two" type="Marker2D" parent="West Lane"]
+position = Vector2(-87, 0)
+
+[node name="Three" type="Marker2D" parent="West Lane"]
+
+[node name="Four" type="Marker2D" parent="West Lane"]
+position = Vector2(87, 0)
+
+[node name="Five" type="Marker2D" parent="West Lane"]
+position = Vector2(174, 0)
+
+[node name="Six" type="Marker2D" parent="West Lane"]
+position = Vector2(261, 0)
+
+[node name="East Lane" type="Node2D" parent="."]
+position = Vector2(780, 250)
+rotation = 1.5708
+
+[node name="Zero" type="Marker2D" parent="East Lane"]
+position = Vector2(-261, 0)
+
+[node name="One" type="Marker2D" parent="East Lane"]
+position = Vector2(-174, 0)
+
+[node name="Two" type="Marker2D" parent="East Lane"]
+position = Vector2(-87, 0)
+
+[node name="Three" type="Marker2D" parent="East Lane"]
+
+[node name="Four" type="Marker2D" parent="East Lane"]
+position = Vector2(87, 0)
+
+[node name="Five" type="Marker2D" parent="East Lane"]
+position = Vector2(174, 0)
+
+[node name="Six" type="Marker2D" parent="East Lane"]
+position = Vector2(261, 0)
+
+[node name="South Lane" type="Node2D" parent="."]
+position = Vector2(340, 830)
+
+[node name="Zero" type="Marker2D" parent="South Lane"]
+position = Vector2(-261, 0)
+
+[node name="One" type="Marker2D" parent="South Lane"]
+position = Vector2(-174, 0)
+
+[node name="Two" type="Marker2D" parent="South Lane"]
+position = Vector2(-87, 0)
+
+[node name="Three" type="Marker2D" parent="South Lane"]
+
+[node name="Four" type="Marker2D" parent="South Lane"]
+position = Vector2(87, 0)
+
+[node name="Five" type="Marker2D" parent="South Lane"]
+position = Vector2(174, 0)
+
+[node name="Six" type="Marker2D" parent="South Lane"]
+position = Vector2(261, 0)
+
+[node name="Ground" parent="." instance=ExtResource("5_sf1u2")]
+csv_file = null
+enemy_scenes = Array[PackedScene]([ExtResource("6_kdx7s"), ExtResource("7_ewcwf"), ExtResource("6_ay5fw")])
+
+[node name="DeadBounds" parent="." instance=ExtResource("3_0hlg8")]
+
+[node name="Playzone" parent="." instance=ExtResource("4_hkylk")]
+
+[node name="ComboLabel" parent="." instance=ExtResource("9_ckr2p")]
+z_index = 10
+offset_left = -165.0
+offset_top = 160.0
+offset_right = 8.0
+offset_bottom = 232.0
+text = "+9999"
+
+[node name="RankLabel" parent="." instance=ExtResource("9_ckr2p")]
+z_index = 10
+offset_left = -165.0
+offset_top = 160.0
+offset_right = 8.0
+offset_bottom = 232.0
+text = "x6"
+labelEnum = 2
+
+[node name="ScoreLabel" parent="." instance=ExtResource("10_s7d0j")]
+z_index = 10
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -86.5
+offset_top = 10.0
+offset_right = 86.5
+offset_bottom = 82.0
+grow_horizontal = 2
+scale = Vector2(1.1, 1.1)
+text = "Score: 999999999999"
+
+[node name="FeverBar" parent="." instance=ExtResource("11_yb1ae")]
+z_index = 10
+offset_left = -218.0
+offset_top = 220.0
+offset_right = 382.0
+offset_bottom = 820.0
+scale = Vector2(-0.1, -0.1)
+pivot_offset = Vector2(275, -75)
+fever_color = Color(0.921569, 0, 0, 1)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+z_index = 10
+offset_left = 30.0
+offset_top = 30.0
+offset_right = 70.0
+offset_bottom = 70.0
+scale = Vector2(0.25, 0.25)
+script = ExtResource("15_nlt8f")
+heart_texture = ExtResource("14_kq4rh")

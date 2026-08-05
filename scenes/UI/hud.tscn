@@ -1,0 +1,170 @@
+[gd_scene format=3 uid="uid://duam5mtyrxv5l"]
+
+[ext_resource type="Script" uid="uid://ccmb0til07tbv" path="res://source/UI/hud/hud.gd" id="1_rd3kb"]
+[ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_y5tme"]
+[ext_resource type="Shader" uid="uid://5sgorh56i7op" path="res://shaders/intensity_gauge.gdshader" id="3_y5tme"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_18exe"]
+shader = ExtResource("3_y5tme")
+shader_parameter/backFillColour = Color(0.7572553, 0.7854865, 0.8374096, 1)
+shader_parameter/frontFillInnerColour = Color(1, 1, 1, 1)
+shader_parameter/frontFillOuterColour = Color(1, 1, 1, 1)
+shader_parameter/ringColour = Color(0.21176471, 0.23921569, 0.2901961, 1)
+shader_parameter/fresnelColour = Color(1, 1, 1, 1)
+shader_parameter/innerRingGlowColour = Color(1, 1, 1, 1)
+shader_parameter/fillcolour = Color(1, 1, 1, 1)
+shader_parameter/ringWidth = 0.15
+shader_parameter/innerCircleRadiusOffset = 0.0
+shader_parameter/fill_value = 4.7499999933364734e-08
+shader_parameter/custom_time = 0.0
+
+[node name="HUD" type="Control" unique_id=1100591291 node_paths=PackedStringArray("gameScore", "highScore", "comboLabel", "multLabel", "gameName", "highName", "hotBar", "medalCountdown", "heartContainer", "currBombContainer", "maxBombContainer") groups=["HUD"]]
+z_index = 100
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = -1.0
+offset_right = 3.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_rd3kb")
+gameScore = NodePath("ScoreContainer/GameContainer/GameScore")
+highScore = NodePath("ScoreContainer/HighContainer/HighScore")
+comboLabel = NodePath("ComboLabel")
+multLabel = NodePath("MultLabel")
+gameName = NodePath("ScoreContainer/GameContainer/GameName")
+highName = NodePath("ScoreContainer/HighContainer/HighName")
+playerScoreColor = Color(0.9862152, 0.22923052, 0.1395481, 1)
+highScoreColor = Color(0.35686275, 0.5529412, 0.9098039, 1)
+hotBar = NodePath("HotBar")
+medalCountdown = NodePath("MedalCountdown")
+heartContainer = NodePath("HeartContainer")
+currBombContainer = NodePath("BombContainer/CurrBombContainer")
+maxBombContainer = NodePath("BombContainer/MaxBombContainer")
+resource_texture = ExtResource("2_y5tme")
+
+[node name="ComboLabel" type="RichTextLabel" parent="." unique_id=1357965203]
+top_level = true
+z_index = 10
+layout_mode = 0
+offset_left = -165.0
+offset_top = 250.0
+offset_right = 8.0
+offset_bottom = 322.0
+text = "+9999"
+
+[node name="MultLabel" type="RichTextLabel" parent="." unique_id=2039826531]
+top_level = true
+z_index = 10
+layout_mode = 0
+offset_left = 525.0
+offset_top = 100.0
+offset_right = 625.0
+offset_bottom = 170.0
+text = "x999"
+
+[node name="HotBar" type="TextureProgressBar" parent="." unique_id=578532251 groups=["ShaderHolder"]]
+z_index = 10
+material = SubResource("ShaderMaterial_18exe")
+layout_mode = 0
+offset_left = -3.0
+offset_top = 112.0
+offset_right = 125.0
+offset_bottom = 240.0
+scale = Vector2(0.6, 0.6)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+fill_mode = 3
+texture_under = ExtResource("2_y5tme")
+texture_progress = ExtResource("2_y5tme")
+
+[node name="MedalCountdown" type="TextureProgressBar" parent="." unique_id=1201068013]
+z_index = 10
+layout_mode = 0
+offset_left = 120.0
+offset_top = 150.0
+offset_right = 248.0
+offset_bottom = 278.0
+scale = Vector2(0.4, 0.4)
+max_value = 5.0
+step = 0.01
+value = 5.0
+fill_mode = 4
+texture_progress = ExtResource("2_y5tme")
+
+[node name="HeartContainer" type="HBoxContainer" parent="." unique_id=1117405624]
+z_index = 10
+layout_mode = 0
+offset_left = 25.0
+offset_top = 100.0
+offset_right = 65.00006
+offset_bottom = 140.0
+scale = Vector2(0.25, 0.25)
+
+[node name="ScoreContainer" type="HBoxContainer" parent="." unique_id=403505537]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 20.0
+offset_right = 640.0
+offset_bottom = 100.0
+theme_override_constants/separation = 0
+
+[node name="GameContainer" type="VBoxContainer" parent="ScoreContainer" unique_id=244395829]
+custom_minimum_size = Vector2(300, 60)
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="GameName" type="RichTextLabel" parent="ScoreContainer/GameContainer" unique_id=797841792]
+custom_minimum_size = Vector2(300, 50)
+layout_mode = 2
+text = "PLAYER-SCORE"
+vertical_alignment = 1
+
+[node name="GameScore" type="RichTextLabel" parent="ScoreContainer/GameContainer" unique_id=1689133802]
+custom_minimum_size = Vector2(300, 30)
+layout_mode = 2
+text = "999999999999999999999"
+horizontal_alignment = 1
+justification_flags = 161
+
+[node name="HighContainer" type="VBoxContainer" parent="ScoreContainer" unique_id=455931404]
+custom_minimum_size = Vector2(300, 60)
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="HighName" type="RichTextLabel" parent="ScoreContainer/HighContainer" unique_id=1776930001]
+custom_minimum_size = Vector2(300, 50)
+layout_mode = 2
+text = "HIGH-SCORE"
+vertical_alignment = 1
+
+[node name="HighScore" type="RichTextLabel" parent="ScoreContainer/HighContainer" unique_id=652332015]
+custom_minimum_size = Vector2(300, 30)
+layout_mode = 2
+text = "999999999999999999999"
+horizontal_alignment = 1
+
+[node name="BombContainer" type="Control" parent="." unique_id=681300541]
+anchors_preset = 0
+offset_left = 25.0
+offset_top = 680.0
+offset_right = 65.0
+offset_bottom = 720.0
+
+[node name="MaxBombContainer" type="HBoxContainer" parent="BombContainer" unique_id=2133660391]
+modulate = Color(0.39308554, 0.3930855, 0.39308548, 1)
+z_index = 10
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+scale = Vector2(0.25, 0.25)
+
+[node name="CurrBombContainer" type="HBoxContainer" parent="BombContainer" unique_id=671075228]
+modulate = Color(0, 0, 1, 1)
+z_index = 10
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+scale = Vector2(0.25, 0.25)

@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://k3dc4e2ha3m1"]
+
+[ext_resource type="Script" uid="uid://d1bosw6cv4bjk" path="res://source/bullets/player_bullet.gd" id="1_08ob5"]
+[ext_resource type="Texture2D" uid="uid://cjm2cd53owilx" path="res://sprites/player_bullet.png" id="4_jwfqj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ex51n"]
+
+[node name="Burst Bullet" type="Area2D" unique_id=990931563 groups=["BulletCount", "Fire"]]
+z_index = 1
+scale = Vector2(2, 1)
+script = ExtResource("1_08ob5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1080969001]
+scale = Vector2(2.5, 2.5)
+shape = SubResource("RectangleShape2D_ex51n")
+debug_color = Color(1, 1, 0, 0.419608)
+
+[node name="Bullet" type="Sprite2D" parent="." unique_id=1545680935]
+modulate = Color(1, 1, 0, 1)
+z_index = 1
+position = Vector2(14.5, 0)
+rotation = 1.5707964
+scale = Vector2(0.2, 0.25)
+texture = ExtResource("4_jwfqj")
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
+[connection signal="area_exited" from="." to="." method="_on_area_exited"]

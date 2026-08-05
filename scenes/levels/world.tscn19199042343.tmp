@@ -1,0 +1,243 @@
+[gd_scene load_steps=14 format=3 uid="uid://bi7uyv2plo07x"]
+
+[ext_resource type="Script" uid="uid://hrxsyfgjv1kg" path="res://source/levels/world.gd" id="1_btnht"]
+[ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="3_0hlg8"]
+[ext_resource type="PackedScene" uid="uid://cgts6rg8xrau" path="res://scenes/levels/playzone.tscn" id="4_hkylk"]
+[ext_resource type="PackedScene" uid="uid://4y26tmtqbxdx" path="res://scenes/levels/ground.tscn" id="5_sf1u2"]
+[ext_resource type="PackedScene" uid="uid://gyhjwciacmac" path="res://scenes/UI/mult_label.tscn" id="6_mmplq"]
+[ext_resource type="PackedScene" uid="uid://dg3240gsrod7n" path="res://scenes/UI/medal_countdown.tscn" id="8_mmplq"]
+[ext_resource type="PackedScene" uid="uid://chegi2am56x1" path="res://scenes/UI/combo_label.tscn" id="9_ckr2p"]
+[ext_resource type="PackedScene" uid="uid://jkopai8ptvrm" path="res://scenes/UI/score_label.tscn" id="10_s7d0j"]
+[ext_resource type="PackedScene" uid="uid://45jy2ekapnll" path="res://scenes/enemies/enemy.tscn" id="11_mmplq"]
+[ext_resource type="PackedScene" uid="uid://ber78ar7g5504" path="res://scenes/UI/fever_bar.tscn" id="11_yb1ae"]
+[ext_resource type="PackedScene" uid="uid://cpaqrklh3fr4s" path="res://scenes/enemies/midEnemy.tscn" id="12_de0io"]
+[ext_resource type="PackedScene" uid="uid://c7eeyaje6ghkn" path="res://scenes/UI/h_box_container.tscn" id="13_e6078"]
+[ext_resource type="PackedScene" uid="uid://wm5ygajh4jkk" path="res://scenes/items/power_up.tscn" id="13_xidr1"]
+
+[node name="World" type="Node2D"]
+script = ExtResource("1_btnht")
+
+[node name="North Lane" type="Node2D" parent="."]
+position = Vector2(340, -100)
+
+[node name="Zero" type="Marker2D" parent="North Lane"]
+position = Vector2(-261, 0)
+
+[node name="One" type="Marker2D" parent="North Lane"]
+position = Vector2(-174, 0)
+
+[node name="Two" type="Marker2D" parent="North Lane"]
+position = Vector2(-87, 0)
+
+[node name="Three" type="Marker2D" parent="North Lane"]
+
+[node name="Four" type="Marker2D" parent="North Lane"]
+position = Vector2(87, 0)
+
+[node name="Five" type="Marker2D" parent="North Lane"]
+position = Vector2(174, 0)
+
+[node name="Six" type="Marker2D" parent="North Lane"]
+position = Vector2(261, 0)
+
+[node name="West Lane" type="Node2D" parent="."]
+position = Vector2(-100, 250)
+rotation = 1.5708
+
+[node name="Zero" type="Marker2D" parent="West Lane"]
+position = Vector2(-261, 0)
+
+[node name="One" type="Marker2D" parent="West Lane"]
+position = Vector2(-174, 0)
+
+[node name="Two" type="Marker2D" parent="West Lane"]
+position = Vector2(-87, 0)
+
+[node name="Three" type="Marker2D" parent="West Lane"]
+
+[node name="Four" type="Marker2D" parent="West Lane"]
+position = Vector2(87, 0)
+
+[node name="Five" type="Marker2D" parent="West Lane"]
+position = Vector2(174, 0)
+
+[node name="Six" type="Marker2D" parent="West Lane"]
+position = Vector2(261, 0)
+
+[node name="East Lane" type="Node2D" parent="."]
+position = Vector2(780, 250)
+rotation = 1.5708
+
+[node name="Zero" type="Marker2D" parent="East Lane"]
+position = Vector2(-261, 0)
+
+[node name="One" type="Marker2D" parent="East Lane"]
+position = Vector2(-174, 0)
+
+[node name="Two" type="Marker2D" parent="East Lane"]
+position = Vector2(-87, 0)
+
+[node name="Three" type="Marker2D" parent="East Lane"]
+
+[node name="Four" type="Marker2D" parent="East Lane"]
+position = Vector2(87, 0)
+
+[node name="Five" type="Marker2D" parent="East Lane"]
+position = Vector2(174, 0)
+
+[node name="Six" type="Marker2D" parent="East Lane"]
+position = Vector2(261, 0)
+
+[node name="South Lane" type="Node2D" parent="."]
+position = Vector2(340, 830)
+
+[node name="Zero" type="Marker2D" parent="South Lane"]
+position = Vector2(-261, 0)
+
+[node name="One" type="Marker2D" parent="South Lane"]
+position = Vector2(-174, 0)
+
+[node name="Two" type="Marker2D" parent="South Lane"]
+position = Vector2(-87, 0)
+
+[node name="Three" type="Marker2D" parent="South Lane"]
+
+[node name="Four" type="Marker2D" parent="South Lane"]
+position = Vector2(87, 0)
+
+[node name="Five" type="Marker2D" parent="South Lane"]
+position = Vector2(174, 0)
+
+[node name="Six" type="Marker2D" parent="South Lane"]
+position = Vector2(261, 0)
+
+[node name="Ground" parent="." instance=ExtResource("5_sf1u2")]
+
+[node name="DeadBounds" parent="." instance=ExtResource("3_0hlg8")]
+
+[node name="Playzone" parent="." instance=ExtResource("4_hkylk")]
+
+[node name="ComboLabel" parent="." instance=ExtResource("9_ckr2p")]
+offset_left = -165.0
+offset_top = 160.0
+offset_right = 8.0
+offset_bottom = 232.0
+text = "+9999"
+
+[node name="MultLabel" parent="." instance=ExtResource("6_mmplq")]
+offset_left = 560.0
+offset_top = 35.0
+offset_right = 733.0
+offset_bottom = 107.0
+text = "x999"
+
+[node name="ScoreLabel" parent="." instance=ExtResource("10_s7d0j")]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -86.5
+offset_top = 10.0
+offset_right = 86.5
+offset_bottom = 82.0
+grow_horizontal = 2
+scale = Vector2(1.1, 1.1)
+text = "Score: 999999999999"
+
+[node name="FeverBar" parent="." instance=ExtResource("11_yb1ae")]
+
+[node name="MedalCountdown" parent="." instance=ExtResource("8_mmplq")]
+offset_left = 130.0
+offset_top = 100.0
+offset_right = 258.0
+offset_bottom = 228.0
+max_value = 5.0
+step = 0.01
+
+[node name="HBoxContainer" parent="." instance=ExtResource("13_e6078")]
+
+[node name="Enemy" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(172, -2)
+
+[node name="Enemy2" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(335, -40)
+
+[node name="Enemy3" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(518, 29)
+
+[node name="Enemy4" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(502, -103)
+
+[node name="Enemy6" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(30, -96)
+
+[node name="Enemy7" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(375, -205)
+
+[node name="Enemy9" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(652, -201)
+
+[node name="Enemy10" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(502, -322)
+
+[node name="Enemy11" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(276, -344)
+
+[node name="Enemy12" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(628, -46)
+
+[node name="Enemy13" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(135, -433)
+
+[node name="Enemy15" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(400, -430)
+
+[node name="Enemy16" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(195, -596)
+
+[node name="Enemy17" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(358, -634)
+
+[node name="Enemy19" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(525, -697)
+
+[node name="Enemy20" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(209, -770)
+
+[node name="Enemy21" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(53, -690)
+
+[node name="Enemy22" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(398, -799)
+
+[node name="Enemy23" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(114, -879)
+
+[node name="Enemy24" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(675, -795)
+
+[node name="Enemy25" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(525, -916)
+
+[node name="Enemy26" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(299, -938)
+
+[node name="Enemy28" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(158, -1027)
+
+[node name="Enemy29" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(667, -1003)
+
+[node name="Enemy30" parent="." instance=ExtResource("11_mmplq")]
+position = Vector2(423, -1024)
+
+[node name="Enemy31" parent="." instance=ExtResource("12_de0io")]
+position = Vector2(131, -229)
+
+[node name="Enemy32" parent="." instance=ExtResource("12_de0io")]
+position = Vector2(654, -480)
+
+[node name="Item" parent="." instance=ExtResource("13_xidr1")]
+position = Vector2(235, 523)
+
+[node name="Item2" parent="." instance=ExtResource("13_xidr1")]
+position = Vector2(408, 527)

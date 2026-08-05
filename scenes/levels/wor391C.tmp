@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://bu4plpf86f1x1"]
+
+[ext_resource type="PackedScene" uid="uid://dha3ds2h57s2b" path="res://scenes/bullets/bullet.tscn" id="1_xpsw6"]
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/emitter.tscn" id="3_8gymy"]
+[ext_resource type="PackedScene" uid="uid://45jy2ekapnll" path="res://scenes/enemies/enemy.tscn" id="4_kt6bt"]
+[ext_resource type="PackedScene" uid="uid://dnm46gsra70ug" path="res://scenes/player/cat_player.tscn" id="4_nvx4x"]
+
+[node name="World" type="Node2D"]
+
+[node name="Emitter" parent="." instance=ExtResource("3_8gymy")]
+position = Vector2(317, 317)
+bulletScene = ExtResource("1_xpsw6")
+
+[node name="CatPlayer" parent="." groups=["Player"] instance=ExtResource("4_nvx4x")]
+position = Vector2(317, 537)
+
+[node name="Enemy" parent="." instance=ExtResource("4_kt6bt")]
+position = Vector2(170, 140)
+intensity = 10.0
+orientation = Vector2(0, 1)

@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://ux02h6c48bqc"]
+
+[ext_resource type="PackedScene" uid="uid://cpaqrklh3fr4s" path="res://scenes/enemies/base/midEnemy.tscn" id="1_ieumd"]
+[ext_resource type="PackedScene" uid="uid://barbggqnkrvm" path="res://scenes/weapons/enemies/mid/aimedCircle.tscn" id="2_j431q"]
+[ext_resource type="Texture2D" uid="uid://diwcoh0ak0d75" path="res://sprites/enemies.png" id="2_mcgi0"]
+
+[node name="Enemy" unique_id=371751361 instance=ExtResource("1_ieumd")]
+childDuration = 2.5
+adultDuration = 7.0
+adultSpeed = 50
+
+[node name="Sprite2D" parent="." index="0" unique_id=444427917]
+position = Vector2(-3.6000004, -14.8)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2_mcgi0")
+hframes = 3
+vframes = 3
+frame = 2
+
+[node name="Emitter" parent="." index="5" unique_id=198157279 instance=ExtResource("2_j431q")]

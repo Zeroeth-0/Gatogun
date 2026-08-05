@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://dnm46gsra70ug"]
+
+[ext_resource type="Script" uid="uid://dtihhbg6wigvr" path="res://source/player/player.gd" id="1_7pfs0"]
+[ext_resource type="Texture2D" uid="uid://cuojt0mdh67vh" path="res://icon.svg" id="2_86ini"]
+[ext_resource type="PackedScene" uid="uid://cayls45qnqvte" path="res://scenes/bullets/player/bomb.tscn" id="2_ufgkt"]
+[ext_resource type="PackedScene" uid="uid://cjhkionj3a6h3" path="res://scenes/weapons/player/weapon.tscn" id="4_g6re5"]
+[ext_resource type="PackedScene" uid="uid://biy0dan8pm5u2" path="res://scenes/vfx/drop_shadow.tscn" id="4_p47bc"]
+[ext_resource type="Shader" uid="uid://h1stlvk2oj7f" path="res://shaders/hitbox.gdshader" id="6_75vfm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_klkvo"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0owmy"]
+shader = ExtResource("6_75vfm")
+shader_parameter/color = Color(1, 0, 0, 1)
+shader_parameter/core_size = 0.16800000728148
+shader_parameter/star_radius = 0.12800000445006
+shader_parameter/star_inner = 2.66900011746122
+shader_parameter/border_width = 0.06500000308749
+shader_parameter/ring_radius = 0.25300000875761997
+shader_parameter/ring_thickness = 0.04700000211608
+shader_parameter/pulse_speed = 8.0
+shader_parameter/pulse_amount = 0.050000002375
+shader_parameter/spin_speed = 6.0
+shader_parameter/custom_time = 0.0
+shader_parameter/visible_amount = 1.0
+
+[node name="CatPlayer" type="CharacterBody2D" unique_id=1691754433 node_paths=PackedStringArray("sprite", "hitbox") groups=["Player"]]
+z_index = 4
+script = ExtResource("1_7pfs0")
+sprite = NodePath("Icon")
+bomb = ExtResource("2_ufgkt")
+hitbox = NodePath("Denialzone")
+speed = 300
+screenMargin = 50
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=1185478358 groups=["Collect", "Player"]]
+z_index = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=1541289978]
+scale = Vector2(0.3, 0.3)
+shape = SubResource("RectangleShape2D_klkvo")
+debug_color = Color(1, 0, 0, 0.41960785)
+
+[node name="Icon" type="Sprite2D" parent="." unique_id=712924624]
+modulate = Color(0, 1, 0, 1)
+z_index = 4
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_86ini")
+
+[node name="DropShadow" parent="Icon" unique_id=1987613103 instance=ExtResource("4_p47bc")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=993576940]
+scale = Vector2(0.3, 0.3)
+shape = SubResource("RectangleShape2D_klkvo")
+disabled = true
+debug_color = Color(0, 1, 0, 0.419608)
+
+[node name="Denialzone" type="Area2D" parent="." unique_id=458765405 groups=["Player"]]
+scale = Vector2(1.7, 1.7)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Denialzone" unique_id=773695337]
+scale = Vector2(4, 4)
+shape = SubResource("RectangleShape2D_klkvo")
+debug_color = Color(0, 1, 0, 0.419608)
+
+[node name="Weapon" parent="." unique_id=2043432693 instance=ExtResource("4_g6re5")]
+position = Vector2(0, -1)
+
+[node name="HitboxIcon" type="ColorRect" parent="." unique_id=500403589 groups=["ShaderHolder"]]
+z_index = 5
+material = SubResource("ShaderMaterial_0owmy")
+offset_left = -25.0
+offset_top = -25.0
+offset_right = 25.0
+offset_bottom = 25.0
+
+[connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
+[connection signal="area_exited" from="Hurtbox" to="." method="_on_hurtbox_area_exited"]
