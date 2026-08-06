@@ -16,9 +16,9 @@ var inGame: bool = false
 
 # === ESTILOS ===
 enum OptionEnum { SIDES, ORBIT, FOLLOW }
-enum DollEnum { SPEED, STRONG, NEWBIE, CARAVAN }
+enum DollEnum { SCORE, SURVIVAL, CARAVAN }
 var OptionStyle: OptionEnum = OptionEnum.SIDES
-var DollStyle: DollEnum = DollEnum.SPEED
+var DollStyle: DollEnum = DollEnum.SCORE
 
 # === ESTADO GLOBAL DEL JUGADOR ===
 var spawnPoint: Vector2 = Vector2(340, 830)
@@ -67,7 +67,7 @@ func _physics_process(_delta: float) -> void:
 	if players.size() > 3:
 		players[3].queue_free()
 	
-	if DollStyle == DollEnum.STRONG or is_caravan:
+	if is_caravan:
 		remove_power_ups()
 
 func spawn() -> void:
@@ -86,7 +86,6 @@ func _respawn_player() -> void:
 	WEAPON.reset_lvl()
 	
 	var instance = cat.instantiate()
-	# Añadimos al grupo de inmediato para prevenir bugs de spawn múltiple
 	instance.add_to_group("Player") 
 	instance.position = spawnPoint
 	GLOBAL.add_to_game(instance, true)
@@ -137,11 +136,10 @@ func set_option_style(style: String):
 
 func set_doll(style: String):
 	match style:
-		"SPEED": DollStyle = DollEnum.SPEED
-		"STRONG": DollStyle = DollEnum.STRONG
-		"NEWBIE": DollStyle = DollEnum.NEWBIE
+		"SCORE": DollStyle = DollEnum.SCORE
+		"SURVIVAL": DollStyle = DollEnum.SURVIVAL
 		"CARAVAN": DollStyle = DollEnum.CARAVAN
-		_: DollStyle = DollEnum.SPEED
+		_: DollStyle = DollEnum.SCORE
 
 func set_lives():
 	lives = liveCount

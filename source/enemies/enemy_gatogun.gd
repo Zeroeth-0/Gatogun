@@ -105,9 +105,11 @@ func _check_death() -> void:
 	if _pulse_marked:
 		score_f *= 1.1
 
+	# Revenge bullets activas ÚNICAMENTE en estilo SCORE
 	var revenge = data.drops_revenge \
 		and (position.y < 300.0 or _pulse_marked) \
-		and not _by_bomb
+		and not _by_bomb \
+		and GAME.DollStyle == GAME.DollEnum.SCORE
 
 	EVENTS.enemy_killed.emit(EnemyKillData.new(
 		EnemyData.EnemyType.keys()[data.enemy_type],

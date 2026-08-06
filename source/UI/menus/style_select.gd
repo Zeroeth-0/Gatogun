@@ -1,7 +1,7 @@
 extends Control
 
 const GATOS: Array[Dictionary] = [{"name": "ZEBE", "style": "ORBIT"}, {"name": "FUKU", "style": "SIDES"}, {"name": "SERGIO", "style": "FOLLOW"}]
-const DOLLS: Array[Dictionary] = [{"name": "NOEL", "style": "STRONG"}, {"name": "ACTEA", "style": "SPEED"}, {"name": "PIRU", "style": "NEWBIE"}]
+const DOLLS: Array[Dictionary] = [{"name": "SCORE", "style": "SCORE"}, {"name": "SURVIVAL", "style": "SURVIVAL"}]
 
 enum SelectEnum { GATO, DOLL }
 @export var SelectStyle: SelectEnum = SelectEnum.GATO
@@ -11,9 +11,9 @@ var STYLES: Array[Dictionary]
 var nav: MenuNavigator
 var active_tweens: Array[Tween] = []
 
-@export var card_spacing: float = 200.0
-@export var back_card_y_offset: float = 60.0
-@export var back_card_scale: float = 0.85
+@export var card_spacing: float = 190.0
+@export var back_card_y_offset: float = 20.0
+@export var back_card_scale: float = 0.80
 @export var center_offset_x: float = -65.0
 @export var center_offset_y: float = -50.0
 @export var animation_speed: float = 0.15
@@ -22,9 +22,18 @@ var active_tweens: Array[Tween] = []
 func _ready() -> void:
 	STYLES = GATOS if SelectStyle == SelectEnum.GATO else DOLLS
 
-	for i in range(3):
-		var vbox: VBoxContainer = get_child(i + 1)
-		cards.append(vbox)
+	# Colección dinámica de tarjetas presentes en la escena
+	var child_count := get_child_count()
+	for i in range(1, child_count):
+		var node = get_child(i)
+		if node is VBoxContainer:
+			if cards.size() < STYLES.size():
+				cards.append(node)
+			else:
+				node.visible = false
+
+	for i in range(cards.size()):
+		var vbox: VBoxContainer = cards[i]
 		var name_label: RichTextLabel = vbox.get_child(1)
 		UIUtils.apply_menu_style(name_label, 15, Color(0,0,0,0.6), Vector2(2,2), 13, 13)
 		name_label.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -35,7 +44,7 @@ func _ready() -> void:
 	nav = MenuNavigator.new()
 	nav.option_count = STYLES.size()
 	nav.is_horizontal = true
-	nav.selected = 1 # Seleccionado del medio por defecto
+	nav.selected = 0 if SelectStyle == SelectEnum.DOLL else 1
 	nav.selection_changed.connect(func(_idx): _update_selection())
 	nav.confirmed.connect(_on_confirmed)
 	nav.cancelled.connect(_go_back)
@@ -69,22 +78,37 @@ func _update_selection(animate: bool = true) -> void:
 	if animate: for t in active_tweens: if t and t.is_valid(): t.kill()
 	active_tweens.clear()
 
-	for i in cards.size():
+	var count := STYLES.size()
+	for i in count:
 		var card := cards[i]
-		var offset := _get_card_offset(i)
-		var is_center := (offset == 0)
+		var is_selected := (i == nav.selected)
+		var target_x: float
+		var target_y: float
+		var target_scale_val: float
 
-		var target_scale_val := 2.0 if is_center else (2.0 * back_card_scale)
+		if count == 2:
+			# Disposición 2 cartas (SCORE a la izquierda, SURVIVAL a la derecha)
+			var side_sign := -1.0 if i == 0 else 1.0
+			var spacing_factor := 0.55 if is_selected else 0.95 # Aumentado para mayor distancia al centro
+			target_x = GAME.CENTER.x + (side_sign * card_spacing * spacing_factor) + center_offset_x
+			target_y = GAME.CENTER.y + center_offset_y + (0.0 if is_selected else back_card_y_offset)
+			target_scale_val = 2.0 if is_selected else (2.0 * back_card_scale)
+			card.z_index = 100 if is_selected else 10
+		else:
+			# Disposición carrusel de 3 cartas (Gatos)
+			var offset := _get_card_offset(i)
+			var is_center := (offset == 0)
+			target_scale_val = 2.0 if is_center else (2.0 * back_card_scale)
+			target_x = GAME.CENTER.x + (offset * card_spacing) + center_offset_x
+			target_y = GAME.CENTER.y + center_offset_y + (0.0 if is_center else back_card_y_offset)
+			card.z_index = 100 if is_center else 10 + offset
+
 		var target_scale := Vector2(target_scale_val, target_scale_val)
-		var target_x := GAME.CENTER.x + (offset * card_spacing) + center_offset_x
-		var target_y := GAME.CENTER.y + center_offset_y + (0.0 if is_center else back_card_y_offset)
-
-		card.z_index = 100 if is_center else 10 + offset
 		var icon: TextureRect = card.get_child(0)
 		var name_label: RichTextLabel = card.get_child(1)
-		var color := Color.WHITE if is_center else Color(0.25, 0.25, 0.25, unselected_alpha)
+		var color := Color.WHITE if is_selected else Color(0.25, 0.25, 0.25, unselected_alpha)
 
-		name_label.text = "[center]" + ("[wave amp=48 freq=5.0]" if is_center else "") + STYLES[i].name + ("[/wave]" if is_center else "") + "[/center]"
+		name_label.text = "[center]" + ("[wave amp=48 freq=5.0]" if is_selected else "") + STYLES[i].name + ("[/wave]" if is_selected else "") + "[/center]"
 
 		if animate:
 			var tw := create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC).set_parallel(true)

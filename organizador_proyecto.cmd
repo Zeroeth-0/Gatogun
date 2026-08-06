@@ -23,14 +23,14 @@ if exist ".godot" attrib -h ".godot"
 
 echo. >> "%OUTPUT_FILE%"
 echo ================================================== >> "%OUTPUT_FILE%"
-echo CÓDIGO FUENTE DE LOS SCRIPTS Y SHADERS >> "%OUTPUT_FILE%"
+echo CÓDIGO FUENTE DE LOS SCRIPTS >> "%OUTPUT_FILE%"
 echo ================================================== >> "%OUTPUT_FILE%"
 echo. >> "%OUTPUT_FILE%"
 
-echo Volcando scripts y shaders...
+echo Volcando scripts...
 
-:: 2. Buscar todos los archivos .gd y .gdshader, ignorando la carpeta .godot
-for /f "delims=" %%F in ('dir /b /s *.gd *.gdshader 2^>nul ^| findstr /v /i "\\.godot\\"') do (
+:: 2. Buscar todos los archivos .gd, ignorando la carpeta .godot
+for /f "delims=" %%F in ('dir /b /s *.gd 2^>nul ^| findstr /v /i "\\.godot\\"') do (
     
     :: Convertir la ruta absoluta a ruta relativa (reemplazar la ruta base con .\)
     set "filepath=%%F"

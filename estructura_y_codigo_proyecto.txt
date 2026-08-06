@@ -418,7 +418,7 @@ C:.
         
  
 ================================================== 
-CÓDIGO FUENTE DE LOS SCRIPTS Y SHADERS 
+CÓDIGO FUENTE DE LOS SCRIPTS 
 ================================================== 
  
 -------------------------------------------------- 
@@ -1153,1407 +1153,6 @@ enum MoveType {
  
  
 -------------------------------------------------- 
-ARCHIVO: .\shaders\bomb.gdshader 
--------------------------------------------------- 
- 
-shader_type canvas_item;
-render_mode blend_add;
-
-uniform float custom_time = 0.0; // ← Driven by CUSTIME
-
-uniform vec4 star_color : source_color = vec4(0.30, 1.00, 0.72, 1.0);
-uniform float star_count : hint_range(1.0, 20.0) = 5.0;
-uniform vec2 spacing = vec2(0.8, 0.8); 
-uniform float vertical_pos : hint_range(0.0, 1.0) = 0.5;
-uniform float global_opacity : hint_range(0.0, 1.0) = 1.0;
-
-uniform int trail_samples : hint_range(1, 15) = 6;
-uniform float trail_delay : hint_range(0.0, 0.5) = 0.1;
-uniform float trail_offset_v : hint_range(0.0, 0.5) = 0.1;
-uniform float trail_decay : hint_range(0.1, 2.0) = 0.8;
-
-uniform float star_radius : hint_range(0.05, 0.45) = 0.22;
-uniform float star_inner  : hint_range(1.2, 4.0)   = 2.5;
-uniform float spin_speed  : hint_range(0.0, 10.0)  = 4.0;
-uniform float pulse_speed : hint_range(0.0, 8.0)   = 2.4;
-
-float sdf_star(vec2 p, float r, float n, float m) {
-    float an = PI / n;
-    float en = PI / m;
-    vec2 acs = vec2(cos(an), sin(an));
-    vec2 ecs = vec2(cos(en), sin(en));
-    float bn = mod(atan(p.y, p.x), 2.0 * an) - an;
-    p = length(p) * vec2(cos(bn), abs(sin(bn)));
-    p -= r * acs;
-    p += ecs * clamp(-dot(p, ecs), 0.0, r * acs.y / ecs.y);
-    return length(p) * sign(p.x);
-}
-
-float hash12(vec2 p) {
-    p = fract(p * vec2(0.1031, 0.1030));
-    p += dot(p, p + 33.33);
-    return fract(p.x * p.y);
-}
-
-void fragment() {
-    float x_coord = UV.x * star_count;
-    vec3 final_rgb = vec3(0.0);
-    float final_alpha = 0.0;
-    float aa = 0.01;
-
-    for (int x = -1; x <= 1; x++) {
-        float node_x = floor(x_coord) + float(x);
-        vec2 node = vec2(node_x, 0.0);
-        float h = hash12(node);
-        
-        for (int i = 0; i < trail_samples; i++) {
-            float fi = float(i);
-            float falloff = pow(1.0 - (fi / float(trail_samples)), trail_decay);
-            float y_off = fi * trail_offset_v;
-
-            vec2 p = vec2(
-                fract(x_coord) - float(x) - 0.5, 
-                (UV.y - vertical_pos + y_off) * star_count
-            ) / spacing;
-
-            float t = custom_time - (fi * trail_delay) + h * 6.28; // ← custom_time
-
-            float pulse = (1.0 + sin(t * pulse_speed) * 0.15) * falloff;
-            float cos_a = cos(t * spin_speed);
-            float sin_a = sin(t * spin_speed);
-            vec2 p_rot = vec2(cos_a * p.x - sin_a * p.y, sin_a * p.x + cos_a * p.y);
-
-            float sd = sdf_star(p_rot, star_radius * pulse, 5.0, star_inner);
-
-            float fill   = 1.0 - smoothstep(0.0, aa, sd);
-            float border = (1.0 - smoothstep(0.02, 0.02 + aa, sd)) * smoothstep(0.0, aa, sd);
-
-            float intensity = (fill + border) * falloff;
-            vec3 star_sample = mix(star_color.rgb * 0.4, star_color.rgb, intensity);
-
-            final_rgb   += star_sample * intensity * 2.0;
-            final_alpha += intensity;
-        }
-    }
-
-    COLOR = vec4(final_rgb, clamp(final_alpha, 0.0, 1.0) * global_opacity);
-} 
- 
--------------------------------------------------- 
-ARCHIVO: .\shaders\charge_bullet.gdshader 
--------------------------------------------------- 
- 
-shader_type canvas_item;
-
-uniform float pulse_frequency  : hint_range(0.1, 5.0, 0.01)  = 5.0;
-uniform float pulse_sharpness  : hint_range(1.0, 20.0, 0.1)  = 6.0;
-uniform float pulse_strength   : hint_range(0.0, 0.5, 0.01)  = 0.3;
-uniform float pulse_glow_boost : hint_range(0.0, 6.0, 0.01)  = 0.8;
-uniform float flash_white      : hint_range(0.0, 1.0, 0.01)  = 1.0;
-
-uniform float ray_amount         : hint_range(1.0, 32.0, 1.0)    = 6.0;
-uniform float rotation_frequency : hint_range(-8.0, 8.0, 0.001)  = 0.25;
-uniform float ray_half_width     : hint_range(0.0, 3.142, 0.001) = 0.2;
-uniform float ray_softness       : hint_range(0.0, 0.5, 0.001)   = 0.1;
-uniform float ray_reach          : hint_range(0.0, 1.0, 0.001)   = 0.6;
-uniform float screw_factor       : hint_range(-8.0, 8.0, 0.001)  = 2.0;
-
-uniform float core_radius     : hint_range(0.0, 0.6, 0.001) = 0.4;
-uniform float outer_radius    : hint_range(0.0, 1.0, 0.001) = 0.725;
-uniform float edge_softness   : hint_range(0.0, 0.3, 0.001) = 0.1;
-uniform float glow_falloff    : hint_range(0.5, 8.0, 0.1)   = 0.5;
-uniform float edge_turbulence : hint_range(0.0, 0.5, 0.001) = 0.01;
-uniform float turbulence_speed: hint_range(0.0, 8.0, 0.01)  = 8.0;
-
-uniform float posterize_str   : hint_range(0.0, 1.0, 0.01) = 0.55;
-uniform int   posterize_bands : hint_range(2, 6)            = 4;
-
-uniform bool  star_enabled      = true;
-uniform float star_radius       : hint_range(0.1, 1.2, 0.01)  = 0.8;
-uniform float star_inner_ratio  : hint_range(0.1, 0.9, 0.01)  = 0.4;
-uniform float star_softness     : hint_range(0.0, 0.1, 0.001) = 0.01;
-uniform float star_darkness     : hint_range(0.0, 1.0, 0.01)  = 0.0;
-uniform float star_pulse_amount : hint_range(0.0, 0.8, 0.01)  = 0.2;
-
-uniform vec4 core_color : source_color = vec4(1.00, 1.00, 0.88, 1.0);
-uniform vec4 mid_color  : source_color = vec4(1.00, 0.82, 0.15, 1.0);
-uniform vec4 edge_color : source_color = vec4(1.00, 0.38, 0.00, 1.0);
-uniform vec4 rim_color  : source_color = vec4(0.77, 0.00, 0.00, 1.0);
-uniform vec4 ray_color  : source_color = vec4(1.00, 0.90, 0.50, 1.0);
-
-// === TIEMPO ===
-uniform float custom_time : hint_range(0.0, 1000.0) = 0.0;
-
-float noise(vec2 p) {
-    vec2 i = floor(p);
-    vec2 f = fract(p);
-    f = f * f * (3.0 - 2.0 * f);
-    vec2 a = fract(sin(vec2(
-        dot(i,             vec2(127.1, 311.7)),
-        dot(i + vec2(1,0), vec2(127.1, 311.7))
-    )) * 43758.5453);
-    vec2 b = fract(sin(vec2(
-        dot(i + vec2(0,1), vec2(127.1, 311.7)),
-        dot(i + vec2(1,1), vec2(127.1, 311.7))
-    )) * 43758.5453);
-    return mix(mix(a.x, a.y, f.x), mix(b.x, b.y, f.x), f.y);
-}
-
-float sdf_star5(vec2 p, float r, float rf) {
-    const vec2 k1 = vec2( 0.80901699437, -0.58778525229);
-    const vec2 k2 = vec2(-0.80901699437, -0.58778525229);
-    p.x = abs(p.x);
-    p -= 2.0 * max(dot(k1, p), 0.0) * k1;
-    p -= 2.0 * max(dot(k2, p), 0.0) * k2;
-    p.x = abs(p.x);
-    p.y -= r;
-    vec2  ba = rf * vec2(-k1.y, k1.x) - vec2(0.0, 1.0);
-    float h  = clamp(dot(p, ba) / dot(ba, ba), 0.0, r);
-    return length(p - ba * h) * sign(p.x * ba.y - p.y * ba.x);
-}
-
-void fragment() {
-    vec2  uv        = UV * 2.0 - 1.0;
-    float r         = length(uv);
-    float angle_raw = atan(uv.y, uv.x);
-
-    float t      = mod(custom_time * pulse_frequency, 1.0);
-    float beat1_orb  = pow(max(0.0, sin(t * PI)), pulse_sharpness);
-    float beat2_orb  = pow(max(0.0, sin(mod(t + 0.18, 1.0) * PI)), pulse_sharpness * 2.5) * 0.35;
-    float hb_orb     = beat1_orb + beat2_orb;
-
-    float t_star     = mod(t + 0.5, 1.0);
-    float beat1_star = pow(max(0.0, sin(t_star * PI)), pulse_sharpness);
-    float beat2_star = pow(max(0.0, sin(mod(t_star + 0.18, 1.0) * PI)), pulse_sharpness * 2.5) * 0.35;
-    float hb_star    = beat1_star + beat2_star;
-
-    float size_kick = hb_orb * 0.18;
-    float outer_r   = outer_radius * (1.0 + size_kick);
-
-    float tc    = angle_raw * 3.0 + custom_time * turbulence_speed;
-    float ts    = custom_time * turbulence_speed;
-    float turb  = (noise(vec2(tc,             ts * 0.5)) * 2.0 - 1.0) * 0.65
-                + (noise(vec2(tc * 2.3 + 5.7, ts))      * 2.0 - 1.0) * 0.35;
-    float turb2 = (noise(vec2(r * 4.0 + custom_time * 1.5, angle_raw * 2.0 + custom_time)) * 2.0 - 1.0) * 0.4;
-    turb = (turb + turb2 * 0.5) * edge_turbulence * (1.0 + hb_orb * 0.6);
-
-    if (r - turb > outer_r + edge_softness) discard;
-
-    float r_pulse = (r - turb) / (1.0 + hb_orb * pulse_strength);
-
-    float mp1 = outer_r * 0.25;
-    float mp2 = outer_r * 0.55;
-    float mp3 = outer_r * 0.82;
-
-    vec3 base_rgb = core_color.rgb;
-    base_rgb = mix(base_rgb, mid_color.rgb,  smoothstep(0.0, mp1, r_pulse));
-    base_rgb = mix(base_rgb, edge_color.rgb, smoothstep(mp1, mp2, r_pulse));
-    base_rgb = mix(base_rgb, rim_color.rgb,  smoothstep(mp2, mp3, r_pulse));
-
-    float fn   = float(posterize_bands);
-    vec3  post = floor(base_rgb * fn) / (fn - 1.0);
-    base_rgb   = mix(base_rgb, post, posterize_str);
-
-    float soft       = edge_softness + abs(turb) * 1.5;
-    float outer_mask = 1.0 - smoothstep(outer_r - soft * 0.3, outer_r + soft, r_pulse);
-
-    float inv_r  = max(0.0, 1.0 - r_pulse / outer_r);
-    float glow   = pow(inv_r, glow_falloff);
-    float glow_p = pow(max(0.0, 1.0 - r_pulse / (outer_r * 0.55)), glow_falloff + 1.0);
-
-    float flash_core = hb_orb * flash_white * pow(inv_r, 1.5);
-    float flash_wide = hb_orb * flash_white * 0.55 * inv_r;
-    base_rgb += core_color.rgb * (glow * 0.4 + glow_p * hb_orb * pulse_glow_boost);
-    base_rgb  = mix(base_rgb, vec3(1.0), clamp(flash_core + flash_wide, 0.0, 1.0));
-
-    if (star_enabled) {
-        float star_angle = -custom_time * TAU * rotation_frequency;
-        float sc = cos(star_angle), ss = sin(star_angle);
-        vec2  star_uv = mat2(vec2(sc, ss), vec2(-ss, sc)) * uv;
-
-        float sr     = min(star_radius * (1.0 + hb_star * star_pulse_amount), outer_r * 0.96);
-        float d_star = sdf_star5(star_uv, sr, star_inner_ratio);
-
-        float star_mask = 1.0 - smoothstep(-star_softness, star_softness, d_star);
-        float star_halo = 1.0 - smoothstep(star_softness, star_softness + 0.04, d_star);
-        star_mask *= outer_mask;
-        star_halo *= outer_mask;
-
-        float star_vis = star_darkness * (0.5 + hb_star * 0.5);
-        base_rgb = mix(base_rgb, base_rgb * (1.0 - star_vis), star_mask);
-
-        vec3 star_rim = mix(mid_color.rgb, vec3(1.0), hb_star * 0.8) * (1.2 + hb_star * 0.8);
-        base_rgb = mix(base_rgb, star_rim, (star_halo - star_mask) * (0.5 + hb_star * 0.5));
-    }
-
-    float screw  = r_pulse * screw_factor * PI;
-    float angle  = angle_raw * ray_amount + screw;
-    float target = PI - mod(custom_time * TAU * rotation_frequency * ray_amount, TAU);
-    float d      = abs(mod(angle - target, TAU) - PI);
-
-    float ray_a    = 1.0 - smoothstep(
-        ray_amount * ray_half_width,
-        ray_amount * (ray_half_width + ray_softness), d);
-    float ray_r    = smoothstep(core_radius, core_radius + 0.08, r_pulse) *
-                     (1.0 - smoothstep(ray_reach, ray_reach + 0.12, r_pulse));
-    float ray_mask = ray_a * ray_r * outer_mask;
-
-    vec3 ray_rgb = mix(ray_color.rgb, vec3(1.0), hb_orb * flash_white * 0.6) * (1.0 + hb_orb * 0.8);
-
-    vec3  final_rgb = mix(base_rgb, ray_rgb, ray_mask * 0.75) * outer_mask;
-    float alpha     = clamp(outer_mask * (1.0 + hb_orb * 0.45), 0.0, 1.0);
-
-    COLOR = vec4(final_rgb, alpha);
-} 
- 
--------------------------------------------------- 
-ARCHIVO: .\shaders\charging_charge.gdshader 
--------------------------------------------------- 
- 
-shader_type canvas_item;
-
-// === CARGA ===
-uniform float charge : hint_range(0.0, 1.0, 0.001) = 0.0;
-
-// === HEARTBEAT ===
-uniform float pulse_frequency  : hint_range(0.1, 5.0, 0.01)  = 2.2;
-uniform float pulse_sharpness  : hint_range(1.0, 20.0, 0.1)  = 5.0;
-uniform float pulse_strength   : hint_range(0.0, 0.5, 0.01)  = 0.14;
-uniform float pulse_glow_boost : hint_range(0.0, 4.0, 0.01)  = 2.5;
-uniform float flash_white      : hint_range(0.0, 1.0, 0.01)  = 0.55;
-
-// === FORMA ===
-uniform float max_radius      : hint_range(0.05, 1.2, 0.01)   = 0.32;
-uniform float edge_softness   : hint_range(0.0,  0.15, 0.001) = 0.07;
-uniform float glow_falloff    : hint_range(0.5,  8.0,  0.1)   = 2.5;
-uniform float edge_turbulence : hint_range(0.0,  0.40, 0.001) = 0.13;
-uniform float turbulence_speed: hint_range(0.0,  8.0,  0.01)  = 2.8;
-
-// === POSTERIZACIÓN ===
-uniform float posterize_str   : hint_range(0.0, 1.0, 0.01) = 0.50;
-uniform int   posterize_bands : hint_range(2, 6)            = 4;
-
-// === ESTRELLA 4 PUNTAS ===
-uniform float star4_radius       : hint_range(0.1, 2.0, 0.01)   = 0.68;
-uniform float star4_inner_ratio  : hint_range(0.02, 0.5, 0.01)  = 0.15;
-uniform float star4_softness     : hint_range(0.0, 0.12, 0.001) = 0.025;
-uniform float star4_darkness     : hint_range(0.0, 1.0, 0.01)   = 0.50;
-uniform float star4_pulse_amount : hint_range(0.0, 1.2, 0.01)   = 0.60;
-uniform float star4_rot_speed    : hint_range(-3.0, 3.0, 0.01)  = 0.35;
-uniform float star4_ready_scale  : hint_range(1.0, 4.0, 0.05)   = 2.4;
-
-// === RAYOS ===
-uniform float ray_amount         : hint_range(4.0, 24.0, 1.0)    = 12.0;
-uniform float ray_rotation_speed : hint_range(-6.0, 6.0, 0.01)   = 1.2;
-uniform float ray_half_width     : hint_range(0.02, 0.4, 0.001)  = 0.135;
-uniform float ray_softness       : hint_range(0.01, 0.25, 0.001) = 0.065;
-uniform float ray_reach          : hint_range(0.4, 1.6, 0.01)    = 1.15;
-uniform float ray_screw_factor   : hint_range(-6.0, 6.0, 0.01)   = 0.8;
-uniform float ray_base_intensity : hint_range(0.3, 1.2, 0.05)    = 0.70;
-uniform vec4  ray_color : source_color = vec4(1.00, 0.88, 0.28, 1.0);
-
-// === COLORES ===
-uniform vec4 core_color : source_color = vec4(1.00, 1.00, 0.92, 1.0);
-uniform vec4 mid_color  : source_color = vec4(1.00, 0.82, 0.15, 1.0);
-uniform vec4 edge_color : source_color = vec4(1.00, 0.38, 0.00, 1.0);
-uniform vec4 rim_color  : source_color = vec4(0.90, 0.00, 0.00, 1.0);
-
-// === TIEMPO ===
-uniform float custom_time : hint_range(0.0, 1000.0) = 0.0;
-
-const float ACTIVATION_THRESHOLD = 0.985;
-
-float noise(vec2 p) {
-    vec2 i = floor(p);
-    vec2 f = fract(p);
-    f = f * f * (3.0 - 2.0 * f);
-    vec2 a = fract(sin(vec2(dot(i, vec2(127.1,311.7)), dot(i+vec2(1,0),vec2(127.1,311.7))))*43758.5453);
-    vec2 b = fract(sin(vec2(dot(i+vec2(0,1),vec2(127.1,311.7)), dot(i+vec2(1,1),vec2(127.1,311.7))))*43758.5453);
-    return mix(mix(a.x,a.y,f.x), mix(b.x,b.y,f.x), f.y);
-}
-
-float sdf_star4(vec2 p, float r, float rf) {
-    const float c = 0.70710678118;
-    p = abs(p); if (p.x < p.y) p = p.yx;
-    vec2 tip   = vec2(r, 0.0);
-    vec2 inner = vec2(rf * r * c, rf * r * c);
-    vec2 ba    = inner - tip;
-    vec2 pa    = p - tip;
-    float h    = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
-    float d    = length(pa - ba * h);
-    float s    = sign(ba.y * pa.x - ba.x * pa.y);
-    return d * s;
-}
-
-void fragment() {
-    vec2  uv    = UV * 2.0 - 1.0;
-    float dist  = length(uv);
-    float angle = atan(uv.y, uv.x);
-
-    float t      = mod(custom_time * pulse_frequency, 1.0);
-    float beat1  = pow(max(0.0, sin(t * PI)), pulse_sharpness);
-    float beat2  = pow(max(0.0, sin(mod(t + 0.18, 1.0) * PI)), pulse_sharpness * 2.5) * 0.35;
-    float hb_raw = beat1 + beat2;
-    float hb     = hb_raw * smoothstep(ACTIVATION_THRESHOLD - 0.04, ACTIVATION_THRESHOLD + 0.02, charge);
-
-    float hb_full   = smoothstep(ACTIVATION_THRESHOLD, 1.0, charge);
-    float size_kick = hb_raw * hb_full * 0.35;
-    float cur_r     = max_radius * pow(charge, 0.6) * (1.0 + size_kick);
-
-    float tc    = angle * 3.0 + custom_time * turbulence_speed;
-    float ts    = custom_time * turbulence_speed;
-    float turb  = (noise(vec2(tc, ts*0.5))*2.-1.)*0.65 + (noise(vec2(tc*2.3+5.7, ts))*2.-1.)*0.35;
-    float turb2 = (noise(vec2(dist*4.0 + custom_time*1.5, angle*2.0 + custom_time))*2.-1.) * 0.4;
-    turb = (turb + turb2*0.5) * edge_turbulence * charge;
-
-    if (dist - turb > cur_r + edge_softness) discard;
-
-    float r_pulse = (dist - turb) / (1.0 + hb * pulse_strength * 1.6);
-
-    float mp1 = cur_r * 0.25;
-    float mp2 = cur_r * 0.55;
-    float mp3 = cur_r * 0.82;
-
-    vec3 base = core_color.rgb;
-    base = mix(base, mid_color.rgb,  smoothstep(0.0, mp1, r_pulse));
-    base = mix(base, edge_color.rgb, smoothstep(mp1, mp2, r_pulse));
-    base = mix(base, rim_color.rgb,  smoothstep(mp2, mp3, r_pulse));
-
-    float fn   = float(posterize_bands);
-    vec3  post = floor(base * fn) / (fn - 1.0);
-    base = mix(base, post, posterize_str * charge);
-
-    float soft       = edge_softness + abs(turb) * 1.5;
-    float outer_mask = 1.0 - smoothstep(cur_r - soft*0.3, cur_r + soft, r_pulse);
-
-    float inv_r  = max(0.0, 1.0 - r_pulse / max(cur_r, 0.001));
-    float glow   = pow(inv_r, glow_falloff);
-    float glow_p = pow(max(0.0, 1.0 - r_pulse / max(cur_r * 0.55, 0.001)), glow_falloff + 1.0);
-
-    float flash_amount = flash_white * hb_raw
-        * smoothstep(ACTIVATION_THRESHOLD - 0.03, ACTIVATION_THRESHOLD, charge) * 1.4;
-
-    base += core_color.rgb * (glow * 0.35 + glow_p * hb * pulse_glow_boost * 0.6);
-    base  = mix(base, vec3(1.0), flash_amount * inv_r * 1.2);
-
-    float screw     = r_pulse * ray_screw_factor * PI;
-    float ray_angle = angle * ray_amount + custom_time * TAU * ray_rotation_speed + screw;
-    float d_ray     = abs(mod(ray_angle, TAU) - PI);
-
-    float ray_a       = 1.0 - smoothstep(ray_amount * ray_half_width, ray_amount * (ray_half_width + ray_softness), d_ray);
-    float ray_r_start = smoothstep(cur_r * 0.15, cur_r * 0.5, dist);
-    float ray_r_end   = 1.0 - smoothstep(cur_r * ray_reach * 0.6, cur_r * ray_reach * 1.1, dist);
-    float ray_r       = ray_r_start * ray_r_end;
-    float ray_boost   = smoothstep(ACTIVATION_THRESHOLD - 0.06, ACTIVATION_THRESHOLD + 0.04, charge) * 1.5;
-    float ray_intensity = ray_base_intensity * (1.0 + hb_raw * 0.6) * (1.0 + ray_boost);
-    float ray_mask    = ray_a * ray_r * outer_mask * ray_intensity * 0.85;
-
-    vec3 ray_rgb = mix(ray_color.rgb, vec3(1.15), hb_raw * flash_white * 0.8);
-    ray_rgb *= (1.0 + hb * 0.7);
-    base = mix(base, ray_rgb, ray_mask);
-
-    float star_rot  = custom_time * TAU * star4_rot_speed;
-    float sc        = cos(star_rot), ss = sin(star_rot);
-    vec2  star_uv   = mat2(vec2(sc, ss), vec2(-ss, sc)) * uv;
-    float star_wave = sin(custom_time * pulse_frequency * TAU) * 0.5 + 0.5;
-    float star_scale = 1.0 + charge * 0.4
-        + max(0.0, (charge - ACTIVATION_THRESHOLD) / (1.0 - ACTIVATION_THRESHOLD)) * (star4_ready_scale - 1.4);
-    float sr = cur_r * star4_radius * star_scale
-        * (1.0 + star_wave * star4_pulse_amount * max(0.0, charge - 0.9));
-
-    float d_star        = sdf_star4(star_uv, sr, star4_inner_ratio);
-    float star_mask_raw = 1.0 - smoothstep(-star4_softness, star4_softness, d_star);
-    float star_appear   = smoothstep(ACTIVATION_THRESHOLD - 0.015, ACTIVATION_THRESHOLD + 0.025, charge);
-    float star_mask     = star_mask_raw * star_appear * outer_mask * 1.1;
-    float star_white    = smoothstep(ACTIVATION_THRESHOLD - 0.02, ACTIVATION_THRESHOLD + 0.03, charge);
-    vec3  star_col      = mix(base, vec3(1.0), star_white * 0.95);
-    float star_dark     = mix(star4_darkness, 0.08, star_white);
-    vec3  star_final    = star_col * (1.0 - star_dark);
-    base = mix(base, star_final, star_mask * 0.88);
-
-    float alpha = outer_mask * smoothstep(0.0, 0.08, charge);
-    COLOR = vec4(base, alpha);
-} 
- 
--------------------------------------------------- 
-ARCHIVO: .\shaders\danmaku_bullet.gdshader 
--------------------------------------------------- 
- 
-shader_type canvas_item;
-
-uniform int bullet_type    : hint_range(0, 3) = 0;
-uniform int bullet_subtype : hint_range(0, 4) = 0;
-
-uniform vec4 bullet_color : source_color = vec4(1.0,  0.0,  0.85, 1.0);
-uniform vec4 rim_color    : source_color = vec4(0.45, 0.0,  0.40, 1.0);
-uniform vec4 core_color   : source_color = vec4(1.0,  1.0,  1.0,  1.0);
-uniform bool invert_colors                = false;
-
-uniform float core_radius   : hint_range(0.01, 0.49) = 0.20;
-uniform float rim_start     : hint_range(0.01, 0.49) = 0.25;
-uniform float edge_softness : hint_range(0.001, 0.1) = 0.025;
-uniform float brightness    : hint_range(1.0,   6.0) = 2.0;
-
-// === TIEMPO ===
-uniform float custom_time : hint_range(0.0, 1000.0) = 0.0;
-uniform float time_offset : hint_range(0.0, 100.0)  = 0.0;
-
-uniform bool  pulse_enabled                        = true;
-uniform float pulse_speed  : hint_range(0.0, 20.0) = 5.0;
-uniform float pulse_amount : hint_range(0.0, 0.12) = 0.035;
-
-uniform float kunai_length     : hint_range(1.0, 6.0) = 2.0;
-uniform float kunai_tip_top    : hint_range(0.3, 4.0) = 1.8;
-uniform float kunai_tip_bottom : hint_range(0.3, 4.0) = 1.8;
-
-uniform float box_aspect : hint_range(0.2,  1.5)    = 1.0;
-uniform float box_round  : hint_range(0.0,  1.0)    = 0.1;
-uniform float box_bulge  : hint_range(-0.25, 0.25)  = 0.0;
-
-uniform float star_inner : hint_range(0.1, 0.9) = 0.45;
-
-uniform float reach     : hint_range(0.0,   1.0)  = 0.85;
-uniform float thickness : hint_range(0.01,  1.0)  = 0.30;
-uniform int   count     : hint_range(1,    12)    = 4;
-uniform float spin      : hint_range(-10.0, 10.0) = 2.0;
-
-vec4 eff_core()   { return invert_colors ? bullet_color : core_color;   }
-vec4 eff_bullet() { return invert_colors ? core_color   : bullet_color; }
-float T()         { return custom_time + time_offset; }
-
-float core_r() {
-    float r = core_radius;
-    if (pulse_enabled) r += sin(T() * pulse_speed) * pulse_amount;
-    return r;
-}
-
-vec4 base_gradient(float d) {
-    float cr  = core_r();
-    vec4  lit = vec4(eff_bullet().rgb * brightness, 1.0);
-    vec4  a   = mix(eff_core(), lit,       smoothstep(cr,        rim_start,           d));
-    vec4  b   = mix(a,          rim_color, smoothstep(rim_start, 0.5 - edge_softness, d));
-    return b;
-}
-
-float circle_alpha(float d) {
-    return 1.0 - smoothstep(0.5 - edge_softness, 0.5, d);
-}
-
-vec2 rot2D(vec2 v, float a) {
-    float c = cos(a), s = sin(a);
-    return vec2(c * v.x - s * v.y, s * v.x + c * v.y);
-}
-
-vec4 apply_pattern(vec4 body, vec4 pcol, float mask) {
-    float sharpened = smoothstep(1.0 - thickness, 1.0, mask);
-    return mix(body, pcol, sharpened);
-}
-
-vec4 draw_ball_base(vec2 uv) {
-    float pulse = pulse_enabled ? sin(T() * pulse_speed) * pulse_amount : 0.0;
-    float scale = 1.0 / (1.0 + pulse * 4.0);
-    float d     = length(uv * scale);
-    return vec4(base_gradient(d).rgb, circle_alpha(d));
-}
-
-vec4 draw_kunai(vec2 uv) {
-    float half_w = mix(0.08, 0.48, thickness);
-    float nx     = uv.x / half_w;
-    float ny     = uv.y / (half_w * kunai_length);
-    float sharp  = uv.y < 0.0 ? kunai_tip_top : kunai_tip_bottom;
-    float blade  = pow(abs(nx) * 0.92, sharp) + pow(abs(ny) * 0.92, sharp);
-    float pulse  = pulse_enabled ? sin(T() * pulse_speed) * pulse_amount : 0.0;
-    float edge   = 0.88 - pulse * 3.0;
-    float alpha  = 1.0 - smoothstep(edge - edge_softness, edge + edge_softness, blade);
-    float d      = clamp(blade / edge, 0.0, 1.0) * 0.5;
-    float reflex   = 1.0 - smoothstep(0.0, 0.08, abs(uv.x));
-    float reflex_v = 1.0 - smoothstep(0.0, 0.55, abs(ny));
-    reflex *= reflex_v;
-    vec4 col = base_gradient(d);
-    col = mix(col, eff_core(), reflex * 0.70 * (1.0 - d * 2.0 * 0.6));
-    return vec4(col.rgb, alpha);
-}
-
-vec4 draw_box(vec2 uv) {
-    float pulse  = pulse_enabled ? sin(T() * pulse_speed) * pulse_amount : 0.0;
-    float size   = mix(0.15, 0.48, thickness) * (1.0 + pulse * 4.0);
-    vec2  half_e = vec2(size * box_aspect, size);
-    float t_y    = clamp(abs(uv.y) / half_e.y, 0.0, 1.0);
-    float t_x    = clamp(abs(uv.x) / half_e.x, 0.0, 1.0);
-    float bow_y  = box_bulge * size * (1.0 - t_y * t_y);
-    float bow_x  = box_bulge * size * (1.0 - t_x * t_x);
-    vec2 uv_b;
-    uv_b.x = uv.x - sign(uv.x) * bow_y;
-    uv_b.y = uv.y - sign(uv.y) * bow_x;
-    float r   = box_round * size;
-    vec2  q   = abs(uv_b) - half_e + r;
-    float sdf = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r;
-    float alpha     = 1.0 - smoothstep(-edge_softness, edge_softness, sdf);
-    float max_inner = min(half_e.x, half_e.y);
-    float d         = (1.0 - clamp((-sdf) / max_inner, 0.0, 1.0)) * 0.5;
-    vec2  pn     = uv / max(half_e, vec2(0.001));
-    float reflex = (1.0 - smoothstep(0.0, 0.30, abs(pn.x + pn.y) * 0.5))
-                 * smoothstep(0.0, 0.5, 1.0 - d * 2.0);
-    vec4 col = base_gradient(d);
-    col = mix(col, eff_core(), reflex * 0.40 * (1.0 - d * 2.0));
-    return vec4(col.rgb, alpha);
-}
-
-vec4 draw_star(vec2 uv) {
-    float pulse = pulse_enabled ? sin(T() * pulse_speed) * pulse_amount : 0.0;
-    float sz    = mix(0.08, 0.92, thickness) * (1.0 + pulse * 4.0);
-    float an    = PI / float(count);
-    vec2  p     = rot2D(uv / sz, -PI * 0.5);
-    float bn    = mod(atan(p.y, p.x), 2.0 * an) - an;
-    p           = length(p) * vec2(cos(bn), abs(sin(bn)));
-    vec2  ab      = vec2(star_inner * cos(an) - 1.0, star_inner * sin(an));
-    float tt      = clamp(dot(p - vec2(1.0, 0.0), ab) / dot(ab, ab), 0.0, 1.0);
-    vec2  closest = vec2(1.0, 0.0) + ab * tt;
-    float sgn     = sign(ab.x * (p.y - closest.y) - ab.y * (p.x - closest.x));
-    float sdf_n   = length(p - closest) * -sgn;
-    float alpha   = 1.0 - smoothstep(-edge_softness, edge_softness, sdf_n);
-    float d       = clamp((1.0 + sdf_n) * 0.5, 0.0, 0.5);
-    return vec4(base_gradient(d).rgb, alpha);
-}
-
-vec4 apply_spiral(vec2 uv, vec4 body) {
-    float d     = length(uv);
-    float cr    = core_r();
-    float outer = mix(cr + 0.04, 0.50, reach);
-    float angle = atan(uv.y, uv.x);
-    float sc    = angle * float(count) - 6.0 * TAU * d + T() * spin;
-    float threshold = 1.0 - 2.0 * clamp(thickness, 0.01, 1.0);
-    float arm_raw   = clamp((cos(sc) - threshold) / (1.0 - threshold), 0.0, 1.0);
-    float fade = smoothstep(cr * 0.4, cr + 0.06, d)
-               * (1.0 - smoothstep(outer * 0.92, outer, d));
-    return apply_pattern(body, eff_core(), arm_raw * fade);
-}
-
-vec4 apply_cross(vec2 uv, vec4 body) {
-    float d   = length(uv);
-    float cr  = core_r();
-    vec2  ruv = rot2D(uv, T() * spin * 0.12);
-    float arm_reach = mix(cr + 0.04, 0.50, reach);
-    float arm_w     = mix(0.01, 0.22, thickness * thickness);
-    float angle  = atan(ruv.y, ruv.x);
-    float sector = TAU / float(count);
-    float folded = mod(angle + sector * 0.5, sector) - sector * 0.5;
-    float perp   = abs(d * sin(folded));
-    float arm_mask = 1.0 - smoothstep(0.0, arm_w,       perp);
-    float arm_glow = 1.0 - smoothstep(0.0, arm_w * 2.5, perp);
-    float rfade = smoothstep(cr * 0.2, cr * 0.75, d)
-                * (1.0 - smoothstep(arm_reach * 0.88, arm_reach, d));
-    vec4 lit      = vec4(eff_bullet().rgb * brightness, 1.0);
-    vec4 glow_col = mix(lit, eff_core(), 0.5);
-    vec4 result   = body;
-    result = mix(result, glow_col,   arm_glow * rfade * 0.7);
-    result = mix(result, eff_core(), arm_mask * rfade);
-    return result;
-}
-
-vec4 apply_rings(vec2 uv, vec4 body) {
-    float d      = length(uv);
-    float cr     = core_r();
-    float outer  = mix(cr + 0.04, 0.50, reach);
-    float zone   = max(outer - cr, 0.001);
-    float ring_t = clamp((d - cr) / zone, 0.0, 1.0);
-    float duty     = mix(0.04, 0.96, thickness);
-    float phase    = ring_t * float(count) * TAU - T() * spin;
-    float wave_raw = cos(phase);
-    float thr      = cos(duty * PI);
-    float wave     = clamp((wave_raw - thr) / (1.0 - thr), 0.0, 1.0);
-    float fade = smoothstep(0.0, cr * 0.5, d)
-               * (1.0 - smoothstep(outer * 0.93, outer, d));
-    return apply_pattern(body, eff_core(), wave * fade);
-}
-
-vec4 apply_star(vec2 uv, vec4 body) {
-    float d   = length(uv);
-    vec2  ruv = rot2D(uv, T() * spin * 0.18);
-    float r_outer = mix(0.10, 0.48, reach);
-    float r_inner = r_outer * mix(0.04, 0.82, thickness);
-    float angle    = atan(ruv.y, ruv.x);
-    float sector   = TAU / float(count);
-    float half_sec = sector * 0.5;
-    float folded   = mod(angle + half_sec, sector) - half_sec;
-    float spoke_r  = mix(r_outer, r_inner, abs(folded) / half_sec);
-    float sdf       = d - spoke_r;
-    float star_fill = 1.0 - smoothstep(-0.010, 0.018, sdf);
-    float star_glow = 1.0 - smoothstep(-0.08,  0.06,  sdf);
-    vec4 lit = vec4(eff_bullet().rgb * brightness, 1.0);
-    vec4 b   = mix(body, lit,        star_glow * 0.6);
-         b   = mix(b,    eff_core(), star_fill);
-    return b;
-}
-
-void fragment() {
-    vec2  uv        = (UV - 0.5) * 2.0;
-    float tex_alpha = texture(TEXTURE, UV).a;
-    vec4 result;
-    if (bullet_type == 1) {
-        result = draw_kunai(uv);
-    } else if (bullet_type == 2) {
-        result = draw_box(uv);
-    } else if (bullet_type == 3) {
-        result = draw_star(uv);
-    } else {
-        result = draw_ball_base(uv);
-        if      (bullet_subtype == 1) result = apply_spiral(uv, result);
-        else if (bullet_subtype == 2) result = apply_cross(uv,  result);
-        else if (bullet_subtype == 3) result = apply_rings(uv,  result);
-        else if (bullet_subtype == 4) result = apply_star(uv,   result);
-    }
-    COLOR = vec4(result.rgb, result.a * tex_alpha);
-} 
- 
--------------------------------------------------- 
-ARCHIVO: .\shaders\drop_shadow.gdshader 
--------------------------------------------------- 
- 
-shader_type canvas_item;
-
-uniform vec2 shadow_offset = vec2(10.0, 10.0);
-uniform vec4 shadow_color : source_color = vec4(0.0, 0.0, 0.0, 0.8);
-
-void fragment() {
-    vec2 shadow_uv = UV - shadow_offset / vec2(textureSize(TEXTURE, 0));
-    vec4 shadow = texture(TEXTURE, shadow_uv) * shadow_color;
-    vec4 original = texture(TEXTURE, UV);
-    COLOR = mix(shadow, original, original.a);
-} 
- 
--------------------------------------------------- 
-ARCHIVO: .\shaders\enemy.gdshader 
--------------------------------------------------- 
- 
-shader_type canvas_item;
-
-// === SOMBRA ===
-uniform vec2 shadow_offset = vec2(20.0, 30.0);
-uniform vec4 shadow_color : source_color = vec4(0.0, 0.0, 0.0, 0.8);
-
-// === HIT FLASH ===
-uniform float hit_effect      : hint_range(0.0, 1.0) = 0.0;
-uniform float shake_intensity                         = 10.0;
-uniform float flash_speed                             = 30.0;
-uniform float time_offset                             = 0.0;
-uniform vec4  flash_color : source_color              = vec4(0.3, 0.7, 1.0, 1.0);
-uniform float custom_time : hint_range(0.0, 1000.0)  = 0.0;
-
-// === RESPIRACIÓN ===
-uniform float breath_enabled   : hint_range(0.0, 1.0) = 1.0;
-uniform float breath_speed     : hint_range(0.1, 5.0)  = 1.0;
-uniform float breath_intensity : hint_range(0.0, 0.2) = 0.2;
-uniform float breath_seed      : hint_range(0.0, 100.0) = 0.0;
-
-// ─────────────────────────────────────────────────────────────────────────────
-float rand(vec2 co) {
-    return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-void vertex() {
-    // --- Respiración ---
-    if (breath_enabled > 0.0) {
-        float t = custom_time * breath_speed + breath_seed;
-        float breath = sin(t * 1.000) * 0.60
-                     + sin(t * 1.337) * 0.28
-                     + sin(t * 2.731) * 0.12;
-        VERTEX *= 1.0 + breath * breath_intensity;
-    }
-
-    // --- Shake en hit ---
-    if (hit_effect > 0.0) {
-        float t   = custom_time * 30.0 + time_offset;
-        vec2  rnd = vec2(rand(vec2(t, 0.0))  * 2.0 - 1.0,
-                         rand(vec2(t, 10.0)) * 2.0 - 1.0);
-        VERTEX += rnd * shake_intensity * hit_effect;
-    }
-}
-
-void fragment() {
-    // --- Sombra ---
-    vec2 shadow_uv = UV - shadow_offset / vec2(textureSize(TEXTURE, 0));
-    vec4 shadow_px = texture(TEXTURE, shadow_uv) * shadow_color;
-
-    // --- Original ---
-    vec4 original = texture(TEXTURE, UV);
-
-    // --- Hit flash (solo sobre el sprite, no la sombra) ---
-    if (hit_effect > 0.0) {
-        float flash  = sin((custom_time + time_offset) * flash_speed) * 0.5 + 0.5;
-        flash       *= original.a;
-        vec4 flashed = mix(original, flash_color, flash);
-        flashed      = mix(original, flashed, hit_effect);
-        flashed.a    = original.a;
-        original     = flashed;
-    }
-
-    // --- Composite: sombra debajo, sprite encima ---
-    COLOR = mix(shadow_px, original, original.a);
-} 
- 
--------------------------------------------------- 
-ARCHIVO: .\shaders\explosion.gdshader 
--------------------------------------------------- 
- 
-shader_type canvas_item;
-
-uniform vec3 boom_pal1  : source_color = vec3(0.12, 0.05, 0.02);
-uniform vec3 boom_pal2  : source_color = vec3(0.58, 0.28, 0.04);
-uniform vec3 boom_pal3  : source_color = vec3(0.95, 0.80, 0.35);
-uniform vec3 boom_pal4  : source_color = vec3(1.00, 0.98, 0.90);
-uniform vec3 smoke_pal1 : source_color = vec3(0.05, 0.05, 0.07);
-uniform vec3 smoke_pal2 : source_color = vec3(0.28, 0.26, 0.28);
-uniform vec3 smoke_pal3 : source_color = vec3(0.62, 0.58, 0.55);
-
-uniform float custom_time    : hint_range(0.0, 10.0)   = 0.0;
-uniform float seed            : hint_range(0.0, 1000.0) = 0.0;
-uniform float size            : hint_range(0.1, 50.0, 0.1) = 5.0;
-uniform float disperse        : hint_range(0.1, 10.0, 0.1) = 1.0;
-uniform float duration        : hint_range(0.1, 10.0, 0.1) = 1.0;
-uniform float edge_turbulence : hint_range(0.0, 1.0, 0.01) = 0.12;
-uniform float rise_bias       : hint_range(0.0, 1.0, 0.01) = 0.45;
-uniform float filament_str    : hint_range(0.0, 1.0, 0.01) = 0.35;
-
-float hash12(vec2 p) {
-    p = fract(p * vec2(0.1031, 0.1030) + seed * 0.001);
-    p += dot(p, p + 33.33);
-    return fract(p.x * p.y);
-}
-vec2 hash22(vec2 p) {
-    p = fract(p * vec2(0.1031, 0.1030) + seed * 0.001);
-    p += dot(p, p.yx + 33.33);
-    return fract((p.xx + p.yy) * p.yx);
-}
-float noise(vec2 p) {
-    vec2 i = floor(p); vec2 f = fract(p);
-    vec2 u = f * f * (3.0 - 2.0 * f);
-    return mix(mix(hash12(i), hash12(i+vec2(1,0)), u.x),
-               mix(hash12(i+vec2(0,1)), hash12(i+vec2(1,1)), u.x), u.y) * 2.0 - 1.0;
-}
-float worley(vec2 p, float t) {
-    vec2 i = floor(p); vec2 f = fract(p);
-    float md = 1.0;
-    for (int y = -1; y <= 1; y++) {
-        for (int x = -1; x <= 1; x++) {
-            vec2 o = vec2(float(x), float(y));
-            vec2 h = hash22(i + o);
-            h = 0.5 + 0.5 * sin(disperse * t + 6.2831 * h);
-            vec2 rv = o + h - f;
-            md = min(md, dot(rv, rv));
-        }
-    }
-    return sqrt(md);
-}
-
-float aniso_dist(vec2 p, float t) {
-    float progress = clamp(t / duration, 0.0, 1.0);
-    float up_scale = 1.0 - rise_bias * 0.45 * smoothstep(0.1, 0.6, progress);
-    float dn_scale = 1.0 + rise_bias * 0.25 * smoothstep(0.1, 0.6, progress);
-    float sy = p.y < 0.0 ? up_scale : dn_scale;
-    return sqrt(p.x*p.x + (p.y*sy)*(p.y*sy));
-}
-
-float boom(vec2 p, float t) {
-    float repeat = clamp(t / duration, 0.0, 1.0) * 2.0;
-    float dist   = aniso_dist(p, t);
-    float shape  = 1.0 - pow(dist, 2.0) / (repeat * 12.0) - repeat * 2.0;
-    vec2 warp;
-    warp.x = noise(p * 0.4 + t * 0.4);
-    warp.y = -abs(noise(p * 0.4 + vec2(4.3,1.7) + t * 0.3))
-             * filament_str * smoothstep(0.1, 0.5, repeat);
-    vec2 pw = p + warp * 0.4;
-    float distortion = noise(pw * 0.5 + t * 0.5);
-    float bubbles    = 0.5 - pow(worley(pw * 1.2 + t * 2.0, t), 3.0);
-    return shape + (0.5 * bubbles + 0.5 * distortion);
-}
-
-float smoke(vec2 p, float t) {
-    float repeat       = clamp(t / duration, 0.0, 1.0) * 2.0;
-    float rise         = pow(repeat / 1.45, 2.0) * 1.5 * (1.0 + rise_bias * 0.6);
-    vec2  smoke_offset = vec2(0.0, -rise);
-    vec2  sp           = p - smoke_offset;
-    sp.x += noise(sp * 0.8 + custom_time * 0.5) * 0.15;
-    float shape      = 1.0 - pow(length(sp), 2.0) / (repeat * 16.0) - pow(repeat*1.5, 0.5);
-    float distortion = noise(sp * 1.5 + t * 0.1);
-    float bubbles    = 0.5 - pow(worley((p / pow(max(repeat,0.01), 0.35)) - smoke_offset + t*0.1, t), 2.0);
-    return shape + (0.75 * bubbles + 0.25 * distortion);
-}
-
-float posterize(float v, int n) {
-    float fn = float(n);
-    return floor(v * fn) / (fn - 1.0);
-}
-
-void fragment() {
-    vec2  pos       = (UV - vec2(0.5)) * size;
-    float boom_val  = boom(pos, custom_time);
-    float smoke_val = smoke(pos, custom_time);
-    bool  is_boom   = boom_val > (smoke_val * 0.4);
-    float main_val  = is_boom ? boom_val : smoke_val;
-    float turb      = noise(pos * 0.8 + custom_time * 1.5) * edge_turbulence;
-    float alpha     = smoothstep(0.0, edge_turbulence * 0.6, main_val + turb);
-    vec3 bp[4]  = { boom_pal1, boom_pal2, boom_pal3, boom_pal4 };
-    vec3 sp2[3] = { smoke_pal1, smoke_pal2, smoke_pal3 };
-    vec3 color;
-    if (main_val > 0.75) {
-        color = vec3(1.0);
-    } else if (is_boom) {
-        int idx = clamp(int(posterize(boom_val, 4) * 4.0), 0, 3);
-        color = bp[idx];
-    } else {
-        int idx = clamp(int(posterize(smoke_val, 3) * 3.0), 0, 2);
-        color = sp2[idx];
-    }
-    alpha *= 1.0 - smoothstep(duration * 0.8, duration, custom_time);
-
-    // Fade suave en los bordes del rect para evitar cortes visibles
-    float border_fade = size * 0.5;
-    float edge_dist   = border_fade - max(abs(pos.x), abs(pos.y));
-    alpha *= smoothstep(0.0, border_fade * 0.3, edge_dist);
-
-    COLOR = vec4(color, alpha);
-} 
- 
--------------------------------------------------- 
-ARCHIVO: .\shaders\hitbox.gdshader 
--------------------------------------------------- 
- 
-shader_type canvas_item;
-
-uniform vec4 color : source_color = vec4(0.30, 1.00, 0.72, 1.0);
-
-uniform float core_size    : hint_range(0.01, 0.20)  = 0.090;
-uniform float star_radius  : hint_range(0.05, 0.45)  = 0.22;
-uniform float star_inner   : hint_range(1.2,  4.0)   = 2.5;
-uniform float border_width : hint_range(0.002, 0.1)  = 0.018;
-
-uniform float ring_radius    : hint_range(0.10, 0.49) = 0.38;
-uniform float ring_thickness : hint_range(0.003, 0.06) = 0.022;
-
-uniform float pulse_speed  : hint_range(0.0, 8.0)  = 2.4;
-uniform float pulse_amount : hint_range(0.0, 0.15) = 0.07;
-uniform float spin_speed   : hint_range(0.0, 6.0)  = 1.6;
-
-uniform float custom_time    : hint_range(0.0, 1e+20) = 0.0;
-uniform float visible_amount : hint_range(0.0, 1.0)   = 1.0;
-
-float sdf_star(vec2 p, float r, float n, float m) {
-    float an  = PI / n;
-    float en  = PI / m;
-    vec2  acs = vec2(cos(an), sin(an));
-    vec2  ecs = vec2(cos(en), sin(en));
-    float bn  = mod(atan(p.y, p.x), 2.0 * an) - an;
-    p = length(p) * vec2(cos(bn), abs(sin(bn)));
-    p -= r * acs;
-    p += ecs * clamp(-dot(p, ecs), 0.0, r * acs.y / ecs.y);
-    return length(p) * sign(p.x);
-}
-
-void fragment() {
-    vec2  uv    = UV - 0.5;
-    float dist  = length(uv);
-    float pulse = 1.0 + sin(custom_time * pulse_speed) * pulse_amount;
-    float aa    = 0.006;
-
-    // ─── Anillo exterior ─────────────────────────────────────
-    float rd   = abs(dist - ring_radius * pulse);
-    float ring = 1.0 - smoothstep(ring_thickness, ring_thickness + aa, rd);
-
-    // ─── Estrella ────────────────────────────────────────────
-    float ca = cos(custom_time * spin_speed);
-    float sa = sin(custom_time * spin_speed);
-    vec2  uv_rot = vec2(ca * uv.x - sa * uv.y,
-                        sa * uv.x + ca * uv.y);
-    float sd = sdf_star(uv_rot, star_radius * pulse, 5.0, star_inner);
-
-    float star_border = (1.0 - smoothstep(border_width, border_width + aa, sd))
-                      *       smoothstep(0.0, aa, sd);
-    float star_fill   = 1.0 - smoothstep(0.0, aa, sd);
-
-    // ─── Core ────────────────────────────────────────────────
-    float core = 1.0 - smoothstep(core_size * 0.5, core_size, dist / pulse);
-    float core_border = (1.0 - smoothstep(core_size + border_width,
-                                          core_size + border_width + aa, dist / pulse))
-                       * smoothstep(core_size, core_size + aa, dist / pulse);
-
-    // ─── Composición ─────────────────────────────────────────
-    vec3 col = color.rgb;
-    col = mix(col, color.rgb,   ring);
-    col = mix(col, color.rgb,   star_fill);
-    col = mix(col, color.rgb, star_border);
-    col = mix(col, vec3(1.0),        core);
-    col = mix(col, color.rgb, core_border);
-
-    float alpha = clamp(ring * color.a + star_fill + star_border + core, 0.0, 1.0)
-                * visible_amount;
-
-    COLOR = vec4(col, alpha);
-} 
- 
--------------------------------------------------- 
-ARCHIVO: .\shaders\intensity_gauge.gdshader 
--------------------------------------------------- 
- 
-shader_type canvas_item;
-
-uniform vec3 backFillColour       : source_color = vec3(0.62, 1.00, 1.00);
-uniform vec3 frontFillInnerColour : source_color = vec3(0.35, 1.00, 1.00);
-uniform vec3 frontFillOuterColour : source_color = vec3(0.00, 0.35, 1.00);
-uniform vec3 ringColour           : source_color = vec3(0.00, 0.16, 0.13);
-uniform vec3 fresnelColour        : source_color = vec3(0.00, 0.88, 1.00);
-uniform vec3 innerRingGlowColour  : source_color = vec3(0.00, 1.00, 1.00);
-uniform vec4 fillcolour           : source_color = vec4(1);
-uniform float ringWidth                           = 0.15;
-uniform float innerCircleRadiusOffset             = 0.0;
-uniform float fill_value : hint_range(-1, 1)      = 0.25;
-
-// === TIEMPO ===
-uniform float custom_time : hint_range(0.0, 1000.0) = 0.0;
-
-float sdArc(in vec2 p, in vec2 sc, in float ra, float rb) {
-    p.x = abs(p.x);
-    return ((sc.y * p.x > sc.x * p.y) ? length(p - sc * ra) : abs(length(p) - ra)) - rb;
-}
-
-mat2 Get2DRotationMatrix(float angle) {
-    float c = cos(angle), s = sin(angle);
-    return mat2(vec2(c, s), vec2(-s, c));
-}
-
-void fragment() {
-    vec2 uv = (UV / -0.48) + vec2(1.038, 1.038);
-    float circleSDF = length(uv);
-
-    float oneMinusRingWidth = 1.0 - ringWidth;
-    float circleA    = step(circleSDF, 1.0);
-    float circleB    = step(circleSDF, oneMinusRingWidth);
-    float ring       = circleA - circleB;
-    float fillMaskCircle = step(circleSDF, oneMinusRingWidth - innerCircleRadiusOffset);
-
-    float ringGlowSDF  = circleSDF - 1.0;
-    float innerRingGlow = ringGlowSDF + 0.15;
-    innerRingGlow = clamp((0.01 / innerRingGlow) * pow(0.01 / innerRingGlow, 0.2) - fillMaskCircle, 0.0, 1.0);
-    float outerRingGlow = pow(0.01 / ringGlowSDF, 0.8);
-    outerRingGlow = clamp(outerRingGlow - fillMaskCircle, 0.0, 1.0);
-
-    float fillAnimationPhase = custom_time * 4.0;
-    float fillAnimation      = sin(fillAnimationPhase) * 0.05;
-
-    float frontWavePhase = ((custom_time * 2.0) + uv.x) * 2.0;
-    float backWavePhase  = ((custom_time * -2.0) + uv.x) * 2.0;
-
-    float frontWaves = sin(frontWavePhase) * 0.05;
-    float backWaves  = sin(backWavePhase + PI) * 0.05;
-
-    float verticalBand         = smoothstep(0.1, 0.9, sin(uv.x + (PI * 0.5)) - 0.3);
-    float animatedVerticalBand = verticalBand * 0.125 * sin(fillAnimationPhase);
-    frontWaves += animatedVerticalBand;
-    backWaves  -= animatedVerticalBand;
-    fillAnimation *= verticalBand;
-
-    float fillProgress = fill_value + sin(custom_time * PI) * 0.1;
-
-    float frontFill = step(uv.y, fillAnimation + frontWaves + fillProgress) * fillMaskCircle;
-    float backFill  = step(uv.y, -fillAnimation + backWaves + fillProgress) * fillMaskCircle;
-    backFill = clamp(backFill - frontFill, 0.0, 1.0);
-
-    float fillMask = (1.0 - (frontFill + backFill)) * fillMaskCircle;
-    float fill     = frontFill + backFill;
-
-    float f  = (circleSDF + 0.01) * fillMask;
-    float f2 = f * f;
-    float fresnel = clamp(f2 * f2 * f, 0.0, 1.0);
-
-    float ff  = (circleSDF + 0.02) * (1.0 - fillMask);
-    float ff2 = ff * ff;
-    float frontFillFresnel = clamp(ff2 * ff2 * ff, 0.0, 1.0);
-
-    const vec2 sc1 = vec2(sin(radians(15.0)), cos(radians(15.0)));
-    const vec2 sc2 = vec2(sin(radians(2.0)),  cos(radians(2.0)));
-    vec2 uv1 = Get2DRotationMatrix(radians(60.0)) * uv;
-    vec2 uv2 = Get2DRotationMatrix(radians(28.0)) * uv;
-    float specular = (step(sdArc(uv1, sc1, 0.65, 0.07), 0.0)
-                   +  step(sdArc(uv2, sc2, 0.65, 0.07), 0.0)) * 0.2;
-
-    float mask = ring + fill + fresnel + specular;
-    vec3  frontFillColour = mix(frontFillInnerColour, frontFillOuterColour, frontFillFresnel);
-
-    const vec3 outerRingGlowColour = vec3(1.0, 0.8, 0.1);
-    const vec3 specularColour      = vec3(1.0, 1.0, 0.9);
-
-    vec3 rgb =
-        (ring          * ringColour) +
-        (innerRingGlow * innerRingGlowColour) +
-        (outerRingGlow * outerRingGlowColour) +
-        ((frontFill * frontFillColour + backFill * backFillColour) * fillcolour.rbg) +
-        (fresnel   * fresnelColour) +
-        (specular  * specularColour);
-
-    COLOR = vec4(rgb, mask);
-} 
- 
--------------------------------------------------- 
-ARCHIVO: .\shaders\laser_bullet.gdshader 
--------------------------------------------------- 
- 
-shader_type canvas_item;
-// --- Colors ---
-uniform vec4 core_color  : source_color = vec4(1.0, 1.0, 1.0, 1.0);
-uniform vec4 inner_color : source_color = vec4(1.0, 0.6, 0.1, 1.0);
-uniform vec4 outer_color : source_color = vec4(1.0, 0.2, 0.0, 1.0);
-// --- Shape ---
-uniform float core_radius    : hint_range(0.01, 0.45) = 0.10;
-uniform float bullet_radius  : hint_range(0.01, 0.48) = 0.25;
-uniform float body_sharpness : hint_range(0.001, 0.08) = 0.020;
-uniform float tip_front : hint_range(0.3, 6.0) = 2.0;
-uniform float tip_back  : hint_range(0.3, 6.0) = 2.0;
-// center_offset positivo → waist baja, frente más largo, trasero más corto
-// center_offset negativo → waist sube, trasero más largo, frente más corto
-uniform float center_offset : hint_range(-0.4, 0.4) = 0.0;
-uniform float core_focus : hint_range(1.0, 10.0) = 1.0;
-// --- Bullet type ---
-uniform int bullet_type : hint_range(0, 4) = 3;
-// --- Lifetime fade ---
-uniform float lifetime_ratio : hint_range(0.0, 1.0) = 1.0;
-
-float superellipse_dist(vec2 uv) {
-    float shifted_y = uv.y - center_offset;
-    float scaled_y;
-    float n;
-    if (shifted_y < 0.0) {
-        // mitad delantera: ocupa (0.5 + center_offset) del sprite
-        float half_len = max(0.5 + center_offset, 0.001);
-        scaled_y = shifted_y / half_len * 0.5;
-        n = tip_front;
-    } else {
-        // mitad trasera: ocupa (0.5 - center_offset) del sprite
-        float half_len = max(0.5 - center_offset, 0.001);
-        scaled_y = shifted_y / half_len * 0.5;
-        n = tip_back;
-    }
-    n = max(n, 0.01);
-    return pow(pow(abs(uv.x), n) + pow(abs(scaled_y), n), 1.0 / n);
-}
-
-void fragment() {
-    vec2  uv   = UV - vec2(0.5);
-    float dist = superellipse_dist(uv);
-
-    vec4  t_inner = inner_color;
-    vec4  t_outer = outer_color;
-    float t_brad  = bullet_radius;
-    float t_crad  = core_radius;
-
-    if (bullet_type == 0) {
-        t_inner = vec4(1.0, 0.3, 0.0, 1.0);
-        t_outer = vec4(0.8, 0.0, 0.0, 1.0);
-        t_brad *= 1.6;  t_crad *= 1.4;
-    } else if (bullet_type == 1) {
-        t_inner = vec4(0.5, 0.9, 1.0, 1.0);
-        t_outer = vec4(0.0, 0.5, 1.0, 1.0);
-    } else if (bullet_type == 2) {
-        t_inner = vec4(0.9, 0.3, 1.0, 1.0);
-        t_outer = vec4(0.5, 0.0, 0.8, 1.0);
-    } else if (bullet_type == 4) {
-        t_inner = vec4(1.0, 0.95, 0.4, 1.0);
-        t_outer = vec4(1.0, 0.60, 0.0, 1.0);
-        t_brad *= 1.8;  t_crad *= 1.6;
-    }
-
-    float body_mask  = smoothstep(t_brad, t_brad - body_sharpness, dist);
-    float body_blend = clamp((dist - t_crad) / max(t_brad - t_crad, 0.0001), 0.0, 1.0);
-    vec3  body_rgb   = mix(t_inner.rgb, t_outer.rgb, body_blend);
-
-    float raw_blend  = clamp(dist / max(t_crad, 0.0001), 0.0, 1.0);
-    float core_blend = pow(raw_blend, core_focus);
-    vec3  core_rgb   = mix(core_color.rgb, t_inner.rgb, core_blend);
-
-    float in_core   = step(dist, t_crad);
-    vec3  final_rgb = mix(body_rgb, core_rgb, in_core);
-
-    COLOR = vec4(final_rgb * body_mask, body_mask) * lifetime_ratio;
-} 
- 
--------------------------------------------------- 
-ARCHIVO: .\shaders\menu_background.gdshader 
--------------------------------------------------- 
- 
-shader_type canvas_item;
-
-// --- Inspector controls ---
-uniform int scroll_mode : hint_enum("Diagonal,Vertical") = 0;
-uniform float scroll_speed : hint_range(0.0, 5.0, 0.05) = 0.6;
-
-// --- Pattern shape ---
-uniform float tile_scale   : hint_range(1.0, 20.0, 0.1)  = 7.0;
-uniform float stripe_width : hint_range(0.05, 0.95, 0.01) = 0.42;
-uniform float edge_softness : hint_range(0.005, 0.3, 0.005) = 0.07;
-
-// --- Wobble ---
-uniform float wobble_amount    : hint_range(0.0, 0.3, 0.005) = 0.055;
-uniform float wobble_frequency : hint_range(0.5, 20.0, 0.5)  = 5.5;
-uniform float wobble_speed     : hint_range(0.0, 3.0, 0.05)  = 0.4;
-
-// --- Colors (match the lime-yellow plaid) ---
-uniform vec4 color_light : source_color = vec4(0.875, 0.965, 0.365, 1.0); // base / highlight
-uniform vec4 color_mid   : source_color = vec4(0.750, 0.890, 0.235, 1.0); // single stripe
-uniform vec4 color_dark  : source_color = vec4(0.640, 0.815, 0.145, 1.0); // crossing stripes
-
-void fragment() {
-    vec2 uv = UV * tile_scale;
-
-    // ---- Scroll offset ----
-    float t = TIME * scroll_speed;
-    if (scroll_mode == 0) {
-        uv += vec2(t, t);      // diagonal (↘)
-    } else {
-        uv += vec2(0.0, t);    // vertical  (↓)
-    }
-
-    // ---- Diagonal axes ----
-    float diag1 = uv.x + uv.y;   // NW-SE direction
-    float diag2 = uv.x - uv.y;   // NE-SW direction
-
-    // ---- Wobbly distortion ----
-    float wt = TIME * wobble_speed;
-    float w1 = sin(diag2 * wobble_frequency + wt * 1.3) * wobble_amount
-             + sin(diag2 * wobble_frequency * 0.47 - wt) * wobble_amount * 0.4;
-    float w2 = sin(diag1 * wobble_frequency - wt * 0.9) * wobble_amount
-             + sin(diag1 * wobble_frequency * 0.53 + wt) * wobble_amount * 0.4;
-
-    // ---- Stripe mask (soft edges → wobbly look) ----
-    float f1 = fract((diag1 + w1) * 0.5);
-    float f2 = fract((diag2 + w2) * 0.5);
-
-    float sw = stripe_width;
-    float s  = edge_softness;
-
-    float stripe1 = clamp(smoothstep(0.0, s, f1) - smoothstep(sw, sw + s, f1), 0.0, 1.0);
-    float stripe2 = clamp(smoothstep(0.0, s, f2) - smoothstep(sw, sw + s, f2), 0.0, 1.0);
-
-    // ---- Combine into three tones ----
-    float both   = stripe1 * stripe2;
-    float either = clamp(stripe1 + stripe2 - both, 0.0, 1.0);
-
-    vec4 col = color_light;
-    col = mix(col, color_mid,  either);
-    col = mix(col, color_dark, both);
-
-    COLOR = col;
-} 
- 
--------------------------------------------------- 
-ARCHIVO: .\shaders\ready_label.gdshader 
--------------------------------------------------- 
- 
-shader_type canvas_item;
-
-uniform vec4 color_a : source_color = vec4(1.0, 0.08, 0.58, 1.0);
-uniform vec4 color_b : source_color = vec4(1.0, 0.82, 0.0, 1.0);
-uniform float stripe_angle : hint_range(0.1, 2.0) = 0.5;
-uniform float stripe_speed : hint_range(0.0, 5.0) = 2.5;
-uniform float custom_time : hint_range(0.0, 1000.0) = 0.0;
-
-void fragment() {
-	float coord = (UV.x / stripe_angle + UV.y + custom_time * stripe_speed);
-	float stripe = step(0.5, fract(coord));
-	COLOR = mix(color_a, color_b, stripe);
-} 
- 
--------------------------------------------------- 
-ARCHIVO: .\shaders\scroll.gdshader 
--------------------------------------------------- 
- 
-shader_type canvas_item;
-
-uniform float scroll_speed : hint_range(0, 2) = 0.08;
-uniform float angle_degrees : hint_range(0, 360) = 45.0;
-uniform float repeat_x : hint_range(1, 20) = 20;
-uniform float repeat_y : hint_range(1, 20) = 12;
-uniform float row_offset : hint_range(0, 1) = 1;
-uniform float opacity : hint_range(0.0, 1.0) = 1.0;
-// Nueva variable: 1.0 es color normal, 0.0 es negro total
-uniform float darkness : hint_range(0.0, 1.0) = 0.5; 
-uniform float custom_time = 0.0;
-uniform sampler2D texture_to_scroll;
-
-void fragment() {
-    float angle_rad = radians(angle_degrees);
-    vec2 direction = vec2(cos(angle_rad), sin(angle_rad));
-    vec2 offset_uv = UV - (custom_time * scroll_speed * direction);
-    
-    float offset = fract(floor(offset_uv.y * repeat_y) * 0.5) > 0.0 ? (row_offset * 0.324) : 0.0;
-    offset_uv.x += offset;
-    
-    vec2 scaled_uv = vec2(fract(offset_uv.x * repeat_x),
-                          fract(offset_uv.y * repeat_y));
-                          
-    vec2 texelSize = vec2(1.0) / vec2(textureSize(texture_to_scroll, 0));
-    vec2 snappedUV = round(scaled_uv / texelSize) * texelSize;
-    
-    vec4 tex_color = texture(texture_to_scroll, snappedUV);
-    
-    // Aplicamos la oscuridad multiplicando los canales RGB
-    tex_color.rgb *= darkness;
-    
-    COLOR = tex_color;
-    COLOR.a *= opacity;
-} 
- 
--------------------------------------------------- 
-ARCHIVO: .\shaders\shine.gdshader 
--------------------------------------------------- 
- 
-shader_type canvas_item;
-group_uniforms Shine;
-uniform vec3 shine_color: source_color = vec3(1.0, 1.0, 1.0);
-uniform float shine_angle = -45.0;
-uniform float shine_duration = 5.0;
-uniform float shine_speed = 800.0;
-uniform float shine_width = 20.0;
-uniform float shine_scale : hint_range(0.1, 10.0) = 1.0;
-uniform float time_offset : hint_range(0.0, 100.0) = 0.0;
-uniform float custom_time = 0.0;
-group_uniforms;
-
-varying vec2 local_pos;
-
-void vertex() {
-    local_pos = VERTEX;
-}
-
-void fragment()
-{
-    COLOR = texture(TEXTURE, UV);
-
-    float angle_rad = radians(shine_angle);
-    float projected = (sin(angle_rad) * local_pos.x + cos(angle_rad) * local_pos.y) / shine_scale;
-
-    float travel = mod((custom_time + time_offset) * shine_speed, shine_duration * shine_speed);
-    float offset = travel - shine_duration * shine_speed * 0.5;
-
-    float dist = abs(projected + offset);
-
-    if (dist <= shine_width) {
-        if (COLOR.a > 0.01) {
-            COLOR.rgb = mix(COLOR.rgb, shine_color, 0.7);
-        }
-    }
-} 
- 
--------------------------------------------------- 
-ARCHIVO: .\shaders\star_icon.gdshader 
--------------------------------------------------- 
- 
-shader_type canvas_item;
-
-uniform vec4 star_color : source_color = vec4(1.0, 0.9, 0.2, 1.0);
-uniform float opacity : hint_range(0.0, 1.0) = 1.0;
-uniform float spin_speed : hint_range(-10.0, 10.0) = 1.0;
-uniform float roundness : hint_range(1.2, 8.0) = 2.5;  // más alto = más redondeada
-uniform float star_radius : hint_range(0.05, 1.0) = 0.9;
-
-float sdf_star(vec2 p, float r, float n, float m) {
-    float an = PI / n;
-    float en = PI / m;
-    vec2 acs = vec2(cos(an), sin(an));
-    vec2 ecs = vec2(cos(en), sin(en));
-    float bn = mod(atan(p.y, p.x), 2.0 * an) - an;
-    p = length(p) * vec2(cos(bn), abs(sin(bn)));
-    p -= r * acs;
-    p += ecs * clamp(-dot(p, ecs), 0.0, r * acs.y / ecs.y);
-    return length(p) * sign(p.x);
-}
-
-void fragment() {
-    vec2 uv = UV * 2.0 - 1.0;
-
-    float t = TIME * spin_speed;
-    float c = cos(t);
-    float s = sin(t);
-    uv = vec2(c * uv.x - s * uv.y, s * uv.x + c * uv.y);
-
-    float aa = 0.01;
-    float sd = sdf_star(uv, star_radius, 5.0, roundness);
-
-    float fill   = 1.0 - smoothstep(0.0, aa, sd);
-    float border = (1.0 - smoothstep(0.02, 0.02 + aa, sd)) * smoothstep(0.0, aa, sd);
-    float intensity = fill + border;
-
-    vec3 rgb = mix(star_color.rgb * 0.4, star_color.rgb, intensity);
-    float alpha = clamp(intensity, 0.0, 1.0) * opacity * star_color.a;
-
-    COLOR = vec4(rgb, alpha);
-} 
- 
--------------------------------------------------- 
-ARCHIVO: .\shaders\transition.gdshader 
--------------------------------------------------- 
- 
-shader_type canvas_item;
-
-uniform float spacing = 25.0;
-uniform float animation_progress : hint_range(0.0, 1.0) = 0.0;
-uniform float dot_size : hint_range(0.0, 10.0) = 1.0;
-uniform vec4 dot_color : source_color = vec4(0.0, 0.0, 0.0, 1.0);
-
-void fragment() {
-    // 1. 进度为零时强制完全不显示
-    if (animation_progress <= 0.0) {
-        discard; // 关键修正：只保留 discard
-    }
-
-    // 2. 计算屏幕网格尺寸
-    vec2 screen_size = vec2(1.0) / SCREEN_PIXEL_SIZE;
-    vec2 grid_count = floor(screen_size / spacing);
-
-    // 3. 计算归一化网格位置 [0,1]
-    vec2 norm_pos = UV * screen_size / (grid_count * spacing);
-
-    // 4. 对角线延迟计算（左上0 → 右下1）
-    float delay = (norm_pos.x + norm_pos.y) * 0.5;
-
-    // 5. 双重过滤机制
-    // 机制1：基于位置的延迟阈值
-    float visible_threshold = delay * 0.1 + 0.01; // 随延迟增加的阈值
-    if (animation_progress < visible_threshold) {
-        discard;
-    }
-
-    // 6. 动态过渡计算
-    float transition = 0.3;
-    float scale = smoothstep(
-        delay - transition,
-        delay + transition,
-        animation_progress * (1.0 + transition)
-    );
-
-    // 机制2：基于尺寸的过滤
-    if (scale < 0.005) { // 完全消除微小残留
-        discard;
-    }
-
-    // 7. 计算圆点
-    vec2 grid_center = (floor(UV * screen_size / spacing) + 0.5) * spacing;
-    float dist = length(UV * screen_size - grid_center);
-    float dot_radius = dot_size * scale * spacing * 0.8;
-
-    // 8. 边缘柔化（防止任何残留）
-    float alpha = 1.0 - smoothstep(
-        max(dot_radius - 1.5, 0.0),
-        dot_radius + 1.5,
-        dist
-    );
-
-    // 机制3：alpha值过滤
-    if (alpha < 0.01) discard;
-
-    COLOR = vec4(dot_color.rgb, alpha);
-} 
- 
--------------------------------------------------- 
 ARCHIVO: .\source\bullets\base_bullet.gd 
 -------------------------------------------------- 
  
@@ -2774,13 +1373,13 @@ func _on_released() -> void:
 # UPDATE HOOKS
 # ==============================================================================
 
-func _update(delta: float) -> void:
+func _update(_delta: float) -> void:
 	# 1. Bounce (solo mientras está activo)
 	if directionType == DirectionType.BOUNCE and _is_modifier_active():
 		_handle_bounce()
 	
 	# 2. Dirección normal
-	_update_direction(delta)
+	_update_direction(GLOBAL.TICK)
 	
 	# 3. Modificadores de velocidad
 	if modifySpeed:     _update_speed_lerp()
@@ -2789,12 +1388,12 @@ func _update(delta: float) -> void:
 	# 4. Física
 	if useGravity:
 		_apply_gravity()
-		velocity += acceleration * delta
+		velocity += acceleration * GLOBAL.TICK
 	else:
 		velocity = direction * speed
 	
 	# 5. Rotación sprite
-	_update_sprite_rotation(delta, velocity)
+	_update_sprite_rotation(GLOBAL.TICK, velocity)
 	
 	# 6. Control de vida propio
 	_check_out_of_bounds_and_release()
@@ -2876,14 +1475,14 @@ func _setup_sine_wave() -> void:
 	_sineFrequency = max(0.1, gravIntensity * 3.0)
 
 
-func _update_direction(delta: float) -> void:
+func _update_direction(tick: float) -> void:
 	if not _is_modifier_active():
 		return  # ya acabó el tiempo del modificador
 	
 	match directionType:
 		DirectionType.NONE, DirectionType.BOUNCE: return
 		DirectionType.HOMING:
-			_update_homing(delta)
+			_update_homing(tick)
 			return
 		DirectionType.SINE_WAVE:
 			_sineAmplitude = float(deviationAngle) * (speed / 400.0) * 0.8
@@ -2898,18 +1497,18 @@ func _update_direction(delta: float) -> void:
 		DirectionType.GRAVITY:
 			useGravity = true
 		DirectionType.LEFT:
-			direction = direction.rotated(deg_to_rad(float(deviationAngle)) * delta)
+			direction = direction.rotated(deg_to_rad(float(deviationAngle)) * GLOBAL.TICK)
 		DirectionType.RIGHT:
-			direction = direction.rotated(-deg_to_rad(float(deviationAngle)) * delta)
+			direction = direction.rotated(-deg_to_rad(float(deviationAngle)) * GLOBAL.TICK)
 		DirectionType.RANDOM:
-			direction = direction.rotated(deg_to_rad(DRNG.drandf_range(-float(deviationAngle), float(deviationAngle))) * delta)
+			direction = direction.rotated(deg_to_rad(DRNG.drandf_range(-float(deviationAngle), float(deviationAngle))) * tick)
 
 
-func _update_homing(delta: float) -> void:
+func _update_homing(tick: float) -> void:
 	if not _is_modifier_active():
 		return
 	var desired := (GAME.get_player() - global_position).normalized()
-	var max_turn := deg_to_rad(float(deviationAngle) * 2.0) * delta
+	var max_turn := deg_to_rad(float(deviationAngle) * 2.0) * tick
 	var angle_diff := direction.angle_to(desired)
 	direction = direction.rotated(clamp(angle_diff, -max_turn, max_turn))
 
@@ -3014,11 +1613,11 @@ func _apply_gravity() -> void:
 	acceleration.y = ProjectSettings.get_setting("physics/2d/default_gravity", 980.0) * gravIntensity
 
 
-func _update_sprite_rotation(delta: float, vel: Vector2) -> void:
+func _update_sprite_rotation(tick: float, vel: Vector2) -> void:
 	if !has_node("Sprite2D"): return
 	match sprite_rotation_mode:
 		SpriteRotationMode.SPIN_CONTINUOUS:
-			$Sprite2D.rotation_degrees -= rotationSpeed * delta
+			$Sprite2D.rotation_degrees -= rotationSpeed * tick
 		SpriteRotationMode.FACE_MOVEMENT:
 			if vel.length_squared() > 0.001:
 				$Sprite2D.rotation = vel.angle() - deg_to_rad(90.0)
@@ -3186,11 +1785,11 @@ func set_dir(newDir: Vector2, devAngle: float) -> void:
 # UPDATE HOOKS
 # ==============================================================================
 
-func _update(delta: float) -> void:
-	if BulletType == BulletEnum.FOLLOW: _update_follow(delta)
+func _update(_delta: float) -> void:
+	if BulletType == BulletEnum.FOLLOW: _update_follow(GLOBAL.TICK)
 	
 	# Lifetime - all times tick down
-	_life_remaining -= delta
+	_life_remaining -= GLOBAL.TICK
 	if _life_remaining <= 0.0:
 		isCancelled = true
 		return
@@ -3209,11 +1808,11 @@ func _get_velocity(_delta: float) -> Vector2:
 # FOLLOW LOGIC
 # ==============================================================================
 
-func _update_follow(delta: float) -> void:
+func _update_follow(_delta: float) -> void:
 	var target := _closest_enemy()
 	if target == null: return
 	var to_target := (target.global_position - global_position).normalized()
-	direction = direction.lerp(to_target, 10.0 * delta).normalized()
+	direction = direction.lerp(to_target, 10.0 * GLOBAL.TICK).normalized()
 	velocity = direction * speed
 	rotation = direction.angle()
 
@@ -3402,8 +2001,8 @@ func advance_phase() -> void:
 # MOVEMENT ENGINE
 # ==============================================================================
 
-func tick_movement(delta: float) -> void:
-	_phase_timer += delta
+func tick_movement(_delta: float) -> void:
+	_phase_timer += GLOBAL.TICK
 	var phase := get_current_phase()
 	if phase == null:
 		return
@@ -3411,8 +2010,8 @@ func tick_movement(delta: float) -> void:
 	_speed_breath = 1.0 + sin(_phase_timer * 1.26 + _drift_phase) * 0.08
 	_local_accel  = acceleration
 
-	_dispatch_move(phase, delta)
-	_smooth_move(delta)
+	_dispatch_move(phase, GLOBAL.TICK)
+	_smooth_move(GLOBAL.TICK)
 
 	# Advance when duration expires. -1 means infinite (last phase)
 	if phase.duration > 0.0 and _phase_timer >= phase.duration:
@@ -3446,23 +2045,28 @@ func _get_current_speed() -> int:
 # SMOOTH MOVEMENT + SPRITE LEAN
 # ==============================================================================
 
-func _smooth_move(delta: float) -> void:
-	_overshoot_vel = _overshoot_vel.lerp(Vector2.ZERO, 7.0 * delta)
-	var t = clamp(_local_accel * delta, 0.0, 1.0)
+func _smooth_move(tick: float) -> void:
+	_overshoot_vel = _overshoot_vel.lerp(Vector2.ZERO, 7.0 * tick)
+	var t = clamp(_local_accel * tick, 0.0, 1.0)
 	velocity = velocity.lerp(_target_vel + _overshoot_vel, t)
+	
+	# Compensamos el delta interno de move_and_slide para que respete GLOBAL.TICK
+	var original_velocity = velocity
+	velocity = velocity * (tick / get_physics_process_delta_time())
 	move_and_slide()
+	velocity = original_velocity # Restauramos para que los cálculos de lerp/inclinación usen la velocidad real
 
 	if sprite_lean and is_instance_valid(sprite_node):
 		var side_axis  := Vector2(-_direction.y, _direction.x)
 		var lateral    := velocity.dot(side_axis)
 		var lean_angle = clamp(lateral * 0.0025, -0.30, 0.30)
-		sprite_node.rotation = lerp(sprite_node.rotation, lean_angle, 9.0 * delta)
+		sprite_node.rotation = lerp(sprite_node.rotation, lean_angle, 9.0 * tick)
 
 # ==============================================================================
 # MOVEMENT DISPATCH
 # ==============================================================================
 
-func _dispatch_move(phase: MovementPhase, delta: float) -> void:
+func _dispatch_move(phase: MovementPhase, tick: float) -> void:
 	match phase.move_type:
 		MovementPhase.MoveType.STRAIGHT:       _target_straight(phase)
 		MovementPhase.MoveType.SINUSOIDAL:     _target_sinusoidal(phase)
@@ -3470,8 +2074,8 @@ func _dispatch_move(phase: MovementPhase, delta: float) -> void:
 		MovementPhase.MoveType.BREATH:         _target_breath(phase)
 		MovementPhase.MoveType.BLOCK:          _target_block(phase)
 		MovementPhase.MoveType.CENTER:         _target_center()
-		MovementPhase.MoveType.CURVE:          _target_curve(phase, delta)
-		MovementPhase.MoveType.CIRCULAR:       _target_circular(phase, delta)
+		MovementPhase.MoveType.CURVE:          _target_curve(phase, tick)
+		MovementPhase.MoveType.CIRCULAR:       _target_circular(phase, tick)
 		MovementPhase.MoveType.TOWARDS_PLAYER: _target_towards_player(phase)
 		MovementPhase.MoveType.LEAVE:          _target_leave(phase)
 		MovementPhase.MoveType.LEAVE_SIDE:     _target_leave_side(phase)
@@ -3529,17 +2133,17 @@ func _target_center() -> void:
 		var dy := center.y - global_position.y
 		_target_vel = Vector2(0.0, clamp(dy * 4.0, -220.0, 220.0))
 
-func _target_curve(phase: MovementPhase, delta: float) -> void:
+func _target_curve(phase: MovementPhase, tick: float) -> void:
 	if phase.duration > 0.0:
 		var rot_speed  := deg_to_rad(float(phase.deviation_angle)) / phase.duration
 		var angle_left := absf(_direction.angle_to(_phase_start_dir))
 		if angle_left < deg_to_rad(float(phase.deviation_angle)):
-			_direction = _direction.rotated(rot_speed * float(hside) * delta)
+			_direction = _direction.rotated(rot_speed * float(hside) * tick)
 	_target_vel = _direction * float(phase.speed) * _speed_breath
 
-func _target_circular(phase: MovementPhase, delta: float) -> void:
+func _target_circular(phase: MovementPhase, tick: float) -> void:
 	_direction = _direction.rotated(
-		deg_to_rad(float(phase.deviation_angle)) * float(hside) * delta)
+		deg_to_rad(float(phase.deviation_angle)) * float(hside) * tick)
 	_target_vel = _direction * float(phase.speed) * _speed_breath
 
 func _target_towards_player(phase: MovementPhase) -> void:
@@ -3817,26 +2421,26 @@ func _ready() -> void:
 	await get_tree().create_timer(delayBeforeFollow, false).timeout
 	followingPlayer = true
 
-func _move_medal(delta):
-	if followingPlayer: _move_towards_player(delta)
+func _move_medal(_delta):
+	if followingPlayer: _move_towards_player(GLOBAL.TICK)
 	else:
-		velocity.y += grav * delta
-		position += velocity * delta
+		velocity.y += grav * GLOBAL.TICK
+		position += velocity * GLOBAL.TICK
 
-func _move_powerup(delta):
+func _move_powerup(_delta):
 	if powerUpFollowPlayer:
 		speed = POWERUP_FOLLOW_SPEED
-		_move_towards_player(delta)
+		_move_towards_player(GLOBAL.TICK)
 	else:
 		if velocity.y < POWERUP_MOVE_SPEED:
-			velocity.y += grav * delta
-		else: position.x += sin((Time.get_ticks_msec() / 1000.0) * TAU * 1) * delta * 100 * randSign
-		position += velocity * delta
+			velocity.y += grav * GLOBAL.TICK
+		else: position.x += sin((Time.get_ticks_msec() / 1000.0) * TAU * 1) * GLOBAL.TICK * 100 * randSign
+		position += velocity * GLOBAL.TICK
 
-func _move_towards_player(delta: float) -> void:
+func _move_towards_player(_delta: float) -> void:
 	var playerPos = GAME.get_player()
 	var direction = (playerPos - position).normalized()
-	position += direction * speed * delta
+	position += direction * speed * GLOBAL.TICK
 
 # === RECOGER BASE ===
 #func _on_area_entered(area: Node) -> void:
@@ -4516,14 +3120,25 @@ func _physics_process(_delta: float) -> void:
 func _auto_move_to_go_point() -> void:
 	var to_target := (_go_point - position).normalized()
 	velocity = to_target * speed_normal
+	
+	# Compensación de delta para GLOBAL.TICK
+	var original_velocity = velocity
+	velocity = velocity * (GLOBAL.TICK / get_physics_process_delta_time())
 	move_and_slide()
+	velocity = original_velocity
+	
 	if position.distance_to(_go_point) < 5.0:
 		playable = true
 
 func _handle_movement() -> void:
 	var dir := Vector2(INPUT.xAxis, INPUT.yAxis)
 	velocity = dir.normalized() * _current_speed()
+	
+	# Compensación de delta para GLOBAL.TICK
+	var original_velocity = velocity
+	velocity = velocity * (GLOBAL.TICK / get_physics_process_delta_time())
 	move_and_slide()
+	velocity = original_velocity
 
 func _current_speed() -> int:
 	match GAME.DollStyle:
@@ -4775,8 +3390,12 @@ ARCHIVO: .\source\UI\debug\fps_debug.gd
 extends Label
 
 # This is a debug script
-func _process(_delta):
-	text = str(int(Engine.get_frames_per_second())) + " fps"
+func _process(_delta: float) -> void:
+	text = "TICK: %.4f\nFPS: %d\nDELTA: %.4f" % [
+		GLOBAL.TICK, 
+		Engine.get_frames_per_second(), 
+		get_process_delta_time()
+	]
  
  
 -------------------------------------------------- 
@@ -5116,8 +3735,8 @@ func _ready() -> void:
 	_can_interact = true
 
 # === Loop ===
-func _process(delta: float) -> void:
-	_tick_accumulator += delta
+func _physics_process(_delta: float) -> void:
+	_tick_accumulator += GLOBAL.TICK
 	if _tick_accumulator >= 1.0:
 		_tick_accumulator -= 1.0
 		countdown -= 1
@@ -5575,7 +4194,7 @@ func _setup_rich_label(label: RichTextLabel) -> void:
 	label.add_theme_constant_override("shadow_offset_y", int(shadowOffset.y))
 	label.add_theme_constant_override("shadow_outline_size", shadowSize)
 
-func _process(delta: float):
+func _physics_process(_delta: float):
 	gameScore.text = str(SCORE.GeneralGameScore)
 	highScore.text = str(SCORE.GeneralGameScore)
 	comboLabel.text = "+" + str(SCORE.combo)
@@ -5611,12 +4230,12 @@ func _process(delta: float):
 		print_container(maxBombContainer, currMaxBombs)
 
 	if hot_active_timer > 0.0:
-		hot_active_timer -= delta
+		hot_active_timer -= GLOBAL.TICK
 		if hot_active_timer <= 0.0:
 			_hot_return_to_base()
 
 	if hot_pulse_cooldown > 0.0:
-		hot_pulse_cooldown -= delta
+		hot_pulse_cooldown -= GLOBAL.TICK
 
 # === SHADER HOT BAR ===
 func _update_hot_shader() -> void:
@@ -7333,7 +5952,7 @@ func _follow_hold(dir: Vector2, tick: float) -> void:
 		if distance > 0.1:
 			var directionAway = -toTarget.normalized()
 			idealPos = targetPos + directionAway * desiredDistance
-		else:
+		elif targetNode.lastMoveDirection:
 			var backDir = -targetNode.lastMoveDirection.normalized()
 			idealPos = targetPos + backDir * desiredDistance
 		global_position = global_position.lerp(idealPos, speedFactor * tick)

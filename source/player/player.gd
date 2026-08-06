@@ -50,15 +50,9 @@ func _exit_tree() -> void:
 
 func _setup_doll_style() -> void:
 	match GAME.DollStyle:
-		GAME.DollEnum.SPEED:
+		GAME.DollEnum.SCORE, GAME.DollEnum.SURVIVAL:
 			maxBombs  = 4
 			bombCount = 2
-		GAME.DollEnum.STRONG:
-			maxBombs  = 2
-			bombCount = 1
-		GAME.DollEnum.NEWBIE:
-			maxBombs  = 6
-			bombCount = 3
 		GAME.DollEnum.CARAVAN:
 			maxBombs  = 0
 			bombCount = 0
@@ -116,9 +110,6 @@ func _handle_movement() -> void:
 	velocity = original_velocity
 
 func _current_speed() -> int:
-	match GAME.DollStyle:
-		GAME.DollEnum.SPEED, GAME.DollEnum.CARAVAN:
-			return speed_focus if INPUT.fireHold else speed_normal
 	return speed_focus if INPUT.fireHold else speed_normal
 
 func _clamp_to_screen(screen_size: Vector2) -> void:
@@ -126,13 +117,8 @@ func _clamp_to_screen(screen_size: Vector2) -> void:
 	position.y = clamp(position.y, screen_margin, screen_size.y - screen_margin)
 
 func _update_speed_by_style() -> void:
-	match GAME.DollStyle:
-		GAME.DollEnum.SPEED, GAME.DollEnum.CARAVAN:
-			speed_focus  = 200
-			speed_normal = 350
-		_:
-			speed_focus  = 150
-			speed_normal = 300
+	speed_focus  = 200
+	speed_normal = 350
 
 # ==============================================================================
 # HITBOX ICON
@@ -203,7 +189,8 @@ func _on_hurtbox_area_entered(area: Node) -> void:
 
 func _take_hit() -> void:
 	FLOW.miss()
-	if GAME.DollStyle == GAME.DollEnum.NEWBIE and bombCount > 0:
+	# Autobombing exclusivo de SURVIVAL
+	if GAME.DollStyle == GAME.DollEnum.SURVIVAL and bombCount > 0:
 		_use_bomb()
 		return
 	

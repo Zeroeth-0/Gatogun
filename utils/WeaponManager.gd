@@ -42,5 +42,6 @@ func reset_lvl() -> void:
 	laserLvl = 3
 	chargeLvl = 3
 	optionCount = 2
+	GAME.set_option_style("SIDES")
 	EVENTS.weapon_reset.emit()
 	EVENTS.option_flow.emit(true, true)

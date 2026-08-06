@@ -54,22 +54,3 @@ custom_minimum_size = Vector2(130, 50)
 layout_mode = 2
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="TrdVBoxContainer" type="VBoxContainer" parent="." unique_id=1229885853]
-layout_mode = 0
-offset_left = 202.0
-offset_top = 250.0
-offset_right = 330.0
-offset_bottom = 405.0
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="TrdIcon" type="TextureRect" parent="TrdVBoxContainer" unique_id=160549511]
-layout_mode = 2
-texture = ExtResource("2_ca08h")
-
-[node name="RichTextLabel" type="RichTextLabel" parent="TrdVBoxContainer" unique_id=540970030]
-custom_minimum_size = Vector2(130, 50)
-layout_mode = 2
-horizontal_alignment = 1
-vertical_alignment = 1
