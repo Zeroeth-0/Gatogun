@@ -181,7 +181,7 @@ func _follow_hold(dir: Vector2, tick: float) -> void:
 		if distance > 0.1:
 			var directionAway = -toTarget.normalized()
 			idealPos = targetPos + directionAway * desiredDistance
-		else:
+		elif targetNode.lastMoveDirection:
 			var backDir = -targetNode.lastMoveDirection.normalized()
 			idealPos = targetPos + backDir * desiredDistance
 		global_position = global_position.lerp(idealPos, speedFactor * tick)
