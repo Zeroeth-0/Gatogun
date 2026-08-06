@@ -140,6 +140,8 @@ func set_doll(style: String):
 		"SURVIVAL": DollStyle = DollEnum.SURVIVAL
 		"CARAVAN": DollStyle = DollEnum.CARAVAN
 		_: DollStyle = DollEnum.SCORE
+	
+	if DollStyle != DollEnum.CARAVAN and not FLOW.isCaravan: set_lives()
 
 func set_lives():
 	lives = liveCount

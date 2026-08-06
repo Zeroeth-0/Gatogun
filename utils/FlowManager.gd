@@ -77,6 +77,7 @@ func begin_game() -> void:
 	current_level_index = 0
 	_is_first_level     = true
 	_secret_unlocked    = false
+	GAME.set_lives()
 	GAME.store(Vector2(10000, 10000), false)
 	_load_level(0)
 

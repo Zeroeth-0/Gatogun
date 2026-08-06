@@ -50,9 +50,12 @@ func _exit_tree() -> void:
 
 func _setup_doll_style() -> void:
 	match GAME.DollStyle:
-		GAME.DollEnum.SCORE, GAME.DollEnum.SURVIVAL:
+		GAME.DollEnum.SCORE:
 			maxBombs  = 4
 			bombCount = 2
+		GAME.DollEnum.SURVIVAL:
+			maxBombs = 6
+			bombCount = 3
 		GAME.DollEnum.CARAVAN:
 			maxBombs  = 0
 			bombCount = 0

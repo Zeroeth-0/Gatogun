@@ -19,7 +19,8 @@ func _ready() -> void:
 	FLOW.isCaravan = false
 	FLOW.inCaravan = false
 	FLOW._is_first_level = false
-	GAME.lives = GAME.liveCount
+	GAME.DollStyle = GAME.DollEnum.SCORE
+	GAME.set_lives()
 
 	if icons:
 		_icons_original_x = icons.position.x
