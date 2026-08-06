@@ -83,7 +83,7 @@ func spawn() -> void:
 func _respawn_player() -> void:
 	dead = false
 	SCORE.reset()
-	WEAPON.reset_lvl()
+	if lives <= 0: WEAPON.reset_lvl()
 	
 	var instance = cat.instantiate()
 	instance.add_to_group("Player") 
