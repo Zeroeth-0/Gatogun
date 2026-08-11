@@ -1,7 +1,7 @@
 extends Node2D
 # === EXPORTS GENERALES ===
 @export var bulletScene: PackedScene
-@export var fireRate: float = 0.030
+@export var fireRate: float = 0.09
 # === ESTADO INTERNO ===
 var cooldown := 0.0
 var canFire = true

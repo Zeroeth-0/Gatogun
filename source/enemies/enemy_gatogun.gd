@@ -9,6 +9,10 @@ extends BaseEnemy
 ## EnemyCombo label node. Assign in scene inspector.
 @export var combo_label: RichTextLabel
 
+## Tiempo de enfriamiento (cooldown) que debe pasar desde que salta "damage" 
+## hasta que pueda volver a reaccionar a otro impacto.
+@export var damage_cooldown: float = 0.5
+
 # ==============================================================================
 # INTERNAL STATE
 # ==============================================================================
@@ -25,6 +29,10 @@ var _emitter: BulletEmitter = null
 
 var _hit_mat:   ShaderMaterial = null
 var _hit_tween: Tween          = null
+
+# === NODOS DE ANIMACIÓN Y COOLDOWN ===
+@onready var _anim_player: AnimationPlayer = $Sprite2D/AnimationPlayer
+var _damage_cd_timer: float = 0.0
 
 # ==============================================================================
 # LIFECYCLE
@@ -47,6 +55,15 @@ func _on_ready() -> void:
 		_hit_mat.set_shader_parameter("breath_seed", randf_range(0.0, 100.0))
 		_hit_mat.set_shader_parameter("time_offset",  randf() * 100.0)
 
+	# Iniciar animación idle y conectar señal para volver automáticamente a idle
+	if _anim_player:
+		if _anim_player.has_animation("idle"):
+			_anim_player.play("idle")
+		
+		# Conectamos la señal de fin de animación para regresar a "idle" de forma limpia
+		if not _anim_player.animation_finished.is_connected(_on_animation_finished):
+			_anim_player.animation_finished.connect(_on_animation_finished)
+
 # ==============================================================================
 # MAIN LOOP
 # ==============================================================================
@@ -60,10 +77,37 @@ func _physics_process(_delta: float) -> void:
 	_check_charge_overlap(GLOBAL.TICK)
 	_check_health_halving()
 
+	# Consumir el cooldown de la animación de daño
+	if _damage_cd_timer > 0.0:
+		_damage_cd_timer -= GLOBAL.TICK
+		if _damage_cd_timer < 0.0:
+			_damage_cd_timer = 0.0
+
 	if _hit_mat:
 		_hit_mat.set_shader_parameter("custom_time", Time.get_ticks_msec() / 1000.0)
 
 	_check_death()
+
+# ==============================================================================
+# ANIMATION COOLDOWN SYSTEM
+# ==============================================================================
+
+func _trigger_damage_animation() -> void:
+	if _anim_player == null or not _anim_player.has_animation("damage"):
+		return
+	
+	# Si aún está en cooldown, ignoramos el impacto visual
+	if _damage_cd_timer > 0.0:
+		return
+	
+	# Reproducir animación de daño e iniciar el cooldown
+	_anim_player.play("damage")
+	_damage_cd_timer = damage_cooldown
+
+func _on_animation_finished(anim_name: StringName) -> void:
+	# Cuando la animación "damage" termine, regresamos a "idle" aunque siga en cooldown
+	if anim_name == &"damage" and _anim_player.has_animation("idle"):
+		_anim_player.play("idle")
 
 # ==============================================================================
 # COMBAT
@@ -80,6 +124,7 @@ func _check_charge_overlap(tick: float) -> void:
 			_pulse_marked = true
 			# Comprobación segura por si el area no tiene damage
 			_health -= tick * area.get("damage")
+			_trigger_damage_animation()
 
 func _check_health_halving() -> void:
 	if _emitter == null or _halved:
@@ -167,11 +212,13 @@ func _on_hurtbox_area_entered(area: Node) -> void:
 				_last_bullet = false
 				
 		_trigger_hit_flash()
+		_trigger_damage_animation()
 
 	if area.is_in_group("Bomb"):
 		_by_bomb  = true
 		var dmg: float = area.get("damage") if "damage" in area else 200.0
 		_health  -= dmg
+		_trigger_damage_animation()
 
 func _on_hurtbox_area_exited(area: Node) -> void:
 	if area.is_in_group("Pulse"):

@@ -3,7 +3,16 @@
 [ext_resource type="PackedScene" uid="uid://45jy2ekapnll" path="res://scenes/enemies/base/enemy.tscn" id="1_sj1r0"]
 
 [node name="Enemy" unique_id=177661500 instance=ExtResource("1_sj1r0")]
-scale = Vector2(4, 4)
-typeEnum = 2
-size = 100
-scoreCount = 15
+
+[node name="Hitbox" parent="." index="2" unique_id=329283421]
+scale = Vector2(3.2, 3.2)
+
+[node name="Hurtbox" parent="." index="3" unique_id=779846352]
+scale = Vector2(3.2, 3.2)
+
+[node name="EnemyCombo" parent="." index="4" unique_id=456917589]
+offset_left = -326.0
+offset_top = 128.0
+offset_right = -176.6651
+offset_bottom = 168.0
+scale = Vector2(6, 6)

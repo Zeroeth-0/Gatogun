@@ -30,8 +30,6 @@ script = ExtResource("1_7pfs0")
 sprite = NodePath("Icon")
 bomb = ExtResource("2_ufgkt")
 hitbox = NodePath("Denialzone")
-speed = 300
-screenMargin = 50
 
 [node name="Hurtbox" type="Area2D" parent="." unique_id=1185478358 groups=["Collect", "Player"]]
 z_index = 5

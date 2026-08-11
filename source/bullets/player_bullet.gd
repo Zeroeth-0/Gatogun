@@ -131,14 +131,15 @@ func _on_area_exited(area: Node) -> void:
 func _lifetime_for_type() -> float:
 	match BulletType:
 		BulletEnum.BOMB:  return 3.0
-		BulletEnum.LASER: return 0.15
-	return 1.5  # BURST, FOLLOW, CHARGE
+		BulletEnum.LASER: return 0.27
+	return 1.5  # BURST, CHARGE
 
 func _damage_for_type() -> int:
 	match BulletType:
 		BulletEnum.BOMB:   return 200
 		BulletEnum.CHARGE: return 75
-	return 2  # BURST, LASER, FOLLOW
+		BulletEnum.LASER: return 7
+	return 2  # BURST
 
 func _setup_type_groups() -> void:
 	match BulletType:
@@ -166,7 +167,7 @@ func _speed_for_type() -> float:
 	match BulletType:
 		BulletEnum.BOMB: return 800.0
 		BulletEnum.CHARGE: return 0.0
-		BulletEnum.FOLLOW: return 600.0
+		BulletEnum.LASER: return 1500.0
 	return 2500.0 # BURST, LASER
 
 func _ready():

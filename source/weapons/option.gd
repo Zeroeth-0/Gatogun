@@ -178,13 +178,17 @@ func _follow_hold(dir: Vector2, tick: float) -> void:
 		var desiredDistance: float = 80.0
 		var speedFactor: float = 6.0
 		var idealPos: Vector2
+		
 		if distance > 0.1:
 			var directionAway = -toTarget.normalized()
 			idealPos = targetPos + directionAway * desiredDistance
-		elif targetNode.lastMoveDirection:
+		elif "lastMoveDirection" in targetNode and targetNode.lastMoveDirection and targetNode.lastMoveDirection != Vector2.ZERO:
 			var backDir = -targetNode.lastMoveDirection.normalized()
 			idealPos = targetPos + backDir * desiredDistance
+		else: idealPos = targetPos + Vector2.DOWN * desiredDistance
+			
 		global_position = global_position.lerp(idealPos, speedFactor * tick)
+		
 	if canFire and activeBullets < maxBullets:
 		await _fire_burst(dir, bulletScene)
 

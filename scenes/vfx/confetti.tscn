@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://npnu6bvkcebp"]
 
-[ext_resource type="Texture2D" uid="uid://ceua512sq761a" path="res://sprites/confetti.png" id="1_og0f1"]
+[ext_resource type="Texture2D" uid="uid://ceua512sq761a" path="res://sprites/effects/confetti.png" id="1_og0f1"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_inard"]
 particles_animation = true
