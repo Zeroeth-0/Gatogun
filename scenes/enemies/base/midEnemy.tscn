@@ -1,10 +1,40 @@
 [gd_scene format=3 uid="uid://cpaqrklh3fr4s"]
 
 [ext_resource type="PackedScene" uid="uid://45jy2ekapnll" path="res://scenes/enemies/base/enemy.tscn" id="1_wviyb"]
+[ext_resource type="Script" uid="uid://dldwn01vb1eox" path="res://resources/movement_phase.gd" id="2_lc7k0"]
+[ext_resource type="Script" uid="uid://cmd53a3a4koqb" path="res://resources/enemy_data.gd" id="3_qltmm"]
+[ext_resource type="Shader" uid="uid://ynex463g0i6x" path="res://shaders/enemy.gdshader" id="4_qltmm"]
+
+[sub_resource type="Resource" id="Resource_gy0dn"]
+script = ExtResource("2_lc7k0")
+duration = -1.0
+metadata/_custom_type_script = "uid://dldwn01vb1eox"
+
+[sub_resource type="Resource" id="Resource_yikkn"]
+script = ExtResource("3_qltmm")
+movement_phases = Array[ExtResource("2_lc7k0")]([SubResource("Resource_gy0dn")])
+metadata/_custom_type_script = "uid://cmd53a3a4koqb"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mft1c"]
+shader = ExtResource("4_qltmm")
+shader_parameter/shadow_offset = Vector2(20, 30)
+shader_parameter/shadow_color = Color(0, 0, 0, 0.8)
+shader_parameter/hit_effect = 0.0
+shader_parameter/shake_intensity = 25.0
+shader_parameter/flash_speed = 30.0
+shader_parameter/time_offset = 0.0
+shader_parameter/flash_color = Color(0.10779586, 0.34480074, 1, 1)
+shader_parameter/custom_time = 0.0
+shader_parameter/breath_enabled = 1.0
+shader_parameter/breath_speed = 3.0000001392401203
+shader_parameter/breath_intensity = 0.10000000475
+shader_parameter/breath_seed = 0.0
 
 [node name="Enemy" unique_id=1688539713 instance=ExtResource("1_wviyb")]
+data = SubResource("Resource_yikkn")
 
 [node name="Sprite2D" parent="." index="0" unique_id=444427917]
+material = SubResource("ShaderMaterial_mft1c")
 position = Vector2(0, -10)
 
 [node name="CollisionShape2D" parent="." index="1" unique_id=1503006985]

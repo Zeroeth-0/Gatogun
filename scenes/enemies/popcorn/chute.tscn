@@ -1,0 +1,95 @@
+[gd_scene format=3 uid="uid://dexi7ca3qdwxt"]
+
+[ext_resource type="PackedScene" uid="uid://45jy2ekapnll" path="res://scenes/enemies/base/enemy.tscn" id="1_o27uc"]
+[ext_resource type="Texture2D" uid="uid://by8qdnbmlifq5" path="res://sprites/enemies/std_chute.png" id="2_u8ked"]
+
+[sub_resource type="Animation" id="Animation_u8ked"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.17453292]
+}
+
+[sub_resource type="Animation" id="Animation_dn441"]
+resource_name = "damage"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [3]
+}
+
+[sub_resource type="Animation" id="Animation_0s74a"]
+resource_name = "idle"
+length = 1.6
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6051705, 0.8001068, 1.000303, 1.202492, 1.404681),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 0, 1, 0, 1, 0, 1]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.17453292, -0.17453292]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_dn441"]
+_data = {
+&"RESET": SubResource("Animation_u8ked"),
+&"damage": SubResource("Animation_dn441"),
+&"idle": SubResource("Animation_0s74a")
+}
+
+[node name="Enemy" unique_id=177661500 instance=ExtResource("1_o27uc")]
+
+[node name="Sprite2D" parent="." index="0" unique_id=444427917]
+rotation = 0.17453292
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2_u8ked")
+hframes = 2
+vframes = 2
+
+[node name="AnimationPlayer" parent="Sprite2D" index="0" unique_id=1972147196]
+libraries/ = SubResource("AnimationLibrary_dn441")

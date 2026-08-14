@@ -1,0 +1,69 @@
+[gd_scene format=3 uid="uid://cpbo5d80leos"]
+
+[ext_resource type="PackedScene" uid="uid://cpaqrklh3fr4s" path="res://scenes/enemies/base/midEnemy.tscn" id="1_6nm4t"]
+[ext_resource type="Texture2D" uid="uid://4oy6s5jeqmwe" path="res://sprites/enemies/mid_meatball.png" id="2_c1n6v"]
+
+[sub_resource type="Animation" id="Animation_c1n6v"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_wewlf"]
+resource_name = "damage"
+length = 0.19999999999999998
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [3]
+}
+
+[sub_resource type="Animation" id="Animation_trvp3"]
+resource_name = "idle"
+length = 0.39999999999999997
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_wewlf"]
+_data = {
+&"RESET": SubResource("Animation_c1n6v"),
+&"damage": SubResource("Animation_wewlf"),
+&"idle": SubResource("Animation_trvp3")
+}
+
+[node name="Enemy" unique_id=1688539713 instance=ExtResource("1_6nm4t")]
+
+[node name="Sprite2D" parent="." index="0" unique_id=444427917]
+texture = ExtResource("2_c1n6v")
+hframes = 2
+vframes = 2
+
+[node name="AnimationPlayer" parent="Sprite2D" index="0" unique_id=1972147196]
+libraries/ = SubResource("AnimationLibrary_wewlf")

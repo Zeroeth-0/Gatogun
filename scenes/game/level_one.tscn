@@ -7,7 +7,6 @@
 [ext_resource type="Script" uid="uid://582anxy540je" path="res://source/levels/background.gd" id="10_ix72u"]
 [ext_resource type="Script" uid="uid://camgd3kf5nap7" path="res://source/levels/lane.gd" id="11_ul74p"]
 [ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="12_0cmxr"]
-[ext_resource type="PackedScene" uid="uid://by8o2gppre611" path="res://scenes/enemies/popcorn/teruteru.tscn" id="13_cffxp"]
 [ext_resource type="PackedScene" uid="uid://cgts6rg8xrau" path="res://scenes/levels/playzone.tscn" id="13_hmfu4"]
 [ext_resource type="PackedScene" uid="uid://duam5mtyrxv5l" path="res://scenes/UI/hud.tscn" id="14_ol3bn"]
 [ext_resource type="PackedScene" uid="uid://hoe0n6m5f6n7" path="res://scenes/items/orbit_item.tscn" id="17_q5ghs"]
@@ -141,6 +140,3 @@ position = Vector2(373, -126)
 
 [node name="Item3" parent="." unique_id=1581710855 instance=ExtResource("19_3n5rf")]
 position = Vector2(574, -420)
-
-[node name="Enemy" parent="." unique_id=177661500 instance=ExtResource("13_cffxp")]
-position = Vector2(437, -28)

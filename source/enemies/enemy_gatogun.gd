@@ -17,13 +17,13 @@ extends BaseEnemy
 # INTERNAL STATE
 # ==============================================================================
 
-var _health:       float = 0.0
-var _can_die:      bool  = false
-var _can_shoot:    bool  = true
+var _health:        float = 0.0
+var _can_die:       bool  = false
+var _can_shoot:     bool  = true
 var _pulse_marked: bool  = false
-var _by_bomb:      bool  = false
-var _halved:       bool  = false
-var _last_bullet:  bool  = false
+var _by_bomb:       bool  = false
+var _halved:        bool  = false
+var _last_bullet:   bool  = false
 
 var _emitter: BulletEmitter = null
 
@@ -55,10 +55,9 @@ func _on_ready() -> void:
 		_hit_mat.set_shader_parameter("breath_seed", randf_range(0.0, 100.0))
 		_hit_mat.set_shader_parameter("time_offset",  randf() * 100.0)
 
-	# Iniciar animación idle y conectar señal para volver automáticamente a idle
+	# Iniciar animación idle (direccional o genérica) y conectar señal
 	if _anim_player:
-		if _anim_player.has_animation("idle"):
-			_anim_player.play("idle")
+		_play_anim("idle")
 		
 		# Conectamos la señal de fin de animación para regresar a "idle" de forma limpia
 		if not _anim_player.animation_finished.is_connected(_on_animation_finished):
@@ -89,11 +88,40 @@ func _physics_process(_delta: float) -> void:
 	_check_death()
 
 # ==============================================================================
-# ANIMATION COOLDOWN SYSTEM
+# ANIMATION HELPER & COOLDOWN SYSTEM
 # ==============================================================================
 
+## Obtiene el nombre real de la animación disponible buscando primero 
+## la variante con sufijo (_left / _right) según handedness, y si no existe, la base.
+func _get_anim_name(base_name: String) -> String:
+	if _anim_player == null:
+		return ""
+	
+	# 1. Intentar encontrar variante direccional (ej. "idle_left" o "damage_right")
+	var suffix := "_left" if handedness == Handedness.LEFT else "_right"
+	var directional_anim := base_name + suffix
+	if _anim_player.has_animation(directional_anim):
+		print("hey")
+		return directional_anim
+
+	# 2. Si no existe, recurrir a la animación estándar (ej. "idle" o "damage")
+	if _anim_player.has_animation(base_name):
+		return base_name
+
+	return ""
+
+## Reproduce la animación adaptada
+func _play_anim(base_name: String) -> void:
+	var anim := _get_anim_name(base_name)
+	if not anim.is_empty():
+		_anim_player.play(anim)
+
 func _trigger_damage_animation() -> void:
-	if _anim_player == null or not _anim_player.has_animation("damage"):
+	if _anim_player == null:
+		return
+	
+	var damage_anim := _get_anim_name("damage")
+	if damage_anim.is_empty():
 		return
 	
 	# Si aún está en cooldown, ignoramos el impacto visual
@@ -101,13 +129,14 @@ func _trigger_damage_animation() -> void:
 		return
 	
 	# Reproducir animación de daño e iniciar el cooldown
-	_anim_player.play("damage")
+	_anim_player.play(damage_anim)
 	_damage_cd_timer = damage_cooldown
 
 func _on_animation_finished(anim_name: StringName) -> void:
-	# Cuando la animación "damage" termine, regresamos a "idle" aunque siga en cooldown
-	if anim_name == &"damage" and _anim_player.has_animation("idle"):
-		_anim_player.play("idle")
+	# Cuando finalice cualquier animación de daño ("damage", "damage_left", "damage_right"),
+	# volvemos al estado idle correspondiente
+	if anim_name.begins_with("damage"):
+		_play_anim("idle")
 
 # ==============================================================================
 # COMBAT
@@ -122,7 +151,6 @@ func _check_charge_overlap(tick: float) -> void:
 	for area in $Hurtbox.get_overlapping_areas():
 		if area.is_in_group("Charge"):
 			_pulse_marked = true
-			# Comprobación segura por si el area no tiene damage
 			_health -= tick * area.get("damage")
 			_trigger_damage_animation()
 
@@ -150,7 +178,6 @@ func _check_death() -> void:
 	if _pulse_marked:
 		score_f *= 1.1
 
-	# Revenge bullets activas ÚNICAMENTE en estilo SCORE
 	var revenge = data.drops_revenge \
 		and (position.y < 300.0 or _pulse_marked) \
 		and not _by_bomb \
@@ -201,11 +228,9 @@ func _on_hurtbox_area_entered(area: Node) -> void:
 		if combo_label:
 			combo_label.show_combo()
 		if _can_die:
-			# Extracción segura de la variable damage
 			var dmg: float = area.get("damage") if "damage" in area else 1.0
 			_health -= dmg
 			
-			# Extracción segura de BulletType para evitar crashes si choca con otra cosa
 			if "BulletType" in area and "BulletEnum" in area:
 				_last_bullet = (area.BulletType == area.BulletEnum.BURST)
 			else:

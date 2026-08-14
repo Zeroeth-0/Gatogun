@@ -1,0 +1,69 @@
+[gd_scene format=3 uid="uid://bx42d1dglfwks"]
+
+[ext_resource type="PackedScene" uid="uid://cpaqrklh3fr4s" path="res://scenes/enemies/base/midEnemy.tscn" id="1_3hnqo"]
+[ext_resource type="Texture2D" uid="uid://c85c0otks8m5g" path="res://sprites/enemies/mid_ufo.png" id="2_e7rii"]
+
+[sub_resource type="Animation" id="Animation_e7rii"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_2jiib"]
+resource_name = "damage"
+length = 0.19999999999999998
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
+}
+
+[sub_resource type="Animation" id="Animation_2nqmr"]
+resource_name = "idle"
+length = 0.39999999999999997
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_i7sob"]
+_data = {
+&"RESET": SubResource("Animation_e7rii"),
+&"damage": SubResource("Animation_2jiib"),
+&"idle": SubResource("Animation_2nqmr")
+}
+
+[node name="Enemy" unique_id=1688539713 instance=ExtResource("1_3hnqo")]
+
+[node name="Sprite2D" parent="." index="0" unique_id=444427917]
+texture = ExtResource("2_e7rii")
+hframes = 2
+vframes = 2
+
+[node name="AnimationPlayer" parent="Sprite2D" index="0" unique_id=1972147196]
+libraries/ = SubResource("AnimationLibrary_i7sob")

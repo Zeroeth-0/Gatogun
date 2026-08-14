@@ -1,0 +1,82 @@
+[gd_scene format=3 uid="uid://cxi03xcrsb5s7"]
+
+[ext_resource type="PackedScene" uid="uid://cpaqrklh3fr4s" path="res://scenes/enemies/base/midEnemy.tscn" id="1_68njc"]
+[ext_resource type="Texture2D" uid="uid://dvrita7dbv4ma" path="res://sprites/enemies/mid_croquette.png" id="2_isn6t"]
+[ext_resource type="Script" uid="uid://dldwn01vb1eox" path="res://resources/movement_phase.gd" id="2_o717q"]
+[ext_resource type="Script" uid="uid://cmd53a3a4koqb" path="res://resources/enemy_data.gd" id="3_ci5y4"]
+
+[sub_resource type="Resource" id="Resource_gy0dn"]
+script = ExtResource("2_o717q")
+duration = -1.0
+metadata/_custom_type_script = "uid://dldwn01vb1eox"
+
+[sub_resource type="Resource" id="Resource_ekb85"]
+script = ExtResource("3_ci5y4")
+movement_phases = Array[ExtResource("2_o717q")]([SubResource("Resource_gy0dn")])
+metadata/_custom_type_script = "uid://cmd53a3a4koqb"
+
+[sub_resource type="Animation" id="Animation_u7g0m"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_isn6t"]
+resource_name = "damage"
+length = 0.19999999999999998
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [3]
+}
+
+[sub_resource type="Animation" id="Animation_o717q"]
+resource_name = "idle"
+length = 0.39999999999999997
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ci5y4"]
+_data = {
+&"RESET": SubResource("Animation_u7g0m"),
+&"damage": SubResource("Animation_isn6t"),
+&"idle": SubResource("Animation_o717q")
+}
+
+[node name="Enemy" unique_id=1688539713 instance=ExtResource("1_68njc")]
+data = SubResource("Resource_ekb85")
+
+[node name="Sprite2D" parent="." index="0" unique_id=444427917]
+texture = ExtResource("2_isn6t")
+hframes = 2
+vframes = 2
+
+[node name="AnimationPlayer" parent="Sprite2D" index="0" unique_id=1972147196]
+libraries/ = SubResource("AnimationLibrary_ci5y4")
