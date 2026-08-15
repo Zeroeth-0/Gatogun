@@ -24,6 +24,9 @@ var _pulse_marked: bool  = false
 var _by_bomb:       bool  = false
 var _halved:        bool  = false
 var _last_bullet:   bool  = false
+var explosion_scale: float = 1.5
+var score_count: float = 5.0
+var spread: float = 20.0
 
 var _emitter: BulletEmitter = null
 
@@ -42,8 +45,23 @@ func _on_ready() -> void:
 	if data == null:
 		push_error("EnemyGatogun '%s': EnemyData not assigned." % name)
 		return
-
-	_health  = data.base_health
+	
+	match data.enemy_type:
+		EnemyData.EnemyType.STD:
+			_health = 16.0
+			explosion_scale = 1.5
+			score_count = 3.0
+			spread = 50.0
+		EnemyData.EnemyType.MID:
+			_health = 100.0
+			explosion_scale = 2.0
+			score_count = 5.0
+			spread = 80.0
+		EnemyData.EnemyType.ELITE:
+			_health = 160.0
+			explosion_scale = 2.75
+			score_count = 10.0
+			spread = 100.0
 	_emitter = get_node_or_null("Emitter")
 
 	$Hitbox.add_to_group("Damage")
@@ -152,6 +170,7 @@ func _check_charge_overlap(tick: float) -> void:
 		if area.is_in_group("Charge"):
 			_pulse_marked = true
 			_health -= tick * area.get("damage")
+			_trigger_hit_flash()
 			_trigger_damage_animation()
 
 func _check_health_halving() -> void:
@@ -174,7 +193,7 @@ func _check_death() -> void:
 	if _health > 0.0:
 		return
 
-	var score_f := float(data.score_count)
+	var score_f := float(score_count)
 	if _pulse_marked:
 		score_f *= 1.1
 
@@ -186,7 +205,7 @@ func _check_death() -> void:
 	EVENTS.enemy_killed.emit(EnemyKillData.new(
 		EnemyData.EnemyType.keys()[data.enemy_type],
 		global_position,
-		data.explosion_scale,
+		explosion_scale,
 		SCORE.combo,
 		SCORE.mult,
 		int(score_f),
@@ -195,7 +214,8 @@ func _check_death() -> void:
 		_last_bullet,
 		not INPUT.fireHold,
 		revenge,
-		data.drops_powerup
+		data.drops_powerup,
+		spread
 	))
 
 	if combo_label:

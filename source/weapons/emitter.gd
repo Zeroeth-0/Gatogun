@@ -1,6 +1,5 @@
 # source/weapons/emitter.gd
 # Interprets EmitterConfig and fires bullets
-@tool
 class_name BulletEmitter
 extends Marker2D
 

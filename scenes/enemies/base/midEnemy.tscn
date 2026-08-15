@@ -12,6 +12,7 @@ metadata/_custom_type_script = "uid://dldwn01vb1eox"
 
 [sub_resource type="Resource" id="Resource_yikkn"]
 script = ExtResource("3_qltmm")
+enemy_type = 1
 movement_phases = Array[ExtResource("2_lc7k0")]([SubResource("Resource_gy0dn")])
 metadata/_custom_type_script = "uid://cmd53a3a4koqb"
 

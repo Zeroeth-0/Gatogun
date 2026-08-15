@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://hrxsyfgjv1kg" path="res://source/levels/level_parser.gd" id="1_38etc"]
 [ext_resource type="Script" uid="uid://cwjdnkhkortfc" path="res://resources/enemy_registry_entry.gd" id="2_gvm2m"]
 [ext_resource type="Script" uid="uid://dxni8cw8okxda" path="res://resources/enemy_registry.gd" id="2_r4m5e"]
+[ext_resource type="PackedScene" uid="uid://ci81l0ibvxct1" path="res://scenes/enemies/popcorn/teruteru_s.tscn" id="3_cffxp"]
+[ext_resource type="PackedScene" uid="uid://bejsnowcycyxi" path="res://scenes/enemies/popcorn/teruteru_p.tscn" id="4_38etc"]
 [ext_resource type="Texture2D" uid="uid://chijma6mb38wf" path="res://background_cats.png" id="9_rvump"]
 [ext_resource type="Script" uid="uid://582anxy540je" path="res://source/levels/background.gd" id="10_ix72u"]
 [ext_resource type="Script" uid="uid://camgd3kf5nap7" path="res://source/levels/lane.gd" id="11_ul74p"]
@@ -13,8 +15,21 @@
 [ext_resource type="PackedScene" uid="uid://bnw5lajutdr4s" path="res://scenes/items/follow_item.tscn" id="18_t63va"]
 [ext_resource type="PackedScene" uid="uid://wm5ygajh4jkk" path="res://scenes/items/sides_item.tscn" id="19_3n5rf"]
 
+[sub_resource type="Resource" id="Resource_81vvx"]
+script = ExtResource("2_gvm2m")
+enemy_id = &"teruteru_s"
+scene = ExtResource("3_cffxp")
+metadata/_custom_type_script = "uid://cwjdnkhkortfc"
+
+[sub_resource type="Resource" id="Resource_cof2y"]
+script = ExtResource("2_gvm2m")
+enemy_id = &"teruteru_p"
+scene = ExtResource("4_38etc")
+metadata/_custom_type_script = "uid://cwjdnkhkortfc"
+
 [sub_resource type="Resource" id="Resource_gvm2m"]
 script = ExtResource("2_r4m5e")
+entries = Array[ExtResource("2_gvm2m")]([SubResource("Resource_81vvx"), SubResource("Resource_cof2y")])
 metadata/_custom_type_script = "uid://dxni8cw8okxda"
 
 [node name="World" type="Node2D" unique_id=1973436339 groups=["Level"]]

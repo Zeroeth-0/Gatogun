@@ -1,9 +1,9 @@
-[gd_scene format=3 uid="uid://bx42d1dglfwks"]
+[gd_scene format=3 uid="uid://dxq0xx06ro7qu"]
 
-[ext_resource type="PackedScene" uid="uid://cpaqrklh3fr4s" path="res://scenes/enemies/base/midEnemy.tscn" id="1_3hnqo"]
-[ext_resource type="Texture2D" uid="uid://c85c0otks8m5g" path="res://sprites/enemies/mid_ufo.png" id="2_e7rii"]
+[ext_resource type="PackedScene" uid="uid://cpaqrklh3fr4s" path="res://scenes/enemies/base/midEnemy.tscn" id="1_m14n4"]
+[ext_resource type="Texture2D" uid="uid://b60bn8t6x45d4" path="res://sprites/enemies/mid_jellycat.png" id="2_ajv5i"]
 
-[sub_resource type="Animation" id="Animation_e7rii"]
+[sub_resource type="Animation" id="Animation_y8nev"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -18,9 +18,9 @@ tracks/0/keys = {
 "values": [0]
 }
 
-[sub_resource type="Animation" id="Animation_2jiib"]
+[sub_resource type="Animation" id="Animation_ajv5i"]
 resource_name = "damage"
-length = 0.2
+length = 0.19999999999999998
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -34,9 +34,9 @@ tracks/0/keys = {
 "values": [2]
 }
 
-[sub_resource type="Animation" id="Animation_2nqmr"]
+[sub_resource type="Animation" id="Animation_bbaqi"]
 resource_name = "idle"
-length = 0.4
+length = 0.39999999999999997
 loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -51,19 +51,19 @@ tracks/0/keys = {
 "values": [0, 1]
 }
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_i7sob"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_7thp5"]
 _data = {
-&"RESET": SubResource("Animation_e7rii"),
-&"damage": SubResource("Animation_2jiib"),
-&"idle": SubResource("Animation_2nqmr")
+&"RESET": SubResource("Animation_y8nev"),
+&"damage": SubResource("Animation_ajv5i"),
+&"idle": SubResource("Animation_bbaqi")
 }
 
-[node name="Enemy" unique_id=1688539713 instance=ExtResource("1_3hnqo")]
+[node name="Enemy" unique_id=1688539713 instance=ExtResource("1_m14n4")]
 
 [node name="Sprite2D" parent="." index="0" unique_id=444427917]
-texture = ExtResource("2_e7rii")
+texture = ExtResource("2_ajv5i")
 hframes = 2
 vframes = 2
 
 [node name="AnimationPlayer" parent="Sprite2D" index="0" unique_id=1972147196]
-libraries/ = SubResource("AnimationLibrary_i7sob")
+libraries/ = SubResource("AnimationLibrary_7thp5")

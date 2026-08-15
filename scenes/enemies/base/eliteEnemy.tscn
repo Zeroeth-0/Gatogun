@@ -1,8 +1,22 @@
 [gd_scene format=3 uid="uid://bgujdgvfbgn0q"]
 
 [ext_resource type="PackedScene" uid="uid://45jy2ekapnll" path="res://scenes/enemies/base/enemy.tscn" id="1_sj1r0"]
+[ext_resource type="Script" uid="uid://dldwn01vb1eox" path="res://resources/movement_phase.gd" id="2_1fgy6"]
+[ext_resource type="Script" uid="uid://cmd53a3a4koqb" path="res://resources/enemy_data.gd" id="3_statn"]
+
+[sub_resource type="Resource" id="Resource_gy0dn"]
+script = ExtResource("2_1fgy6")
+duration = -1.0
+metadata/_custom_type_script = "uid://dldwn01vb1eox"
+
+[sub_resource type="Resource" id="Resource_hktg2"]
+script = ExtResource("3_statn")
+enemy_type = 2
+movement_phases = Array[ExtResource("2_1fgy6")]([SubResource("Resource_gy0dn")])
+metadata/_custom_type_script = "uid://cmd53a3a4koqb"
 
 [node name="Enemy" unique_id=177661500 instance=ExtResource("1_sj1r0")]
+data = SubResource("Resource_hktg2")
 
 [node name="Hitbox" parent="." index="2" unique_id=329283421]
 scale = Vector2(3.2, 3.2)

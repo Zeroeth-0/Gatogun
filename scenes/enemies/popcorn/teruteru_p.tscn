@@ -1,0 +1,99 @@
+[gd_scene format=3 uid="uid://bejsnowcycyxi"]
+
+[ext_resource type="PackedScene" uid="uid://45jy2ekapnll" path="res://scenes/enemies/base/enemy.tscn" id="1_p7fvb"]
+[ext_resource type="Script" uid="uid://dldwn01vb1eox" path="res://resources/movement_phase.gd" id="2_7aeuj"]
+[ext_resource type="Script" uid="uid://cmd53a3a4koqb" path="res://resources/enemy_data.gd" id="3_blnb0"]
+[ext_resource type="Texture2D" uid="uid://kwrelf5u0uav" path="res://sprites/enemies/std_teruteru.png" id="4_a0v8p"]
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/base/emitter.tscn" id="5_y1csj"]
+[ext_resource type="Resource" uid="uid://ch2doapvg0i50" path="res://scenes/weapons/enemies/popcorn/single_aimed.tres" id="6_l5bsb"]
+
+[sub_resource type="Resource" id="Resource_gy0dn"]
+script = ExtResource("2_7aeuj")
+speed = 200
+metadata/_custom_type_script = "uid://dldwn01vb1eox"
+
+[sub_resource type="Resource" id="Resource_qltmm"]
+script = ExtResource("2_7aeuj")
+move_type = 6
+duration = 5.0
+speed = 200
+deviation_angle = 105
+intensity = 5
+metadata/_custom_type_script = "uid://dldwn01vb1eox"
+
+[sub_resource type="Resource" id="Resource_qc1ho"]
+script = ExtResource("3_blnb0")
+enemy_id = &"teruteru_p"
+movement_phases = Array[ExtResource("2_7aeuj")]([SubResource("Resource_gy0dn"), SubResource("Resource_qltmm")])
+metadata/_custom_type_script = "uid://cmd53a3a4koqb"
+
+[sub_resource type="Animation" id="Animation_xvu0a"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [3]
+}
+
+[sub_resource type="Animation" id="Animation_qc1ho"]
+resource_name = "damage"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [3]
+}
+
+[sub_resource type="Animation" id="Animation_rtak4"]
+resource_name = "idle"
+length = 0.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_xvu0a"]
+_data = {
+&"RESET": SubResource("Animation_xvu0a"),
+&"damage": SubResource("Animation_qc1ho"),
+&"idle": SubResource("Animation_rtak4")
+}
+
+[node name="Enemy" unique_id=177661500 instance=ExtResource("1_p7fvb")]
+data = SubResource("Resource_qc1ho")
+
+[node name="Sprite2D" parent="." index="0" unique_id=444427917]
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("4_a0v8p")
+hframes = 2
+vframes = 2
+frame = 3
+
+[node name="AnimationPlayer" parent="Sprite2D" index="0" unique_id=1972147196]
+libraries/ = SubResource("AnimationLibrary_xvu0a")
+
+[node name="Emitter" parent="." index="5" unique_id=2059335812 instance=ExtResource("5_y1csj")]
+config = ExtResource("6_l5bsb")

@@ -20,6 +20,7 @@ var by_burst: bool
 var not_hold: bool
 var revenge: bool
 var drops_powerup: bool
+var spread: float
 
 func _init(
 	p_type: StringName,
@@ -33,7 +34,8 @@ func _init(
 	p_burst: bool,
 	p_not_hold: bool,
 	p_revenge: bool,
-	p_powerup: bool
+	p_powerup: bool,
+	p_spread: float
 ) -> void:
 	enemy_type = p_type
 	position = p_position
@@ -47,3 +49,4 @@ func _init(
 	not_hold = p_not_hold
 	revenge = p_revenge
 	drops_powerup = p_powerup
+	spread = p_spread

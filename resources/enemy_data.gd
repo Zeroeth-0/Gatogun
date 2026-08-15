@@ -12,9 +12,6 @@ enum EnemyType { STD, MID, ELITE }
 @export_category("Identity")
 @export var enemy_id: StringName = &"unknown"
 @export var enemy_type: EnemyType = EnemyType.STD
-@export var base_health: float = 16.0
-@export var score_count: int = 1
-@export var explosion_scale: float = 1.5
 
 # ==============================================================================
 # BEHAVIOR

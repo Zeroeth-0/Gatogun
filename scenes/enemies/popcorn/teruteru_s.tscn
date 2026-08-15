@@ -1,18 +1,35 @@
-[gd_scene format=3 uid="uid://by8o2gppre611"]
+[gd_scene format=3 uid="uid://ci81l0ibvxct1"]
 
-[ext_resource type="PackedScene" uid="uid://45jy2ekapnll" path="res://scenes/enemies/base/enemy.tscn" id="1_w6446"]
-[ext_resource type="Script" uid="uid://dldwn01vb1eox" path="res://resources/movement_phase.gd" id="2_lnkxp"]
-[ext_resource type="Script" uid="uid://cmd53a3a4koqb" path="res://resources/enemy_data.gd" id="3_lwq5h"]
-[ext_resource type="Texture2D" uid="uid://kwrelf5u0uav" path="res://sprites/enemies/std_teruteru.png" id="5_skydu"]
+[ext_resource type="PackedScene" uid="uid://45jy2ekapnll" path="res://scenes/enemies/base/enemy.tscn" id="1_81vvx"]
+[ext_resource type="Script" uid="uid://dldwn01vb1eox" path="res://resources/movement_phase.gd" id="2_r1bsf"]
+[ext_resource type="Script" uid="uid://cmd53a3a4koqb" path="res://resources/enemy_data.gd" id="3_2o3yf"]
+[ext_resource type="Texture2D" uid="uid://kwrelf5u0uav" path="res://sprites/enemies/std_teruteru.png" id="4_ptkhl"]
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/base/emitter.tscn" id="5_6xo08"]
+[ext_resource type="Resource" uid="uid://ch2doapvg0i50" path="res://scenes/weapons/enemies/popcorn/single_aimed.tres" id="6_cof2y"]
 
 [sub_resource type="Resource" id="Resource_gy0dn"]
-script = ExtResource("2_lnkxp")
+script = ExtResource("2_r1bsf")
+duration = 1.5
+speed = 200
+metadata/_custom_type_script = "uid://dldwn01vb1eox"
+
+[sub_resource type="Resource" id="Resource_qltmm"]
+script = ExtResource("2_r1bsf")
+move_type = 12
+duration = 2.0
+metadata/_custom_type_script = "uid://dldwn01vb1eox"
+
+[sub_resource type="Resource" id="Resource_p7fvb"]
+script = ExtResource("2_r1bsf")
+move_type = 8
 duration = -1.0
+speed = 200
 metadata/_custom_type_script = "uid://dldwn01vb1eox"
 
 [sub_resource type="Resource" id="Resource_qc1ho"]
-script = ExtResource("3_lwq5h")
-movement_phases = Array[ExtResource("2_lnkxp")]([SubResource("Resource_gy0dn")])
+script = ExtResource("3_2o3yf")
+enemy_id = &"teruteru_s"
+movement_phases = Array[ExtResource("2_r1bsf")]([SubResource("Resource_gy0dn"), SubResource("Resource_qltmm"), SubResource("Resource_p7fvb")])
 metadata/_custom_type_script = "uid://cmd53a3a4koqb"
 
 [sub_resource type="Animation" id="Animation_xvu0a"]
@@ -70,15 +87,18 @@ _data = {
 &"idle": SubResource("Animation_rtak4")
 }
 
-[node name="Enemy" unique_id=177661500 instance=ExtResource("1_w6446")]
+[node name="Enemy" unique_id=177661500 instance=ExtResource("1_81vvx")]
 data = SubResource("Resource_qc1ho")
 
 [node name="Sprite2D" parent="." index="0" unique_id=444427917]
 scale = Vector2(0.3, 0.3)
-texture = ExtResource("5_skydu")
+texture = ExtResource("4_ptkhl")
 hframes = 2
 vframes = 2
 frame = 3
 
 [node name="AnimationPlayer" parent="Sprite2D" index="0" unique_id=1972147196]
 libraries/ = SubResource("AnimationLibrary_xvu0a")
+
+[node name="Emitter" parent="." index="5" unique_id=2059335812 instance=ExtResource("5_6xo08")]
+config = ExtResource("6_cof2y")

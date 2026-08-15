@@ -47,8 +47,8 @@ var rand_side: int = 1
 # INTERNAL STATE
 # ==============================================================================
 
-var _phase_index:     int     = 0
-var _phase_timer:     float   = 0.0
+var _phase_index:     int       = 0
+var _phase_timer:     float     = 0.0
 ## Direction at phase start — used by CURVE to measure total rotation
 var _phase_start_dir: Vector2 = Vector2.DOWN
 
@@ -60,6 +60,9 @@ var _target_vel:    Vector2 = Vector2.ZERO
 var _overshoot_vel: Vector2 = Vector2.ZERO
 var _local_accel:   float   = 10.0
 
+# Variable para acumular la rotación de la curva
+var _curved_angle_acc: float = 0.0
+
 # ==============================================================================
 # LIFECYCLE
 # ==============================================================================
@@ -67,13 +70,18 @@ var _local_accel:   float   = 10.0
 func _ready() -> void:
 	_direction       = _dir_to_vec(direction_enum)
 	_phase_start_dir = _direction
-	_drift_phase     = DRNG.drandf_range(0.0, TAU)
-	rand_side        = -1 if DRNG.drandi() % 2 == 0 else 1
-	CAMERA.tracked_nodes.append(self)
+	
+	# Previene errores de autoloads no instanciados en el editor
+	if not Engine.is_editor_hint():
+		_drift_phase = DRNG.drandf_range(0.0, TAU)
+		rand_side    = -1 if DRNG.drandi() % 2 == 0 else 1
+		CAMERA.tracked_nodes.append(self)
+		
 	_on_ready()
 
 func _exit_tree() -> void:
-	CAMERA.tracked_nodes.erase(self)
+	if not Engine.is_editor_hint():
+		CAMERA.tracked_nodes.erase(self)
 
 ## Override this in subclasses instead of _ready()
 func _on_ready() -> void: pass
@@ -100,6 +108,9 @@ func advance_phase() -> void:
 # ==============================================================================
 
 func tick_movement(_delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
+		
 	_phase_timer += GLOBAL.TICK
 	var phase := get_current_phase()
 	if phase == null:
@@ -120,6 +131,16 @@ func tick_movement(_delta: float) -> void:
 # ==============================================================================
 
 func _change_stage(should_invert: bool) -> void:
+	_phase_timer      = 0.0
+	_phase_start_dir  = _direction
+	_curved_angle_acc = 0.0 # Reset del acumulador de curva
+	
+	if should_invert:
+		_hside_invert *= -1
+		
+	if Engine.is_editor_hint():
+		return
+		
 	var carry  := DRNG.drandf_range(0.18, 0.42)
 	var recoil := DRNG.drandf_range(0.04, 0.13)
 	var jolt   := DRNG.drandf_range(-0.09, 0.09)
@@ -129,11 +150,6 @@ func _change_stage(should_invert: bool) -> void:
 	_overshoot_vel -= _direction * float(_get_current_speed()) * recoil
 	_overshoot_vel += perp      * float(_get_current_speed()) * jolt
 
-	_phase_timer     = 0.0
-	_phase_start_dir = _direction
-
-	if should_invert:
-		_hside_invert *= -1
 
 func _get_current_speed() -> int:
 	var ph := get_current_phase()
@@ -152,7 +168,7 @@ func _smooth_move(tick: float) -> void:
 	var original_velocity = velocity
 	velocity = velocity * (tick / get_physics_process_delta_time())
 	move_and_slide()
-	velocity = original_velocity # Restauramos para que los cálculos de lerp/inclinación usen la velocidad real
+	velocity = original_velocity # Restauramos para que los cálculos usen la real
 
 	if sprite_lean and is_instance_valid(sprite_node):
 		var side_axis  := Vector2(-_direction.y, _direction.x)
@@ -196,9 +212,12 @@ func _target_sinusoidal(phase: MovementPhase) -> void:
 	_target_vel = _direction * float(phase.speed) * _speed_breath + side * offset
 
 func _target_oscillate(phase: MovementPhase) -> void:
-	var side   := Vector2(-_direction.y, _direction.x)
-	var offset = sign(sin(2.0 * _phase_timer + PI * 0.5)) \
-		* 55.0 * float(phase.intensity) * float(hside)
+	var side := Vector2(-_direction.y, _direction.x)
+	# Tipado explícito a : float para evitar el error de Variant
+	var sine_val: float = sin(2.0 * _phase_timer + PI * 0.5)
+	var smoothed_square: float = clamp(sine_val * 4.0, -1.0, 1.0)
+	var offset: float = smoothed_square * 55.0 * float(phase.intensity) * float(hside)
+	
 	_target_vel = _direction * float(phase.speed) * _speed_breath + side * offset
 
 func _target_breath(phase: MovementPhase) -> void:
@@ -209,15 +228,22 @@ func _target_breath(phase: MovementPhase) -> void:
 
 func _target_block(phase: MovementPhase) -> void:
 	_local_accel = acceleration * 0.6
-	var player_pos := GAME.get_player()
-	var spd_f      := float(phase.speed)
+	var player = GAME.get_player()
+	
+	if not is_instance_valid(player):
+		_target_vel = Vector2.ZERO
+		return
+		
+	var target_pos: Vector2 = player.global_position if player is Node2D else player
+	var spd_f := float(phase.speed)
+	
 	if direction_enum == Direction.NORTH or direction_enum == Direction.SOUTH:
-		var dx := player_pos.x - global_position.x
+		var dx := target_pos.x - global_position.x
 		_target_vel = Vector2(
 			clamp(dx * 4.0, -spd_f, spd_f),
 			_direction.y * spd_f * 0.15)
 	else:
-		var dy := player_pos.y - global_position.y
+		var dy := target_pos.y - global_position.y
 		_target_vel = Vector2(
 			_direction.x * spd_f * 0.15,
 			clamp(dy * 4.0, -spd_f, spd_f))
@@ -232,11 +258,19 @@ func _target_center() -> void:
 		_target_vel = Vector2(0.0, clamp(dy * 4.0, -220.0, 220.0))
 
 func _target_curve(phase: MovementPhase, tick: float) -> void:
-	if phase.duration > 0.0:
-		var rot_speed  := deg_to_rad(float(phase.deviation_angle)) / phase.duration
-		var angle_left := absf(_direction.angle_to(_phase_start_dir))
-		if angle_left < deg_to_rad(float(phase.deviation_angle)):
-			_direction = _direction.rotated(rot_speed * float(hside) * tick)
+	var max_angle_rad := deg_to_rad(absf(float(phase.deviation_angle)))
+	
+	if phase.duration > 0.0 and _curved_angle_acc < max_angle_rad:
+		var rot_step := (max_angle_rad / phase.duration) * tick
+		rot_step = minf(rot_step, max_angle_rad - _curved_angle_acc)
+		
+		_curved_angle_acc += rot_step
+		
+		var dir_sign := signf(float(phase.deviation_angle))
+		if dir_sign == 0.0: dir_sign = 1.0
+		
+		_direction = _direction.rotated(rot_step * float(hside) * dir_sign)
+
 	_target_vel = _direction * float(phase.speed) * _speed_breath
 
 func _target_circular(phase: MovementPhase, tick: float) -> void:
@@ -246,9 +280,14 @@ func _target_circular(phase: MovementPhase, tick: float) -> void:
 
 func _target_towards_player(phase: MovementPhase) -> void:
 	scroll_follow = false
-	var to_player := GAME.get_player() - global_position
-	if to_player.length_squared() > 0.0:
-		_direction = to_player.normalized()
+	var player = GAME.get_player()
+	
+	if is_instance_valid(player):
+		var target_pos: Vector2 = player.global_position if player is Node2D else player
+		var to_player := target_pos - global_position
+		if to_player.length_squared() > 0.0:
+			_direction = to_player.normalized()
+			
 	_target_vel = _direction * float(phase.speed) * _speed_breath
 
 func _target_leave(phase: MovementPhase) -> void:

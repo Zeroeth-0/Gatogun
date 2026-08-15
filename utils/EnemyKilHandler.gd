@@ -15,7 +15,6 @@ const FOLLOW_SCENE   := preload("res://scenes/items/follow_item.tscn")
 const EXPLOSION_SCENE := preload("res://scenes/vfx/explosion.tscn")
 
 const MEDAL_RANGE:  float = 250.0
-const DROP_SPREAD:  float = 20.0
 
 # ==============================================================================
 # LIFECYCLE
@@ -65,15 +64,15 @@ func _handle_drops(data: EnemyKillData) -> void:
 	
 	# Medals: not by bomb, player nearby OR medals active OR pulse
 	if not data.by_bomb and (near_player or medal_active or data.by_charge):
-		_spawn_items(data.score_drop_count, MEDAL_SCENE, data.position)
+		_spawn_items(data.score_drop_count, MEDAL_SCENE, data.position, data.spread)
 	
 	# Revenge bullets
 	if data.revenge:
-		_spawn_items(data.score_drop_count, REVENGE_SCENE, data.position)
+		_spawn_items(data.score_drop_count, REVENGE_SCENE, data.position, data.spread)
 	
 	# COME BACK LATER
-	#if data.drops_powerup and GAME.DollStyle != GAME.DollEnum.STRONG:
-	#	_spawn_items(1, POWERUP_SCENE, data.position, true)
+	#if data.drops_powerup:
+	#	_spawn_items(1, POWERUP_SCENE, data.position, 0, true)
 	
 	# ELITE: cancel all enemy bullets
 	if data.enemy_type == &"ELITE":
@@ -82,7 +81,7 @@ func _handle_drops(data: EnemyKillData) -> void:
 				bullet.cancel()
 
 func _spawn_items(count: int, scene: PackedScene,
-		pos: Vector2, centered: bool = false) -> void:
+		pos: Vector2, spread: float, centered: bool = false) -> void:
 	for i in count:
 		var item := scene.instantiate()
 		GLOBAL.add_to_game(item, true)
@@ -90,7 +89,7 @@ func _spawn_items(count: int, scene: PackedScene,
 			item.position = pos
 		else:
 			item.position = pos + Vector2(
-				DRNG.drandf_range(-DROP_SPREAD, DROP_SPREAD), 0.0)
+				DRNG.drandf_range(-spread, spread), 0)
 
 # ==============================================================================
 # MEDAL COUNTDOWN
