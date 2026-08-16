@@ -2,7 +2,24 @@
 
 [ext_resource type="PackedScene" uid="uid://45jy2ekapnll" path="res://scenes/enemies/base/enemy.tscn" id="1_u3pll"]
 [ext_resource type="Texture2D" uid="uid://db8fei2jy658f" path="res://sprites/enemies/std_haru.png" id="2_ofqir"]
+[ext_resource type="Script" uid="uid://dldwn01vb1eox" path="res://resources/movement_phase.gd" id="2_pje83"]
 [ext_resource type="Shader" uid="uid://ynex463g0i6x" path="res://shaders/enemy.gdshader" id="3_decox"]
+[ext_resource type="Script" uid="uid://cmd53a3a4koqb" path="res://resources/enemy_data.gd" id="3_o6aas"]
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/base/emitter.tscn" id="6_o6aas"]
+[ext_resource type="Resource" uid="uid://ch2doapvg0i50" path="res://scenes/weapons/enemies/popcorn/single_aimed.tres" id="7_dy51r"]
+
+[sub_resource type="Resource" id="Resource_dy51r"]
+script = ExtResource("2_pje83")
+move_type = 11
+duration = -1.0
+speed = 150
+metadata/_custom_type_script = "uid://dldwn01vb1eox"
+
+[sub_resource type="Resource" id="Resource_b5eca"]
+script = ExtResource("3_o6aas")
+enemy_id = &"haru"
+movement_phases = Array[ExtResource("2_pje83")]([SubResource("Resource_dy51r")])
+metadata/_custom_type_script = "uid://cmd53a3a4koqb"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mft1c"]
 shader = ExtResource("3_decox")
@@ -58,25 +75,9 @@ tracks/2/keys = {
 "values": [1]
 }
 
-[sub_resource type="Animation" id="Animation_o6aas"]
-resource_name = "damage_left"
-length = 0.19999999999999998
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [2]
-}
-
 [sub_resource type="Animation" id="Animation_pje83"]
-resource_name = "damage_right"
-length = 0.19999999999999998
+resource_name = "damage_left"
+length = 0.2
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -90,10 +91,9 @@ tracks/0/keys = {
 "values": [3]
 }
 
-[sub_resource type="Animation" id="Animation_j0sp5"]
-resource_name = "idle_left"
-length = 0.39999999999999997
-loop_mode = 1
+[sub_resource type="Animation" id="Animation_o6aas"]
+resource_name = "damage_right"
+length = 0.2
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -104,36 +104,12 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [0]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:skew")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.19764827),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [-0.17453292, 0.17453292]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".:rotation")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.20172349),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [0.17453292, -0.17453292]
+"values": [2]
 }
 
 [sub_resource type="Animation" id="Animation_decox"]
-resource_name = "idle_right"
-length = 0.39999999999999997
+resource_name = "idle_left"
+length = 0.4
 loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -172,16 +148,58 @@ tracks/2/keys = {
 "values": [0.08726646, -0.17453292]
 }
 
+[sub_resource type="Animation" id="Animation_j0sp5"]
+resource_name = "idle_right"
+length = 0.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:skew")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.19764827),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [-0.17453292, 0.17453292]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.20172349),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.17453292, -0.17453292]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ofqir"]
 _data = {
 &"RESET": SubResource("Animation_ofqir"),
-&"damage_left": SubResource("Animation_o6aas"),
-&"damage_right": SubResource("Animation_pje83"),
-&"idle_left": SubResource("Animation_j0sp5"),
-&"idle_right": SubResource("Animation_decox")
+&"damage_left": SubResource("Animation_pje83"),
+&"damage_right": SubResource("Animation_o6aas"),
+&"idle_left": SubResource("Animation_decox"),
+&"idle_right": SubResource("Animation_j0sp5")
 }
 
 [node name="Enemy" unique_id=177661500 instance=ExtResource("1_u3pll")]
+data = SubResource("Resource_b5eca")
 
 [node name="Sprite2D" parent="." index="0" unique_id=444427917]
 material = SubResource("ShaderMaterial_mft1c")
@@ -195,3 +213,6 @@ frame = 1
 
 [node name="AnimationPlayer" parent="Sprite2D" index="0" unique_id=1972147196]
 libraries/ = SubResource("AnimationLibrary_ofqir")
+
+[node name="Emitter" parent="." index="5" unique_id=2059335812 instance=ExtResource("6_o6aas")]
+config = ExtResource("7_dy51r")

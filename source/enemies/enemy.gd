@@ -307,14 +307,13 @@ func _target_leave_side(phase: MovementPhase) -> void:
 	_target_vel = new_dir.normalized() * float(phase.speed) * _speed_breath
 
 func _target_diagonal(phase: MovementPhase) -> void:
-	var h := float(hside)
 	var new_dir: Vector2
-	match direction_enum:
-		Direction.NORTH: new_dir = Vector2(-h * 1.5, -1.0)
-		Direction.SOUTH: new_dir = Vector2(-h * 2.0,  1.0)
-		Direction.WEST:  new_dir = Vector2(-1.0, -h * 1.5)
-		Direction.EAST:  new_dir = Vector2( 1.0, -h * 1.5)
-		_: new_dir = Vector2.DOWN
+	
+	# Horizontal
+	if _direction.x != 0: new_dir = Vector2(_direction.x * 2.0, -float(hside) * 0.5)
+	# Vertical
+	else: new_dir = Vector2(float(hside) * 2.0, _direction.y * 0.5)
+		
 	_target_vel = new_dir.normalized() * float(phase.speed) * _speed_breath
 
 func _target_still() -> void:

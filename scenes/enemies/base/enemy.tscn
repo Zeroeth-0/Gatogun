@@ -46,6 +46,7 @@ data = SubResource("Resource_gblhl")
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=444427917 groups=["ShaderHolder"]]
 modulate = Color(1, 0, 1, 1)
 z_index = 1
+texture_filter = 1
 material = SubResource("ShaderMaterial_mft1c")
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("1_ff2ik")

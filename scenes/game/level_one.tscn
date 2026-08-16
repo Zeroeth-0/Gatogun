@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://dxni8cw8okxda" path="res://resources/enemy_registry.gd" id="2_r4m5e"]
 [ext_resource type="PackedScene" uid="uid://ci81l0ibvxct1" path="res://scenes/enemies/popcorn/teruteru_s.tscn" id="3_cffxp"]
 [ext_resource type="PackedScene" uid="uid://bejsnowcycyxi" path="res://scenes/enemies/popcorn/teruteru_p.tscn" id="4_38etc"]
+[ext_resource type="PackedScene" uid="uid://baqw8qm1vrn83" path="res://scenes/enemies/popcorn/haru.tscn" id="5_lyjet"]
 [ext_resource type="Texture2D" uid="uid://chijma6mb38wf" path="res://background_cats.png" id="9_rvump"]
 [ext_resource type="Script" uid="uid://582anxy540je" path="res://source/levels/background.gd" id="10_ix72u"]
 [ext_resource type="Script" uid="uid://camgd3kf5nap7" path="res://source/levels/lane.gd" id="11_ul74p"]
@@ -27,9 +28,15 @@ enemy_id = &"teruteru_p"
 scene = ExtResource("4_38etc")
 metadata/_custom_type_script = "uid://cwjdnkhkortfc"
 
+[sub_resource type="Resource" id="Resource_5p3po"]
+script = ExtResource("2_gvm2m")
+enemy_id = &"haru"
+scene = ExtResource("5_lyjet")
+metadata/_custom_type_script = "uid://cwjdnkhkortfc"
+
 [sub_resource type="Resource" id="Resource_gvm2m"]
 script = ExtResource("2_r4m5e")
-entries = Array[ExtResource("2_gvm2m")]([SubResource("Resource_81vvx"), SubResource("Resource_cof2y")])
+entries = Array[ExtResource("2_gvm2m")]([SubResource("Resource_81vvx"), SubResource("Resource_cof2y"), SubResource("Resource_5p3po")])
 metadata/_custom_type_script = "uid://dxni8cw8okxda"
 
 [node name="World" type="Node2D" unique_id=1973436339 groups=["Level"]]

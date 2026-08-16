@@ -118,13 +118,10 @@ func _get_anim_name(base_name: String) -> String:
 	# 1. Intentar encontrar variante direccional (ej. "idle_left" o "damage_right")
 	var suffix := "_left" if handedness == Handedness.LEFT else "_right"
 	var directional_anim := base_name + suffix
-	if _anim_player.has_animation(directional_anim):
-		print("hey")
-		return directional_anim
+	if _anim_player.has_animation(directional_anim): return directional_anim
 
 	# 2. Si no existe, recurrir a la animación estándar (ej. "idle" o "damage")
-	if _anim_player.has_animation(base_name):
-		return base_name
+	if _anim_player.has_animation(base_name): return base_name
 
 	return ""
 

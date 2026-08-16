@@ -1,7 +1,8 @@
 ; ═════
 ; INTRO
 ; ═════
-SWARM(thickness=3,length=2,warmup=0.3) none at N0 after 1
+PARADE(thickness=3,length=7,warmup=0.7) haru at E0 after 0
+PARADE(thickness=3,length=7,warmup=0.7) haru at W0 with L to S after 0.5
 [INTRO_END]
 
 ; ═════════
