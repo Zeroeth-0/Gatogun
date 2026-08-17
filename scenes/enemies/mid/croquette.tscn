@@ -1,7 +1,30 @@
 [gd_scene format=3 uid="uid://cxi03xcrsb5s7"]
 
 [ext_resource type="PackedScene" uid="uid://cpaqrklh3fr4s" path="res://scenes/enemies/base/midEnemy.tscn" id="1_68njc"]
+[ext_resource type="Script" uid="uid://dldwn01vb1eox" path="res://resources/movement_phase.gd" id="2_4mqlh"]
 [ext_resource type="Texture2D" uid="uid://dvrita7dbv4ma" path="res://sprites/enemies/mid_croquette.png" id="2_isn6t"]
+[ext_resource type="Script" uid="uid://cmd53a3a4koqb" path="res://resources/enemy_data.gd" id="3_rscta"]
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/base/emitter.tscn" id="3_u7g0m"]
+[ext_resource type="Resource" uid="uid://cslyys8ieyax5" path="res://scenes/weapons/enemies/mid/three_fan.tres" id="4_o717q"]
+[ext_resource type="Resource" uid="uid://bvpfovm4o77wc" path="res://scenes/weapons/enemies/mid/four_aimed.tres" id="5_ci5y4"]
+
+[sub_resource type="Resource" id="Resource_gy0dn"]
+script = ExtResource("2_4mqlh")
+duration = 4.0
+metadata/_custom_type_script = "uid://dldwn01vb1eox"
+
+[sub_resource type="Resource" id="Resource_u3oeb"]
+script = ExtResource("2_4mqlh")
+duration = -1.0
+speed = 30
+metadata/_custom_type_script = "uid://dldwn01vb1eox"
+
+[sub_resource type="Resource" id="Resource_8r34y"]
+script = ExtResource("3_rscta")
+enemy_id = &"croquette"
+enemy_type = 1
+movement_phases = Array[ExtResource("2_4mqlh")]([SubResource("Resource_gy0dn"), SubResource("Resource_u3oeb")])
+metadata/_custom_type_script = "uid://cmd53a3a4koqb"
 
 [sub_resource type="Animation" id="Animation_u7g0m"]
 length = 0.001
@@ -59,6 +82,7 @@ _data = {
 }
 
 [node name="Enemy" unique_id=1688539713 instance=ExtResource("1_68njc")]
+data = SubResource("Resource_8r34y")
 
 [node name="Sprite2D" parent="." index="0" unique_id=444427917]
 texture = ExtResource("2_isn6t")
@@ -67,3 +91,13 @@ vframes = 2
 
 [node name="AnimationPlayer" parent="Sprite2D" index="0" unique_id=1972147196]
 libraries/ = SubResource("AnimationLibrary_ci5y4")
+
+[node name="Emitter" parent="." index="5" unique_id=2059335812 instance=ExtResource("3_u7g0m")]
+config = ExtResource("4_o717q")
+preset_speed = 0.0
+preset_arms = 0
+preset_spread = 0.0
+preset_warm_up = 0.0
+
+[node name="Emitter2" parent="." index="6" unique_id=839507881 instance=ExtResource("3_u7g0m")]
+config = ExtResource("5_ci5y4")

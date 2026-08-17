@@ -24,7 +24,7 @@ shader_parameter/spin_speed = 6.0
 shader_parameter/custom_time = 0.0
 shader_parameter/visible_amount = 1.0
 
-[node name="CatPlayer" type="CharacterBody2D" unique_id=1691754433 node_paths=PackedStringArray("sprite", "hitbox") groups=["Player"]]
+[node name="CatPlayer" type="CharacterBody2D" unique_id=1691754433 node_paths=PackedStringArray("sprite", "hitbox") groups=["Player", "PlayerPos"]]
 z_index = 4
 script = ExtResource("1_7pfs0")
 sprite = NodePath("Icon")

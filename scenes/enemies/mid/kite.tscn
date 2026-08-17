@@ -2,6 +2,30 @@
 
 [ext_resource type="PackedScene" uid="uid://cpaqrklh3fr4s" path="res://scenes/enemies/base/midEnemy.tscn" id="1_72amw"]
 [ext_resource type="Texture2D" uid="uid://c0jgv3lumgx6i" path="res://sprites/enemies/mid_kite.png" id="2_3eclq"]
+[ext_resource type="Script" uid="uid://dldwn01vb1eox" path="res://resources/movement_phase.gd" id="2_t171o"]
+[ext_resource type="Script" uid="uid://cmd53a3a4koqb" path="res://resources/enemy_data.gd" id="3_dd1ee"]
+[ext_resource type="PackedScene" uid="uid://cwod13co6stfe" path="res://scenes/weapons/enemies/base/emitter.tscn" id="3_p63ys"]
+[ext_resource type="Resource" uid="uid://bvpfovm4o77wc" path="res://scenes/weapons/enemies/mid/four_aimed.tres" id="5_lc2jb"]
+[ext_resource type="Resource" uid="uid://b1qtrsv4nnv2g" path="res://scenes/weapons/enemies/mid/four_fan.tres" id="6_icw7d"]
+
+[sub_resource type="Resource" id="Resource_01v7n"]
+script = ExtResource("2_t171o")
+duration = 0.5
+metadata/_custom_type_script = "uid://dldwn01vb1eox"
+
+[sub_resource type="Resource" id="Resource_si3hv"]
+script = ExtResource("2_t171o")
+move_type = 6
+duration = 4.0
+speed = 200
+metadata/_custom_type_script = "uid://dldwn01vb1eox"
+
+[sub_resource type="Resource" id="Resource_vpbkn"]
+script = ExtResource("3_dd1ee")
+enemy_id = &"kite"
+enemy_type = 1
+movement_phases = Array[ExtResource("2_t171o")]([SubResource("Resource_01v7n"), SubResource("Resource_si3hv")])
+metadata/_custom_type_script = "uid://cmd53a3a4koqb"
 
 [sub_resource type="Animation" id="Animation_p63ys"]
 length = 0.001
@@ -20,7 +44,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_wo3x8"]
 resource_name = "damage"
-length = 0.19999999999999998
+length = 0.2
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -36,7 +60,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_lc2jb"]
 resource_name = "idle"
-length = 0.39999999999999997
+length = 0.4
 loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -59,6 +83,7 @@ _data = {
 }
 
 [node name="Enemy" unique_id=1688539713 instance=ExtResource("1_72amw")]
+data = SubResource("Resource_vpbkn")
 
 [node name="Sprite2D" parent="." index="0" unique_id=444427917]
 texture = ExtResource("2_3eclq")
@@ -67,3 +92,16 @@ vframes = 2
 
 [node name="AnimationPlayer" parent="Sprite2D" index="0" unique_id=1972147196]
 libraries/ = SubResource("AnimationLibrary_wdc64")
+
+[node name="Emitter3" parent="." index="5" unique_id=2059335812 instance=ExtResource("3_p63ys")]
+config = ExtResource("6_icw7d")
+
+[node name="Emitter" parent="." index="6" unique_id=1563278912 instance=ExtResource("3_p63ys")]
+position = Vector2(-120, 0)
+config = ExtResource("5_lc2jb")
+preset_arms = 5
+
+[node name="Emitter2" parent="." index="7" unique_id=865670806 instance=ExtResource("3_p63ys")]
+position = Vector2(120, 0)
+config = ExtResource("5_lc2jb")
+preset_arms = 5

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EmitterConfig" format=3 uid="uid://cf2lim53htnya"]
+
+[ext_resource type="PackedScene" uid="uid://dha3ds2h57s2b" path="res://scenes/bullets/bullet.tscn" id="1_o1fnp"]
+[ext_resource type="Script" uid="uid://xbsvaggi6su7" path="res://resources/emitter_config.gd" id="2_6jwlo"]
+
+[resource]
+script = ExtResource("2_6jwlo")
+bullet_scene = ExtResource("1_o1fnp")
+base_speed = 300.0
+burst_count = 2
+bullet_interval = 0.15
+arm_width = 2
+arm_spacing_factor = 0.4
+aim_at_player = true
+metadata/_custom_type_script = "uid://xbsvaggi6su7"

@@ -36,6 +36,7 @@ var _shield_timer:      float   = 0.0
 
 func _ready() -> void:
 	add_to_group("Player")
+	add_to_group("PlayerPos")
 	playable  = false
 	_go_point = GAME.goPoint
 	_setup_doll_style()

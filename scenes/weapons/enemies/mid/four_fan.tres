@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EmitterConfig" format=3 uid="uid://b1qtrsv4nnv2g"]
+
+[ext_resource type="PackedScene" uid="uid://dha3ds2h57s2b" path="res://scenes/bullets/bullet.tscn" id="1_v1aod"]
+[ext_resource type="Script" uid="uid://xbsvaggi6su7" path="res://resources/emitter_config.gd" id="2_6f5js"]
+
+[resource]
+script = ExtResource("2_6f5js")
+bullet_scene = ExtResource("1_v1aod")
+delay = 0.5
+bullet_interval = 0.2
+warm_up = 1.2
+arms = 4
+spread_angle = 60.0
+metadata/_custom_type_script = "uid://xbsvaggi6su7"

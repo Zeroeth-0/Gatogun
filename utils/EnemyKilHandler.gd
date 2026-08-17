@@ -62,6 +62,13 @@ func _handle_drops(data: EnemyKillData) -> void:
 	var near_player  := data.position.distance_to(GAME.get_player()) < MEDAL_RANGE
 	var medal_active := SCORE.medalCountdown > 0.0
 	
+	# ELITE: cancel all enemy bullets
+	if data.enemy_type == &"ELITE":
+		data.position -= Vector2(0, 150.0)
+		for bullet in get_tree().get_nodes_in_group("Enemy Bullet"):
+			if bullet.has_method("cancel"):
+				bullet.cancel()
+	
 	# Medals: not by bomb, player nearby OR medals active OR pulse
 	if not data.by_bomb and (near_player or medal_active or data.by_charge):
 		_spawn_items(data.score_drop_count, MEDAL_SCENE, data.position, data.spread)
@@ -73,12 +80,6 @@ func _handle_drops(data: EnemyKillData) -> void:
 	# COME BACK LATER
 	#if data.drops_powerup:
 	#	_spawn_items(1, POWERUP_SCENE, data.position, 0, true)
-	
-	# ELITE: cancel all enemy bullets
-	if data.enemy_type == &"ELITE":
-		for bullet in get_tree().get_nodes_in_group("Enemy Bullet"):
-			if bullet.has_method("cancel"):
-				bullet.cancel()
 
 func _spawn_items(count: int, scene: PackedScene,
 		pos: Vector2, spread: float, centered: bool = false) -> void:

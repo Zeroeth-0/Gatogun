@@ -80,12 +80,20 @@ func _activate(node: Node) -> void:
 	node.set_physics_process(true)
 	node.set_process_input(false)
 
+	# Reactiva la detección física del Area2D
+	node.set_deferred("monitoring", true)
+	node.set_deferred("monitorable", true)
+
 	if node.has_method("on_acquired"):
 		node.on_acquired()
 
 
 func _deactivate(node: Node) -> void:
 	if !is_instance_valid(node):
+		return
+
+	# CANDADO: Si ya está desactivándose, ignoramos.
+	if not node.get_meta("bpool_active", true):
 		return
 
 	if node.has_method("on_released"):
@@ -96,8 +104,12 @@ func _deactivate(node: Node) -> void:
 	node.set_process(false)
 	node.set_physics_process(false)
 
-	# Limpieza ultra segura con call_deferred
-	if node.get_parent() != null:
+	# Desactiva inmediatamente la colisión para eliminar los fantasmas
+	node.set_deferred("monitoring", false)
+	node.set_deferred("monitorable", false)
+
+	# Limpieza ultra segura con candado de estado
+	if node.get_meta("bpool_in_tree", false) and node.get_parent() != null:
 		node.get_parent().remove_child.call_deferred(node)
 	
 	node.set_meta("bpool_in_tree", false)

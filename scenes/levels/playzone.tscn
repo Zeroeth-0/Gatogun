@@ -5,8 +5,10 @@ size = Vector2(20, 21.7333)
 
 [node name="Playzone" type="Area2D" unique_id=380517386 groups=["Play"]]
 position = Vector2(340, 365)
+scale = Vector2(1, 0.9)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1941055926 groups=["Play"]]
-scale = Vector2(31, 30)
+position = Vector2(0, 10)
+scale = Vector2(30, 30)
 shape = SubResource("RectangleShape2D_1erge")
 debug_color = Color(1, 0.498039, 0, 0.419608)

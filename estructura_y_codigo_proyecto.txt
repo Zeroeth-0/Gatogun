@@ -70,15 +70,21 @@ C:.
 |   |   |       midEnemy.tscn
 |   |   |       
 |   |   +---elite
+|   |   |       onigiri.tscn
+|   |   |       
 |   |   +---mid
 |   |   |       croquette.tscn
+|   |   |       jellycat.tscn
+|   |   |       kite.tscn
 |   |   |       meatball.tscn
+|   |   |       taco.tscn
 |   |   |       ufo.tscn
 |   |   |       
 |   |   \---popcorn
 |   |           chute.tscn
 |   |           haru.tscn
-|   |           teruteru.tscn
+|   |           teruteru_p.tscn
+|   |           teruteru_s.tscn
 |   |           
 |   +---game
 |   |       caravan.tscn
@@ -147,7 +153,14 @@ C:.
 |       |   |       
 |       |   +---elite
 |       |   +---mid
+|       |   |       circle_aimed.tres
+|       |   |       four_aimed.tres
+|       |   |       square_aimed.tres
+|       |   |       three_fan.tres
+|       |   |       
 |       |   \---popcorn
+|       |           single_aimed.tres
+|       |           
 |       \---player
 |               burst.tscn
 |               charge.tscn
@@ -327,10 +340,18 @@ C:.
 |   |       confetti.png.import
 |   |       
 |   +---enemies
+|   |       elite_onigiri.png
+|   |       elite_onigiri.png.import
 |   |       mid_croquette.png
 |   |       mid_croquette.png.import
+|   |       mid_jellycat.png
+|   |       mid_jellycat.png.import
+|   |       mid_kite.png
+|   |       mid_kite.png.import
 |   |       mid_meatball.png
 |   |       mid_meatball.png.import
+|   |       mid_taco.png
+|   |       mid_taco.png.import
 |   |       mid_ufo.png
 |   |       mid_ufo.png.import
 |   |       std_chute.png
@@ -472,6 +493,10 @@ func _deactivate(node: Node) -> void:
 	if !is_instance_valid(node):
 		return
 
+	# CANDADO: Si ya está desactivándose, ignoramos.
+	if not node.get_meta("bpool_active", true):
+		return
+
 	if node.has_method("on_released"):
 		node.on_released()
 
@@ -480,8 +505,8 @@ func _deactivate(node: Node) -> void:
 	node.set_process(false)
 	node.set_physics_process(false)
 
-	# Limpieza ultra segura con call_deferred
-	if node.get_parent() != null:
+	# Limpieza ultra segura con candado de estado
+	if node.get_meta("bpool_in_tree", false) and node.get_parent() != null:
 		node.get_parent().remove_child.call_deferred(node)
 	
 	node.set_meta("bpool_in_tree", false)
@@ -664,6 +689,7 @@ var by_burst: bool
 var not_hold: bool
 var revenge: bool
 var drops_powerup: bool
+var spread: float
 
 func _init(
 	p_type: StringName,
@@ -677,7 +703,8 @@ func _init(
 	p_burst: bool,
 	p_not_hold: bool,
 	p_revenge: bool,
-	p_powerup: bool
+	p_powerup: bool,
+	p_spread: float
 ) -> void:
 	enemy_type = p_type
 	position = p_position
@@ -691,6 +718,7 @@ func _init(
 	not_hold = p_not_hold
 	revenge = p_revenge
 	drops_powerup = p_powerup
+	spread = p_spread
  
  
 -------------------------------------------------- 
@@ -751,6 +779,7 @@ ARCHIVO: .\resources\emitter_config.gd
 # resources/emitter_config.gd
 # Data resource describing a complete bullet pattern.
 # Pattern can be saved as .tres files and reused.
+@tool
 class_name EmitterConfig
 extends Resource
 
@@ -1904,8 +1933,8 @@ var rand_side: int = 1
 # INTERNAL STATE
 # ==============================================================================
 
-var _phase_index:     int     = 0
-var _phase_timer:     float   = 0.0
+var _phase_index:     int       = 0
+var _phase_timer:     float     = 0.0
 ## Direction at phase start — used by CURVE to measure total rotation
 var _phase_start_dir: Vector2 = Vector2.DOWN
 
@@ -1917,6 +1946,9 @@ var _target_vel:    Vector2 = Vector2.ZERO
 var _overshoot_vel: Vector2 = Vector2.ZERO
 var _local_accel:   float   = 10.0
 
+# Variable para acumular la rotación de la curva
+var _curved_angle_acc: float = 0.0
+
 # ==============================================================================
 # LIFECYCLE
 # ==============================================================================
@@ -1924,13 +1956,18 @@ var _local_accel:   float   = 10.0
 func _ready() -> void:
 	_direction       = _dir_to_vec(direction_enum)
 	_phase_start_dir = _direction
-	_drift_phase     = DRNG.drandf_range(0.0, TAU)
-	rand_side        = -1 if DRNG.drandi() % 2 == 0 else 1
-	CAMERA.tracked_nodes.append(self)
+	
+	# Previene errores de autoloads no instanciados en el editor
+	if not Engine.is_editor_hint():
+		_drift_phase = DRNG.drandf_range(0.0, TAU)
+		rand_side    = -1 if DRNG.drandi() % 2 == 0 else 1
+		CAMERA.tracked_nodes.append(self)
+		
 	_on_ready()
 
 func _exit_tree() -> void:
-	CAMERA.tracked_nodes.erase(self)
+	if not Engine.is_editor_hint():
+		CAMERA.tracked_nodes.erase(self)
 
 ## Override this in subclasses instead of _ready()
 func _on_ready() -> void: pass
@@ -1957,6 +1994,9 @@ func advance_phase() -> void:
 # ==============================================================================
 
 func tick_movement(_delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
+		
 	_phase_timer += GLOBAL.TICK
 	var phase := get_current_phase()
 	if phase == null:
@@ -1977,6 +2017,16 @@ func tick_movement(_delta: float) -> void:
 # ==============================================================================
 
 func _change_stage(should_invert: bool) -> void:
+	_phase_timer      = 0.0
+	_phase_start_dir  = _direction
+	_curved_angle_acc = 0.0 # Reset del acumulador de curva
+	
+	if should_invert:
+		_hside_invert *= -1
+		
+	if Engine.is_editor_hint():
+		return
+		
 	var carry  := DRNG.drandf_range(0.18, 0.42)
 	var recoil := DRNG.drandf_range(0.04, 0.13)
 	var jolt   := DRNG.drandf_range(-0.09, 0.09)
@@ -1986,11 +2036,6 @@ func _change_stage(should_invert: bool) -> void:
 	_overshoot_vel -= _direction * float(_get_current_speed()) * recoil
 	_overshoot_vel += perp      * float(_get_current_speed()) * jolt
 
-	_phase_timer     = 0.0
-	_phase_start_dir = _direction
-
-	if should_invert:
-		_hside_invert *= -1
 
 func _get_current_speed() -> int:
 	var ph := get_current_phase()
@@ -2009,7 +2054,7 @@ func _smooth_move(tick: float) -> void:
 	var original_velocity = velocity
 	velocity = velocity * (tick / get_physics_process_delta_time())
 	move_and_slide()
-	velocity = original_velocity # Restauramos para que los cálculos de lerp/inclinación usen la velocidad real
+	velocity = original_velocity # Restauramos para que los cálculos usen la real
 
 	if sprite_lean and is_instance_valid(sprite_node):
 		var side_axis  := Vector2(-_direction.y, _direction.x)
@@ -2053,9 +2098,12 @@ func _target_sinusoidal(phase: MovementPhase) -> void:
 	_target_vel = _direction * float(phase.speed) * _speed_breath + side * offset
 
 func _target_oscillate(phase: MovementPhase) -> void:
-	var side   := Vector2(-_direction.y, _direction.x)
-	var offset = sign(sin(2.0 * _phase_timer + PI * 0.5)) \
-		* 55.0 * float(phase.intensity) * float(hside)
+	var side := Vector2(-_direction.y, _direction.x)
+	# Tipado explícito a : float para evitar el error de Variant
+	var sine_val: float = sin(2.0 * _phase_timer + PI * 0.5)
+	var smoothed_square: float = clamp(sine_val * 4.0, -1.0, 1.0)
+	var offset: float = smoothed_square * 55.0 * float(phase.intensity) * float(hside)
+	
 	_target_vel = _direction * float(phase.speed) * _speed_breath + side * offset
 
 func _target_breath(phase: MovementPhase) -> void:
@@ -2066,15 +2114,22 @@ func _target_breath(phase: MovementPhase) -> void:
 
 func _target_block(phase: MovementPhase) -> void:
 	_local_accel = acceleration * 0.6
-	var player_pos := GAME.get_player()
-	var spd_f      := float(phase.speed)
+	var player = GAME.get_player()
+	
+	if not is_instance_valid(player):
+		_target_vel = Vector2.ZERO
+		return
+		
+	var target_pos: Vector2 = player.global_position if player is Node2D else player
+	var spd_f := float(phase.speed)
+	
 	if direction_enum == Direction.NORTH or direction_enum == Direction.SOUTH:
-		var dx := player_pos.x - global_position.x
+		var dx := target_pos.x - global_position.x
 		_target_vel = Vector2(
 			clamp(dx * 4.0, -spd_f, spd_f),
 			_direction.y * spd_f * 0.15)
 	else:
-		var dy := player_pos.y - global_position.y
+		var dy := target_pos.y - global_position.y
 		_target_vel = Vector2(
 			_direction.x * spd_f * 0.15,
 			clamp(dy * 4.0, -spd_f, spd_f))
@@ -2089,11 +2144,19 @@ func _target_center() -> void:
 		_target_vel = Vector2(0.0, clamp(dy * 4.0, -220.0, 220.0))
 
 func _target_curve(phase: MovementPhase, tick: float) -> void:
-	if phase.duration > 0.0:
-		var rot_speed  := deg_to_rad(float(phase.deviation_angle)) / phase.duration
-		var angle_left := absf(_direction.angle_to(_phase_start_dir))
-		if angle_left < deg_to_rad(float(phase.deviation_angle)):
-			_direction = _direction.rotated(rot_speed * float(hside) * tick)
+	var max_angle_rad := deg_to_rad(absf(float(phase.deviation_angle)))
+	
+	if phase.duration > 0.0 and _curved_angle_acc < max_angle_rad:
+		var rot_step := (max_angle_rad / phase.duration) * tick
+		rot_step = minf(rot_step, max_angle_rad - _curved_angle_acc)
+		
+		_curved_angle_acc += rot_step
+		
+		var dir_sign := signf(float(phase.deviation_angle))
+		if dir_sign == 0.0: dir_sign = 1.0
+		
+		_direction = _direction.rotated(rot_step * float(hside) * dir_sign)
+
 	_target_vel = _direction * float(phase.speed) * _speed_breath
 
 func _target_circular(phase: MovementPhase, tick: float) -> void:
@@ -2103,9 +2166,14 @@ func _target_circular(phase: MovementPhase, tick: float) -> void:
 
 func _target_towards_player(phase: MovementPhase) -> void:
 	scroll_follow = false
-	var to_player := GAME.get_player() - global_position
-	if to_player.length_squared() > 0.0:
-		_direction = to_player.normalized()
+	var player = GAME.get_player()
+	
+	if is_instance_valid(player):
+		var target_pos: Vector2 = player.global_position if player is Node2D else player
+		var to_player := target_pos - global_position
+		if to_player.length_squared() > 0.0:
+			_direction = to_player.normalized()
+			
 	_target_vel = _direction * float(phase.speed) * _speed_breath
 
 func _target_leave(phase: MovementPhase) -> void:
@@ -2125,14 +2193,13 @@ func _target_leave_side(phase: MovementPhase) -> void:
 	_target_vel = new_dir.normalized() * float(phase.speed) * _speed_breath
 
 func _target_diagonal(phase: MovementPhase) -> void:
-	var h := float(hside)
 	var new_dir: Vector2
-	match direction_enum:
-		Direction.NORTH: new_dir = Vector2(-h * 1.5, -1.0)
-		Direction.SOUTH: new_dir = Vector2(-h * 2.0,  1.0)
-		Direction.WEST:  new_dir = Vector2(-1.0, -h * 1.5)
-		Direction.EAST:  new_dir = Vector2( 1.0, -h * 1.5)
-		_: new_dir = Vector2.DOWN
+	
+	# Horizontal
+	if _direction.x != 0: new_dir = Vector2(_direction.x * 2.0, -float(hside) * 0.5)
+	# Vertical
+	else: new_dir = Vector2(float(hside) * 2.0, _direction.y * 0.5)
+		
 	_target_vel = new_dir.normalized() * float(phase.speed) * _speed_breath
 
 func _target_still() -> void:
@@ -2183,11 +2250,13 @@ var _halved:        bool  = false
 var _last_bullet:   bool  = false
 var explosion_scale: float = 1.5
 var score_count: float = 5.0
+var spread: float = 20.0
 
-var _emitter: BulletEmitter = null
+# Lista para almacenar todos los emisores encontrados
+var _emitters: Array[BulletEmitter] = []
 
-var _hit_mat:   ShaderMaterial = null
-var _hit_tween: Tween          = null
+var _hit_mat:       ShaderMaterial = null
+var _hit_tween: Tween              = null
 
 # === NODOS DE ANIMACIÓN Y COOLDOWN ===
 @onready var _anim_player: AnimationPlayer = $Sprite2D/AnimationPlayer
@@ -2206,16 +2275,24 @@ func _on_ready() -> void:
 		EnemyData.EnemyType.STD:
 			_health = 16.0
 			explosion_scale = 1.5
-			score_count = 5.0
+			score_count = 2.0
+			spread = 50.0
 		EnemyData.EnemyType.MID:
-			_health = 100.0
+			_health = 300.0
 			explosion_scale = 2.0
-			score_count = 10.0
+			score_count = 7.0
+			spread = 80.0
 		EnemyData.EnemyType.ELITE:
-			_health = 160.0
+			_health = 500.0
 			explosion_scale = 2.75
-			score_count = 15.0
-	_emitter = get_node_or_null("Emitter")
+			score_count = 13.0
+			spread = 100.0
+
+	# Recolectar TODOS los BulletEmitter que sean hijos del enemigo (incluso anidados)
+	_emitters.clear()
+	for child in find_children("*", "BulletEmitter", true, false):
+		if child is BulletEmitter:
+			_emitters.append(child)
 
 	$Hitbox.add_to_group("Damage")
 
@@ -2271,13 +2348,10 @@ func _get_anim_name(base_name: String) -> String:
 	# 1. Intentar encontrar variante direccional (ej. "idle_left" o "damage_right")
 	var suffix := "_left" if handedness == Handedness.LEFT else "_right"
 	var directional_anim := base_name + suffix
-	if _anim_player.has_animation(directional_anim):
-		print("hey")
-		return directional_anim
+	if _anim_player.has_animation(directional_anim): return directional_anim
 
 	# 2. Si no existe, recurrir a la animación estándar (ej. "idle" o "damage")
-	if _anim_player.has_animation(base_name):
-		return base_name
+	if _anim_player.has_animation(base_name): return base_name
 
 	return ""
 
@@ -2323,19 +2397,25 @@ func _check_charge_overlap(tick: float) -> void:
 		if area.is_in_group("Charge"):
 			_pulse_marked = true
 			_health -= tick * area.get("damage")
+			_trigger_hit_flash()
 			_trigger_damage_animation()
 
 func _check_health_halving() -> void:
-	if _emitter == null or _halved:
+	if _halved or _emitters.is_empty():
 		return
-	if _emitter.total_rounds >= data.halving_trigger_round:
-		_health *= 0.5
-		_halved  = true
+	
+	# Comprobamos si alguno de los emisores ha alcanzado o superado la ronda de halving
+	for emitter in _emitters:
+		if emitter and emitter.total_rounds >= data.halving_trigger_round:
+			_health *= 0.5
+			_halved = true
+			break
 
 func _set_can_shoot(value: bool) -> void:
 	_can_shoot = value
-	if _emitter:
-		_emitter.can_shoot = value
+	for emitter in _emitters:
+		if emitter:
+			emitter.can_shoot = value
 
 # ==============================================================================
 # DEATH
@@ -2366,7 +2446,8 @@ func _check_death() -> void:
 		_last_bullet,
 		not INPUT.fireHold,
 		revenge,
-		data.drops_powerup
+		data.drops_powerup,
+		spread
 	))
 
 	if combo_label:
@@ -3104,6 +3185,7 @@ var _shield_timer:      float   = 0.0
 
 func _ready() -> void:
 	add_to_group("Player")
+	add_to_group("PlayerPos")
 	playable  = false
 	_go_point = GAME.goPoint
 	_setup_doll_style()
@@ -3256,7 +3338,9 @@ func _tick_shield(tick: float) -> void:
 
 func _on_hurtbox_area_entered(area: Node) -> void:
 	if not can_die: return
-	if area.is_in_group("Damage"): _take_hit()
+	if area.is_in_group("Damage"): 
+		print(area)
+		_take_hit()
 
 func _take_hit() -> void:
 	FLOW.miss()
@@ -4741,50 +4825,61 @@ enum PresetType {
 @export var apply_preset: PresetType = PresetType.NONE:
 	set(value):
 		apply_preset = value
-		if value != PresetType.NONE and Engine.is_editor_hint():
+		if value != PresetType.NONE:
 			_apply_preset(value)
-			apply_preset = PresetType.NONE
+			call_deferred("_reset_preset_enum")
+
 @export var preset_speed: float = 300.0
 @export var preset_arms: int = 8
 @export var preset_spread: float = 45.0
 @export var preset_warm_up: float = 1.0
 
+func _reset_preset_enum() -> void:
+	apply_preset = PresetType.NONE
+	notify_property_list_changed()
+
 func _apply_preset(p: PresetType) -> void:
+	var preset_cfg: EmitterConfig = null
+
 	match p:
 		PresetType.AIMED_STREAM:
-			config = EmitterPresets.aimed_stream(preset_speed, preset_warm_up)
+			preset_cfg = EmitterPresets.aimed_stream(preset_speed, preset_warm_up)
 		PresetType.AIMED_SPREAD:
-			config = EmitterPresets.aimed_spread(preset_arms, preset_spread, preset_speed, preset_warm_up)
+			preset_cfg = EmitterPresets.aimed_spread(preset_arms, preset_spread, preset_speed, preset_warm_up)
 		PresetType.AIMED_WALL:
-			config = EmitterPresets.aimed_wall(preset_arms, preset_spread, preset_speed, preset_warm_up)
+			preset_cfg = EmitterPresets.aimed_wall(preset_arms, preset_spread, preset_speed, preset_warm_up)
 		PresetType.SPEED_LAYERS:
-			config = EmitterPresets.speed_layers(preset_arms, preset_speed * 0.6, preset_speed * 1.4)
+			preset_cfg = EmitterPresets.speed_layers(preset_arms, preset_speed * 0.6, preset_speed * 1.4)
 		PresetType.RING:
-			config = EmitterPresets.ring(preset_arms, preset_speed, 0.0, preset_warm_up)
+			preset_cfg = EmitterPresets.ring(preset_arms, preset_speed, 0.0, preset_warm_up)
 		PresetType.ALTERNATING_RING:
-			config = EmitterPresets.alternating_ring(preset_arms, preset_arms - 1, preset_speed, preset_warm_up)
+			preset_cfg = EmitterPresets.alternating_ring(preset_arms, preset_arms - 1, preset_speed, preset_warm_up)
 		PresetType.LAYERED_RING:
-			config = EmitterPresets.layered_ring(preset_arms, preset_speed * 0.7, preset_speed * 1.3)
+			preset_cfg = EmitterPresets.layered_ring(preset_arms, preset_speed * 0.7, preset_speed * 1.3)
 		PresetType.SPINNING_RING:
-			config = EmitterPresets.spinning_ring(preset_arms, preset_speed, 45.0, preset_warm_up)
+			preset_cfg = EmitterPresets.spinning_ring(preset_arms, preset_speed, 45.0, preset_warm_up)
 		PresetType.SPIRAL:
-			config = EmitterPresets.spiral(preset_speed, 60.0, preset_warm_up)
+			preset_cfg = EmitterPresets.spiral(preset_speed, 60.0, preset_warm_up)
 		PresetType.DOUBLE_SPIRAL:
-			config = EmitterPresets.double_spiral(preset_speed, 60.0, preset_warm_up)
+			preset_cfg = EmitterPresets.double_spiral(preset_speed, 60.0, preset_warm_up)
 		PresetType.N_SPIRAL:
-			config = EmitterPresets.n_spiral(preset_arms, preset_speed, 45.0, preset_warm_up)
+			preset_cfg = EmitterPresets.n_spiral(preset_arms, preset_speed, 45.0, preset_warm_up)
 		PresetType.SWEEP:
-			config = EmitterPresets.sweep(preset_arms, preset_spread, preset_speed, 12, preset_warm_up)
+			preset_cfg = EmitterPresets.sweep(preset_arms, preset_spread, preset_speed, 12, preset_warm_up)
 		PresetType.SYMMETRIC_SWEEP:
-			config = EmitterPresets.symmetric_sweep(preset_spread, preset_speed, 10, preset_warm_up)
+			preset_cfg = EmitterPresets.symmetric_sweep(preset_spread, preset_speed, 10, preset_warm_up)
 		PresetType.HOMING_BURST:
-			config = EmitterPresets.homing_burst(preset_arms, preset_speed, 120.0, preset_warm_up)
+			preset_cfg = EmitterPresets.homing_burst(preset_arms, preset_speed, 120.0, preset_warm_up)
 		PresetType.DELAYED_HOMING:
-			config = EmitterPresets.delayed_homing(preset_arms, preset_speed, 0.5, 90.0, preset_warm_up)
+			preset_cfg = EmitterPresets.delayed_homing(preset_arms, preset_speed, 0.5, 90.0, preset_warm_up)
 		PresetType.CURTAIN:
-			config = EmitterPresets.curtain(preset_arms, preset_speed, preset_warm_up)
+			preset_cfg = EmitterPresets.curtain(preset_arms, preset_speed, preset_warm_up)
 		PresetType.SCATTER:
-			config = EmitterPresets.scatter(preset_arms, preset_speed)
+			preset_cfg = EmitterPresets.scatter(preset_arms, preset_speed)
+
+	if preset_cfg != null:
+		config = preset_cfg
+
 	notify_property_list_changed()
 
 # ==============================================================================
@@ -4803,16 +4898,16 @@ var _running:        bool  = false
 var _stop_rotation:  bool  = false
 var _rotation_deg:   float = 0.0
 var _rotation_dir:   int   = 1
-var _ping_pong_dir:  int   = 1
+var _ping_pong_dir: int   = 1
 var _bround:         int   = 0
 var _usable_arms:    int   = 1
-var _current_speed:  float = 0.0
+var _current_speed: float = 0.0
 
 # Effective values (formerly scaled by rank)
-var _eff_speed:    float = 0.0
-var _eff_arms:     int   = 1
-var _eff_burst:    int   = 1
-var _eff_rot_spd:  float = 0.0
+var _eff_speed:   float = 0.0
+var _eff_arms:    int   = 1
+var _eff_burst:   int   = 1
+var _eff_rot_spd: float = 0.0
 
 # Direction cache
 var _base_direction: Vector2 = Vector2.DOWN
@@ -4823,12 +4918,16 @@ var _aim_target:     Vector2 = Vector2.ZERO
 # ==============================================================================
 
 func _ready() -> void:
+	if Engine.is_editor_hint():
+		return
 	if config == null:
 		push_error("No config assigned")
 		return
 	_start()
 
 func _physics_process(_delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
 	if !_running or _stop_rotation: return
 	if config.ping_pong and config.sync_ping_pong_to_burst: return
 	_rotation_deg += _eff_rot_spd * GLOBAL.TICK * float(_rotation_dir)
@@ -4921,7 +5020,6 @@ func _fire_all_shots(is_sync: bool) -> void:
 
 func _on_burst_finished(is_sync: bool) -> void:
 	if not _running: return
-	# Finalize sync ping-pong position
 	if is_sync:
 		_ping_pong_dir *= -1
 		_rotation_deg = _sync_angle_for_shot(_eff_burst - 1)
@@ -4970,8 +5068,6 @@ func _fire(current_speed: float) -> void:
 					and DRNG.drandf_range(0.0, 1.0) < config.skip_chance:
 				continue
 
-			# ARM: each arm within this single shot is faster than the previous
-			# BULLET: all arms in this shot share the same speed
 			if config.speed_var_target == EmitterConfig.SpeedVarTarget.ARM:
 				arm_speed *= config.speed_variation
 
@@ -5066,7 +5162,6 @@ func _spawn_bullet(
 		return
 	var bullet: Node = BPOOL.acquire(config.bullet_scene)
 	if bullet == null: return
-	# Configure behavior modifier
 	var behavior := config.behavior_type
 	if is_mirror: behavior = _flip_lr_behavior(behavior)
 	bullet.set_properties(dir, int(spd))
@@ -5085,9 +5180,7 @@ func _spawn_bullet(
 	if config.speed_curve != null and bullet.has_method("set_speed_curve"):
 		bullet.set_speed_curve(config.speed_curve, config.base_speed,
 			config.speed_curve_duration)
-	# Position must be set after BPOOL.acquire()
 	bullet.global_position = pos + dir * float(config.distance_center)
-	# Sub-emitter
 	if config.sub_emitter_scene != null and bullet.has_method("set_sub_emitter"):
 		bullet.set_sub_emitter(
 			config.sub_emitter_scene,
@@ -5162,6 +5255,7 @@ ARCHIVO: .\source\weapons\emitter_presets.gd
  
 # source/weapons/emitter_presets.gd
 # Static library of pre-configured EmitterConfig patterns
+@tool
 class_name EmitterPresets
 extends Object
 
@@ -5489,10 +5583,6 @@ static func scatter(
 static func no_rank(base: EmitterConfig) -> EmitterConfig:
 	var c: EmitterConfig = base.duplicate()
 	c.bullet_scene = PRED_BULLET
-	c.rank_scale_speed    = false
-	c.rank_scale_arms     = false
-	c.rank_scale_burst    = false
-	c.rank_scale_rotation = false
 	return c
 
 ## Returns a copy with inverted rotation direction
@@ -5930,7 +6020,6 @@ const FOLLOW_SCENE   := preload("res://scenes/items/follow_item.tscn")
 const EXPLOSION_SCENE := preload("res://scenes/vfx/explosion.tscn")
 
 const MEDAL_RANGE:  float = 250.0
-const DROP_SPREAD:  float = 20.0
 
 # ==============================================================================
 # LIFECYCLE
@@ -5978,26 +6067,27 @@ func _handle_drops(data: EnemyKillData) -> void:
 	var near_player  := data.position.distance_to(GAME.get_player()) < MEDAL_RANGE
 	var medal_active := SCORE.medalCountdown > 0.0
 	
-	# Medals: not by bomb, player nearby OR medals active OR pulse
-	if not data.by_bomb and (near_player or medal_active or data.by_charge):
-		_spawn_items(data.score_drop_count, MEDAL_SCENE, data.position)
-	
-	# Revenge bullets
-	if data.revenge:
-		_spawn_items(data.score_drop_count, REVENGE_SCENE, data.position)
-	
-	# COME BACK LATER
-	#if data.drops_powerup and GAME.DollStyle != GAME.DollEnum.STRONG:
-	#	_spawn_items(1, POWERUP_SCENE, data.position, true)
-	
 	# ELITE: cancel all enemy bullets
 	if data.enemy_type == &"ELITE":
+		data.position -= Vector2(0, 150.0)
 		for bullet in get_tree().get_nodes_in_group("Enemy Bullet"):
 			if bullet.has_method("cancel"):
 				bullet.cancel()
+	
+	# Medals: not by bomb, player nearby OR medals active OR pulse
+	if not data.by_bomb and (near_player or medal_active or data.by_charge):
+		_spawn_items(data.score_drop_count, MEDAL_SCENE, data.position, data.spread)
+	
+	# Revenge bullets
+	if data.revenge:
+		_spawn_items(data.score_drop_count, REVENGE_SCENE, data.position, data.spread)
+	
+	# COME BACK LATER
+	#if data.drops_powerup:
+	#	_spawn_items(1, POWERUP_SCENE, data.position, 0, true)
 
 func _spawn_items(count: int, scene: PackedScene,
-		pos: Vector2, centered: bool = false) -> void:
+		pos: Vector2, spread: float, centered: bool = false) -> void:
 	for i in count:
 		var item := scene.instantiate()
 		GLOBAL.add_to_game(item, true)
@@ -6005,7 +6095,7 @@ func _spawn_items(count: int, scene: PackedScene,
 			item.position = pos
 		else:
 			item.position = pos + Vector2(
-				DRNG.drandf_range(-DROP_SPREAD, DROP_SPREAD), 0.0)
+				DRNG.drandf_range(-spread, spread), 0)
 
 # ==============================================================================
 # MEDAL COUNTDOWN
@@ -6465,7 +6555,7 @@ func _show_continue() -> void:
 	GLOBAL.add_to_game(uiCont, true)
 
 func get_player() -> Vector2:
-	var players = get_tree().get_nodes_in_group("Player")
+	var players = get_tree().get_nodes_in_group("PlayerPos")
 	if players.is_empty():
 		player = null
 		return spawnPoint

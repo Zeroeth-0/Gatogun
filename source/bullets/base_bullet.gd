@@ -33,12 +33,19 @@ func on_acquired() -> void:
 	_has_been_visible = false
 	isCancelled = false
 	scale = Vector2.ONE
+	_toggle_collisions(false)
 	if !(self in CAMERA.tracked_nodes): CAMERA.tracked_nodes.append(self)
 	_on_acquired()
 
 func on_released() -> void:
 	CAMERA.tracked_nodes.erase(self)
+	_toggle_collisions(true)
 	_on_released()
+
+func _toggle_collisions(disable: bool) -> void:
+	for child in get_children():
+		if child is CollisionShape2D or child is CollisionPolygon2D:
+			child.set_deferred("disabled", disable)
 
 # ==============================================================================
 # MAIN LOOP

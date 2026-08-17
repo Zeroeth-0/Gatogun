@@ -1,6 +1,7 @@
 # resources/emitter_config.gd
 # Data resource describing a complete bullet pattern.
 # Pattern can be saved as .tres files and reused.
+@tool
 class_name EmitterConfig
 extends Resource
 

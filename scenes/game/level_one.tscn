@@ -12,7 +12,10 @@
 [ext_resource type="PackedScene" uid="uid://bw2g2t07ejkdq" path="res://scenes/levels/dead_bounds.tscn" id="12_0cmxr"]
 [ext_resource type="PackedScene" uid="uid://cgts6rg8xrau" path="res://scenes/levels/playzone.tscn" id="13_hmfu4"]
 [ext_resource type="PackedScene" uid="uid://duam5mtyrxv5l" path="res://scenes/UI/hud.tscn" id="14_ol3bn"]
+[ext_resource type="PackedScene" uid="uid://dmw2hkj8rqt1t" path="res://scenes/enemies/elite/onigiri.tscn" id="16_5p3po"]
+[ext_resource type="PackedScene" uid="uid://cxi03xcrsb5s7" path="res://scenes/enemies/mid/croquette.tscn" id="17_3kd88"]
 [ext_resource type="PackedScene" uid="uid://hoe0n6m5f6n7" path="res://scenes/items/orbit_item.tscn" id="17_q5ghs"]
+[ext_resource type="PackedScene" uid="uid://bo2wjsocllr6f" path="res://scenes/enemies/mid/kite.tscn" id="18_4c2ps"]
 [ext_resource type="PackedScene" uid="uid://bnw5lajutdr4s" path="res://scenes/items/follow_item.tscn" id="18_t63va"]
 [ext_resource type="PackedScene" uid="uid://wm5ygajh4jkk" path="res://scenes/items/sides_item.tscn" id="19_3n5rf"]
 
@@ -34,9 +37,27 @@ enemy_id = &"haru"
 scene = ExtResource("5_lyjet")
 metadata/_custom_type_script = "uid://cwjdnkhkortfc"
 
+[sub_resource type="Resource" id="Resource_3kd88"]
+script = ExtResource("2_gvm2m")
+enemy_id = &"croquette"
+scene = ExtResource("17_3kd88")
+metadata/_custom_type_script = "uid://cwjdnkhkortfc"
+
+[sub_resource type="Resource" id="Resource_4c2ps"]
+script = ExtResource("2_gvm2m")
+enemy_id = &"onigiri"
+scene = ExtResource("16_5p3po")
+metadata/_custom_type_script = "uid://cwjdnkhkortfc"
+
+[sub_resource type="Resource" id="Resource_q5ghs"]
+script = ExtResource("2_gvm2m")
+enemy_id = &"kite"
+scene = ExtResource("18_4c2ps")
+metadata/_custom_type_script = "uid://cwjdnkhkortfc"
+
 [sub_resource type="Resource" id="Resource_gvm2m"]
 script = ExtResource("2_r4m5e")
-entries = Array[ExtResource("2_gvm2m")]([SubResource("Resource_81vvx"), SubResource("Resource_cof2y"), SubResource("Resource_5p3po")])
+entries = Array[ExtResource("2_gvm2m")]([SubResource("Resource_81vvx"), SubResource("Resource_cof2y"), SubResource("Resource_5p3po"), SubResource("Resource_3kd88"), SubResource("Resource_4c2ps"), SubResource("Resource_q5ghs")])
 metadata/_custom_type_script = "uid://dxni8cw8okxda"
 
 [node name="World" type="Node2D" unique_id=1973436339 groups=["Level"]]

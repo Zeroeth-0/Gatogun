@@ -1,5 +1,6 @@
 # source/weapons/emitter.gd
 # Interprets EmitterConfig and fires bullets
+@tool
 class_name BulletEmitter
 extends Marker2D
 
@@ -20,50 +21,61 @@ enum PresetType {
 @export var apply_preset: PresetType = PresetType.NONE:
 	set(value):
 		apply_preset = value
-		if value != PresetType.NONE and Engine.is_editor_hint():
+		if value != PresetType.NONE:
 			_apply_preset(value)
-			apply_preset = PresetType.NONE
+			call_deferred("_reset_preset_enum")
+
 @export var preset_speed: float = 300.0
 @export var preset_arms: int = 8
 @export var preset_spread: float = 45.0
 @export var preset_warm_up: float = 1.0
 
+func _reset_preset_enum() -> void:
+	apply_preset = PresetType.NONE
+	notify_property_list_changed()
+
 func _apply_preset(p: PresetType) -> void:
+	var preset_cfg: EmitterConfig = null
+
 	match p:
 		PresetType.AIMED_STREAM:
-			config = EmitterPresets.aimed_stream(preset_speed, preset_warm_up)
+			preset_cfg = EmitterPresets.aimed_stream(preset_speed, preset_warm_up)
 		PresetType.AIMED_SPREAD:
-			config = EmitterPresets.aimed_spread(preset_arms, preset_spread, preset_speed, preset_warm_up)
+			preset_cfg = EmitterPresets.aimed_spread(preset_arms, preset_spread, preset_speed, preset_warm_up)
 		PresetType.AIMED_WALL:
-			config = EmitterPresets.aimed_wall(preset_arms, preset_spread, preset_speed, preset_warm_up)
+			preset_cfg = EmitterPresets.aimed_wall(preset_arms, preset_spread, preset_speed, preset_warm_up)
 		PresetType.SPEED_LAYERS:
-			config = EmitterPresets.speed_layers(preset_arms, preset_speed * 0.6, preset_speed * 1.4)
+			preset_cfg = EmitterPresets.speed_layers(preset_arms, preset_speed * 0.6, preset_speed * 1.4)
 		PresetType.RING:
-			config = EmitterPresets.ring(preset_arms, preset_speed, 0.0, preset_warm_up)
+			preset_cfg = EmitterPresets.ring(preset_arms, preset_speed, 0.0, preset_warm_up)
 		PresetType.ALTERNATING_RING:
-			config = EmitterPresets.alternating_ring(preset_arms, preset_arms - 1, preset_speed, preset_warm_up)
+			preset_cfg = EmitterPresets.alternating_ring(preset_arms, preset_arms - 1, preset_speed, preset_warm_up)
 		PresetType.LAYERED_RING:
-			config = EmitterPresets.layered_ring(preset_arms, preset_speed * 0.7, preset_speed * 1.3)
+			preset_cfg = EmitterPresets.layered_ring(preset_arms, preset_speed * 0.7, preset_speed * 1.3)
 		PresetType.SPINNING_RING:
-			config = EmitterPresets.spinning_ring(preset_arms, preset_speed, 45.0, preset_warm_up)
+			preset_cfg = EmitterPresets.spinning_ring(preset_arms, preset_speed, 45.0, preset_warm_up)
 		PresetType.SPIRAL:
-			config = EmitterPresets.spiral(preset_speed, 60.0, preset_warm_up)
+			preset_cfg = EmitterPresets.spiral(preset_speed, 60.0, preset_warm_up)
 		PresetType.DOUBLE_SPIRAL:
-			config = EmitterPresets.double_spiral(preset_speed, 60.0, preset_warm_up)
+			preset_cfg = EmitterPresets.double_spiral(preset_speed, 60.0, preset_warm_up)
 		PresetType.N_SPIRAL:
-			config = EmitterPresets.n_spiral(preset_arms, preset_speed, 45.0, preset_warm_up)
+			preset_cfg = EmitterPresets.n_spiral(preset_arms, preset_speed, 45.0, preset_warm_up)
 		PresetType.SWEEP:
-			config = EmitterPresets.sweep(preset_arms, preset_spread, preset_speed, 12, preset_warm_up)
+			preset_cfg = EmitterPresets.sweep(preset_arms, preset_spread, preset_speed, 12, preset_warm_up)
 		PresetType.SYMMETRIC_SWEEP:
-			config = EmitterPresets.symmetric_sweep(preset_spread, preset_speed, 10, preset_warm_up)
+			preset_cfg = EmitterPresets.symmetric_sweep(preset_spread, preset_speed, 10, preset_warm_up)
 		PresetType.HOMING_BURST:
-			config = EmitterPresets.homing_burst(preset_arms, preset_speed, 120.0, preset_warm_up)
+			preset_cfg = EmitterPresets.homing_burst(preset_arms, preset_speed, 120.0, preset_warm_up)
 		PresetType.DELAYED_HOMING:
-			config = EmitterPresets.delayed_homing(preset_arms, preset_speed, 0.5, 90.0, preset_warm_up)
+			preset_cfg = EmitterPresets.delayed_homing(preset_arms, preset_speed, 0.5, 90.0, preset_warm_up)
 		PresetType.CURTAIN:
-			config = EmitterPresets.curtain(preset_arms, preset_speed, preset_warm_up)
+			preset_cfg = EmitterPresets.curtain(preset_arms, preset_speed, preset_warm_up)
 		PresetType.SCATTER:
-			config = EmitterPresets.scatter(preset_arms, preset_speed)
+			preset_cfg = EmitterPresets.scatter(preset_arms, preset_speed)
+
+	if preset_cfg != null:
+		config = preset_cfg
+
 	notify_property_list_changed()
 
 # ==============================================================================
@@ -82,16 +94,16 @@ var _running:        bool  = false
 var _stop_rotation:  bool  = false
 var _rotation_deg:   float = 0.0
 var _rotation_dir:   int   = 1
-var _ping_pong_dir:  int   = 1
+var _ping_pong_dir: int   = 1
 var _bround:         int   = 0
 var _usable_arms:    int   = 1
-var _current_speed:  float = 0.0
+var _current_speed: float = 0.0
 
 # Effective values (formerly scaled by rank)
-var _eff_speed:    float = 0.0
-var _eff_arms:     int   = 1
-var _eff_burst:    int   = 1
-var _eff_rot_spd:  float = 0.0
+var _eff_speed:   float = 0.0
+var _eff_arms:    int   = 1
+var _eff_burst:   int   = 1
+var _eff_rot_spd: float = 0.0
 
 # Direction cache
 var _base_direction: Vector2 = Vector2.DOWN
@@ -102,12 +114,16 @@ var _aim_target:     Vector2 = Vector2.ZERO
 # ==============================================================================
 
 func _ready() -> void:
+	if Engine.is_editor_hint():
+		return
 	if config == null:
 		push_error("No config assigned")
 		return
 	_start()
 
 func _physics_process(_delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
 	if !_running or _stop_rotation: return
 	if config.ping_pong and config.sync_ping_pong_to_burst: return
 	_rotation_deg += _eff_rot_spd * GLOBAL.TICK * float(_rotation_dir)
@@ -200,7 +216,6 @@ func _fire_all_shots(is_sync: bool) -> void:
 
 func _on_burst_finished(is_sync: bool) -> void:
 	if not _running: return
-	# Finalize sync ping-pong position
 	if is_sync:
 		_ping_pong_dir *= -1
 		_rotation_deg = _sync_angle_for_shot(_eff_burst - 1)
@@ -249,8 +264,6 @@ func _fire(current_speed: float) -> void:
 					and DRNG.drandf_range(0.0, 1.0) < config.skip_chance:
 				continue
 
-			# ARM: each arm within this single shot is faster than the previous
-			# BULLET: all arms in this shot share the same speed
 			if config.speed_var_target == EmitterConfig.SpeedVarTarget.ARM:
 				arm_speed *= config.speed_variation
 
@@ -345,7 +358,6 @@ func _spawn_bullet(
 		return
 	var bullet: Node = BPOOL.acquire(config.bullet_scene)
 	if bullet == null: return
-	# Configure behavior modifier
 	var behavior := config.behavior_type
 	if is_mirror: behavior = _flip_lr_behavior(behavior)
 	bullet.set_properties(dir, int(spd))
@@ -364,9 +376,7 @@ func _spawn_bullet(
 	if config.speed_curve != null and bullet.has_method("set_speed_curve"):
 		bullet.set_speed_curve(config.speed_curve, config.base_speed,
 			config.speed_curve_duration)
-	# Position must be set after BPOOL.acquire()
 	bullet.global_position = pos + dir * float(config.distance_center)
-	# Sub-emitter
 	if config.sub_emitter_scene != null and bullet.has_method("set_sub_emitter"):
 		bullet.set_sub_emitter(
 			config.sub_emitter_scene,

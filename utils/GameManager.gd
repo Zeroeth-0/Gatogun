@@ -101,7 +101,7 @@ func _show_continue() -> void:
 	GLOBAL.add_to_game(uiCont, true)
 
 func get_player() -> Vector2:
-	var players = get_tree().get_nodes_in_group("Player")
+	var players = get_tree().get_nodes_in_group("PlayerPos")
 	if players.is_empty():
 		player = null
 		return spawnPoint

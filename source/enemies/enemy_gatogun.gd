@@ -28,10 +28,11 @@ var explosion_scale: float = 1.5
 var score_count: float = 5.0
 var spread: float = 20.0
 
-var _emitter: BulletEmitter = null
+# Lista para almacenar todos los emisores encontrados
+var _emitters: Array[BulletEmitter] = []
 
-var _hit_mat:   ShaderMaterial = null
-var _hit_tween: Tween          = null
+var _hit_mat:       ShaderMaterial = null
+var _hit_tween: Tween              = null
 
 # === NODOS DE ANIMACIÓN Y COOLDOWN ===
 @onready var _anim_player: AnimationPlayer = $Sprite2D/AnimationPlayer
@@ -50,19 +51,24 @@ func _on_ready() -> void:
 		EnemyData.EnemyType.STD:
 			_health = 16.0
 			explosion_scale = 1.5
-			score_count = 3.0
+			score_count = 2.0
 			spread = 50.0
 		EnemyData.EnemyType.MID:
-			_health = 100.0
+			_health = 300.0
 			explosion_scale = 2.0
-			score_count = 5.0
+			score_count = 7.0
 			spread = 80.0
 		EnemyData.EnemyType.ELITE:
-			_health = 160.0
+			_health = 500.0
 			explosion_scale = 2.75
-			score_count = 10.0
+			score_count = 13.0
 			spread = 100.0
-	_emitter = get_node_or_null("Emitter")
+
+	# Recolectar TODOS los BulletEmitter que sean hijos del enemigo (incluso anidados)
+	_emitters.clear()
+	for child in find_children("*", "BulletEmitter", true, false):
+		if child is BulletEmitter:
+			_emitters.append(child)
 
 	$Hitbox.add_to_group("Damage")
 
@@ -162,7 +168,8 @@ func _check_cutoff() -> void:
 		_set_can_shoot(false)
 
 func _check_charge_overlap(tick: float) -> void:
-	if not has_node("Hurtbox"): return
+	if not _can_die or not has_node("Hurtbox"): return
+	
 	for area in $Hurtbox.get_overlapping_areas():
 		if area.is_in_group("Charge"):
 			_pulse_marked = true
@@ -171,16 +178,21 @@ func _check_charge_overlap(tick: float) -> void:
 			_trigger_damage_animation()
 
 func _check_health_halving() -> void:
-	if _emitter == null or _halved:
+	if _halved or _emitters.is_empty():
 		return
-	if _emitter.total_rounds >= data.halving_trigger_round:
-		_health *= 0.5
-		_halved  = true
+	
+	# Comprobamos si alguno de los emisores ha alcanzado o superado la ronda de halving
+	for emitter in _emitters:
+		if emitter and emitter.total_rounds >= data.halving_trigger_round:
+			_health *= 0.5
+			_halved = true
+			break
 
 func _set_can_shoot(value: bool) -> void:
 	_can_shoot = value
-	if _emitter:
-		_emitter.can_shoot = value
+	for emitter in _emitters:
+		if emitter:
+			emitter.can_shoot = value
 
 # ==============================================================================
 # DEATH
@@ -241,6 +253,28 @@ func _trigger_hit_flash() -> void:
 # ==============================================================================
 
 func _on_hurtbox_area_entered(area: Node) -> void:
+	if area.is_in_group("Fire"):
+		if combo_label:
+			combo_label.show_combo()
+		if _can_die:
+			var dmg: float = area.get("damage") if "damage" in area else 1.0
+			_health -= dmg
+			
+			if "BulletType" in area and "BulletEnum" in area:
+				_last_bullet = (area.BulletType == area.BulletEnum.BURST)
+			else:
+				_last_bullet = false
+				
+		_trigger_hit_flash()
+		_trigger_damage_animation()
+	
+	if area.is_in_group("Bomb"):
+		# Añadimos la comprobación de _can_die aquí también:
+		if _can_die:
+			_by_bomb  = true
+			var dmg: float = area.get("damage") if "damage" in area else 200.0
+			_health  -= dmg
+			_trigger_damage_animation()
 	if area.is_in_group("Fire"):
 		if combo_label:
 			combo_label.show_combo()

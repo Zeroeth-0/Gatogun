@@ -1,5 +1,6 @@
 # source/weapons/emitter_presets.gd
 # Static library of pre-configured EmitterConfig patterns
+@tool
 class_name EmitterPresets
 extends Object
 
@@ -327,10 +328,6 @@ static func scatter(
 static func no_rank(base: EmitterConfig) -> EmitterConfig:
 	var c: EmitterConfig = base.duplicate()
 	c.bullet_scene = PRED_BULLET
-	c.rank_scale_speed    = false
-	c.rank_scale_arms     = false
-	c.rank_scale_burst    = false
-	c.rank_scale_rotation = false
 	return c
 
 ## Returns a copy with inverted rotation direction
