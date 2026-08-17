@@ -5,8 +5,8 @@ teruteru_s at N1 after 0.0
 teruteru_s at N5 after 1.0
 SWARM(thickness=3,length=2,warmup=0.3) teruteru_s at N0 after 1
 croquette at N5 after 0.5
-PARADE(thickness=3,length=7,warmup=0.7) haru at E0 after 0
-PARADE(thickness=3,length=7,warmup=0.7) haru at W0 with L to S after 0.5
+PARADE(thickness=3,length=4,warmup=0.7) haru at E0 after 0
+PARADE(thickness=3,length=4,warmup=0.7) haru at W0 with L to S after 0.5
 kite at N5 with L after 1
 SWARM(thickness=3,length=2,warmup=0.3) teruteru_s at N4 after 1
 kite at N1 after 1

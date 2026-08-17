@@ -230,10 +230,6 @@ func _target_block(phase: MovementPhase) -> void:
 	_local_accel = acceleration * 0.6
 	var player = GAME.get_player()
 	
-	if not is_instance_valid(player):
-		_target_vel = Vector2.ZERO
-		return
-		
 	var target_pos: Vector2 = player.global_position if player is Node2D else player
 	var spd_f := float(phase.speed)
 	
@@ -282,12 +278,10 @@ func _target_towards_player(phase: MovementPhase) -> void:
 	scroll_follow = false
 	var player = GAME.get_player()
 	
-	if is_instance_valid(player):
-		var target_pos: Vector2 = player.global_position if player is Node2D else player
-		var to_player := target_pos - global_position
-		if to_player.length_squared() > 0.0:
-			_direction = to_player.normalized()
-			
+	var target_pos: Vector2 = player.global_position if player is Node2D else player
+	var to_player := target_pos - global_position
+	if to_player.length_squared() > 0.0: _direction = to_player.normalized()
+	
 	_target_vel = _direction * float(phase.speed) * _speed_breath
 
 func _target_leave(phase: MovementPhase) -> void:
